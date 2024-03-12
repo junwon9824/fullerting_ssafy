@@ -26,8 +26,8 @@ services:
     networks:
       - jenkins-network
     environment:
-      - USE_PROFILE=prod
-      - SPRING_PROFILES_ACTIVE=prod
+      - USE_PROFILE=dev
+#      - SPRING_PROFILES_ACTIVE=prod
 
 
 
