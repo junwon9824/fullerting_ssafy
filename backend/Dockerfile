@@ -30,4 +30,4 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar /app/back.jar
 
 # 서버 실행
-#ENTRYPOINT ["java","-jar",   "-Djava.security.egd=file:/dev/./urandom","/app/back.jar"]
+ENTRYPOINT ["java","-jar",   "/app/back.jar"]
