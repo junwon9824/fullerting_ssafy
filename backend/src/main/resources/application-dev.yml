@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:mysql://j10C102.p.ssafy.io:3306/
+    username: fulldba
+    password: full202403110344
+
+  security:
+    user:
+      name: test
+      password: 1234
