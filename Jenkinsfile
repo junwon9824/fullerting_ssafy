@@ -21,7 +21,7 @@ pipeline {
         REPO = 's10-ai-image-sub2/S10P12C102'
 
         // Gradle 환경 변수 설정
-        GRADLE_JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
+        ORG_GRADLE_JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
     }
 
     stages {
@@ -39,7 +39,7 @@ pipeline {
                         env.TAG = version
 
                         // Gradle 설정 추가
-                        sh "echo 'org.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64' > gradle.properties"
+                        sh "echo 'org.gradle.java.home=${ORG_GRADLE_JAVA_HOME}' > gradle.properties"
 
                         //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
                         //docker에 동적으로 tag를 지정하기 위해 사용했다.
