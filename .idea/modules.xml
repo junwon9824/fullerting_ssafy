@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
+      <module fileurl="file://$PROJECT_DIR$/.idea/fullerting.iml" filepath="$PROJECT_DIR$/.idea/fullerting.iml" />
+=======
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/fullerting.main.iml" filepath="$PROJECT_DIR$/.idea/modules/fullerting.main.iml" />
+>>>>>>> 4faa1df9ea0b528d8d7950f2115fa30a2e3ce9f5
     </modules>
   </component>
 </project>
