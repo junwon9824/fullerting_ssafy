@@ -22,22 +22,21 @@ pipeline {
     }
 
     stages {
-
         stage('Setup Environment') {
             steps {
                 dir("${env.WORKSPACE}/back") {
                     script {
                         sh 'ls . -al'
-                         // 테스트용 쉘 코드 추가
-                     sh 'echo "This is a test shell script"'
+                        // 테스트용 쉘 코드 추가
+                        sh 'echo "This is a test shell script"'
+
                         sh 'chmod +x ./gradlew'
                         def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
                         version = version_value.split(/:/)[1].trim()
                         env.TAG = version
 
-                            // Gradle 설정 추가
-                         sh "echo 'org.gradle.java.home=/path/to/your/jdk-17' > gradle.properties"
-
+                        // Gradle 설정 추가
+                        sh "echo 'org.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64' > gradle.properties"
 
                         //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
                         //docker에 동적으로 tag를 지정하기 위해 사용했다.
@@ -69,7 +68,6 @@ pipeline {
                     sh 'docker-compose -f back/docker-compose.yml build'
                 }
             }
-
         }
         stage('Docker Login') {
             steps {
@@ -100,7 +98,7 @@ pipeline {
             steps {
                 script {
                     component.each { entry ->
-                        if (entry.value && entry.key != 'redis'  ) {
+                        if (entry.value && entry.key != 'redis') {
                             def var = entry.key
                             sh "docker-compose -f back/docker-compose.yml -p develop-server pull ${var.toLowerCase()}"
                         }
@@ -108,7 +106,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Up') {
             steps {
                 script {
@@ -128,17 +126,17 @@ pipeline {
             }
         }
     }
-    // post {
-    //     always {
-    //         script {
-    //             def Author_ID = sh(script: 'git show -s --pretty=%an', returnStdout: true).trim()
-    //             def Author_Name = sh(script: 'git show -s --pretty=%ae', returnStdout: true).trim()
-    //             mattermostSend(color: 'good',
-    //                     message: "빌드 ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
-    //                     endpoint: 'https://meeting.ssafy.com/hooks/xnzz7hmewpb4jqugb8eu51refy',
-    //                     channel: 'C106-jenkins'
-    //             )
-    //         }
-    //     }
-    // }
+// post {
+//     always {
+//         script {
+//             def Author_ID = sh(script: 'git show -s --pretty=%an', returnStdout: true).trim()
+//             def Author_Name = sh(script: 'git show -s --pretty=%ae', returnStdout: true).trim()
+//             mattermostSend(color: 'good',
+//                     message: "빌드 ${currentBuild.currentResult}: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+//                     endpoint: 'https://meeting.ssafy.com/hooks/xnzz7hmewpb4jqugb8eu51refy',
+//                     channel: 'C106-jenkins'
+//             )
+//         }
+//     }
+// }
 }
