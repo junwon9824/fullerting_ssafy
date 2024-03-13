@@ -28,13 +28,15 @@ pipeline {
                 dir("${env.WORKSPACE}/back") {
                     script {
                         sh 'ls . -al'
+                         // 테스트용 쉘 코드 추가
+                     sh 'echo "This is a test shell script"'
                         sh 'chmod +x ./gradlew'
                         def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
                         version = version_value.split(/:/)[1].trim()
                         env.TAG = version
 
                             // Gradle 설정 추가
-                sh "echo 'org.gradle.java.home=/path/to/your/jdk-17' > gradle.properties"
+                         sh "echo 'org.gradle.java.home=/path/to/your/jdk-17' > gradle.properties"
 
 
                         //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
