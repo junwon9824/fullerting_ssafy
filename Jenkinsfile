@@ -19,6 +19,9 @@ pipeline {
         GITHUB_CREDENTIALS_ID = 'Github-access-token'
         GITLAB_CREDENTIALS_ID = 'GitLab-access-token' // GitLab 크리덴셜 ID 추가
         REPO = 's10-ai-image-sub2/S10P12C102'
+
+        // Gradle 환경 변수 설정
+        GRADLE_JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
     }
 
     stages {
