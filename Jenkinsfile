@@ -11,7 +11,7 @@ pipeline {
         // 환경변수 설정
         NGINX_TAG = 'latest'
         // FRONT_TAG = 'v1.0'
-        BACK_TAG = 'v2.1'
+        BACK_TAG = 'latest'
         REDIS_TAG = 'alpine'
         DOCKER_USER_ID = 'junwon1131'
         // Docker Hub 및 GitHub 크리덴셜 ID
