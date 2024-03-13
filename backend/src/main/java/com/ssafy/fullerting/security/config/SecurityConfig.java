@@ -3,11 +3,9 @@ package com.ssafy.fullerting.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,7 +27,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // cors 설정
         http
-                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfig()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
 
@@ -48,13 +46,14 @@ public class SecurityConfig {
     }
 
     // CORS 설정
-    public CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfig() {
         return request -> {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
             config.setAllowedOrigins(Collections.singletonList("*")); // 모든 Origin 허용
             config.setAllowCredentials(false); // 모든 도메인을 허용할 때는 false로 설정해야 함
+            config.setMaxAge(3600L);
             return config;
         };
     }
