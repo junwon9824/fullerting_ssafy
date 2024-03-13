@@ -1,11 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
-import styled from "styled-components";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <div>
+      <div style={{ margin: "0 auto", textAlign: "center" }}>
         <div
           style={{
             fontSize: "1.875rem",
