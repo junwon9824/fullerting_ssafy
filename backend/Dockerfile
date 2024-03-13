@@ -16,7 +16,7 @@ COPY src src
 
 RUN chmod +x ./gradlew
 
-ENV	USE_PROFILE prod
+#ENV	USE_PROFILE prod
 
 # 빌드 수행
 RUN ./gradlew bootJar
