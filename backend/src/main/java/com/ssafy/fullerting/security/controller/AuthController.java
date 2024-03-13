@@ -39,7 +39,6 @@ public class AuthController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
-
     @PostMapping("/refresh")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary="토큰 재발행", description="REFRESH 토큰을 비교해 기한이 만료된 ACCESS 토큰을 재발행한다 <br> REFRESH 토큰의 유효기간이 남았을 경우만 재발급한다")

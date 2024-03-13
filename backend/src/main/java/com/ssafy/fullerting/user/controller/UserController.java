@@ -2,6 +2,7 @@ package com.ssafy.fullerting.user.controller;
 
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
+import com.ssafy.fullerting.user.model.entity.User;
 import com.ssafy.fullerting.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,10 +15,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -34,5 +33,11 @@ public class UserController {
         userService.registerUser(userRegisterRequest);
         log.info("[New User]: {}", userRegisterRequest.toString());
         return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
+    @GetMapping("/info")
+    @Operation(summary = "유저정보조회", description = "현재 로그인 중인 유저의 상세 정보를 조회한다 <br> 입력값 불핖요")
+    public ResponseEntity<MessageUtils> getUserInfo(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(MessageUtils.success(userService.getUserInfo(user)));
     }
 }

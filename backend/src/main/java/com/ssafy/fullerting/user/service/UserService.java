@@ -3,6 +3,7 @@ package com.ssafy.fullerting.user.service;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
+import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.User;
 import com.ssafy.fullerting.user.model.entity.enums.UserRank;
 import com.ssafy.fullerting.user.model.entity.enums.UserRole;
@@ -40,4 +41,10 @@ public class UserService {
         // 유저 객체를 DB에 저장
         userRepository.save(createUserEntity(request));
     }
+
+    public UserResponse getUserInfo(User user) {
+        return user.toResponse();
+    }
+
+
 }

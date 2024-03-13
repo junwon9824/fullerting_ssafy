@@ -6,6 +6,7 @@ import com.ssafy.fullerting.security.model.dto.request.LoginRequest;
 import com.ssafy.fullerting.security.model.dto.response.IssuedToken;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
+import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.User;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,6 @@ public class AuthService {
         }
         throw new AuthException(AuthErrorCode.NOT_EXISTS);
     }
-
 
     public void logout(User user) {
         tokenService.removeToken(user.getId());
