@@ -29,8 +29,6 @@ services:
 #      - USE_PROFILE=dev
 #      - SPRING_PROFILES_ACTIVE=prod
 
-
-
 networks:
   jenkins-network:
     external: true
