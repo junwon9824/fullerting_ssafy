@@ -48,7 +48,7 @@ const SignupButton = styled.button`
   width: 100%;
   font-weight: bold;
 `;
-const CharcterBox = styled.button`
+const Character = styled.button`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -92,7 +92,7 @@ const LoginPage = () => {
     <MainBox>
       <Logo>풀러팅</Logo>
       <LoginBox>
-        <CharcterBox>
+        <Character>
           <svg
             width="104"
             height="64"
@@ -238,7 +238,7 @@ const LoginPage = () => {
               fill="#2A7F00"
             />
           </svg>
-        </CharcterBox>
+        </Character>
         <LoginInput>
           <StyledInput
             type="email"
