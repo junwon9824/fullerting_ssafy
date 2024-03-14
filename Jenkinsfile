@@ -68,8 +68,15 @@ pipeline {
                     fi
                     '''
                     // Docker Compose를 사용하여 서비스 빌드
-                    sh 'pwd'
-                    sh 'docker-compose -f ./backend/docker-compose.yml build'
+                    // sh 'pwd'
+                    // sh 'docker-compose -f ./backend/docker-compose.yml build'
+
+                      dir('backend') {
+                        // backend 디렉토리 내에서 명령을 실행합니다.
+                        sh 'pwd'  // 현재 디렉토리 위치 출력
+                        sh 'ls -al'  // 디렉토리 내의 파일 목록 출력
+                        sh 'docker-compose -f docker-compose.yml build'  // Docker Compose를 사용하여 서비스 빌드
+                    }
                 }
             }
         }
