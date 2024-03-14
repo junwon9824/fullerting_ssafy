@@ -41,10 +41,10 @@ pipeline {
                         // Gradle 설정 추가
                         // sh "echo 'org.gradle.java.home=${ORG_GRADLE_JAVA_HOME}' > gradle.properties"
 
-                        //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
-                        //docker에 동적으로 tag를 지정하기 위해 사용했다.
-                        // sh "echo TAG=$version >> .env"
-                        // sh 'cat .env'
+                    //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
+                    //docker에 동적으로 tag를 지정하기 위해 사용했다.
+                    // sh "echo TAG=$version >> .env"
+                    // sh 'cat .env'
                     }
                 }
             }
@@ -55,9 +55,11 @@ pipeline {
                 script {
                     // 현재 디렉토리 위치 출력
                     sh 'pwd'
-                    sh 'ls -al'
-                    // docker-compose가 설치되어 있는지 확인하고, 없으면 설치
-                    sh '''
+                    dir('back') {
+                        sh 'pwd'
+                        sh 'ls -al'
+                        // docker-compose가 설치되어 있는지 확인하고, 없으면 설치
+                        sh '''
                     if ! command -v docker-compose &> /dev/null
                     then
                         echo "docker-compose not found, installing..."
@@ -68,7 +70,11 @@ pipeline {
                     fi
                     '''
                     // Docker Compose를 사용하여 서비스 빌드
-                    sh 'docker-compose -f back/docker-compose.yml build'
+
+                        sh 'ls -al'
+
+                        sh 'docker-compose -f back/docker-compose.yml build'
+                    }
                 }
             }
         }
