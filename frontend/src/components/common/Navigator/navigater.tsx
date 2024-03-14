@@ -21,7 +21,7 @@ interface NavItem {
   Icon: string;
   path: string;
 }
-const Titlebox = styled.div`
+const TitleBox = styled.div`
   width: 100%;
   height: 2.75rem;
   position: relative;
@@ -32,6 +32,8 @@ const Titlebox = styled.div`
   font-size: 1rem;
   font-style: normal;
   font-weight: bold;
+  position: fixed;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 const Backsvgbox = styled.div`
   width: 1.5rem;
@@ -83,7 +85,7 @@ const navItems: NavItem[] = [
 
 const TitleBar = ({
   title,
-  showEdit = true,
+  showEdit = false,
   showBack = true,
   showTitle = true,
 }: DiaryTitleBarProps): JSX.Element => {
@@ -92,7 +94,7 @@ const TitleBar = ({
     navigate(-1);
   };
   return (
-    <Titlebox>
+    <TitleBox>
       {showBack && (
         <Backsvgbox onClick={onClickBack}>
           <img src={Arrow} alt="Back" />
@@ -105,7 +107,7 @@ const TitleBar = ({
           <img src={Delete} alt="Delete" />
         </EditBox>
       )}
-    </Titlebox>
+    </TitleBox>
   );
 };
 
