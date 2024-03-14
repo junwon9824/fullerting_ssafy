@@ -4,10 +4,11 @@ import Button from "./primaryButton";
 const ButtonBox = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   position: fixed;
   bottom: 0;
   padding: 1rem 0;
-  width: 22.5rem;
+  width: 100%;
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
