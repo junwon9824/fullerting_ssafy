@@ -17,6 +17,7 @@ const ColorStyle = styled.button<ButtonProps>`
   background-color: ${(props: ButtonProps) => props.backgroundColor};
   width: ${(props: ButtonProps) => `${props.width}rem`};
   height: ${(props: ButtonProps) => `${props.height}rem`};
+  font-weight: ${(props: ButtonProps) => `${props.fontWeight}`};
   border-radius: 8px;
   font-size: 16px;
   color: white;
@@ -29,6 +30,7 @@ const Button = (props: ButtonProps) => {
         onClick={props.onClick}
         width={props.width}
         height={props.height}
+        fontWeight={props.fontWeight}
         backgroundColor={props.backgroundColor}
       >
         {props.children}
