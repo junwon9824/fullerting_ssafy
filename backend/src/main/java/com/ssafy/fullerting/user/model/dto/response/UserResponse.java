@@ -14,6 +14,5 @@ public class UserResponse {
     private String nickname;
     private String thumbnail;
     private String rank;
-    private Integer point;
     private String location;
 }

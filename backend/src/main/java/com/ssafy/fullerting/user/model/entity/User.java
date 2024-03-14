@@ -47,15 +47,14 @@ public class User implements UserDetails{
     
     // 메서드 설정
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
     public String getUsername() {
         return this.email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
 
     @Override
     public boolean isAccountNonExpired() {
