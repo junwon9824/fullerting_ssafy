@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 interface StyledInputType {
   label?: string;
+  isRequired?: boolean;
   type: string;
   id: string;
   name: string;
@@ -30,10 +31,19 @@ const Input = styled.input`
 `;
 
 const Label = styled.label`
+  display: flex;
   color: ${({ theme }) => theme.colors.gray0};
   text-align: center;
   font-size: 0.875rem;
   font-weight: bold;
+`;
+
+const RedCircle = styled.div`
+  width: 0.25rem;
+  height: 0.25rem;
+  background-color: ${({ theme }) => theme.colors.red0};
+  margin: 0 0.2rem;
+  border-radius: 50%;
 `;
 
 const InputBox = styled.div`
@@ -47,6 +57,7 @@ const InputBox = styled.div`
 
 const StyledInput = ({
   label,
+  isRequired,
   type,
   id,
   name,
@@ -70,7 +81,10 @@ const StyledInput = ({
       )}
       {label && (
         <InputBox>
-          <Label>{label}</Label>
+          <Label>
+            <p>{label}</p>
+            {isRequired && <RedCircle />}
+          </Label>
           <Input
             type={type}
             id={id}

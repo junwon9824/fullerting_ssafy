@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 interface StyledInputWithButtonType {
   label: string;
+  isRequired?: boolean;
   type: string;
   id: string;
   name: string;
@@ -48,12 +49,20 @@ const ConfirmButton = styled.button`
 `;
 
 const Label = styled.label`
+  display: flex;
   color: ${({ theme }) => theme.colors.gray0};
   text-align: center;
   font-size: 0.875rem;
   font-weight: bold;
 `;
 
+const RedCircle = styled.div`
+  width: 0.25rem;
+  height: 0.25rem;
+  background-color: ${({ theme }) => theme.colors.red0};
+  margin: 0 0.2rem;
+  border-radius: 50%;
+`;
 const InputBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -65,6 +74,7 @@ const InputBox = styled.div`
 
 const StyledInputWithButton = ({
   label,
+  isRequired,
   type,
   id,
   name,
@@ -75,7 +85,10 @@ const StyledInputWithButton = ({
 }: StyledInputWithButtonType) => {
   return (
     <InputBox>
-      <Label>{label}</Label>
+      <Label>
+        <p>{label}</p>
+        {isRequired && <RedCircle />}
+      </Label>
       <FlexBox>
         <Input
           type={type}
