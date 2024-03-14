@@ -50,10 +50,27 @@ const RedCircle = styled.div`
 const TextAreaBox = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
   width: 19.875rem;
   gap: 0.6rem;
+`;
+
+const ValueCnt = styled.div`
+  display: flex;
+  margin-left: auto;
+`;
+
+const Span = styled.span`
+  text-align: right;
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.colors.gray0};
+  font-weight: bold;
+`;
+
+const ColoredSpan = styled.span`
+  text-align: right;
+  font-size: 0.75rem;
+  color: ${({ theme }) => theme.colors.sub1};
+  font-weight: bold;
 `;
 
 const StyledTextArea = ({
@@ -84,6 +101,12 @@ const StyledTextArea = ({
         rows={rows}
         maxLength={maxLength}
       />
+      {maxLength && (
+        <ValueCnt>
+          <ColoredSpan>{value?.length}</ColoredSpan>
+          <Span>/{maxLength}</Span>
+        </ValueCnt>
+      )}
     </TextAreaBox>
   );
 };
