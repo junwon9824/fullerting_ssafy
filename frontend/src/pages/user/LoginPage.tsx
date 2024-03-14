@@ -3,7 +3,6 @@ import StyledInput from "../../components/common/Input/StyledInput";
 import useInput from "../../hooks/useInput";
 import { useNavigate } from "react-router-dom";
 import { Line } from "../../components/common/Line";
-import Button from "../../components/common/Button/primaryButton";
 import LargeButton from "../../components/common/Button/LargeButton";
 
 const MainBox = styled.main`
