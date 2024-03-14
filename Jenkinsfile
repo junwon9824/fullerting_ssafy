@@ -69,7 +69,7 @@ pipeline {
                     '''
                     // Docker Compose를 사용하여 서비스 빌드
                     sh 'pwd'
-                    sh 'docker-compose -f backend/docker-compose.yml build'
+                    sh 'docker-compose -f ./backend/docker-compose.yml build'
                 }
             }
         }
