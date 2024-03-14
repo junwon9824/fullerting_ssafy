@@ -3,7 +3,6 @@ import StyledInputWithButton from "../../components/common/Input/StyledInputWith
 import useInput from "../../hooks/useInput";
 import styled from "styled-components";
 import StyledInput from "../../components/common/Input/StyledInput";
-import StyledTextArea from "../../components/common/Input/StyledTextArea";
 import { TitleBar } from "../../components/common/Navigator/navigater";
 import { BottomButton } from "../../components/common/Button/LargeButton";
 
@@ -11,9 +10,10 @@ const MainBox = styled.main`
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   padding-top: 2.75rem;
+  padding-bottom: 6rem;
 `;
 
 const JoinBox = styled.div`
@@ -33,17 +33,8 @@ const JoinPage = () => {
   const [password, setPassword] = useInput("");
   const [verifyPassword, setVerifyPassword] = useInput("");
   const [isEmailVerify, setIsEmailVerify] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().slice(0, 10)
-  );
-  const [content, setContent] = useInput("");
 
   const handleAuthCodeSend = async () => {};
-
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(event.target.value);
-  };
-
   const handleConfirmClick = () => {};
 
   return (
@@ -95,23 +86,6 @@ const JoinPage = () => {
             name="password"
             placeholder="닉네임"
             onChange={setName}
-          />
-          <StyledInput
-            label="날짜"
-            type="date"
-            id="date"
-            name="date"
-            placeholder=""
-            value={selectedDate}
-            onChange={handleDateChange}
-          />
-          <StyledTextArea
-            label="내용"
-            name="content"
-            placeholder="내용을 입력해주세요."
-            value={content}
-            onChange={setContent}
-            maxLength={300}
           />
         </JoinBox>
       </MainBox>
