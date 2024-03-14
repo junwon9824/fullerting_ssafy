@@ -74,7 +74,7 @@ const InputBox = styled.div`
 
 const StyledInputWithButton = ({
   label,
-  isRequired,
+  isRequired = true,
   type,
   id,
   name,

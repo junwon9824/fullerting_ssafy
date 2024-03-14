@@ -75,7 +75,7 @@ const ColoredSpan = styled.span`
 
 const StyledTextArea = ({
   label,
-  isRequired,
+  isRequired = true,
   name,
   placeholder,
   value,
