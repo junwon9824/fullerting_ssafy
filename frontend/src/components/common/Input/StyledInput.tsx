@@ -28,7 +28,7 @@ const Input = styled.input`
   }
   font-size: 0.875rem;
   font-weight: bold;
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1rem;
 `;
 
 const Label = styled.label`
@@ -53,7 +53,7 @@ const InputBox = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   width: 19.875rem;
-  height: 4.5625rem;
+  gap: 0.6rem;
 `;
 
 const StyledInput = ({
