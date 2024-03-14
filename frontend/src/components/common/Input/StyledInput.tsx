@@ -9,12 +9,13 @@ interface StyledInputType {
   name: string;
   placeholder: string;
   value?: string;
+  min?: string;
+  max?: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
 }
 
 const Input = styled.input`
-  display: inline-flex;
   border: 2px solid ${({ theme }) => theme.colors.gray1};
   border-radius: 0.5rem;
   width: 19.875rem;
@@ -63,6 +64,8 @@ const StyledInput = ({
   name,
   placeholder,
   value,
+  min,
+  max,
   onChange,
   disabled,
 }: StyledInputType) => {
@@ -73,6 +76,8 @@ const StyledInput = ({
           type={type}
           id={id}
           name={name}
+          min={min}
+          max={max}
           placeholder={placeholder}
           onChange={onChange}
           value={value}
@@ -89,6 +94,8 @@ const StyledInput = ({
             type={type}
             id={id}
             name={name}
+            min={min}
+            max={max}
             placeholder={placeholder}
             onChange={onChange}
             value={value}
