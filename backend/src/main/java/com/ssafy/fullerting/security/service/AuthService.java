@@ -6,10 +6,13 @@ import com.ssafy.fullerting.security.model.dto.request.LoginRequest;
 import com.ssafy.fullerting.security.model.dto.response.IssuedToken;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
+import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.User;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,11 +46,17 @@ public class AuthService {
         throw new AuthException(AuthErrorCode.NOT_EXISTS);
     }
 
-
     public void logout(User user) {
         tokenService.removeToken(user.getId());
     }
 
+    // SecurityContext에 저장된 auth 객체 조조히
+    public Authentication getAuthenticationInContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("현재 쓰레드 Context에 저장된 Authentication : {} ", authentication.toString());
+        log.info("현재 쓰레드 Context에 저장된 principal : {} ", authentication.getName());
+        return authentication;
+    }
     public IssuedToken refresh(String refreshToken) {
         return tokenService.reIssueToken(refreshToken);
     }
