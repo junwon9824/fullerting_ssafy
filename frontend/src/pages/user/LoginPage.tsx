@@ -3,7 +3,7 @@ import StyledInput from "../../components/common/Input/StyledInput";
 import useInput from "../../hooks/useInput";
 import { useNavigate } from "react-router-dom";
 import { Line } from "../../components/common/Line";
-import LargeButton from "../../components/common/Button/LargeButton";
+import { LargeButton } from "../../components/common/Button/LargeButton";
 
 const MainBox = styled.main`
   display: flex;
@@ -83,7 +83,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const handleSignupClick = () => {
-    navigate("/signup");
+    navigate("/join");
   };
 
   const handleConfirmClick = () => {};
