@@ -7,7 +7,6 @@ import Home from "/src/assets/svg/home.svg";
 import Mypage from "/src/assets/svg/mypage.svg";
 import { useNavigate } from "react-router-dom";
 
-let svgArray: string[] = [Home, Cart, Chat, Diary, Mypage];
 interface DiaryTitleBarProps {
   title: string;
 }
@@ -53,8 +52,8 @@ const NavBox = styled.div`
 `;
 
 const SvgBox = styled.img`
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
   display: flex;
 `;
 const navItems: NavItem[] = [
