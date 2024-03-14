@@ -5,10 +5,16 @@ import Chat from "/src/assets/svg/chat.svg";
 import Diary from "/src/assets/svg/diary.svg";
 import Home from "/src/assets/svg/home.svg";
 import Mypage from "/src/assets/svg/mypage.svg";
+import Modify from "/src/assets/svg/modify.svg";
+import Delete from "/src/assets/svg/delete.svg";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface DiaryTitleBarProps {
   title: string;
+  showEdit?: boolean;
+  showBack?: boolean;
+  showTitle?: boolean;
 }
 
 interface NavItem {
@@ -56,6 +62,17 @@ const SvgBox = styled.img`
   height: 1.5rem;
   display: flex;
 `;
+
+const EditBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8125rem;
+  width: auto;
+  height: auto;
+  position: absolute;
+  right: 1.12rem;
+`;
 const navItems: NavItem[] = [
   { Icon: Home, path: "/main" },
   { Icon: Cart, path: "/cart" },
@@ -64,17 +81,30 @@ const navItems: NavItem[] = [
   { Icon: Mypage, path: "/mypage" },
 ];
 
-const DiaryTitleBar = ({ title }: DiaryTitleBarProps): JSX.Element => {
+const TitleBar = ({
+  title,
+  showEdit = true,
+  showBack = true,
+  showTitle = true,
+}: DiaryTitleBarProps): JSX.Element => {
   const navigate = useNavigate();
-  const onClickBack = (event: React.MouseEvent<HTMLDivElement>) => {
+  const onClickBack = () => {
     navigate(-1);
   };
   return (
     <Titlebox>
-      <Backsvgbox onClick={onClickBack}>
-        <img src={Arrow} alt="" />
-      </Backsvgbox>
-      {title}
+      {showBack && (
+        <Backsvgbox onClick={onClickBack}>
+          <img src={Arrow} alt="Back" />
+        </Backsvgbox>
+      )}
+      {showTitle && title}
+      {showEdit && (
+        <EditBox>
+          <img src={Modify} alt="Modify" />
+          <img src={Delete} alt="Delete" />
+        </EditBox>
+      )}
     </Titlebox>
   );
 };
@@ -100,4 +130,4 @@ const NavBar = (): JSX.Element => {
   );
 };
 
-export { DiaryTitleBar, NavBar };
+export { TitleBar, NavBar };
