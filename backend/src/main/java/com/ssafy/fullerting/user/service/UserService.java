@@ -2,10 +2,7 @@ package com.ssafy.fullerting.user.service;
 
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
-import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
 import com.ssafy.fullerting.user.model.entity.User;
-import com.ssafy.fullerting.user.model.entity.enums.UserRank;
-import com.ssafy.fullerting.user.model.entity.enums.UserRole;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -3,7 +3,6 @@ package com.ssafy.fullerting.security.controller;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.security.model.dto.request.LoginRequest;
 import com.ssafy.fullerting.security.service.AuthService;
-import com.ssafy.fullerting.user.model.dto.request.RefreshRequest;
 import com.ssafy.fullerting.user.model.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
