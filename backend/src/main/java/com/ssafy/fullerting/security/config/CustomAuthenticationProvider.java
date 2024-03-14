@@ -17,6 +17,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         // 인증 로직 정의
+
         return null;
     }
 

@@ -1,5 +1,9 @@
 package com.ssafy.fullerting.user.service;
 
+import com.ssafy.fullerting.security.exception.JwtErrorCode;
+import com.ssafy.fullerting.security.exception.JwtException;
+import com.ssafy.fullerting.security.model.entity.Token;
+import com.ssafy.fullerting.security.repository.TokenRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
@@ -18,6 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenRepository tokenRepository;
 
     public User createUserEntity(UserRegisterRequest userRegisterRequest) {
         String inputEmail = userRegisterRequest.getEmail();
@@ -43,8 +48,7 @@ public class UserService {
     }
 
     public UserResponse getUserInfo(User user) {
+        tokenRepository.findById(user.getId()).orElseThrow(() -> new JwtException(JwtErrorCode.NOT_EXISTS_TOKEN));
         return user.toResponse();
     }
-
-
 }
