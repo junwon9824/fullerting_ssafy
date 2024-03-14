@@ -1,4 +1,4 @@
-package com.ssafy.fullerting.exArticle.model.entity;
+package com.ssafy.fullerting.exArticle.model.entity.enums;
 
 public enum ExArticlePayment {
 

@@ -25,13 +25,9 @@ public class ExArticleController {
     @PostMapping("")
     @Operation(summary = "작물등록 ", description = "작물등록진행")
     public ResponseEntity<MessageUtils> register(@RequestBody ExArticleRegisterRequest exArticleRegisterRequest) {
-        exArticleService. register(exArticleRegisterRequest);
+        exArticleService.register(exArticleRegisterRequest);
         log.info("[New User]: {}", exArticleRegisterRequest.toString());
         return ResponseEntity.ok().body(MessageUtils.success());
     }
-
-
-
-
 
 }

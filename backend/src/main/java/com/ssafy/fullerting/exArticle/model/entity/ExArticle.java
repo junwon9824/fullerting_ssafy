@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.exArticle.model.entity;
 
+import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticlePayment;
 import com.ssafy.fullerting.user.model.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -53,7 +54,7 @@ public class ExArticle {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ex_article_type", nullable = false)
-    private ExArticlePayment  type;
+    private ExArticlePayment type;
 
     @Column(name = "ex_article_is_done", nullable = false)
     private boolean isDone;
