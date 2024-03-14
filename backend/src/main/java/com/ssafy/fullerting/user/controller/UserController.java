@@ -1,16 +1,10 @@
 package com.ssafy.fullerting.user.controller;
 
 import com.ssafy.fullerting.global.utils.MessageUtils;
-import com.ssafy.fullerting.security.service.AuthService;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
-import com.ssafy.fullerting.user.model.entity.User;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +32,8 @@ public class UserController {
 
     @GetMapping("/info")
     @Operation(summary = "유저정보조회", description = "현재 로그인 중인 유저의 상세 정보를 조회한다 <br> [헤더 Bearer: Access토큰 필요] <br> 토큰을 통해 유저정보를 조회한다")
-    public ResponseEntity<MessageUtils> getUserInfo(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok().body(MessageUtils.success(userService.getUserInfo(user)));
+    public ResponseEntity<MessageUtils> getUserInfo(@AuthenticationPrincipal CustomUser customUser) {
+        return ResponseEntity.ok().body(MessageUtils.success(userService.getUserInfo(customUser)));
     }
 
 

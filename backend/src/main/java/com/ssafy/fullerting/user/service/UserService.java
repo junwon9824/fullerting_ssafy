@@ -2,13 +2,12 @@ package com.ssafy.fullerting.user.service;
 
 import com.ssafy.fullerting.security.exception.JwtErrorCode;
 import com.ssafy.fullerting.security.exception.JwtException;
-import com.ssafy.fullerting.security.model.entity.Token;
 import com.ssafy.fullerting.security.repository.TokenRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.User;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.model.entity.enums.UserRank;
 import com.ssafy.fullerting.user.model.entity.enums.UserRole;
 import com.ssafy.fullerting.user.repository.UserRepository;
@@ -24,12 +23,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
 
-    public User createUserEntity(UserRegisterRequest userRegisterRequest) {
+    public CustomUser createUserEntity(UserRegisterRequest userRegisterRequest) {
         String inputEmail = userRegisterRequest.getEmail();
         String inputPassword = userRegisterRequest.getPassword();
         String inputNickname = userRegisterRequest.getNickname();
 
-        return User.builder()
+        return CustomUser.builder()
                 .email(inputEmail)
                 .password(passwordEncoder.encode(inputPassword))
                 .nickname(inputNickname)
@@ -47,8 +46,8 @@ public class UserService {
         userRepository.save(createUserEntity(request));
     }
 
-    public UserResponse getUserInfo(User user) {
-        tokenRepository.findById(user.getId()).orElseThrow(() -> new JwtException(JwtErrorCode.NOT_EXISTS_TOKEN));
-        return user.toResponse();
+    public UserResponse getUserInfo(CustomUser customUser) {
+        tokenRepository.findById(customUser.getId()).orElseThrow(() -> new JwtException(JwtErrorCode.NOT_EXISTS_TOKEN));
+        return customUser.toResponse();
     }
 }

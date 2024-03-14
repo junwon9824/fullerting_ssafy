@@ -3,7 +3,7 @@ package com.ssafy.fullerting.security.Filter;
 import com.ssafy.fullerting.security.util.JwtUtils;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
-import com.ssafy.fullerting.user.model.entity.User;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -52,10 +52,10 @@ public class JwtFilter extends OncePerRequestFilter {
         //엑세스 토큰 검증
         Jws<Claims> claimsJws = jwtUtils.validateAccessToken(accessToken);
         if(claimsJws != null){
-            User user = userRepository.findById(jwtUtils.getUserIdByAccessToken(accessToken))
+            CustomUser customUser = userRepository.findById(jwtUtils.getUserIdByAccessToken(accessToken))
                     .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(customUser, null, customUser.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         }
 
