@@ -20,7 +20,7 @@ const TextArea = styled.textarea`
   width: 19.875rem;
   height: 8.125rem;
   &:focus {
-    border-color: ${({ theme }) => theme.colors.primary};
+    border: 2px solid ${({ theme }) => theme.colors.primary};
   }
   &::placeholder {
     color: ${({ theme }) => theme.colors.gray1};
