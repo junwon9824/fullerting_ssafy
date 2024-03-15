@@ -10,7 +10,11 @@ import com.ssafy.fullerting.security.repository.TokenRepository;
 import com.ssafy.fullerting.security.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
 
 @Slf4j
 @Service
@@ -20,12 +24,16 @@ public class TokenService {
     private final JwtUtils jwtUtils;
     private final TokenRepository tokenRepository;
     private final InvalidTokenRepository invalidTokenRepository;
-    public IssuedToken issueToken(Long id, String email, String role) {
-        String accessToken = jwtUtils.issueAccessToken(id, email, role);
-        String refreshToken = jwtUtils.issueRefreshToken(id, email, role);
+    public IssuedToken issueToken(Authentication authentication) {
+
+        Object principal = authentication.getPrincipal();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        String accessToken = jwtUtils.issueAccessToken((String)principal, authorities);
+        String refreshToken = jwtUtils.issueRefreshToken((String) principal, authorities);
 
         // Redis에 토큰 저장
-        tokenRepository.save(new Token(id,accessToken, refreshToken));
+        tokenRepository.save(new Token(id, accessToken, refreshToken));
         return new IssuedToken(accessToken, refreshToken);
     }
 

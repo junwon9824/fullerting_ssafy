@@ -19,6 +19,6 @@ public class Token implements Serializable {
     private Long id;
 
     @Indexed
-    private String accessToken;
+//    private String accessToken;
     private String refreshToken;
 }

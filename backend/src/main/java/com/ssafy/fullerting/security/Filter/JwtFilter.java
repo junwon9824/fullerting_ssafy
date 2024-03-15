@@ -51,6 +51,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         //엑세스 토큰 검증
         Jws<Claims> claimsJws = jwtUtils.validateAccessToken(accessToken);
+
         if(claimsJws != null){
             CustomUser customUser = userRepository.findById(jwtUtils.getUserIdByAccessToken(accessToken))
                     .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));

@@ -32,16 +32,17 @@ public class AuthService {
         String inputPassword = loginRequest.getPassword();
 
         try {
-            // 인증 로직을 거친 뒤 인증 객체 생성
+            // CustomAuthenticationProvider를 호출해 인증로직을 수행한다
+            // 인증에 성공하면 인증에 성공한 인증 객체를 리턴한다
             Authentication authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(inputEmail, inputPassword));
-            // 해당 인증객체를 ContextHolder에 등록
+            // 성공한 인증객체를 ContextHolder에 등록
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("로그인 성공 객체정보 : {} ", authentication.toString());
 
-            // 토큰 만들어서 넘기기
-            // 같으면 토큰 반환
-//        IssuedToken issuedToken = tokenService.issueToken(userId, userEmail, userRole);
-//        log.info("[Login] UserId:{}, userEmail:{}, userRole:{}, token:{} ", userId, userEmail, userRole, issuedToken);
+            // 해당 인증 객체를 바탕으로 토큰을 발급한다
+//            IssuedToken issuedToken = tokenService.issueToken(authentication);
+//        log.info("[Login] UserId:{}, userEmail:{}, userRole:{}, token:{} ", usSSSSerId, userEmail, userRole, issuedToken);
 //        return issuedToken;
 //        }
 

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -48,6 +49,8 @@ public class CustomUser implements UserDetails{
 
     
     // 메서드 설정
+
+
     @Override
     public String getUsername() {
         return this.email;

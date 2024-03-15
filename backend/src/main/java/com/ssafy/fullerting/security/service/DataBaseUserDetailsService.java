@@ -25,9 +25,10 @@ public class DataBaseUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
         CustomUser customUser = userRepository.findByEmail(username).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-        return new User(customUser.getEmail(), customUser.getPassword(), getAuthorities(customUser));
+        return customUser;
+//        return new User(customUser.getEmail(), customUser.getPassword(), getAuthorities(customUser));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(CustomUser customUser) {

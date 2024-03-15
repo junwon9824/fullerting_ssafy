@@ -8,12 +8,14 @@ import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
 
 @Slf4j
@@ -48,15 +50,11 @@ public class JwtUtils {
     }
 
     // 엑세스 토큰 생성
-    public String issueAccessToken(Long id, String email, String role) {
-        // userId로 subject 설정
-        // 이메일하고 역할을 서브 클레임으로
-        // -> 나중에 사용자 식별자로 사용될 예정
-        log.info("Issue AccessToken for {}", id);
+    public String issueAccessToken(String email, Collection<? extends GrantedAuthority> authorities) {
+        // email로 subject 설정
+        log.info("Issue AccessToken for {}", email);
         return Jwts.builder()
-                .setSubject(String.valueOf(id))
-                .claim("email", email)
-                .claim("role", role)
+                .setSubject(email)
                 .setIssuedAt(getIssuedAt())
                 .setExpiration(getExpiredTime(jwtProperties.getAccesstime()))
                 .signWith(SignatureAlgorithm.HS256, accessSecretKey)
@@ -64,12 +62,11 @@ public class JwtUtils {
     }
 
     // 리프레시 토큰 생성
-    public String issueRefreshToken(Long id, String email, String role) {
-        log.info("Issue RefreshToken for {}", id);
+    public String issueRefreshToken(String email, Collection<? extends GrantedAuthority> authorities) {
+        log.info("Issue RefreshToken for {}", email);
         return Jwts.builder()
-                .setSubject(String.valueOf(id))
-                .claim("email", email)
-                .claim("role", role)
+                .setSubject(email)
+                .claim("authorities", authorities)
                 .setIssuedAt(getIssuedAt())
                 .setExpiration(getExpiredTime(jwtProperties.getRefreshtime()))
                 .signWith(SignatureAlgorithm.HS256, refreshSecretKey)
