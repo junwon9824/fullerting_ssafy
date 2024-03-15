@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 interface ButtonProps {
@@ -18,8 +17,8 @@ const ColorStyle = styled.button<ButtonProps>`
   width: ${(props: ButtonProps) => `${props.width}rem`};
   height: ${(props: ButtonProps) => `${props.height}rem`};
   font-weight: ${(props: ButtonProps) => `${props.fontWeight}`};
-  border-radius: 0.625rem;
-  font-size: 0.59375rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
   color: white;
 `;
 

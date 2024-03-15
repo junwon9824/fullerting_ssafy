@@ -257,7 +257,7 @@ const LoginPage = () => {
             onChange={setPassword}
           />
           <SignupButton onClick={handleSignupClick}>회원가입</SignupButton>
-          <LargeButton onClick={handleConfirmClick} children="확인" />
+          <LargeButton onClick={handleConfirmClick} text="확인" />
         </LoginInput>
       </LoginBox>
       <Line />
