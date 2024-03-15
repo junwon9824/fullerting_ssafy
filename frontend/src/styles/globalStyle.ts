@@ -42,6 +42,9 @@ html,
     cursor: pointer;
   }
 
+  hr {
+    border:0;
+  }
 `;
 
 export default GlobalStyle;
