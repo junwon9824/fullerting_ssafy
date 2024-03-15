@@ -34,8 +34,8 @@ public class AuthController {
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary="회원 로그아웃", description="로그인 상태에서 로그아웃한다. <br> [헤더 Bearer: Access토큰 필요] <br> 토큰을 기반으로 유저정보 검사")
-    public ResponseEntity<MessageUtils> logut(@AuthenticationPrincipal CustomUser customUser) {
-        authService.logout(customUser);
+    public ResponseEntity<MessageUtils> logut() {
+        authService.logout();
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 

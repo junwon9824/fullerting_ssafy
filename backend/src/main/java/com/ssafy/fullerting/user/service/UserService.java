@@ -12,9 +12,15 @@ import com.ssafy.fullerting.user.model.entity.enums.UserRank;
 import com.ssafy.fullerting.user.model.entity.enums.UserRole;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -46,7 +52,11 @@ public class UserService {
         userRepository.save(createUserEntity(request));
     }
 
-    public UserResponse getUserInfo(CustomUser customUser) {
+    public UserResponse getUserInfo() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = (String) principal;
+
+        CustomUser customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         tokenRepository.findById(customUser.getId()).orElseThrow(() -> new JwtException(JwtErrorCode.NOT_EXISTS_TOKEN));
         return customUser.toResponse();
     }

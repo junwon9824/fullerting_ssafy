@@ -45,16 +45,18 @@ public class JwtUtils {
 
     // 토큰만료시간
     public Date getExpiredTime(Long period) {
-        log.info("Token lifetime = {}", period);
+        log.info("Token : lifetime = {}", period);
         return Date.from(ZonedDateTime.now(zoneId).plus(Duration.ofMillis(period)).toInstant());
     }
 
     // 엑세스 토큰 생성
-    public String issueAccessToken(String email, Collection<? extends GrantedAuthority> authorities) {
+    public String issueAccessToken(String email, Long userId ,Collection<? extends GrantedAuthority> authorities) {
         // email로 subject 설정
-        log.info("Issue AccessToken for {}", email);
+        log.info("Token : Issue AccessToken for {}", email);
         return Jwts.builder()
                 .setSubject(email)
+                .claim("userId", userId )
+                .claim("authorities", authorities)
                 .setIssuedAt(getIssuedAt())
                 .setExpiration(getExpiredTime(jwtProperties.getAccesstime()))
                 .signWith(SignatureAlgorithm.HS256, accessSecretKey)
@@ -62,10 +64,11 @@ public class JwtUtils {
     }
 
     // 리프레시 토큰 생성
-    public String issueRefreshToken(String email, Collection<? extends GrantedAuthority> authorities) {
-        log.info("Issue RefreshToken for {}", email);
+    public String issueRefreshToken(String email, Long userId ,Collection<? extends GrantedAuthority> authorities) {
+        log.info("Token : Issue RefreshToken for {}", email);
         return Jwts.builder()
                 .setSubject(email)
+                .claim("userId", userId )
                 .claim("authorities", authorities)
                 .setIssuedAt(getIssuedAt())
                 .setExpiration(getExpiredTime(jwtProperties.getRefreshtime()))
@@ -76,6 +79,7 @@ public class JwtUtils {
     // Access 토큰 검증
     public Jws<Claims> validateAccessToken(final String token) {
         try {
+            // 토큰의 서명을 검증하고 클레임 추출
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(token);
             invalidTokenRepository.findById(token).ifPresent(value -> {
                 throw new JwtException(JwtErrorCode.TOKEN_SIGNATURE_ERROR);
@@ -121,14 +125,14 @@ public class JwtUtils {
 
     // claim -> user의 id, email, role
     // 재발급 할 때 기존 토큰에서 위 정보 가져올 수 있도록 메서드 만들어두기
-    public Long getUserIdByAccessToken(String accessToken){
-        return Long.valueOf(
-                validateAccessToken(accessToken).getBody().getSubject()
-        );
-    }
+//    public Long getUserIdByAccessToken(String accessToken){
+//        return Long.valueOf(
+//                validateAccessToken(accessToken).getBody().get("userId")
+//        );
+//    }
 
     public String getEmailByAccessToken(String accessToken) {
-        return validateAccessToken(accessToken).getBody().get("email", String.class);
+        return validateAccessToken(accessToken).getBody().getSubject();
     }
 
     public String getRoleByAccessToken(String accessToken) {
@@ -143,7 +147,7 @@ public class JwtUtils {
                         .build()
                         .parseClaimsJws(refreshToken)
                         .getBody()
-                        .getSubject()
+                        .get("userId", Long.class)
         );
     }
 
@@ -153,7 +157,7 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(refreshToken)
                 .getBody()
-                .get("email", String.class);
+                .getSubject();
     }
 
 

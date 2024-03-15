@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisHash;
 @Getter
 @AllArgsConstructor
 @Builder
-@RedisHash(value = "blackList", timeToLive = 86400)
+@RedisHash(value = "blackList", timeToLive = 1 * 60 * 60 * 1000)
 public class InvalidToken {
     @Id
     private String accessToken;

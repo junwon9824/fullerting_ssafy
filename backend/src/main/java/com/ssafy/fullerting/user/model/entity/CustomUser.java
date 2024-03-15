@@ -56,6 +56,7 @@ public class CustomUser implements UserDetails{
         return this.email;
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(this.role));

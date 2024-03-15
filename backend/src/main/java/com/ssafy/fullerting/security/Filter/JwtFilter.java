@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.security.Filter;
 
+import com.ssafy.fullerting.security.model.entity.CustomAuthenticationToken;
 import com.ssafy.fullerting.security.util.JwtUtils;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -51,13 +53,18 @@ public class JwtFilter extends OncePerRequestFilter {
 
         //엑세스 토큰 검증
         Jws<Claims> claimsJws = jwtUtils.validateAccessToken(accessToken);
-
         if(claimsJws != null){
-            CustomUser customUser = userRepository.findById(jwtUtils.getUserIdByAccessToken(accessToken))
+            CustomUser customUser = userRepository.findById(claimsJws.getBody().get("userId", Long.class))
                     .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(customUser, null, customUser.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            CustomAuthenticationToken customAuthenticationToken =
+                    new CustomAuthenticationToken(customUser.getEmail(),
+                            customUser.getId() ,
+                            null,
+                            customUser.getAuthorities()
+                    ); // principal,userid,password,authorities 가 들어감
+            SecurityContextHolder.getContext().setAuthentication(customAuthenticationToken);
+            SecurityContextHolder.getContext().toString();
         }
 
         filterChain.doFilter(request, response);

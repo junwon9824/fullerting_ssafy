@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 
-
+@Getter
 public class CustomAuthenticationToken extends UsernamePasswordAuthenticationToken {
     // userId 추가
     private Long userId;
@@ -29,5 +29,10 @@ public class CustomAuthenticationToken extends UsernamePasswordAuthenticationTok
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "; userId=" + this.userId;
     }
 }
