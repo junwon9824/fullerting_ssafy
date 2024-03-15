@@ -13,5 +13,4 @@ public class DealResponse {
 
     private ExArticleResponse exArticleResponse;
     
-
 }

@@ -41,10 +41,10 @@ pipeline {
                         // Gradle 설정 추가
                         // sh "echo 'org.gradle.java.home=${ORG_GRADLE_JAVA_HOME}' > gradle.properties"
 
-                        //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
-                        //docker에 동적으로 tag를 지정하기 위해 사용했다.
-                        // sh "echo TAG=$version >> .env"
-                        // sh 'cat .env'
+                    //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
+                    //docker에 동적으로 tag를 지정하기 위해 사용했다.
+                    // sh "echo TAG=$version >> .env"
+                    // sh 'cat .env'
                     }
                 }
             }
@@ -71,7 +71,7 @@ pipeline {
                     // sh 'pwd'
                     // sh 'docker-compose -f ./backend/docker-compose.yml build'
 
-                      dir('backend') {
+                    dir('backend') {
                         // backend 디렉토리 내에서 명령을 실행합니다.
                         sh 'pwd'  // 현재 디렉토리 위치 출력
                         sh 'ls -al'  // 디렉토리 내의 파일 목록 출력
@@ -93,7 +93,7 @@ pipeline {
         stage('Tag and Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-                  
+                    sh 'pwd'
                     sh 'docker-compose -f docker-compose.yml push'
                 }
             }
