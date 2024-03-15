@@ -16,6 +16,7 @@ const router = createBrowserRouter([
         >
           풀러팅
         </div>
+
         <div style={{ fontSize: "0.875rem", fontWeight: "700" }}>
           Bold 메인임!!!!
         </div>
@@ -27,7 +28,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/test",
-    element: <div>test</div>,
+    element: (
+      <>
+        <TitleBar title="작물일지" />
+        <NavBar />
+      </>
+    ),
   },
   {
     path: "/login",
