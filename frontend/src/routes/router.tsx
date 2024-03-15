@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-import { TitleBar } from "../components/common/Navigator/navigater";
-import { NavBar } from "../components/common/Navigator/navigater";
+import LoginPage from "../pages/user/LoginPage";
+import JoinPage from "../pages/user/JoinPage";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -33,6 +34,14 @@ const router = createBrowserRouter([
         <NavBar />
       </>
     ),
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/join",
+    element: <JoinPage />,
   },
 ]);
 

@@ -21,26 +21,34 @@ interface NavItem {
   Icon: string;
   path: string;
 }
-const Titlebox = styled.div`
+
+const TopBox = styled.div`
   width: 100%;
   height: 2.75rem;
-  position: relative;
+  /* position: relative; */
   align-items: center;
   text-align: center;
   justify-content: center;
   display: flex;
   font-size: 1rem;
-  font-style: normal;
   font-weight: bold;
+  position: fixed;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
-const Backsvgbox = styled.div`
-  width: 1.5rem;
+const TitleBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 22.5rem;
+`;
+const BackSvgBox = styled.div`
+  width: 4.8rem;
   height: 1.5rem;
   justify-content: center;
   align-items: center;
-  left: 1.31rem;
+  /* left: 1.31rem; */
   display: flex;
-  position: absolute;
+  /* position: absolute; */
 `;
 
 const NavBox = styled.div`
@@ -65,13 +73,13 @@ const SvgBox = styled.img`
 
 const EditBox = styled.div`
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+
   align-items: center;
-  gap: 0.8125rem;
-  width: auto;
-  height: auto;
-  position: absolute;
-  right: 1.12rem;
+  width: 4.8rem;
+  gap: 0.4rem;
+  /* position: absolute; */
+  /* right: 1.12rem; */
 `;
 const navItems: NavItem[] = [
   { Icon: Home, path: "/main" },
@@ -83,7 +91,7 @@ const navItems: NavItem[] = [
 
 const TitleBar = ({
   title,
-  showEdit = true,
+  showEdit = false,
   showBack = true,
   showTitle = true,
 }: DiaryTitleBarProps): JSX.Element => {
@@ -92,20 +100,24 @@ const TitleBar = ({
     navigate(-1);
   };
   return (
-    <Titlebox>
-      {showBack && (
-        <Backsvgbox onClick={onClickBack}>
-          <img src={Arrow} alt="Back" />
-        </Backsvgbox>
-      )}
-      {showTitle && title}
-      {showEdit && (
+    <TopBox>
+      <TitleBox>
+        {showBack && (
+          <BackSvgBox onClick={onClickBack}>
+            <img src={Arrow} alt="Back" />
+          </BackSvgBox>
+        )}
+        <span>{showTitle && title}</span>
         <EditBox>
-          <img src={Modify} alt="Modify" />
-          <img src={Delete} alt="Delete" />
+          {showEdit && (
+            <>
+              <img src={Modify} alt="Modify" />
+              <img src={Delete} alt="Delete" />
+            </>
+          )}
         </EditBox>
-      )}
-    </Titlebox>
+      </TitleBox>
+    </TopBox>
   );
 };
 
