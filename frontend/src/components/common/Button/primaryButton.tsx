@@ -18,8 +18,8 @@ const ColorStyle = styled.button<ButtonProps>`
   width: ${(props: ButtonProps) => `${props.width}rem`};
   height: ${(props: ButtonProps) => `${props.height}rem`};
   font-weight: ${(props: ButtonProps) => `${props.fontWeight}`};
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 0.625rem;
+  font-size: 0.59375rem;
   color: white;
 `;
 
