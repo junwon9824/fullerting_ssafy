@@ -9,7 +9,7 @@ interface ButtonProps {
   fontSize?: string;
   fontWeight?: string;
   padding?: string;
-  children?: React.ReactNode;
+  text?: string;
   color?: string;
 }
 
@@ -33,7 +33,7 @@ const Button = (props: ButtonProps) => {
         fontWeight={props.fontWeight}
         backgroundColor={props.backgroundColor}
       >
-        {props.children}
+        {props.text}
       </ColorStyle>
     </>
   );

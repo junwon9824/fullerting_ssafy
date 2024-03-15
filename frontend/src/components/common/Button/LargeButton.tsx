@@ -14,10 +14,10 @@ const ButtonBox = styled.div`
 
 interface LargeButtonType {
   onClick: () => void;
-  children: string;
+  text: string;
 }
 
-const LargeButton = ({ onClick, children }: LargeButtonType) => {
+const LargeButton = ({ onClick, text }: LargeButtonType) => {
   return (
     <Button
       width={19.875}
@@ -26,12 +26,12 @@ const LargeButton = ({ onClick, children }: LargeButtonType) => {
       backgroundColor="#A0D8B3"
       onClick={onClick}
       fontWeight="bold"
-      children={children}
+      text={text}
     />
   );
 };
 
-const BottomButton = ({ onClick, children }: LargeButtonType) => {
+const BottomButton = ({ onClick, text }: LargeButtonType) => {
   return (
     <ButtonBox>
       <Button
@@ -41,7 +41,7 @@ const BottomButton = ({ onClick, children }: LargeButtonType) => {
         backgroundColor="#A0D8B3"
         onClick={onClick}
         fontWeight="bold"
-        children={children}
+        text={text}
       />
     </ButtonBox>
   );

@@ -16,7 +16,17 @@ interface NavItem {
 }
 
 const NavBox = styled.div`
+  display: flex;
   width: 100%;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  background-color: ${({ theme }) => theme.colors.white};
+`;
+
+const NavInnerBox = styled.div`
+  width: 22.5rem;
   height: 3.625rem;
   justify-content: space-between;
   border-radius: 0.9375rem 0.9375rem 0rem 0rem;
@@ -27,12 +37,12 @@ const NavBox = styled.div`
   padding-left: 2rem;
   padding-right: 2rem;
   position: absolute;
+  background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const SvgBox = styled.img`
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
+  height: 1.25rem;
+  cursor: pointer;
 `;
 
 interface TopBarType {
@@ -174,16 +184,18 @@ const NavBar = (): JSX.Element => {
   };
   return (
     <NavBox>
-      {navItems.map((item, index) => (
-        <SvgBox
-          key={index}
-          src={item.Icon}
-          alt="svg"
-          onClick={() => {
-            onNavClick(item.path);
-          }}
-        />
-      ))}
+      <NavInnerBox>
+        {navItems.map((item, index) => (
+          <SvgBox
+            key={index}
+            src={item.Icon}
+            alt="svg"
+            onClick={() => {
+              onNavClick(item.path);
+            }}
+          />
+        ))}
+      </NavInnerBox>
     </NavBox>
   );
 };
