@@ -93,6 +93,7 @@ pipeline {
         stage('Tag and Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'cd backend'
                     sh 'pwd'
                     sh 'docker-compose -f docker-compose.yml push'
                 }
