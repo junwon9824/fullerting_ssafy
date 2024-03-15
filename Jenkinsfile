@@ -93,7 +93,8 @@ pipeline {
         stage('Tag and Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh 'docker-compose -f back/docker-compose.yml push'
+                  
+                    sh 'docker-compose -f docker-compose.yml push'
                 }
             }
         }
@@ -112,7 +113,7 @@ pipeline {
                     component.each { entry ->
                         if (entry.value && entry.key != 'redis') {
                             def var = entry.key
-                            sh "docker-compose -f back/docker-compose.yml -p develop-server pull ${var.toLowerCase()}"
+                            sh "docker-compose -f docker-compose.yml -p develop-server pull ${var.toLowerCase()}"
                         }
                     }
                 }
@@ -126,11 +127,11 @@ pipeline {
                         if (entry.value) {
                             def var = entry.key
                             try {
-                                sh "docker-compose -f back/docker-compose.yml -p develop-server up -d ${var.toLowerCase()}"
+                                sh "docker-compose -f docker-compose.yml -p develop-server up -d ${var.toLowerCase()}"
                             } catch (Exception e) {
                                 // 'docker compose up -d' 명령이 실패한 경우
                                 echo "Failed to up. Starting 'docker compose start'..."
-                                sh "docker-compose -f back/docker-compose.yml -p develop-server restart ${var.toLowerCase()}"
+                                sh "docker-compose -f docker-compose.yml -p develop-server restart ${var.toLowerCase()}"
                             }
                         }
                     }
