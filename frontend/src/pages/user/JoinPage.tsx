@@ -1,30 +1,13 @@
 import { useState } from "react";
 import StyledInputWithButton from "../../components/common/Input/StyledInputWithButton";
 import useInput from "../../hooks/useInput";
-import styled from "styled-components";
 import StyledInput from "../../components/common/Input/StyledInput";
 import { TopBar } from "../../components/common/Navigator/navigator";
 import { BottomButton } from "../../components/common/Button/LargeButton";
-
-const MainBox = styled.main`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  padding-top: 3.125rem;
-  padding-bottom: 6rem;
-`;
-
-const InnerBox = styled.div`
-  display: flex;
-  width: 19.875rem;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1.56rem;
-  padding: 1.12rem 0;
-`;
+import {
+  LayoutInnerBox,
+  LayoutMainBox,
+} from "../../components/common/Layout/Box";
 
 const JoinPage = () => {
   const [name, setName] = useInput("");
@@ -40,8 +23,8 @@ const JoinPage = () => {
   return (
     <>
       <TopBar title="회원가입" />
-      <MainBox>
-        <InnerBox>
+      <LayoutMainBox>
+        <LayoutInnerBox>
           <StyledInputWithButton
             label="이메일"
             type="email"
@@ -87,9 +70,9 @@ const JoinPage = () => {
             placeholder="닉네임"
             onChange={setName}
           />
-        </InnerBox>
-      </MainBox>
-      <BottomButton onClick={handleConfirmClick} children="확인" />
+        </LayoutInnerBox>
+      </LayoutMainBox>
+      <BottomButton onClick={handleConfirmClick} text="확인" />
     </>
   );
 };
