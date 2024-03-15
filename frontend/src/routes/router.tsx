@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "../pages/user/LoginPage";
 import JoinPage from "../pages/user/JoinPage";
+import TestPage from "../pages/user/test";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
     path: "/join",
     element: <JoinPage />,
   },
+  // {
+  //   path: "/test",
+  //   element: <TestPage />,
+  // },
 ]);
 
 export default router;
