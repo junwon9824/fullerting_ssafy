@@ -3,6 +3,7 @@ import LoginPage from "../pages/user/LoginPage";
 import JoinPage from "../pages/user/JoinPage";
 import CropPage from "../pages/diary/CropPage";
 import MainPage from "../pages/MainPage";
+import TradePage from "../pages/trade/trade";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: "/diary",
     element: <CropPage />,
+  },
+  {
+    path: "/trade",
+    element: <TradePage />,
   },
 ]);
 
