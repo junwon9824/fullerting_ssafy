@@ -6,9 +6,10 @@ import com.ssafy.fullerting.security.model.entity.Token;
 import com.ssafy.fullerting.security.repository.TokenRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
+
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.User;
+ import com.ssafy.fullerting.user.model.entity.User;
 import com.ssafy.fullerting.user.model.entity.enums.UserRank;
 import com.ssafy.fullerting.user.model.entity.enums.UserRole;
 import com.ssafy.fullerting.user.repository.UserRepository;
