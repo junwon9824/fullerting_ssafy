@@ -35,10 +35,10 @@ const router = createBrowserRouter([
     path: "/join",
     element: <JoinPage />,
   },
-  {
-    path: "/test",
-    element: <TestPage />,
-  },
+  // {
+  //   path: "/test",
+  //   element: <TestPage />,
+  // },
 ]);
 
 export default router;
