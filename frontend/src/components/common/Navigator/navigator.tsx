@@ -10,13 +10,6 @@ import Delete from "/src/assets/svg/delete.svg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-interface DiaryTitleBarProps {
-  title: string;
-  showEdit?: boolean;
-  showBack?: boolean;
-  showTitle?: boolean;
-}
-
 interface NavItem {
   Icon: string;
   path: string;
@@ -77,6 +70,7 @@ const BackSvgBox = styled.div`
   position: absolute;
   top: 0.8125rem;
   left: 0rem;
+  cursor: pointer;
 `;
 const EditBox = styled.div`
   display: flex;
@@ -86,6 +80,9 @@ const EditBox = styled.div`
   top: 0.8125rem;
 `;
 
+const EditButton = styled.button``;
+const DeleteButton = styled.button``;
+
 const TopBar = ({
   title,
   showEdit = false,
@@ -93,9 +90,15 @@ const TopBar = ({
   showTitle = true,
 }: TopBarType) => {
   const navigate = useNavigate();
+
   const onClickBack = () => {
     navigate(-1);
   };
+
+  const onClickEdit = () => {};
+
+  const onClickDelete = () => {};
+
   return (
     <TopBox>
       <TopInnerBox>
@@ -118,7 +121,7 @@ const TopBar = ({
         <TitleBox>{showTitle && title}</TitleBox>
         {showEdit && (
           <EditBox>
-            <>
+            <EditButton onClick={onClickEdit}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -131,6 +134,8 @@ const TopBar = ({
                   fill="black"
                 />
               </svg>
+            </EditButton>
+            <DeleteButton onClick={onClickDelete}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -146,7 +151,7 @@ const TopBar = ({
                   stroke-linejoin="round"
                 />
               </svg>
-            </>
+            </DeleteButton>
           </EditBox>
         )}
       </TopInnerBox>
