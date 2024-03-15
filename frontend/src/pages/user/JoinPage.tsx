@@ -3,7 +3,7 @@ import StyledInputWithButton from "../../components/common/Input/StyledInputWith
 import useInput from "../../hooks/useInput";
 import styled from "styled-components";
 import StyledInput from "../../components/common/Input/StyledInput";
-import { TitleBar } from "../../components/common/Navigator/navigater";
+import { TopBar } from "../../components/common/Navigator/navigator";
 import { BottomButton } from "../../components/common/Button/LargeButton";
 
 const MainBox = styled.main`
@@ -12,11 +12,11 @@ const MainBox = styled.main`
   flex-direction: column;
   height: 100%;
   width: 100%;
-  padding-top: 2.75rem;
+  padding-top: 3.125rem;
   padding-bottom: 6rem;
 `;
 
-const JoinBox = styled.div`
+const InnerBox = styled.div`
   display: flex;
   width: 19.875rem;
   flex-direction: column;
@@ -39,9 +39,9 @@ const JoinPage = () => {
 
   return (
     <>
-      <TitleBar title="회원가입" />
+      <TopBar title="회원가입" />
       <MainBox>
-        <JoinBox>
+        <InnerBox>
           <StyledInputWithButton
             label="이메일"
             type="email"
@@ -87,7 +87,7 @@ const JoinPage = () => {
             placeholder="닉네임"
             onChange={setName}
           />
-        </JoinBox>
+        </InnerBox>
       </MainBox>
       <BottomButton onClick={handleConfirmClick} children="확인" />
     </>
