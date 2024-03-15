@@ -119,6 +119,24 @@ pipeline {
                 }
             }
         }
+        
+        stage('Down') {
+            steps {
+                script {
+                    component.each { entry ->
+                        if (entry.value) {
+                            def var = entry.key
+                            try {
+                                sh "docker-compose -f backend/docker-compose.yml -p develop-server down ${var.toLowerCase()}"
+                            } catch (Exception e) {
+                                echo "Failed to down ${var.toLowerCase()}."
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
         stage('Up') {
             steps {
