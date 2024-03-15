@@ -27,15 +27,6 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/test",
-    element: (
-      <>
-        <TitleBar title="작물일지" />
-        <NavBar />
-      </>
-    ),
-  },
-  {
     path: "/login",
     element: <LoginPage />,
   },
