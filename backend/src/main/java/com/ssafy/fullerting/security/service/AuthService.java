@@ -1,6 +1,5 @@
 package com.ssafy.fullerting.security.service;
 
-import com.ssafy.fullerting.security.config.CustomAuthenticationProvider;
 import com.ssafy.fullerting.security.exception.AuthErrorCode;
 import com.ssafy.fullerting.security.exception.AuthException;
 import com.ssafy.fullerting.security.model.dto.request.LoginRequest;
@@ -24,13 +23,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-    private final DataBaseUserDetailsService dataBaseUserDetailsService;
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
-    public IssuedToken login(LoginRequest loginRequest) {
+    public String login(LoginRequest loginRequest) {
         // 사용자가 입력한 정보
         String inputEmail = loginRequest.getEmail();
         String inputPassword = loginRequest.getPassword();
@@ -41,20 +37,19 @@ public class AuthService {
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(inputEmail, inputPassword));
             // 해당 인증객체를 ContextHolder에 등록
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (AuthenticationException e) {
-            throw new UserException(UserErrorCode.ACCESS_DENIED);
-        }
 
-
-        // 사용자가 입력한 정보를 바탕으로 DB에서 데이터 찾고 없으면 오류 반환
-
-
-        // 같으면 토큰 반환
+            // 토큰 만들어서 넘기기
+            // 같으면 토큰 반환
 //        IssuedToken issuedToken = tokenService.issueToken(userId, userEmail, userRole);
 //        log.info("[Login] UserId:{}, userEmail:{}, userRole:{}, token:{} ", userId, userEmail, userRole, issuedToken);
 //        return issuedToken;
 //        }
-        throw new AuthException(AuthErrorCode.NOT_EXISTS);
+
+        } catch (AuthenticationException e) {
+            throw new UserException(UserErrorCode.ACCESS_DENIED);
+        }
+
+        return "성공";
     }
 
     public void logout(CustomUser customUser) {

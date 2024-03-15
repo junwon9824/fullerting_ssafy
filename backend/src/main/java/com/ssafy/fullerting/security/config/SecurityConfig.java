@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,14 +23,14 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.util.Collections;
 
 @RequiredArgsConstructor
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @Configuration
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final AuthFailureHandler authFailureHandler;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
-    private final CustomAuthenticationProvider customAuthenticationProvider;
+//    private final CustomAuthenticationProvider customAuthenticationProvider;
 
     // 패스워드 암호화 방식
     @Bean
@@ -68,14 +67,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 커스터마이징 인증로직 설정
+    // authenticationManager 빈으로 등록
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder auth) throws Exception {
-        // CustomAuthenticationProvider를 첫 번째 인증 제공자로 추가합니다.
-        auth.authenticationProvider(customAuthenticationProvider);
-
-        // AuthenticationManagerBuilder로부터 AuthenticationManager 인스턴스를 빌드합니다.
-        return auth.build();
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     // CORS 설정
