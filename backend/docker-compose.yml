@@ -19,7 +19,8 @@ services:
     restart: unless-stopped
     depends_on:
       - back
-      - 
+
+      
   back:
     container_name: back
     image: junwon1131/s10c102-back:latest
