@@ -2,7 +2,6 @@ def component = [
     // 'front': true,
     'back': true,
     'nginx': true,
-    'redis': true,
 ]
 
 pipeline {
