@@ -31,7 +31,13 @@ public class DealController {
 
     }
 
-
+    @GetMapping("/test")
+    @Operation(summary = "가격 제안조회하기 ", description = "가격 제안 조회 하기")
+    public ResponseEntity<MessageUtils> test(@AuthenticationPrincipal User user) {
+        log.info("[show deal]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success());
+ 
+    }
 
 
 }
