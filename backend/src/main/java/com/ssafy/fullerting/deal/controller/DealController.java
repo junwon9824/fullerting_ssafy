@@ -36,7 +36,7 @@ public class DealController {
     public ResponseEntity<MessageUtils> test(@AuthenticationPrincipal User user) {
         log.info("[show deal]: {}");
         return ResponseEntity.ok().body(MessageUtils.success());
-
+ 
     }
 
 
