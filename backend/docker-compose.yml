@@ -17,7 +17,9 @@ services:
       - /etc/letsencrypt/live/j10c102.p.ssafy.io/fullchain.pem:/etc/ssl/certs/fullchain.pem
       - /etc/letsencrypt/live/j10c102.p.ssafy.io/privkey.pem:/etc/ssl/private/privkey.pem
     restart: unless-stopped
-
+    depends_on:
+      - back
+      - 
   back:
     container_name: back
     image: junwon1131/s10c102-back:latest
