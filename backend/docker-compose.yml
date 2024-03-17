@@ -21,6 +21,19 @@ services:
       - back
 
 
+  front:  # 프론트엔드 서비스 정의
+    container_name: front
+    image: junwon1131/s10c102-front:latest  # 프론트엔드 이미지 설정
+    build:
+      context: ./frontend  # 프론트엔드 소스 코드 경로
+      dockerfile: Dockerfile  # 사용할 Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # 프론트엔드 포트 설정
+    networks:
+      - jenkins-network
+
+
   back:
     container_name: back
     image: junwon1131/s10c102-back:latest
