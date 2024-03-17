@@ -44,6 +44,14 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+
+//	implementation 'org.springframework:spring-messaging:5.3.14'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+//	implementation 'org.springframework:spring-websocket:5.3.14'
+
+
+
 }
 
 tasks.named('test') {
