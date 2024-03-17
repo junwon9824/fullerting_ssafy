@@ -20,6 +20,8 @@ services:
     depends_on:
       - back
       - front
+    networks:
+      - jenkins-network
 
   front:
     container_name: front
