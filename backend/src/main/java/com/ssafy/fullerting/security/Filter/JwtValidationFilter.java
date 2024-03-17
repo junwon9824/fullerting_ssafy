@@ -57,9 +57,6 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
         //토큰 있으면 검증
         if (claimsJws != null) {
-//            CustomUser customUser = userRepository.findById(claimsJws.getBody().get("userId", Long.class))
-//                    .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-//
             // 각 권한 문자열을 SimpleGrantedAuthority 객체로 변환
             List<String> roles = claimsJws.getBody().get("authorities", List.class);
             Collection<GrantedAuthority> authorities = roles.stream()

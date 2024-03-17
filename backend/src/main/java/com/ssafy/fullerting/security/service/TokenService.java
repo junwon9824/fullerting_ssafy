@@ -73,6 +73,7 @@ public class TokenService {
 
     // 유효기간 지난 access 토큰 refresh 토큰과 비교해서 재발행
     public IssuedToken reIssueAccessTokenByRefreshToken(String refreshToken) {
+        // 미구현
         // EXPIRED_TOKEN
 
         if (jwtUtils.validateRefreshToken(refreshToken)) {
