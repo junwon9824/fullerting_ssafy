@@ -1,6 +1,6 @@
 package com.ssafy.fullerting.badge.model.entity;
 
-import com.ssafy.fullerting.user.model.entity.User;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,7 +13,7 @@ public class MyBadge {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private CustomUser customUser;
 
 
     @OneToOne

@@ -1,15 +1,18 @@
 package com.ssafy.fullerting.security.config;
 
 
-import com.ssafy.fullerting.security.Filter.JwtFilter;
+import com.ssafy.fullerting.security.Filter.JwtValidationFilter;
 import com.ssafy.fullerting.security.handler.AuthFailureHandler;
 import com.ssafy.fullerting.security.handler.ExceptionHandlerFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,13 +23,14 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.util.Collections;
 
 @RequiredArgsConstructor
-@EnableWebSecurity
+@EnableWebSecurity(debug = false)
 @Configuration
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter;
+    private final JwtValidationFilter jwtValidationFilter;
     private final AuthFailureHandler authFailureHandler;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
+//    private final CustomAuthenticationProvider customAuthenticationProvider;
 
     // 패스워드 암호화 방식
     @Bean
@@ -37,6 +41,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+
                 // cors 설정
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfig()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -56,11 +61,23 @@ public class SecurityConfig {
                         exceptionHandling
                                 .authenticationEntryPoint(authFailureHandler)
                 )
-                // JWT 필터
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(exceptionHandlerFilter, JwtFilter.class);
+//                // 토큰 사용을 위해 JSESSIONID 발급 중지
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .addFilterBefore(new SecurityContextPersistenceFilter(), DisableEncodeUrlFilter.class)
+        // JWT 필터
+                .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, JwtValidationFilter.class);
+
+
 
         return http.build();
+    }
+
+    // authenticationManager 빈으로 등록
+    @Bean
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     // CORS 설정
@@ -75,4 +92,5 @@ public class SecurityConfig {
             return config;
         };
     }
+
 }

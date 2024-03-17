@@ -1,53 +1,86 @@
 package com.ssafy.fullerting.security.service;
 
-import com.ssafy.fullerting.security.exception.AuthErrorCode;
-import com.ssafy.fullerting.security.exception.AuthException;
 import com.ssafy.fullerting.security.model.dto.request.LoginRequest;
 import com.ssafy.fullerting.security.model.dto.response.IssuedToken;
+import com.ssafy.fullerting.security.model.entity.CustomAuthenticationToken;
+import com.ssafy.fullerting.security.util.JwtUtils;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
-import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.User;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class AuthService {
+
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
+    private final JwtUtils jwtUtils;
 
     public IssuedToken login(LoginRequest loginRequest) {
         // 사용자가 입력한 정보
         String inputEmail = loginRequest.getEmail();
         String inputPassword = loginRequest.getPassword();
 
-        // 사용자가 입력한 정보를 바탕으로 DB에서 데이터 찾고 없으면 오류 반환
-        User user = userRepository.findByEmail(inputEmail).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+//        Authentication currAuth = SecurityContextHolder.getContext().getAuthentication();
+//        System.out.println(currAuth.toString());
+//        if (!(currAuth instanceof AnonymousAuthenticationToken)) {
+//            logout();
+//        } -> jwt 사용할 땐 contextHolder 인증객체 계속 초기화해서 불필요
+//
+        try {
+            // CustomAuthenticationProvider를 호출해 인증로직을 수행한다
+            // 인증에 성공하면 인증에 성공한 인증 객체를 리턴한다
 
-        // 유저가 입력한 패스워드와 DB에 있는 정보 비교 (loadByUsername)
-        if (passwordEncoder.matches(inputPassword, user.getPassword())) {
-            Long userId = user.getId();
-            String userEmail = user.getEmail();
-            String userRole = user.getRole();
-            // 같으면 토큰 반환
-            IssuedToken issuedToken = tokenService.issueToken(userId, userEmail, userRole);
-            log.info("[Login] UserId:{}, userEmail:{}, userRole:{}, token:{} ", userId, userEmail, userRole, issuedToken);
+            Authentication authentication =
+                    authenticationManager.authenticate(new CustomAuthenticationToken(inputEmail, inputPassword));
+            // 성공한 인증객체를 ContextHolder에 등록
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("로그인 성공 객체정보 : {} ", authentication.toString());
 
+            // 해당 인증 객체를 바탕으로 토큰을 발급한다
+            IssuedToken issuedToken = tokenService.issueToken(authentication);
             return issuedToken;
+
+        } catch (AuthenticationException e) {
+            throw new UserException(UserErrorCode.ACCESS_DENIED);
         }
-        throw new AuthException(AuthErrorCode.NOT_EXISTS);
     }
 
-    public void logout(User user) {
-        tokenService.removeToken(user.getId());
+    public void logout() {
+        // 인증 정보삭제
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = (String) principal;
+        CustomUser customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        SecurityContextHolder.clearContext();
+        log.info("사용자 로그아웃 : {}", email);
+
+        // 유효한 access 토큰 블랙리스트에 저장
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
+
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            String accessToken = token.split(" ")[1];
+            tokenService.removeAccessToken(accessToken);
+            log.info("로그아웃으로 인한 access토큰 블랙리스트 추가 : {}", accessToken);
+        }
+
+
+
     }
 
     // SecurityContext에 저장된 auth 객체 조조히
@@ -58,7 +91,7 @@ public class AuthService {
         return authentication;
     }
     public IssuedToken refresh(String refreshToken) {
-        return tokenService.reIssueToken(refreshToken);
+        return tokenService.reIssueAccessTokenByRefreshToken(refreshToken);
     }
 
 }

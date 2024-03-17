@@ -12,13 +12,13 @@ import java.io.Serializable;
 @Getter
 @AllArgsConstructor
 @Builder
-@RedisHash(value = "jwtToken", timeToLive = 604800)
+@RedisHash(value = "jwtToken", timeToLive = 7 * 24 * 60 * 60 * 1000)
 public class Token implements Serializable {
 
     @Id
     private Long id;
 
     @Indexed
-    private String accessToken;
     private String refreshToken;
+//    private String accessToken;
 }
