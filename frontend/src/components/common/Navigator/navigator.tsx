@@ -170,7 +170,7 @@ const TopBar = ({
 };
 
 const navItems: NavItem[] = [
-  { Icon: Home, path: "/main" },
+  { Icon: Home, path: "/" },
   { Icon: Cart, path: "/cart" },
   { Icon: Chat, path: "/chat" },
   { Icon: Diary, path: "/diary" },
