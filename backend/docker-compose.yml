@@ -19,20 +19,21 @@ services:
     restart: unless-stopped
     depends_on:
       - back
+      - front
 
-
-  front:  # 프론트엔드 서비스 정의
+  front:
     container_name: front
-    image: junwon1131/s10c102-front:latest  # 프론트엔드 이미지 설정
+    image: junwon1131/s10c102-front:latest
     build:
-      context: ../frontend  # 프론트엔드 소스 코드 경로
-      dockerfile: Dockerfile  # 사용할 Dockerfile
+      context: ../frontend
+      dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "3000:3000"  # 프론트엔드 포트 설정
+      - "3000:3000"
     networks:
       - jenkins-network
-
+    depends_on:
+      - back
 
   back:
     container_name: back
