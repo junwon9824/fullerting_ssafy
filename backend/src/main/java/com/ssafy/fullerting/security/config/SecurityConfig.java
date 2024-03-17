@@ -1,14 +1,13 @@
 package com.ssafy.fullerting.security.config;
 
 
-import com.ssafy.fullerting.security.Filter.JwtFilter;
+import com.ssafy.fullerting.security.Filter.JwtValidationFilter;
 import com.ssafy.fullerting.security.handler.AuthFailureHandler;
 import com.ssafy.fullerting.security.handler.ExceptionHandlerFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,7 +27,7 @@ import java.util.Collections;
 @Configuration
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter;
+    private final JwtValidationFilter jwtValidationFilter;
     private final AuthFailureHandler authFailureHandler;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
 //    private final CustomAuthenticationProvider customAuthenticationProvider;
@@ -65,9 +64,10 @@ public class SecurityConfig {
 //                // 토큰 사용을 위해 JSESSIONID 발급 중지
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // JWT 필터
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(exceptionHandlerFilter, JwtFilter.class);
+//                .addFilterBefore(new SecurityContextPersistenceFilter(), DisableEncodeUrlFilter.class)
+        // JWT 필터
+                .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, JwtValidationFilter.class);
 
 
 

@@ -46,6 +46,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             // 자격 검정에 성공하면 사용자 정보,인증 성공 상태를 담은 인증 객체를 리턴한다
             // principal 은 email
             return new CustomAuthenticationToken(
+//                    customUser,
                     customUser.getEmail(),
                     customUser.getId(),
                     null,

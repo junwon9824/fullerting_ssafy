@@ -17,6 +17,8 @@ import java.time.ZonedDateTime;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -52,11 +54,17 @@ public class JwtUtils {
     // 엑세스 토큰 생성
     public String issueAccessToken(String email, Long userId ,Collection<? extends GrantedAuthority> authorities) {
         // email로 subject 설정
-        log.info("Token : Issue AccessToken for {}", email);
+
+        List<String> authorityList = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        log.info("Token : Issue AccessToken for princiapl : {}, authorities : {}", email, authorityList);
+
         return Jwts.builder()
                 .setSubject(email)
                 .claim("userId", userId )
-                .claim("authorities", authorities)
+                .claim("authorities", authorityList)
                 .setIssuedAt(getIssuedAt())
                 .setExpiration(getExpiredTime(jwtProperties.getAccesstime()))
                 .signWith(SignatureAlgorithm.HS256, accessSecretKey)
@@ -65,11 +73,17 @@ public class JwtUtils {
 
     // 리프레시 토큰 생성
     public String issueRefreshToken(String email, Long userId ,Collection<? extends GrantedAuthority> authorities) {
-        log.info("Token : Issue RefreshToken for {}", email);
+
+        List<String> authorityList = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        log.info("Token : Issue RefreshToken for princiapl : {}, authorities : {}", email, authorityList);
+
         return Jwts.builder()
                 .setSubject(email)
                 .claim("userId", userId )
-                .claim("authorities", authorities)
+                .claim("authorities", authorityList)
                 .setIssuedAt(getIssuedAt())
                 .setExpiration(getExpiredTime(jwtProperties.getRefreshtime()))
                 .signWith(SignatureAlgorithm.HS256, refreshSecretKey)
@@ -125,18 +139,18 @@ public class JwtUtils {
 
     // claim -> user의 id, email, role
     // 재발급 할 때 기존 토큰에서 위 정보 가져올 수 있도록 메서드 만들어두기
-//    public Long getUserIdByAccessToken(String accessToken){
-//        return Long.valueOf(
-//                validateAccessToken(accessToken).getBody().get("userId")
-//        );
-//    }
+    public Long getUserIdByAccessToken(String accessToken){
+        return Long.valueOf(
+                validateAccessToken(accessToken).getBody().get("userId", Long.class)
+        );
+    }
 
     public String getEmailByAccessToken(String accessToken) {
         return validateAccessToken(accessToken).getBody().getSubject();
     }
 
-    public String getRoleByAccessToken(String accessToken) {
-        return validateAccessToken(accessToken).getBody().get("role", String.class);
+    public List<String> getRoleByAccessToken(String accessToken) {
+        return validateAccessToken(accessToken).getBody().get("authorities", List.class);
     }
 
 
@@ -162,13 +176,13 @@ public class JwtUtils {
 
 
 
-    public String getRoleByRefreshToken(String refreshToken) {
+    public List<String> getRoleByRefreshToken(String refreshToken) {
         return Jwts.parserBuilder()
                 .setSigningKey(refreshSecretKey)
                 .build()
                 .parseClaimsJws(refreshToken)
                 .getBody()
-                .get("role", String.class);
+                .get("authorities", List.class);
 
     }
 

@@ -38,7 +38,7 @@ public class UserService {
                 .email(inputEmail)
                 .password(passwordEncoder.encode(inputPassword))
                 .nickname(inputNickname)
-                .role(String.valueOf(UserRole.MEMBER))
+                .role(String.valueOf(UserRole.ROLE_MEMBER))
                 .rank(String.valueOf(UserRank.새싹))
                 .build();
     }
