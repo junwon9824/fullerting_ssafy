@@ -1,7 +1,8 @@
 def component = [
-    // 'front': true,
+    'front': true,
     'back': true,
     'nginx': true,
+
 ]
 
 pipeline {
@@ -9,7 +10,7 @@ pipeline {
     environment {
         // 환경변수 설정
         NGINX_TAG = 'latest'
-        // FRONT_TAG = 'v1.0'
+        FRONT_TAG = 'latest'
         BACK_TAG = 'latest'
         REDIS_TAG = 'alpine'
         DOCKER_USER_ID = 'junwon1131'
