@@ -41,12 +41,35 @@ public class ExArticleController {
     @GetMapping("")
     @Operation(summary = "작물거래 전체 조회 ", description = "작물거래 전체 조회")
     public ResponseEntity<MessageUtils> allArticle() {
-        List<ExArticleResponse> exArticles = exArticleService.allArticle().stream().
-                map(exArticle -> exArticle.fromEntity(exArticle)).collect(Collectors.toList());
+        List<ExArticleResponse> exArticleResponse = exArticleService.allArticle();
 
-        log.info("[all article]: {}", exArticles);
-        return ResponseEntity.ok().body(MessageUtils.success(exArticles));
 
+        log.info("[all article]: {}", exArticleResponse);
+        return ResponseEntity.ok().body(MessageUtils.success(exArticleResponse));
+
+    }
+
+    @PostMapping("/{ex_article_id}/like")
+    @Operation(summary = "작물거래 좋아요 등록  ", description = "작물거래 좋아요 등록")
+    public ResponseEntity<MessageUtils> like(@PathVariable Long ex_article_id) {
+        exArticleService.like(ex_article_id);
+
+        log.info("[like article]: {}", ex_article_id);
+
+        return ResponseEntity.ok().body(MessageUtils.success());
+
+    }
+
+    //    작물 거래 게시물 키워드 검색
+//    /v1/exchanges/search?keyword={keyword}
+    @GetMapping("/search")
+    @Operation(summary = "작물 거래 게시물 키워드 검색 ", description = "작물 거래 게시물 키워드 검색")
+    public ResponseEntity<MessageUtils> like(@RequestParam String keyword) {
+        List<ExArticleResponse> exArticleResponses= exArticleService.keyword(keyword);
+
+        log.info("[search article keyword]: {}", exArticleResponses);
+
+        return ResponseEntity.ok().body(MessageUtils.success());
     }
 
 }

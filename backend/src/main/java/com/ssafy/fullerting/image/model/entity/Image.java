@@ -3,6 +3,7 @@ package com.ssafy.fullerting.image.model.entity;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
+import com.ssafy.fullerting.image.model.dto.response.ImageResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,6 +41,15 @@ public class Image {
     private ExArticle exArticle;
 
     private String img_store_url;
+
+    public static ImageResponse toResponse(Image image)
+    {
+        return ImageResponse.builder()
+                .exArticle(image.getExArticle())
+                .img_store_url(image.getImg_store_url())
+                .id(image.getId())
+                .build();
+    }
 
 
 }
