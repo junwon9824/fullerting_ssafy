@@ -21,6 +21,16 @@ interface CropType {
   cropTypeImgUrl: string;
 }
 
+interface DiaryType {
+  diaryId: number;
+  packDiaryId: number;
+  diaryBehavior: "다이어리" | "물주기";
+  diaryTitle: string;
+  diaryContent: string;
+  diarySelectedAt: string;
+  diaryCreatedAt: string;
+}
+
 const TopBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -54,6 +64,28 @@ const DiaryPage = () => {
     cropTypeImgUrl: "tomato_img.jpg",
   };
 
+  const diaries: DiaryType[] = [
+    {
+      diaryId: 1,
+      packDiaryId: 1,
+      diaryBehavior: "다이어리",
+      diaryTitle: "토마토는 빨강색",
+      diaryContent:
+        "멋쟁이 토마토 울퉁불통멋진몸매에 빨간 옷을 입고 나는야 주스될거야",
+      diarySelectedAt: "2024-03-05",
+      diaryCreatedAt: "2024-03-05T10:00:00Z",
+    },
+    {
+      diaryId: 2,
+      packDiaryId: 1,
+      diaryBehavior: "물주기",
+      diaryTitle: "",
+      diaryContent: "",
+      diarySelectedAt: "2024-03-04",
+      diaryCreatedAt: "2024-03-05T12:00:00Z",
+    },
+  ];
+
   const handleClick = () => {};
 
   return (
@@ -82,7 +114,7 @@ const DiaryPage = () => {
             <MenuBar />
             <div>calendar</div>
             <span>2024년</span>
-            <DiaryList />
+            <DiaryList diaries={diaries} />
           </MiddleBox>
         </LayoutInnerBox>
       </LayoutMainBox>

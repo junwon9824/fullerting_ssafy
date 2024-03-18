@@ -1,11 +1,19 @@
 import styled from "styled-components";
 
+interface DiaryType {
+  diaryId: number;
+  packDiaryId: number;
+  diaryBehavior: "다이어리" | "물주기";
+  diaryTitle: string;
+  diaryContent: string;
+  diarySelectedAt: string;
+  diaryCreatedAt: string;
+}
+
 const DiaryBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  /* 스크롤 넣기 */
-  /* background-color: aquamarine; */
   gap: 1rem;
 `;
 
@@ -99,13 +107,17 @@ const WaterIconSVG = styled.svg`
   width: 100%;
   height: 80%;
 `;
-const DiaryCard = () => {
+const DiaryCard = ({ diary }: { diary: DiaryType }) => {
+  const diaryDate = new Date(diary.diarySelectedAt);
+  const month = diaryDate.getMonth() + 1;
+  const day = diaryDate.getDate();
+
   return (
     <DiaryCardBox>
       <div>
         <DateBox>
-          <Month>03월</Month>
-          <Day>05</Day>
+          <Month>{`${month < 10 ? "0" : ""}${month}월`}</Month>
+          <Day>{`${day < 10 ? "0" : ""}${day}`}</Day>
         </DateBox>
       </div>
       <BorderBox>
@@ -115,10 +127,10 @@ const DiaryCard = () => {
           </ImageBox>
           <InfoBox>
             <Title>
-              <p>토마토 빨강색</p>
+              <p>{diary.diaryTitle}</p>
             </Title>
             <Content>
-              <p>토마토가 무럭무럭 자랐다.</p>
+              <p>{diary.diaryContent}</p>
             </Content>
           </InfoBox>
         </ContentBox>
@@ -127,13 +139,17 @@ const DiaryCard = () => {
   );
 };
 
-const WaterCard = () => {
+const WaterCard = ({ diary }: { diary: DiaryType }) => {
+  const diaryDate = new Date(diary.diarySelectedAt);
+  const month = diaryDate.getMonth() + 1;
+  const day = diaryDate.getDate();
+
   return (
     <DiaryCardBox>
       <div>
         <DateBox>
-          <Month>03월</Month>
-          <Day>05</Day>
+          <Month>{`${month < 10 ? "0" : ""}${month}월`}</Month>
+          <Day>{`${day < 10 ? "0" : ""}${day}`}</Day>
         </DateBox>
       </div>
       <BorderBox>
@@ -159,11 +175,17 @@ const WaterCard = () => {
   );
 };
 
-const DiaryList = () => {
+const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
   return (
     <DiaryBox>
-      <DiaryCard />
-      <WaterCard />
+      {diaries &&
+        diaries.map((diary) =>
+          diary.diaryBehavior === "다이어리" ? (
+            <DiaryCard key={diary.diaryId} diary={diary} />
+          ) : (
+            <WaterCard key={diary.diaryId} diary={diary} />
+          )
+        )}
     </DiaryBox>
   );
 };
