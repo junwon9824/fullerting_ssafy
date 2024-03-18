@@ -82,7 +82,7 @@ public class ExArticle {
         this.favorite = favorite;
     }
 
-    public ExArticleResponse fromEntity(ExArticle article) {
+    public static ExArticleResponse fromEntity(ExArticle article) {
         return ExArticleResponse.builder()
                 .exArticleId(article.id)
                 .exArticleTitle(article.title)
@@ -91,10 +91,11 @@ public class ExArticle {
                 .img(article.image.stream().
                         map(Image::getImg_store_url)
                         .collect(Collectors.toList()))
-                .favoriteResponse(favorite.stream()
+                .favoriteResponse(article.favorite.stream()
                         .map(Favorite::toResponse)
                         .collect(Collectors.toList()))
                 .build();
     }
+
 
 }

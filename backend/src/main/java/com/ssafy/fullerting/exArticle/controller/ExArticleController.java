@@ -41,11 +41,22 @@ public class ExArticleController {
     @GetMapping("")
     @Operation(summary = "작물거래 전체 조회 ", description = "작물거래 전체 조회")
     public ResponseEntity<MessageUtils> allArticle() {
-        List<ExArticleResponse> exArticles = exArticleService.allArticle().stream().
-                map(exArticle -> exArticle.fromEntity(exArticle)).collect(Collectors.toList());
+        List<ExArticleResponse> exArticleResponse = exArticleService.allArticle();
 
-        log.info("[all article]: {}", exArticles);
-        return ResponseEntity.ok().body(MessageUtils.success(exArticles));
+
+        log.info("[all article]: {}", exArticleResponse);
+        return ResponseEntity.ok().body(MessageUtils.success(exArticleResponse));
+
+    }
+
+    @PostMapping("/{ex_article_id}/like")
+    @Operation(summary = "작물거래 좋아요 등록  ", description = "작물거래 좋아요 등록")
+    public ResponseEntity<MessageUtils> like(@PathVariable Long ex_article_id) {
+        exArticleService.like(ex_article_id);
+
+        log.info("[like article]: {}", ex_article_id);
+
+        return ResponseEntity.ok().body(MessageUtils.success());
 
     }
 
