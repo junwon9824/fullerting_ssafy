@@ -47,7 +47,7 @@ const CardItemDecoBox = styled.div`
   /* z-index: 1; */
 `;
 
-const CropCard = () => {
+const CropList = () => {
   const crops: CropType[] = [
     {
       packDiaryId: 1,
@@ -103,4 +103,4 @@ const CropCard = () => {
   );
 };
 
-export default CropCard;
+export default CropList;
