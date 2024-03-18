@@ -3,7 +3,8 @@ package com.ssafy.fullerting.exArticle.controller;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.service.ExArticleService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
-import com.ssafy.fullerting.user.model.entity.User;
+
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class ExArticleController {
 
     @PostMapping("")
     @Operation(summary = "작물등록 ", description = "작물등록진행")
-    public ResponseEntity<MessageUtils> register(@RequestBody ExArticleRegisterRequest exArticleRegisterRequest, @AuthenticationPrincipal User user) {
+    public ResponseEntity<MessageUtils> register(@RequestBody ExArticleRegisterRequest exArticleRegisterRequest, @AuthenticationPrincipal CustomUser user) {
 
         exArticleService.register(exArticleRegisterRequest,user);
         log.info("[New User]: {}", exArticleRegisterRequest.toString());

@@ -14,7 +14,7 @@ import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.global.utils.MessageUtils;
-import com.ssafy.fullerting.user.model.entity.User;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class BidService {
     private final ExArticleRepository exArticleRepository;
 
 
-    public void deal(BidProposeRequest bidProposeRequest, User user, Long ex_article_id) {
+    public void deal(BidProposeRequest bidProposeRequest, CustomUser user, Long ex_article_id) {
         LocalDateTime time = LocalDateTime.now();
 
 

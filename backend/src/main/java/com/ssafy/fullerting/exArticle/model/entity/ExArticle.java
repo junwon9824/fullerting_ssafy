@@ -3,7 +3,7 @@ package com.ssafy.fullerting.exArticle.model.entity;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticlePayment;
 import com.ssafy.fullerting.global.BaseTimeEntity;
-import com.ssafy.fullerting.user.model.entity.User;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,7 +27,7 @@ public class ExArticle {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private CustomUser user;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
