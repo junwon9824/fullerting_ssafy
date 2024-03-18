@@ -36,6 +36,7 @@ const Button = (props: ButtonProps) => {
         borderRadius={props.borderRadius}
         color={props.color}
         border={props.border}
+        fontSize={props.fontSize}
       >
         {props.text}
       </ColorStyle>

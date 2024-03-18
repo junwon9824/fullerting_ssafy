@@ -5,6 +5,8 @@ import {
 } from "../../components/common/Layout/Box";
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
 import CropProfile from "../../components/diary/CropProfile";
+import Button from "../../components/common/Button/primaryButton";
+import RecognizeButton from "../../components/diary/RecognizeButton";
 
 interface CropType {
   packDiaryId: number;
@@ -46,6 +48,8 @@ const DiaryPage = () => {
     cropTypeImgUrl: "tomato_img.jpg",
   };
 
+  const handleClick = () => {};
+
   return (
     <>
       <TopBar title="작물일지" showBack={false} showEdit={true} />
@@ -53,8 +57,18 @@ const DiaryPage = () => {
         <LayoutInnerBox>
           <CropProfile crop={crop} />
           <ButtonBox>
-            <ConButton>작물 인식하기</ConButton>
-            <ConButton>종료하기</ConButton>
+            <RecognizeButton />
+            <Button
+              onClick={handleClick}
+              width={9.5}
+              height={2.5625}
+              borderRadius={1.28125}
+              backgroundColor="#A0D8B3"
+              color="white"
+              fontSize="1"
+              fontWeight="bold"
+              text="종료하기"
+            />
           </ButtonBox>
         </LayoutInnerBox>
       </LayoutMainBox>
