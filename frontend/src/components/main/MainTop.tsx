@@ -3,7 +3,7 @@ import styled from "styled-components";
 const MainContainer = styled.div`
   justify-content: center;
   flex-direction: column;
-  height: 16.5rem;
+  height: 15rem;
   background-color: #a0d8b3;
   padding: 1rem 0.8rem;
 `;
@@ -18,7 +18,7 @@ const TextBox = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  margin: 1.2rem 0;
+  margin: 1rem 0 0 0;
 `;
 const MainText = styled.div`
   color: #fffefe;
@@ -26,7 +26,6 @@ const MainText = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: normal;
-  margin-bottom: 0.98rem;
 `;
 
 const DiaryBox = styled.div`
