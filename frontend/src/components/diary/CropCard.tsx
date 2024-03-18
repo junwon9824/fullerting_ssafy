@@ -90,6 +90,14 @@ const CropCard = () => {
     },
   ];
 
+  const calculateDDay = (createdAt: string) => {
+    const today = new Date();
+    const createdDate = new Date(createdAt);
+    const diffTime = Math.abs(today.getTime() - createdDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return `D+${diffDays}`;
+  };
+
   return (
     <CardListBox>
       {crops &&
@@ -126,8 +134,7 @@ const CropCard = () => {
                 {crop.cropType} {crop.packDiaryGrowthStage}단계
               </span>
               <span> · </span>
-              <span>D+21</span>
-              {/* 여기에 packDiaryCreated 이용해 d day 출력 */}
+              <span>{calculateDDay(crop.packDiaryCreatedAt)}</span>
             </CropInfoBox>
           </CardItemBox>
         ))}
