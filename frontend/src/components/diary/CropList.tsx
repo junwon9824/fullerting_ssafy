@@ -7,7 +7,7 @@ interface CropType {
   packDiaryTitle: string;
   packDiaryCulStartAt: string;
   packDiaryCulEndAt: string | null;
-  packDiaryGrowthStage: String | null;
+  packDiaryGrowthStep: string;
   packDiaryCreatedAt: string;
   cropTypeImgUrl: string;
 }
@@ -55,7 +55,7 @@ const CropList = () => {
       packDiaryTitle: "똘똘한토마토",
       packDiaryCulStartAt: "2024-03-01",
       packDiaryCulEndAt: "2024-04-01",
-      packDiaryGrowthStage: "2",
+      packDiaryGrowthStep: "2",
       packDiaryCreatedAt: "2024-03-01",
       cropTypeImgUrl: "wheat_img.jpg",
     },
@@ -65,7 +65,7 @@ const CropList = () => {
       packDiaryTitle: "데프콘",
       packDiaryCulStartAt: "2024-02-15",
       packDiaryCulEndAt: "2024-04-15",
-      packDiaryGrowthStage: "1",
+      packDiaryGrowthStep: "1",
       packDiaryCreatedAt: "2024-02-15",
       cropTypeImgUrl: "corn_img.jpg",
     },

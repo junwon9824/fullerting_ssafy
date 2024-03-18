@@ -7,6 +7,7 @@ import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
 import CropProfile from "../../components/diary/CropProfile";
 import Button from "../../components/common/Button/primaryButton";
 import RecognizeButton from "../../components/diary/RecognizeButton";
+import DiaryList from "../../components/diary/DiaryList";
 
 interface CropType {
   packDiaryId: number;
@@ -14,7 +15,7 @@ interface CropType {
   packDiaryTitle: string;
   packDiaryCulStartAt: string;
   packDiaryCulEndAt: string | null;
-  packDiaryGrowthStage: String | null;
+  packDiaryGrowthStep: string;
   packDiaryCreatedAt: string;
   cropTypeImgUrl: string;
 }
@@ -43,7 +44,7 @@ const DiaryPage = () => {
     packDiaryTitle: "똘똘한토마토",
     packDiaryCulStartAt: "2024-03-01",
     packDiaryCulEndAt: "2024-04-01",
-    packDiaryGrowthStage: "2",
+    packDiaryGrowthStep: "2",
     packDiaryCreatedAt: "2024-03-01",
     cropTypeImgUrl: "tomato_img.jpg",
   };
@@ -70,6 +71,10 @@ const DiaryPage = () => {
               text="종료하기"
             />
           </ButtonBox>
+          <div>menu</div>
+          <div>calendar</div>
+          <span>2024년</span>
+          <DiaryList />
         </LayoutInnerBox>
       </LayoutMainBox>
       <NavBar />

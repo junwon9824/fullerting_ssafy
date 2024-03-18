@@ -6,7 +6,7 @@ interface CropType {
   packDiaryTitle: string;
   packDiaryCulStartAt: string;
   packDiaryCulEndAt: string | null;
-  packDiaryGrowthStage: String | null;
+  packDiaryGrowthStep: string;
   packDiaryCreatedAt: string;
   cropTypeImgUrl: string;
 }
@@ -107,7 +107,7 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
           </CropTitle>
           <CropDescriptionBox>
             <span>
-              {crop.cropType} {crop.packDiaryGrowthStage}단계
+              {crop.cropType} {crop.packDiaryGrowthStep}단계
             </span>
             <span> · </span>
             <span>{calculateDDay(crop.packDiaryCreatedAt)}</span>
