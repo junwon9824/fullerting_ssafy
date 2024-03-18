@@ -114,7 +114,7 @@ public class ExArticleService {
 
     public List<ExArticleResponse> keyword(String keyword) { //keyword 검색.
         List<ExArticleResponse> exArticleResponses = exArticleRepository.findAllByTitleContaining(keyword).stream()
-                .map(ExArticle::fromEntity).collect(Collectors.toList());
+                .map((ExArticleResponse::fromEntity ).collect(Collectors.toList());
 
         return exArticleResponses;
     }

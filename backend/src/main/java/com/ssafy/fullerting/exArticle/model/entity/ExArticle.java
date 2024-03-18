@@ -84,18 +84,18 @@ public class ExArticle {
 
     public static ExArticleResponse fromEntity(ExArticle article) {
         return ExArticleResponse.builder()
-                .exArticleId(article.id)
-                .exArticleTitle(article.title)
-                .ExArticleType(article.type)
-                .exLocation(article.location)
-                .img(article.image.stream().
-                        map(Image::getImg_store_url)
-                        .collect(Collectors.toList()))
-                .favoriteResponse(article.favorite.stream()
+                .exArticleId(article.getId())
+                .exArticleTitle(article.getTitle())
+                .exArticleType(article.getType())
+                .exLocation(article.getLocation())
+                .imageResponses(article.getImage().stream().map(  )
+                        .collect(Collectors.toList()) )
+                .favoriteResponse(article.getFavorite().stream()
                         .map(Favorite::toResponse)
                         .collect(Collectors.toList()))
                 .build();
     }
+
 
 
 }
