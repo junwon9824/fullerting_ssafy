@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import book from "/src/assets/svg/book-open.svg";
+import Vector from "/src/assets/svg/Vector.svg";
+import { useNavigate } from "react-router-dom";
 
 interface PlusButtonProps {
   height?: number;
@@ -9,16 +12,16 @@ interface PlusButtonProps {
   padding?: string;
   color?: string;
   children?: React.ReactNode;
-  onClick?: () => void; // 부모 컴포넌트에서 전달받을 onClick 함수 추가
+  onClick?: () => void;
 }
 
 const StyledPlusButton = styled.button`
-  width: 25px;
-  height: 25px;
+  width: 3.125rem;
+  height: 3.125rem;
   border-radius: 50%;
   color: white;
   background-color: #a0d8b3;
-  font-size: 18px;
+  font-size: 2rem;
 `;
 
 const AdditionalButtonsContainer = styled.div`
@@ -34,6 +37,7 @@ const ButtonContainer = styled.div`
   display: inline-block;
 `;
 const PlusButton: React.FC<PlusButtonProps> = ({ onClick, ...props }) => {
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
 
   const handleButtonClick = () => {
@@ -49,24 +53,24 @@ const PlusButton: React.FC<PlusButtonProps> = ({ onClick, ...props }) => {
       {isVisible && (
         <AdditionalButtonsContainer>
           <StyledPlusButton
-            onClick={() => console.log("1번")}
+            onClick={() => navigate("/diary")}
             style={{
               backgroundColor: "#E5F9DB",
-              width: "20px",
-              height: "20px",
-            }} // 추가 버튼 색상 설정
+              width: "2.5rem",
+              height: "2.5rem",
+            }}
           >
-            1
+            <img src={Vector} alt="" />
           </StyledPlusButton>
           <StyledPlusButton
             onClick={() => console.log("2번")}
             style={{
               backgroundColor: "#E5F9DB",
-              width: "20px",
-              height: "20px",
-            }} // 추가 버튼 색상 설정
+              width: "2.5rem",
+              height: "2.5rem",
+            }}
           >
-            2
+            <img src={book} alt="" />
           </StyledPlusButton>
         </AdditionalButtonsContainer>
       )}

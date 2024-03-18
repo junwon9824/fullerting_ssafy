@@ -43,7 +43,7 @@ const LogoText = styled.div`
 
 const ExchangeBox = styled.div`
   width: 6.5rem;
-  height: 5.9375rem;
+  height: 5.2rem;
   border-radius: 0.875rem;
   background: rgba(229, 249, 219, 0.37);
   display: flex;
@@ -55,6 +55,7 @@ const ExchangeContainer = styled.div`
   margin-top: 0.8rem;
   display: flex;
   gap: 0.6875rem;
+  margin-bottom: 1rem;
 `;
 
 const MainTip = () => {
