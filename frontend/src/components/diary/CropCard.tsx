@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import CropProfile from "./CropProfile";
 
 interface CropType {
   packDiaryId: number;
@@ -46,26 +47,6 @@ const CardItemDecoBox = styled.div`
   /* z-index: 1; */
 `;
 
-const CropImageBox = styled.div`
-  width: 6.25rem;
-  height: 6.25rem;
-  flex-shrink: 0;
-  border-radius: 50%;
-  border: 2.5px solid #3d0c112c;
-  opacity: 0.9;
-  margin: 0.4rem;
-`;
-
-const CropTitle = styled.div`
-  font-size: 1rem;
-`;
-
-const CropInfoBox = styled.div`
-  color: ${({ theme }) => theme.colors.gray0};
-  font-size: 0.6rem;
-  font-weight: bold;
-`;
-
 const CropCard = () => {
   const crops: CropType[] = [
     {
@@ -89,14 +70,6 @@ const CropCard = () => {
       cropTypeImgUrl: "corn_img.jpg",
     },
   ];
-
-  const calculateDDay = (createdAt: string) => {
-    const today = new Date();
-    const createdDate = new Date(createdAt);
-    const diffTime = Math.abs(today.getTime() - createdDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return `D+${diffDays}`;
-  };
 
   return (
     <CardListBox>
@@ -123,19 +96,7 @@ const CropCard = () => {
                 <rect x="98" width="6" height="22" rx="2" fill="#575759" />
               </svg>
             </CardItemDecoBox>
-            <CropImageBox>
-              <img src={crop.cropTypeImgUrl} alt="" />
-            </CropImageBox>
-            <CropTitle>
-              <p>{crop.packDiaryTitle}</p>
-            </CropTitle>
-            <CropInfoBox>
-              <span>
-                {crop.cropType} {crop.packDiaryGrowthStage}단계
-              </span>
-              <span> · </span>
-              <span>{calculateDDay(crop.packDiaryCreatedAt)}</span>
-            </CropInfoBox>
+            <CropProfile crop={crop} direction="column" />
           </CardItemBox>
         ))}
     </CardListBox>
