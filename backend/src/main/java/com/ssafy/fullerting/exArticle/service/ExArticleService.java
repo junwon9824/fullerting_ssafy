@@ -5,13 +5,14 @@ import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.deal.service.DealService;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
-import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticlePayment;
+import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,23 +29,23 @@ public class ExArticleService {
                 .title(exArticleRegisterRequest.getExArticleTitle())
                 .content(exArticleRegisterRequest.getExArticleContent())
                 .place(exArticleRegisterRequest.getExArticlePlace())
-                .type(exArticleRegisterRequest.getExArticlePayment())
+                .type(exArticleRegisterRequest.getExArticleType())
                 .created_at(createdAt)
                 .location(exArticleRegisterRequest.getEx_article_location())
                 .user(user)
                 .build();
 
 //        exArticleRepository.saveAndFlush(exArticle);
-       ExArticle exArticle1= exArticleRepository.save(exArticle);
+        ExArticle exArticle1 = exArticleRepository.save(exArticle);
 
-        if (exArticleRegisterRequest.getExArticlePayment().equals(ExArticlePayment.DEAL)) {
+        if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.DEAL)) {
             Deal deal = Deal.builder()
                     .deal_cur_price(exArticleRegisterRequest.getDeal_cur_price())
                     .build();
 
             deal.setexarticle(exArticle);
 
-            System.out.println("exarttttt   "  + exArticle.toString());
+            System.out.println("exarttttt   " + exArticle.toString());
 
             dealRepository.save(deal);
 
@@ -57,4 +58,8 @@ public class ExArticleService {
     }
 
 
+    public List<ExArticle> allArticle() {
+        List<ExArticle> exArticle = exArticleRepository.findAll();
+        return exArticle;
+    }
 }
