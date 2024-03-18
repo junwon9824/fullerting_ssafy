@@ -1,13 +1,13 @@
 import styled from "styled-components";
+import map from "/src/assets/svg/map.svg";
+import { useNavigate } from "react-router-dom";
 
 const MainBox = styled.div`
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  display: inline;
   gap: 0.8125rem;
-  height: 5.5rem;
-  padding: 1% 0.5rem 0;
+  height: 3.5rem;
 `;
 
 const LogoContent = styled.div`
@@ -32,23 +32,41 @@ const LogoText = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-const ExchangeBox = styled.div`
-  display: flex;
-  padding: 0.4375rem 0.5rem;
-  height: 7rem;
-  width: 18rem;
-  border-radius: 0rem 0.9375rem 0.9375rem 0.9375rem;
-  border: 1.5px solid var(--sub0, #a0d8b3);
+const ImageWrapper = styled.div`
+  position: relative;
+  line-height: 0;
+`;
+
+const Button = styled.button`
+  color: white;
+  position: absolute;
+  width: 4.5rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  background: var(--sub0, #a0d8b3);
+  top: 50%;
+  left: 50%;
+  font-size: 0.7rem;
+  transform: translate(-50%, -50%);
 `;
 
 const MainMap = () => {
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    navigate("/join");
+  };
   return (
     <MainBox>
       <LogoContent>
         <LogoText>전국</LogoText>
         텃밭정보 보러 가기
       </LogoContent>
-      <ExchangeBox />
+      <ImageWrapper>
+        <img src={map} alt="지도" />
+        <Button onClick={handleButtonClick}>지도 보기</Button>
+      </ImageWrapper>
     </MainBox>
   );
 };
