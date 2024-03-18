@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,20 +86,36 @@ public class ExArticleService {
 
         List<ExArticleResponse> exArticleResponses = exArticle.stream().map(ExArticle::fromEntity).collect(Collectors.toList());
 
-        return exArticleResponses; 
+        return exArticleResponses;
     }
 
 
-    public void like(Long ex_article_id ) {
+    public void like(Long ex_article_id) {
         //좋아요 로직
         ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-        UserResponse userResponse=userService.getUserInfo();
+
+        UserResponse userResponse = userService.getUserInfo();
+        Long userid = userResponse.getId();
+        Long articleid = article.getId();
+
+        Optional<Favorite> favorite1 = favoriteRepository.findByUserIdAndExArticleId(userid, articleid);
+
+        if (favorite1.isPresent()) {
+            throw new ExArticleException(ExArticleErrorCode.ALREADY_LIKED);
+        }
 
         Favorite favorite = new Favorite();
         favorite.setExArticle(article);
         favorite.setUser(userResponse.toEntity(userResponse));
 
         favoriteRepository.save(favorite);
+    }
+
+    public List<ExArticleResponse> keyword(String keyword) { //keyword 검색.
+        List<ExArticleResponse> exArticleResponses = exArticleRepository.findAllByTitleContaining(keyword).stream()
+                .map(ExArticle::fromEntity).collect(Collectors.toList());
+
+        return exArticleResponses;
     }
 }

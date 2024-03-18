@@ -60,4 +60,16 @@ public class ExArticleController {
 
     }
 
+    //    작물 거래 게시물 키워드 검색
+//    /v1/exchanges/search?keyword={keyword}
+    @GetMapping("/exchanges/search")
+    @Operation(summary = "작물 거래 게시물 키워드 검색 ", description = "작물 거래 게시물 키워드 검색")
+    public ResponseEntity<MessageUtils> like(@RequestParam String keyword) {
+        List<ExArticleResponse> exArticleResponses= exArticleService.keyword(keyword);
+
+        log.info("[search article keyword]: {}", exArticleResponses);
+
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
 }
