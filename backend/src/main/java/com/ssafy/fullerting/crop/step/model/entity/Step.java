@@ -1,33 +1,32 @@
-package com.ssafy.fullerting.crop.tip.model.entity;
+package com.ssafy.fullerting.crop.step.model.entity;
 
-import com.ssafy.fullerting.crop.step.model.entity.Step;
 import com.ssafy.fullerting.crop.type.model.entity.Crop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
-@Table(name="crop_tip")
+@Table(name="crop_step")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Getter
 @ToString
-public class Tip {
+public class Step {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "crop_tip_id")
+    @Column(name = "crop_step_id")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name="crop_type_id")
     private Crop crop;
 
-    @ManyToOne
-    @JoinColumn(name="crop_step_id")
-    private Step step; //단계
-
-    @Column(name = "crop_tip_content", length = 100)
+    @Column(name = "crop_step_growth", length = 3)
     @NotNull
-    private String content; //내용
+    private String step; //단계
+
+    @Column(name = "crop_step_harvest_day")
+    @NotNull
+    private int harvestDay; //수확일
 }
