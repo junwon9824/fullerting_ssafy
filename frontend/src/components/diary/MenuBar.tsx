@@ -1,13 +1,14 @@
-import { useState } from "react";
 import styled from "styled-components";
-import { HalfLine } from "../common/Line";
+import { HalfColoredLine, HalfLine } from "../common/Line";
+import { useAtom } from "jotai";
+import { menuAtom } from "../../stores/diary";
 
 const MenuBarBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
 `;
-const MenuBox = styled.div`
+const MenuBox = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,22 +17,36 @@ const MenuBox = styled.div`
   font-size: 1rem;
   color: ${({ theme }) => theme.colors.gray0};
   font-weight: bold;
+  height: 1.8rem;
+  width: 9.93rem;
+`;
+const FlexColumnBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 const Menu = ({ text }) => {
+  const [menu, setMenu] = useAtom(menuAtom);
+  const selected = menu === text;
+
+  const handleMenuClick = () => {
+    setMenu(text);
+    console.log("Menu clicked: ", text);
+  };
+
   return (
-    <MenuBox>
-      <span>{text}</span>
-      <HalfLine />
-    </MenuBox>
+    <FlexColumnBox>
+      <MenuBox onClick={handleMenuClick}>
+        <span>{text}</span>
+      </MenuBox>
+      {selected ? <HalfColoredLine /> : <HalfLine />}
+    </FlexColumnBox>
   );
 };
 
 const MenuBar = () => {
-  const [menu, setMenu] = useState("다이어리"); // 다이어리, 작물꿀팁
-
-  const handleMenuClick = (text) => {
-    setMenu(text);
-  };
+  const [menu] = useAtom(menuAtom);
 
   return (
     <MenuBarBox>
