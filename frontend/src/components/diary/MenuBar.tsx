@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { HalfColoredLine, HalfLine } from "../common/Line";
 import { useAtom } from "jotai";
 import { menuAtom } from "../../stores/diary";
+import { useNavigate } from "react-router-dom";
 
 const MenuBarBox = styled.div`
   display: flex;
@@ -29,10 +30,17 @@ const FlexColumnBox = styled.div`
 const Menu = ({ text }) => {
   const [menu, setMenu] = useAtom(menuAtom);
   const selected = menu === text;
+  const navigate = useNavigate();
 
   const handleMenuClick = () => {
     setMenu(text);
     console.log("Menu clicked: ", text);
+
+    if (text === "다이어리") {
+      navigate("/diary/detail");
+    } else if (text === "작물꿀팁") {
+      navigate("/diary/detail/tips");
+    }
   };
 
   return (
