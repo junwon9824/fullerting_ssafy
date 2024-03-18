@@ -27,6 +27,8 @@ const LargeButton = ({ onClick, text }: LargeButtonType) => {
       onClick={onClick}
       fontWeight="bold"
       text={text}
+      borderRadius={0.5}
+      fontSize="1"
     />
   );
 };
@@ -42,6 +44,8 @@ const BottomButton = ({ onClick, text }: LargeButtonType) => {
         onClick={onClick}
         fontWeight="bold"
         text={text}
+        borderRadius={0.5}
+        fontSize="1"
       />
     </ButtonBox>
   );
