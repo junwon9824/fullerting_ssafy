@@ -30,18 +30,16 @@ public class Image {
 //    @JoinColumn(name = "article_id")
 //    private Article article;
 //
-
+//
 //    @ManyToOne
 //    @JoinColumn(name = "article_id")
-//    private    ;
-
+//    private Diary diary   ;
 
     @ManyToOne
     @JoinColumn(name = "ex_article_id")
     private ExArticle exArticle;
 
     private String img_store_url;
-
 
 
 }

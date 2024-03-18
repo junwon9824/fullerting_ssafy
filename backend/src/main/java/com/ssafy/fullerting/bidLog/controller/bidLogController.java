@@ -1,10 +1,12 @@
-package com.ssafy.fullerting.bid_log.controller;
+package com.ssafy.fullerting.bidLog.controller;
 
-import com.ssafy.fullerting.bid_log.model.dto.request.BidProposeRequest;
-import com.ssafy.fullerting.bid_log.service.BidService;
+import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
+import com.ssafy.fullerting.bidLog.service.BidService;
 import com.ssafy.fullerting.deal.service.DealService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
+import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +24,20 @@ public class bidLogController {
 
     private final DealService dealService;
     private final BidService bidService;
+    private final UserService userService;
 
     @PostMapping("/{ex_article_id}/deal")
     @Operation(summary = "가격 제안하기 ", description = "가격 제안하기")
     public ResponseEntity<MessageUtils> register(@RequestBody BidProposeRequest bidProposeRequest,
-                                                 @PathVariable Long ex_article_id, @AuthenticationPrincipal CustomUser user) {
-        bidService.deal(bidProposeRequest, user, ex_article_id);
+                                                 @PathVariable Long ex_article_id, @AuthenticationPrincipal String email) {
+
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = userResponse.toEntity(userResponse);
+
+        bidService.deal(bidProposeRequest, customUser, ex_article_id);
         log.info("[New User]: {}", bidProposeRequest.toString());
         return ResponseEntity.ok().body(MessageUtils.success());
     }
-
-
 
 
 }

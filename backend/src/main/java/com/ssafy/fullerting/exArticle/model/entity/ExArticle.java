@@ -3,6 +3,7 @@ package com.ssafy.fullerting.exArticle.model.entity;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
+import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.global.BaseTimeEntity;
 import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 @Builder
 @Entity
 @ToString
-@Table(name = "ExArticle")
+@Table(name = "ex_article")
 public class ExArticle {
 
     @Id
@@ -70,8 +71,15 @@ public class ExArticle {
     @OneToMany(mappedBy = "exArticle")
     private List<Image> image;
 
+    @OneToMany(mappedBy = "exArticle")
+    private List<Favorite> favorite;
+
     public void setdeal(Deal deal) {
         this.deal = deal;
+    }
+
+    public void setfavorite(List<Favorite> favorite) {
+        this.favorite = favorite;
     }
 
     public ExArticleResponse fromEntity(ExArticle article) {
@@ -79,8 +87,12 @@ public class ExArticle {
                 .exArticleId(article.id)
                 .exArticleTitle(article.title)
                 .ExArticleType(article.type)
+                .exLocation(article.location)
                 .img(article.image.stream().
                         map(Image::getImg_store_url)
+                        .collect(Collectors.toList()))
+                .favoriteResponse(favorite.stream()
+                        .map(Favorite::toResponse)
                         .collect(Collectors.toList()))
                 .build();
     }
