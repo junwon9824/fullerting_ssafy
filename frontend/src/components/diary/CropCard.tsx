@@ -1,5 +1,16 @@
 import styled from "styled-components";
 
+interface CropType {
+  packDiaryId: number;
+  cropType: string;
+  packDiaryTitle: string;
+  packDiaryCulStartAt: string;
+  packDiaryCulEndAt: string | null;
+  packDiaryGrowthStage: String | null;
+  packDiaryCreatedAt: string;
+  cropTypeImgUrl: string;
+}
+
 const CardListBox = styled.div`
   display: flex;
   width: 19.875rem;
@@ -29,10 +40,10 @@ const CardItemBox = styled.div`
 const CardItemDecoBox = styled.div`
   position: absolute;
   top: -0.8rem;
-  width: 6.625rem;
-  height: 1.6875rem;
-  flex-shrink: 0;
-  z-index: 1;
+  /* width: 6.625rem; */
+  /* height: 1.6875rem; */
+  /* flex-shrink: 0; */
+  /* z-index: 1; */
 `;
 
 const CropImageBox = styled.div`
@@ -56,41 +67,70 @@ const CropInfoBox = styled.div`
 `;
 
 const CropCard = () => {
+  const crops: CropType[] = [
+    {
+      packDiaryId: 1,
+      cropType: "토마토",
+      packDiaryTitle: "똘똘한토마토",
+      packDiaryCulStartAt: "2024-03-01",
+      packDiaryCulEndAt: "2024-04-01",
+      packDiaryGrowthStage: "2",
+      packDiaryCreatedAt: "2024-03-01",
+      cropTypeImgUrl: "wheat_img.jpg",
+    },
+    {
+      packDiaryId: 2,
+      cropType: "브로콜리",
+      packDiaryTitle: "데프콘",
+      packDiaryCulStartAt: "2024-02-15",
+      packDiaryCulEndAt: "2024-04-15",
+      packDiaryGrowthStage: "1",
+      packDiaryCreatedAt: "2024-02-15",
+      cropTypeImgUrl: "corn_img.jpg",
+    },
+  ];
+
   return (
     <CardListBox>
-      <CardItemBox>
-        <CardItemDecoBox>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="106"
-            height="27"
-            viewBox="0 0 106 27"
-            fill="none"
-          >
-            <circle cx="5" cy="22" r="5" fill="#A8A9AD" />
-            <circle cx="53" cy="22" r="5" fill="#A8A9AD" />
-            <circle cx="77" cy="22" r="5" fill="#A8A9AD" />
-            <circle cx="101" cy="22" r="5" fill="#A8A9AD" />
-            <circle cx="29" cy="22" r="5" fill="#A8A9AD" />
-            <rect x="2" width="6" height="22" rx="2" fill="#575759" />
-            <rect x="26" width="6" height="22" rx="2" fill="#575759" />
-            <rect x="50" width="6" height="22" rx="2" fill="#575759" />
-            <rect x="74" width="6" height="22" rx="2" fill="#575759" />
-            <rect x="98" width="6" height="22" rx="2" fill="#575759" />
-          </svg>
-        </CardItemDecoBox>
-        <CropImageBox>
-          <img src="" alt="" />
-        </CropImageBox>
-        <CropTitle>
-          <p>똘똘한토마토</p>
-        </CropTitle>
-        <CropInfoBox>
-          <span>토마토 2단계</span>
-          <span> · </span>
-          <span>D+21</span>
-        </CropInfoBox>
-      </CardItemBox>
+      {crops &&
+        crops.map((crop, index) => (
+          <CardItemBox key={index}>
+            <CardItemDecoBox>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="106"
+                height="27"
+                viewBox="0 0 106 27"
+                fill="none"
+              >
+                <circle cx="5" cy="22" r="5" fill="#A8A9AD" />
+                <circle cx="53" cy="22" r="5" fill="#A8A9AD" />
+                <circle cx="77" cy="22" r="5" fill="#A8A9AD" />
+                <circle cx="101" cy="22" r="5" fill="#A8A9AD" />
+                <circle cx="29" cy="22" r="5" fill="#A8A9AD" />
+                <rect x="2" width="6" height="22" rx="2" fill="#575759" />
+                <rect x="26" width="6" height="22" rx="2" fill="#575759" />
+                <rect x="50" width="6" height="22" rx="2" fill="#575759" />
+                <rect x="74" width="6" height="22" rx="2" fill="#575759" />
+                <rect x="98" width="6" height="22" rx="2" fill="#575759" />
+              </svg>
+            </CardItemDecoBox>
+            <CropImageBox>
+              <img src={crop.cropTypeImgUrl} alt="" />
+            </CropImageBox>
+            <CropTitle>
+              <p>{crop.packDiaryTitle}</p>
+            </CropTitle>
+            <CropInfoBox>
+              <span>
+                {crop.cropType} {crop.packDiaryGrowthStage}단계
+              </span>
+              <span> · </span>
+              <span>D+21</span>
+              {/* 여기에 packDiaryCreated 이용해 d day 출력 */}
+            </CropInfoBox>
+          </CardItemBox>
+        ))}
     </CardListBox>
   );
 };
