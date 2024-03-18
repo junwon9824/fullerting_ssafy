@@ -20,17 +20,6 @@ interface CropType {
   cropTypeImgUrl: string;
 }
 
-const ConButton = styled.button`
-  width: 9.5rem;
-  height: 2.5625rem;
-  border-radius: 1.28125rem;
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
-  color: #fff;
-  font-size: 1rem;
-  font-weight: bold;
-`;
-
 const ButtonBox = styled.div`
   display: flex;
   width: 100%;
