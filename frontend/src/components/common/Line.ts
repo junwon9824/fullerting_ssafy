@@ -12,4 +12,9 @@ const HalfLine = styled.hr`
   background: ${({ theme }) => theme.colors.gray1};
 `;
 
-export { HalfLine, Line };
+const HalfColoredLine = styled.hr`
+  width: 9.93rem;
+  height: 0.1875rem;
+  background: ${({ theme }) => theme.colors.primary};
+`;
+export { HalfLine, Line, HalfColoredLine };
