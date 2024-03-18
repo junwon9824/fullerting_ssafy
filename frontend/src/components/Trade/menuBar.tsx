@@ -3,9 +3,9 @@ import MenuBarButton from "./menuBarButton";
 import { useState } from "react";
 
 const MenuContainer = styled.div`
-  width: auto;
+  width: 100%;
   height: auto;
-  padding-left: 1.31rem;
+  /* padding-left: 1.31rem; */
   padding-right: 3.5rem;
   justify-content: space-between;
   display: flex;

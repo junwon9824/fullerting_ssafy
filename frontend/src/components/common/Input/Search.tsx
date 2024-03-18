@@ -1,7 +1,7 @@
 import { ChangeEvent } from "react";
 import styled from "styled-components";
 
-interface StyledInputType {
+interface SearchType {
   type: string;
   id: string;
   name: string;
@@ -38,14 +38,14 @@ const InputContainer = styled.div`
   border-radius: 0.5rem;
 `;
 
-const StyledInput = ({
+const Search = ({
   type,
   id,
   name,
   placeholder,
   value,
   onChange,
-}: StyledInputType) => {
+}: SearchType) => {
   return (
     <InputContainer>
       <svg
@@ -75,4 +75,4 @@ const StyledInput = ({
   );
 };
 
-export default StyledInput;
+export default Search;
