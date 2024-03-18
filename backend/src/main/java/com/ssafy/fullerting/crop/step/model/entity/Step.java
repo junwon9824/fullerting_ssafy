@@ -12,7 +12,7 @@ import lombok.*;
 @Builder(toBuilder = true)
 @Getter
 @ToString
-public class Step {
+public class Step { //작물단계
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crop_step_id")
@@ -20,11 +20,11 @@ public class Step {
 
     @ManyToOne
     @JoinColumn(name="crop_type_id")
-    private Crop crop;
+    private Crop crop; //작물
 
-    @Column(name = "crop_step_growth", length = 3)
+    @Column(name = "crop_step_growth")
     @NotNull
-    private String step; //단계
+    private int step; //단계
 
     @Column(name = "crop_step_harvest_day")
     @NotNull

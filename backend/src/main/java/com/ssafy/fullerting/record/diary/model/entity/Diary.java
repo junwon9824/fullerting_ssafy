@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Builder(toBuilder = true)
 @Getter
 @ToString
-public class Diary {
+public class Diary { //작물일기
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_id")
@@ -23,11 +23,11 @@ public class Diary {
 
     @ManyToOne
     @JoinColumn(name="pack_diary_id")
-    private PackDiary packDiary;
+    private PackDiary packDiary; //작물일지
 
     @Column(name = "diary_behavior", length = 10)
     @NotNull
-    private String behavior; //행동
+    private String behavior; //행동(다이어리,물주기)
 
     @Column(name = "diary_title", length = 30)
     @NotNull
@@ -43,5 +43,5 @@ public class Diary {
 
     @Column(name = "diary_created_at")
     @NotNull
-    private Timestamp createdat; //생성일
+    private Timestamp createdAt; //생성일
 }

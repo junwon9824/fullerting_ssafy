@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @Builder(toBuilder = true)
 @Getter
 @ToString
-public class PackDiary {
+public class PackDiary { //작물일지
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pack_diary_id")
@@ -28,7 +28,7 @@ public class PackDiary {
 
     @OneToOne
     @JoinColumn(name="crop_type_id")
-    private Crop crop;
+    private Crop crop; //작물
 
     @Column(name = "pack_diary_title", length = 30)
     @NotNull
@@ -41,8 +41,9 @@ public class PackDiary {
     @Column(name = "pack_diary_cul_end_at")
     private Date culEndAt; //재배종료일
 
-    @Column(name = "pack_diary_growth_stage")
-    private Integer growthStage; //작물단계
+    @Column(name = "pack_diary_growth_step", columnDefinition = "INT DEFAULT 0")
+    @NotNull
+    private int growthStep; //작물단계
 
     @Column(name = "pack_diary_created_at")
     @NotNull

@@ -13,7 +13,7 @@ import lombok.*;
 @Builder(toBuilder = true)
 @Getter
 @ToString
-public class Tip {
+public class Tip { //작물꿀팁
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "crop_tip_id")
@@ -21,11 +21,11 @@ public class Tip {
 
     @ManyToOne
     @JoinColumn(name="crop_type_id")
-    private Crop crop;
+    private Crop crop; //작물
 
-    @ManyToOne
-    @JoinColumn(name="crop_step_id")
-    private Step step; //단계
+    @Column(name = "crop_tip_growth_step")
+    @NotNull
+    private int step; //단계
 
     @Column(name = "crop_tip_content", length = 100)
     @NotNull
