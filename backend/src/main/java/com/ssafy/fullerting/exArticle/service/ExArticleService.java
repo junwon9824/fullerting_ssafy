@@ -85,7 +85,7 @@ public class ExArticleService {
 
         List<ExArticleResponse> exArticleResponses = exArticle.stream().map(ExArticle::fromEntity).collect(Collectors.toList());
 
-        return exArticleResponses;
+        return exArticleResponses; 
     }
 
 
