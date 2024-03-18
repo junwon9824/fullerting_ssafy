@@ -1,19 +1,16 @@
-package com.ssafy.fullerting.bid_log.service;
+package com.ssafy.fullerting.bidLog.service;
 
-import com.ssafy.fullerting.bid_log.model.dto.request.BidProposeRequest;
-import com.ssafy.fullerting.bid_log.model.entity.BidLog;
-import com.ssafy.fullerting.bid_log.repository.BidRepository;
+import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
+import com.ssafy.fullerting.bidLog.model.entity.BidLog;
+import com.ssafy.fullerting.bidLog.repository.BidRepository;
 import com.ssafy.fullerting.deal.exception.DealErrorCode;
 import com.ssafy.fullerting.deal.exception.DealException;
-import com.ssafy.fullerting.deal.model.dto.request.DealProposeRequest;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
-import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
-import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

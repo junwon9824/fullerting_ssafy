@@ -1,4 +1,4 @@
-package com.ssafy.fullerting.bid_log.model.dto.request;
+package com.ssafy.fullerting.bidLog.model.dto.request;
 
 import lombok.Getter;
 

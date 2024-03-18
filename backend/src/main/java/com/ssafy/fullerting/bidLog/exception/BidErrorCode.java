@@ -1,4 +1,4 @@
-package com.ssafy.fullerting.bid_log.exception;
+package com.ssafy.fullerting.bidLog.exception;
 
 
 import lombok.AllArgsConstructor;

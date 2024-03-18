@@ -1,8 +1,7 @@
-package com.ssafy.fullerting.bid_log.model.entity;
+package com.ssafy.fullerting.bidLog.model.entity;
 
 import com.ssafy.fullerting.deal.model.entity.Deal;
-import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
- import jakarta.persistence.*;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
