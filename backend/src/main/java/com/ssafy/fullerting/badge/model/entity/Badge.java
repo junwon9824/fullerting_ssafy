@@ -8,7 +8,7 @@ public class Badge {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int badgeId;
+    private Long badgeId;
 
     @Column(name = "badge_name", nullable = false, length = 20)
     private String name;
