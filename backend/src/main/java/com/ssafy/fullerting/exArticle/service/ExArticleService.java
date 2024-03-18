@@ -7,7 +7,7 @@ import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticlePayment;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
-import com.ssafy.fullerting.user.model.entity.User;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class ExArticleService {
     private final DealRepository dealRepository;
     private final DealService dealService;
 
-    public void register(ExArticleRegisterRequest exArticleRegisterRequest, User user) {
+    public void register(ExArticleRegisterRequest exArticleRegisterRequest, CustomUser user) {
 
         LocalDateTime createdAt = LocalDateTime.now(); // 현재 시각 설정
 

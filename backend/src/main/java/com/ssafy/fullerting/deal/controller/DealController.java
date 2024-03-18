@@ -4,7 +4,8 @@ import com.ssafy.fullerting.deal.model.dto.request.DealProposeRequest;
 import com.ssafy.fullerting.deal.service.DealService;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.global.utils.MessageUtils;
-import com.ssafy.fullerting.user.model.entity.User;
+
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class DealController {
 
     @GetMapping("/{ex_article_id}/suggestion")
     @Operation(summary = "가격 제안조회하기 ", description = "가격 제안 조회 하기")
-    public ResponseEntity<MessageUtils> selectdeal(@AuthenticationPrincipal User user) {
+    public ResponseEntity<MessageUtils> selectdeal(@AuthenticationPrincipal CustomUser user) {
         dealService.selectdeal();
         log.info("[show deal]: {}");
         return ResponseEntity.ok().body(MessageUtils.success());
@@ -33,7 +34,7 @@ public class DealController {
 
     @GetMapping("/test")
     @Operation(summary = "가격 제안조회하기 ", description = "가격 제안 조회 하기")
-    public ResponseEntity<MessageUtils> test(@AuthenticationPrincipal User user) {
+    public ResponseEntity<MessageUtils> test(@AuthenticationPrincipal CustomUser user) {
         log.info("[show deal]: {}");
         return ResponseEntity.ok().body(MessageUtils.success());
 
