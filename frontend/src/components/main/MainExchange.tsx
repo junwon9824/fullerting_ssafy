@@ -4,7 +4,7 @@ import pullleft from "/src/assets/svg/pullleft.svg";
 const MainBox = styled.div`
   justify-content: center;
   flex-direction: column;
-  height: 14.5rem;
+  height: 13rem;
   padding: 1%.5rem 0;
 `;
 const LogoAndTextContainer = styled.div`
@@ -23,7 +23,7 @@ const Text = styled.div`
 const Character = styled.button`
   display: flex;
   align-items: center;
-  padding-top: 1rem;
+  padding-top: 0.5rem;
   margin-right: 0.5rem;
 `;
 
@@ -48,7 +48,7 @@ const LogoText = styled.div`
 const ExchangeBox = styled.div`
   display: flex;
   padding: 0.4375rem 0.5rem;
-  height: 7rem;
+  height: 6.5rem;
   width: 18rem;
   border-radius: 0rem 0.9375rem 0.9375rem 0.9375rem;
   border: 1.5px solid var(--sub0, #a0d8b3);

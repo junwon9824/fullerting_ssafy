@@ -10,16 +10,18 @@ interface ButtonProps {
   padding?: string;
   text?: string;
   color?: string;
+  borderRadius?: number;
+  border?: string;
 }
-
 const ColorStyle = styled.button<ButtonProps>`
-  background-color: ${(props: ButtonProps) => props.backgroundColor};
-  width: ${(props: ButtonProps) => `${props.width}rem`};
-  height: ${(props: ButtonProps) => `${props.height}rem`};
-  font-weight: ${(props: ButtonProps) => `${props.fontWeight}`};
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  color: white;
+  background-color: ${(props) => props.backgroundColor};
+  width: ${(props) => `${props.width}rem`};
+  height: ${(props) => `${props.height}rem`};
+  font-weight: ${(props) => `${props.fontWeight}`};
+  border-radius: ${(props) => `${props.borderRadius}rem`};
+  border: ${(props) => `${props.border}`};
+  font-size: ${(props) => `${props.fontSize}rem`};
+  color: ${(props) => `${props.color}`};
 `;
 
 const Button = (props: ButtonProps) => {
@@ -31,6 +33,10 @@ const Button = (props: ButtonProps) => {
         height={props.height}
         fontWeight={props.fontWeight}
         backgroundColor={props.backgroundColor}
+        borderRadius={props.borderRadius}
+        color={props.color}
+        border={props.border}
+        fontSize={props.fontSize}
       >
         {props.text}
       </ColorStyle>

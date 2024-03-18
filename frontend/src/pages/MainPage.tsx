@@ -3,6 +3,7 @@ import MainTop from "../components/main/MainTop";
 import MainExchange from "../components/main/MainExchange";
 import MainTip from "../components/main/MainTip";
 import MainMap from "../components/main/MainMap";
+import { NavBar } from "../components/common/Navigator/navigator";
 
 const MainBox = styled.main`
   display: flex;
@@ -19,6 +20,7 @@ const MainPage = () => {
         <MainTip />
         <MainMap />
       </MainBox>
+      <NavBar />
     </>
   );
 };

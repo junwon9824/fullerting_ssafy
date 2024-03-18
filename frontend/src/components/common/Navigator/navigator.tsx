@@ -26,7 +26,8 @@ const NavBox = styled.div`
 `;
 
 const NavInnerBox = styled.div`
-  width: 22.5rem;
+  /* width: 22.5rem; */
+  width: 100%;
   height: 3.625rem;
   justify-content: space-between;
   border-radius: 0.9375rem 0.9375rem 0rem 0rem;
@@ -66,7 +67,8 @@ const TopInnerBox = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 19.875rem;
+  /* width: 19.875rem; */
+  width: 100%;
   height: 3.125rem;
   position: relative;
 `;

@@ -5,7 +5,7 @@ import {
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
 import useInput from "../../hooks/useInput";
 import Search from "../../components/common/Input/Search";
-import CropCard from "../../components/diary/CropCard";
+import CropList from "../../components/diary/CropList";
 
 const CropPage = () => {
   const [search, setSearch] = useInput("");
@@ -22,7 +22,7 @@ const CropPage = () => {
             placeholder="작물명 또는 닉네임을 입력해주세요"
             onChange={setSearch}
           />
-          <CropCard />
+          <CropList />
         </LayoutInnerBox>
       </LayoutMainBox>
       <NavBar />
