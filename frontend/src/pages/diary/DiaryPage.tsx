@@ -33,7 +33,7 @@ const MiddleBox = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 0.5rem;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
 `;
 
 const ButtonBox = styled.div`
