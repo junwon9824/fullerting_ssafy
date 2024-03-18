@@ -66,6 +66,7 @@ const CheckButton = ({ onClick, text }: ButtonType) => {
       onClick={onClick}
       fontWeight="bold"
       text={text}
+      borderRadius={6.25}
     />
   );
 };
@@ -79,6 +80,7 @@ const CancleButton = ({ onClick, text }: ButtonType) => {
       onClick={onClick}
       fontWeight="bold"
       text={text}
+      borderRadius={6.25}
     />
   );
 };

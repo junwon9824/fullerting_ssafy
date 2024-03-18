@@ -10,14 +10,14 @@ interface ButtonProps {
   padding?: string;
   text?: string;
   color?: string;
+  borderRadius?: number;
 }
-
 const ColorStyle = styled.button<ButtonProps>`
   background-color: ${(props: ButtonProps) => props.backgroundColor};
   width: ${(props: ButtonProps) => `${props.width}rem`};
   height: ${(props: ButtonProps) => `${props.height}rem`};
   font-weight: ${(props: ButtonProps) => `${props.fontWeight}`};
-  border-radius: 0.5rem;
+  border-radius: ${(props: ButtonProps) => `${props.borderRadius}rem`};
   font-size: 1rem;
   color: white;
 `;
@@ -31,6 +31,7 @@ const Button = (props: ButtonProps) => {
         height={props.height}
         fontWeight={props.fontWeight}
         backgroundColor={props.backgroundColor}
+        borderRadius={props.borderRadius}
       >
         {props.text}
       </ColorStyle>
