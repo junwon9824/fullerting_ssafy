@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/pack_diaries")
@@ -27,5 +24,10 @@ public class PackDiaryController {
         UserResponse userResponse = userService.getUserInfo();
         packDiaryService.createPackDiary(userResponse.toEntity(userResponse), createPackDiaryRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
+    @GetMapping
+    public ResponseEntity<MessageUtils> getAllPackDiary(){
+        return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getAllPackDiary()));
     }
 }
