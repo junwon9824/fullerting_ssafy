@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app/myproject
 
 # 의존성 설치
-COPY requirements.txt /app/
+COPY requirements.txt /app/myproject/
 
 # 최신 버전의 pip를 설치합니다.
 RUN /usr/local/bin/python -m pip install --upgrade pip
@@ -18,7 +18,8 @@ RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 소스 코드 복사
-COPY . /app/
+# 소스 코드 복사
+COPY ./ /app/myproject/
 
 # gunicorn 설치
 RUN pip install gunicorn
@@ -27,4 +28,6 @@ RUN pip install gunicorn
 ENV PYTHONPATH=/app/myproject
 
 # Docker 컨테이너 내에서 실행될 명령을 지정합니다.
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--chdir", "/app/myproject", "myproject.wsgi:application"]
+
+# Django 애플리케이션 실행
+CMD ["python", "manage.py", "runserver" ]
