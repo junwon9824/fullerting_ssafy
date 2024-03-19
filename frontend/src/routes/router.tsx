@@ -12,65 +12,49 @@ import Logout from "../pages/profile/Logout";
 import ProposePost from "../pages/profile/ProposePost";
 import TransPost from "../pages/profile/TransPost";
 import DiaryPage from "../pages/diary/DiaryPage";
-import TradePost from "../pages/trade/TradePost";
+import MyPageLayout from "../pages/profile/MyPageLayout";
 
-const router = createBrowserRouter([
-  {
-    path: "/diary/detail",
-    element: <DiaryPage />,
-  },
-  {
-    path: "/",
-    element: <MainPage />,
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/join",
-    element: <JoinPage />,
-  },
-  {
-    path: "/diary",
-    element: <CropPage />,
-  },
-  {
-    path: "/trade",
-    element: <TradePage />,
-  },
+const authRoutes = [
+  { path: "/", element: <MainPage /> },
+  { path: "/login", element: <LoginPage /> },
+  { path: "/join", element: <JoinPage /> },
+];
+
+// 다이어리 관련 경로
+const diaryRoutes = [
+  { path: "/diary", element: <CropPage /> },
+  { path: "/diary/detail", element: <DiaryPage /> },
+  // { path: "/diary/detail/create", element: <DiaryCreatePage />},
+  // { path: "/diary/detail/water", element: <DiaryWaterPage /> },
+  // { path: "/diary/create", element: <CropCreatePage /> },
+];
+
+// 거래 관련 경로
+const tradeRoutes = [
+  { path: "/trade", element: <TradePage /> },
+  { path: "/trade/post", element: <TradePost /> },
+];
+
+const mypageRoutes = [
   {
     path: "/mypage",
-    element: <MyPage />,
+    element: <MyPageLayout />,
+    children: [
+      { index: true, element: <MyPage /> },
+      { path: "editprofile", element: <EditProfile /> },
+      { path: "allbadge", element: <AllBadge /> },
+      { path: "likedpost", element: <LikedPost /> },
+      { path: "proposepost", element: <ProposePost /> },
+      { path: "transpost", element: <TransPost /> },
+      { path: "logout", element: <Logout /> },
+    ],
   },
-  {
-    path: "/editprofile",
-    element: <EditProfile />,
-  },
-  {
-    path: "/allbadge",
-    element: <AllBadge />,
-  },
-  {
-    path: "/proposepost",
-    element: <ProposePost />,
-  },
-  {
-    path: "/likedpost",
-    element: <LikedPost />,
-  },
-  {
-    path: "/transpost",
-    element: <TransPost />,
-  },
-  {
-    path: "/logout",
-    element: <Logout />,
-  },
-  {
-    path: "trade/post",
-    element: <TradePost />,
-  },
-]);
+];
+
+// 모든 경로를 하나의 배열로 결합
+const routes = [...authRoutes, ...diaryRoutes, ...tradeRoutes, ...mypageRoutes];
+
+// 라우터 생성
+const router = createBrowserRouter(routes);
 
 export default router;

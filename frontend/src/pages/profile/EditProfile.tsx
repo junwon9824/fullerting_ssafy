@@ -2,17 +2,19 @@ import {
   LayoutMainBox,
   LayoutInnerBox,
 } from "../../components/common/Layout/Box";
-import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
+import { TopBar } from "../../components/common/Navigator/navigator";
+import EditImage from "../../components/mypage/editprofile/EditImage";
+import EditInformation from "../../components/mypage/editprofile/EditInfromation";
 const EditProfile = () => {
   return (
     <>
       <TopBar title="프로필 수정" showBack={false} />
       <LayoutMainBox>
         <LayoutInnerBox>
-          <h1>프로필수정</h1>
+          <EditImage />
+          <EditInformation />
         </LayoutInnerBox>
       </LayoutMainBox>
-      <NavBar />
     </>
   );
 };
