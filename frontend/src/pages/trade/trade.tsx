@@ -20,15 +20,6 @@ const ImgBox = styled.img`
   left: 0;
   z-index: -1;
 `;
-const ContentBox = styled.div`
-  width: 100%;
-  /* height: auto; */
-  gap: 1.38rem;
-  flex-wrap: wrap;
-  overflow-y: auto;
-  display: flex;
-  justify-content: space-between;
-`;
 const TradePage = () => {
   const [search, setSearch] = useInput("");
   return (
@@ -44,9 +35,7 @@ const TradePage = () => {
             onChange={setSearch}
           />
           <MenuBar />
-
           <Post />
-
           <NavBar />
         </LayoutInnerBox>
       </LayoutMainBox>
