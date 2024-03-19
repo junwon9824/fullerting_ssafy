@@ -13,6 +13,7 @@ import ProposePost from "../pages/profile/ProposePost";
 import TransPost from "../pages/profile/TransPost";
 import DiaryPage from "../pages/diary/DiaryPage";
 import MyPageLayout from "../pages/profile/MyPageLayout";
+import TradePost from "../pages/trade/TradePost";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
