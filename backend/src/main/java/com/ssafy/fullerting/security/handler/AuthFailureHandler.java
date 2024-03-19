@@ -18,6 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AuthFailureHandler implements AuthenticationFailureHandler, AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         response.setStatus(401);

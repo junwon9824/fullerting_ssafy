@@ -1,14 +1,18 @@
 package com.ssafy.fullerting.badge.model.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name="badge")
 public class Badge {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int badgeId;
+    private Long badgeId;
 
     @Column(name = "badge_name", nullable = false, length = 20)
     private String name;

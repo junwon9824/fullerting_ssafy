@@ -23,14 +23,13 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.util.Collections;
 
 @RequiredArgsConstructor
-@EnableWebSecurity(debug = false)
+@EnableWebSecurity(debug = false )
 @Configuration
 public class SecurityConfig {
 
     private final JwtValidationFilter jwtValidationFilter;
     private final AuthFailureHandler authFailureHandler;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
-//    private final CustomAuthenticationProvider customAuthenticationProvider;
 
     // 패스워드 암호화 방식
     @Bean
@@ -50,17 +49,19 @@ public class SecurityConfig {
                 // 인가 경로 설정
                 .authorizeHttpRequests((requests) ->
                         requests.requestMatchers(
+                                "/error",
                                 "/v1/auth/login",
                                 "/v1/users/register",
+                                "/v1/file/upload",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**"
                         ).permitAll().anyRequest().authenticated())
                 // 예외처리
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling
-                                .authenticationEntryPoint(authFailureHandler)
-                )
+//                .exceptionHandling(exceptionHandling ->
+//                        exceptionHandling
+//                                .authenticationEntryPoint(authFailureHandler)
+//                )
 //                // 토큰 사용을 위해 JSESSIONID 발급 중지
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
