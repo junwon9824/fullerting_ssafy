@@ -12,6 +12,7 @@ import Logout from "../pages/profile/Logout";
 import ProposePost from "../pages/profile/ProposePost";
 import TransPost from "../pages/profile/TransPost";
 import DiaryPage from "../pages/diary/DiaryPage";
+import TradePost from "../pages/trade/TradePost";
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
   {
     path: "/logout",
     element: <Logout />,
+  },
+  {
+    path: "trade/post",
+    element: <TradePost />,
   },
 ]);
 
