@@ -14,6 +14,9 @@ import TransPost from "../pages/profile/TransPost";
 import DiaryPage from "../pages/diary/DiaryPage";
 import MyPageLayout from "../pages/profile/MyPageLayout";
 import TradePost from "../pages/trade/TradePost";
+import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
+import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
+import CropCreatePage from "../pages/diary/CropCreatePage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -25,9 +28,9 @@ const authRoutes = [
 const diaryRoutes = [
   { path: "/diary", element: <CropPage /> },
   { path: "/diary/detail", element: <DiaryPage /> },
-  // { path: "/diary/detail/create", element: <DiaryCreatePage />},
-  // { path: "/diary/detail/water", element: <DiaryWaterPage /> },
-  // { path: "/diary/create", element: <CropCreatePage /> },
+  { path: "/diary/detail/create", element: <DiaryCreatePage /> },
+  { path: "/diary/detail/water", element: <DiaryWaterPage /> },
+  { path: "/diary/create", element: <CropCreatePage /> },
 ];
 
 // 거래 관련 경로
