@@ -47,6 +47,7 @@ public class CustomUser implements UserDetails{
     @Column(name = "user_location", length = 20)
     private String location;
 
+
     
     // 메서드 설정
 
