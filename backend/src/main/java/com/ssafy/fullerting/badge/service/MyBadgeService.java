@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,17 +23,15 @@ public class MyBadgeService {
     public List<MyBadgeResponse> getAllMyBadges() {
         Long userId = userService.getUserInfo().getId();
         log.info("유저 : {} 의 뱃지 정보조회", userId);
-        List<MyBadge> myBadges = myBadgeRepository.findByCustomUser_Id(userId);
+        List<MyBadge> myBadges = myBadgeRepository.findByCustomUserId(userId);
 
 
         return myBadges.stream().map(myBadge ->
                 MyBadgeResponse.builder()
                 .id(myBadge.getMyBadgeId())
-                .userId(myBadge.getCustomUser().getId())
-                .badgeName(myBadge.getBadge())
-                .badgeImg()
-                .build(); )
-
-
+                .badgeName(myBadge.getBadge().getName())
+                .badgeImg(myBadge.getBadge().getImg())
+                .build())
+                .collect(Collectors.toList());
     }
 }

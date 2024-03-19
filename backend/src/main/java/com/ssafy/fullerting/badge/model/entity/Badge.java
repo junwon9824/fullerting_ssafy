@@ -1,8 +1,12 @@
 package com.ssafy.fullerting.badge.model.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name="badge")
 public class Badge {
 
