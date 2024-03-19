@@ -67,6 +67,7 @@ def calc_ai(request):
         }
 
         return JsonResponse(response_data)
+        
     else:
         return JsonResponse({'error': 'This method is not allowed'}, status=405)
 
