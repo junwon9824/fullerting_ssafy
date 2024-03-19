@@ -168,16 +168,20 @@ const WaterCard = ({ diary }: { diary: DiaryType }) => {
 
 const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
   return (
-    <DiaryBox>
-      {diaries &&
-        diaries.map((diary) =>
-          diary.diaryBehavior === "다이어리" ? (
-            <DiaryCard key={diary.diaryId} diary={diary} />
-          ) : (
-            <WaterCard key={diary.diaryId} diary={diary} />
-          )
-        )}
-    </DiaryBox>
+    <>
+      <div>calendar</div>
+      <span>2024년</span>
+      <DiaryBox>
+        {diaries &&
+          diaries.map((diary) =>
+            diary.diaryBehavior === "다이어리" ? (
+              <DiaryCard key={diary.diaryId} diary={diary} />
+            ) : (
+              <WaterCard key={diary.diaryId} diary={diary} />
+            )
+          )}
+      </DiaryBox>
+    </>
   );
 };
 

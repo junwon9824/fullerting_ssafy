@@ -10,7 +10,8 @@ import RecognizeButton from "../../components/diary/RecognizeButton";
 import DiaryList from "../../components/diary/DiaryList";
 import MenuBar from "../../components/diary/MenuBar";
 import { useAtom } from "jotai";
-import { cropAtom } from "../../stores/diary";
+import { cropAtom, menuAtom } from "../../stores/diary";
+import CropTips from "../../components/diary/CropTips";
 
 const TopBox = styled.div`
   display: flex;
@@ -35,6 +36,7 @@ const ButtonBox = styled.div`
 
 const DiaryPage = () => {
   const [crop, setCrop] = useAtom(cropAtom);
+  const [menu, setMenu] = useAtom(menuAtom);
 
   const diaries: DiaryType[] = [
     {
@@ -84,9 +86,11 @@ const DiaryPage = () => {
           </TopBox>
           <MiddleBox>
             <MenuBar />
-            <div>calendar</div>
-            <span>2024년</span>
-            <DiaryList diaries={diaries} />
+            {menu === "작물꿀팁" ? (
+              <CropTips />
+            ) : (
+              <DiaryList diaries={diaries} />
+            )}
           </MiddleBox>
         </LayoutInnerBox>
       </LayoutMainBox>
