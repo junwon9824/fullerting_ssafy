@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode.NOT_EXISTS_CROP;
 
 @RequiredArgsConstructor
@@ -25,16 +28,17 @@ public class PackDiaryServiceImpl implements PackDiaryService {
     @Override
     public void createPackDiary(CustomUser user, CreatePackDiaryRequest createPackDiaryRequest) {
         Crop crop = cropTypeRepository.findById(createPackDiaryRequest.getCropTypeId()).orElseThrow(()->new PackDiaryException(NOT_EXISTS_CROP));
-        packDiaryRepository.save(PackDiary.builder()
-                .id(null)
-                .user(user)
-                .crop(crop)
-                .title(createPackDiaryRequest.getPackDiaryTitle())
-                .culStartAt(createPackDiaryRequest.getPackDiaryCulStartAt())
-                .culEndAt(null)
-                .growthStep(0)
-                .createdAt(null)
-                .build()
-        );
+        if(crop != null) {
+            packDiaryRepository.save(PackDiary.builder()
+                    .user(user)
+                    .crop(crop)
+                    .title(createPackDiaryRequest.getPackDiaryTitle())
+                    .culStartAt(createPackDiaryRequest.getPackDiaryCulStartAt())
+                    .culEndAt(null)
+                    .growthStep(0)
+                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                    .build()
+            );
+        }
     }
 }

@@ -23,8 +23,7 @@ public class PackDiaryController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity createPackDiary(@RequestBody CreatePackDiaryRequest createPackDiaryRequest){
-        log.debug("test : " + createPackDiaryRequest.toString());
+    public ResponseEntity<MessageUtils> createPackDiary(@RequestBody CreatePackDiaryRequest createPackDiaryRequest){
         UserResponse userResponse = userService.getUserInfo();
         packDiaryService.createPackDiary(userResponse.toEntity(userResponse), createPackDiaryRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
