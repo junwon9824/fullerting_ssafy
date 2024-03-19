@@ -13,7 +13,7 @@ RUN npm install
 # 프로젝트 소스 복사
 COPY . .
 
-# 환경변수 PATH 설정 (이미 설정되어 있음) 
+# 환경변수 PATH 설정  
 ENV PATH /FRONTEND/node_modules/.bin:$PATH
 
 # 애플리케이션 실행
