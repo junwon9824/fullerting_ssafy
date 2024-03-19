@@ -74,7 +74,7 @@ const InfoBox = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 0.3rem;
+  gap: 0.5rem;
 `;
 
 const Title = styled.div`
@@ -83,6 +83,7 @@ const Title = styled.div`
 `;
 const Content = styled.div`
   font-size: 0.8rem;
+  line-height: 1.375rem;
 `;
 const WaterContent = styled.div`
   padding: 0.75rem 0.8rem;
