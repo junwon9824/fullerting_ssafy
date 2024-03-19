@@ -1,8 +1,9 @@
 def component = [
-    // 'front': true,
+    'front': true,
     'back': true,
     'nginx': true,
-    'redis': true,
+    'ai': true,
+
 ]
 
 pipeline {
@@ -10,7 +11,7 @@ pipeline {
     environment {
         // 환경변수 설정
         NGINX_TAG = 'latest'
-        // FRONT_TAG = 'v1.0'
+        FRONT_TAG = 'latest'
         BACK_TAG = 'latest'
         REDIS_TAG = 'alpine'
         DOCKER_USER_ID = 'junwon1131'
@@ -41,10 +42,10 @@ pipeline {
                         // Gradle 설정 추가
                         // sh "echo 'org.gradle.java.home=${ORG_GRADLE_JAVA_HOME}' > gradle.properties"
 
-                        //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
-                        //docker에 동적으로 tag를 지정하기 위해 사용했다.
-                        // sh "echo TAG=$version >> .env"
-                        // sh 'cat .env'
+                    //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
+                    //docker에 동적으로 tag를 지정하기 위해 사용했다.
+                    // sh "echo TAG=$version >> .env"
+                    // sh 'cat .env'
                     }
                 }
             }
@@ -68,8 +69,15 @@ pipeline {
                     fi
                     '''
                     // Docker Compose를 사용하여 서비스 빌드
-                    sh 'pwd'
-                    sh 'docker-compose -f backend/docker-compose.yml build'
+                    // sh 'pwd'
+                    // sh 'docker-compose -f ./backend/docker-compose.yml build'
+
+                    dir('backend') {
+                        // backend 디렉토리 내에서 명령을 실행합니다.
+                        sh 'pwd'  // 현재 디렉토리 위치 출력
+                        sh 'ls -al'  // 디렉토리 내의 파일 목록 출력
+                        sh 'docker-compose -f docker-compose.yml build'  // Docker Compose를 사용하여 서비스 빌드
+                    }
                 }
             }
         }
@@ -86,7 +94,8 @@ pipeline {
         stage('Tag and Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh 'docker-compose -f back/docker-compose.yml push'
+                     sh 'pwd'
+                    sh 'docker-compose -f backend/docker-compose.yml push'
                 }
             }
         }
@@ -105,12 +114,30 @@ pipeline {
                     component.each { entry ->
                         if (entry.value && entry.key != 'redis') {
                             def var = entry.key
-                            sh "docker-compose -f back/docker-compose.yml -p develop-server pull ${var.toLowerCase()}"
+                            sh "docker-compose -f backend/docker-compose.yml -p develop-server pull ${var.toLowerCase()}"
                         }
                     }
                 }
             }
         }
+        
+        stage('Down') {
+            steps {
+                script {
+                    component.each { entry ->
+                        if (entry.value) {
+                            def var = entry.key
+                            try {
+                                sh "docker-compose -f backend/docker-compose.yml -p develop-server down ${var.toLowerCase()}"
+                            } catch (Exception e) {
+                                echo "Failed to down ${var.toLowerCase()}."
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
         stage('Up') {
             steps {
@@ -119,11 +146,11 @@ pipeline {
                         if (entry.value) {
                             def var = entry.key
                             try {
-                                sh "docker-compose -f back/docker-compose.yml -p develop-server up -d ${var.toLowerCase()}"
+                                sh "docker-compose -f backend/docker-compose.yml -p develop-server up -d ${var.toLowerCase()}"
                             } catch (Exception e) {
                                 // 'docker compose up -d' 명령이 실패한 경우
                                 echo "Failed to up. Starting 'docker compose start'..."
-                                sh "docker-compose -f back/docker-compose.yml -p develop-server restart ${var.toLowerCase()}"
+                                sh "docker-compose -f backend/docker-compose.yml -p develop-server restart ${var.toLowerCase()}"
                             }
                         }
                     }

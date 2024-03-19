@@ -8,13 +8,17 @@ import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,20 +47,24 @@ public class JwtUtils {
 
     // 토큰만료시간
     public Date getExpiredTime(Long period) {
-        log.info("Token lifetime = {}", period);
+        log.info("Token : lifetime = {}", period);
         return Date.from(ZonedDateTime.now(zoneId).plus(Duration.ofMillis(period)).toInstant());
     }
 
     // 엑세스 토큰 생성
-    public String issueAccessToken(Long id, String email, String role) {
-        // userId로 subject 설정
-        // 이메일하고 역할을 서브 클레임으로
-        // -> 나중에 사용자 식별자로 사용될 예정
-        log.info("Issue AccessToken for {}", id);
+    public String issueAccessToken(String email, Long userId ,Collection<? extends GrantedAuthority> authorities) {
+        // email로 subject 설정
+
+        List<String> authorityList = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        log.info("Token : Issue AccessToken for princiapl : {}, authorities : {}", email, authorityList);
+
         return Jwts.builder()
-                .setSubject(String.valueOf(id))
-                .claim("email", email)
-                .claim("role", role)
+                .setSubject(email)
+                .claim("userId", userId )
+                .claim("authorities", authorityList)
                 .setIssuedAt(getIssuedAt())
                 .setExpiration(getExpiredTime(jwtProperties.getAccesstime()))
                 .signWith(SignatureAlgorithm.HS256, accessSecretKey)
@@ -64,12 +72,18 @@ public class JwtUtils {
     }
 
     // 리프레시 토큰 생성
-    public String issueRefreshToken(Long id, String email, String role) {
-        log.info("Issue RefreshToken for {}", id);
+    public String issueRefreshToken(String email, Long userId ,Collection<? extends GrantedAuthority> authorities) {
+
+        List<String> authorityList = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        log.info("Token : Issue RefreshToken for princiapl : {}, authorities : {}", email, authorityList);
+
         return Jwts.builder()
-                .setSubject(String.valueOf(id))
-                .claim("email", email)
-                .claim("role", role)
+                .setSubject(email)
+                .claim("userId", userId )
+                .claim("authorities", authorityList)
                 .setIssuedAt(getIssuedAt())
                 .setExpiration(getExpiredTime(jwtProperties.getRefreshtime()))
                 .signWith(SignatureAlgorithm.HS256, refreshSecretKey)
@@ -79,6 +93,7 @@ public class JwtUtils {
     // Access 토큰 검증
     public Jws<Claims> validateAccessToken(final String token) {
         try {
+            // 토큰의 서명을 검증하고 클레임 추출
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(accessSecretKey).parseClaimsJws(token);
             invalidTokenRepository.findById(token).ifPresent(value -> {
                 throw new JwtException(JwtErrorCode.TOKEN_SIGNATURE_ERROR);
@@ -126,16 +141,16 @@ public class JwtUtils {
     // 재발급 할 때 기존 토큰에서 위 정보 가져올 수 있도록 메서드 만들어두기
     public Long getUserIdByAccessToken(String accessToken){
         return Long.valueOf(
-                validateAccessToken(accessToken).getBody().getSubject()
+                validateAccessToken(accessToken).getBody().get("userId", Long.class)
         );
     }
 
     public String getEmailByAccessToken(String accessToken) {
-        return validateAccessToken(accessToken).getBody().get("email", String.class);
+        return validateAccessToken(accessToken).getBody().getSubject();
     }
 
-    public String getRoleByAccessToken(String accessToken) {
-        return validateAccessToken(accessToken).getBody().get("role", String.class);
+    public List<String> getRoleByAccessToken(String accessToken) {
+        return validateAccessToken(accessToken).getBody().get("authorities", List.class);
     }
 
 
@@ -146,7 +161,7 @@ public class JwtUtils {
                         .build()
                         .parseClaimsJws(refreshToken)
                         .getBody()
-                        .getSubject()
+                        .get("userId", Long.class)
         );
     }
 
@@ -156,18 +171,18 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(refreshToken)
                 .getBody()
-                .get("email", String.class);
+                .getSubject();
     }
 
 
 
-    public String getRoleByRefreshToken(String refreshToken) {
+    public List<String> getRoleByRefreshToken(String refreshToken) {
         return Jwts.parserBuilder()
                 .setSigningKey(refreshSecretKey)
                 .build()
                 .parseClaimsJws(refreshToken)
                 .getBody()
-                .get("role", String.class);
+                .get("authorities", List.class);
 
     }
 

@@ -4,9 +4,12 @@ import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +18,7 @@ import java.util.Collection;
 @Builder
 @Entity
 @Table(name = "user")
-public class User implements UserDetails{
+public class CustomUser implements UserDetails{
 
     // DB 필드
     @Id
@@ -44,16 +47,20 @@ public class User implements UserDetails{
     @Column(name = "user_location", length = 20)
     private String location;
 
+
     
     // 메서드 설정
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
+
 
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority(this.role));
     }
 
 
