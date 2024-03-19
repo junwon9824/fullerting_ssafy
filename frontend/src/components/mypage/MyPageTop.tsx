@@ -46,14 +46,14 @@ const Grade = styled.span`
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 1rem; /* 100% */
+  line-height: 1rem;
 `;
 
 const Maintop = () => {
   const navigate = useNavigate();
 
   const goToProfilePage = () => {
-    navigate("/editprofile");
+    navigate("editprofile");
   };
 
   return (

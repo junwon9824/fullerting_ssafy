@@ -2,6 +2,7 @@ def component = [
     'front': true,
     'back': true,
     'nginx': true,
+    'ai': true,
 
 ]
 

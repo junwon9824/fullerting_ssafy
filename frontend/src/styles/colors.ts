@@ -9,4 +9,5 @@ export const COLORS = {
   pink0: "#FFBFBF",
   blue0: "#B6BDFF",
   white: "#FFFFFF",
+  black: "#000000",
 };

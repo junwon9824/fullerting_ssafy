@@ -41,11 +41,11 @@ const ContentBox = styled.div`
   /* height: auto; */
   margin-bottom: 1.38rem;
   flex-wrap: wrap;
-  overflow-y: auto;
+  overflow-y: hidden;
   display: flex;
   justify-content: space-between;
   position: relative;
-  z-index: 1;
+  z-index: -1;
 `;
 
 const LikeBox = styled.div<ClickLike>`
@@ -141,8 +141,8 @@ const WriteBox = styled.img`
 `;
 const stateArray = ["제안", "작물일지"];
 
-const Post = (props: Icon) => {
-  const [like, setLike] = useState([false, false, false]);
+const Post = () => {
+  const [like, setLike] = useState([false, false, false, false, false]);
   const [word, setword] = useState<number>(12);
   const navigate = useNavigate();
   const handelWriteClick = () => {

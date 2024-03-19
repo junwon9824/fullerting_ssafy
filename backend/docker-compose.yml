@@ -23,6 +23,20 @@ services:
     networks:
       - jenkins-network
 
+
+  ai:
+    container_name: ai
+    image: junwon1131/s10c102-ai:latest
+    build:
+      context:  ../A.I
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    networks:
+      - jenkins-network
+
+
   front:
     container_name: front
     image: junwon1131/s10c102-front:latest
