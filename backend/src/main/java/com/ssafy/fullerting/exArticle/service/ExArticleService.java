@@ -83,8 +83,7 @@ public class ExArticleService {
 
     public List<ExArticleResponse> allArticle() {
         List<ExArticle> exArticle = exArticleRepository.findAll();
-
-        List<ExArticleResponse> exArticleResponses = exArticle.stream().map(ExArticle::fromEntity).collect(Collectors.toList());
+        List<ExArticleResponse> exArticleResponses = exArticle.stream().map(ExArticle::toResponse).collect(Collectors.toList());
 
         return exArticleResponses;
     }
@@ -94,6 +93,7 @@ public class ExArticleService {
         //좋아요 로직
         ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
 
         UserResponse userResponse = userService.getUserInfo();
         Long userid = userResponse.getId();
@@ -109,13 +109,16 @@ public class ExArticleService {
         favorite.setExArticle(article);
         favorite.setUser(userResponse.toEntity(userResponse));
 
+        article.addfavorite(favorite);
+
         favoriteRepository.save(favorite);
     }
 
     public List<ExArticleResponse> keyword(String keyword) { //keyword 검색.
-        List<ExArticleResponse> exArticleResponses = exArticleRepository.findAllByTitleContaining(keyword).stream()
-                .map((ExArticleResponse::fromEntity ).collect(Collectors.toList());
+        List<ExArticle> exArticles = exArticleRepository.findAllByTitleContaining(keyword).orElseThrow(() ->
+                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
-        return exArticleResponses;
+        return exArticles.stream().map(ExArticle::toResponse).collect(Collectors.toList());
     }
+
 }

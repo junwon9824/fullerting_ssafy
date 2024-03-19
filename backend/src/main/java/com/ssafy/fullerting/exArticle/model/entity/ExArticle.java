@@ -9,6 +9,7 @@ import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Entity
 @ToString
 @Table(name = "ex_article")
+@Slf4j
 public class ExArticle {
 
     @Id
@@ -78,24 +80,36 @@ public class ExArticle {
         this.deal = deal;
     }
 
-    public void setfavorite(List<Favorite> favorite) {
-        this.favorite = favorite;
+    public void addfavorite(Favorite favorite) {
+        this.favorite.add(favorite);
     }
 
-    public static ExArticleResponse fromEntity(ExArticle article) {
-        return ExArticleResponse.builder()
-                .exArticleId(article.getId())
-                .exArticleTitle(article.getTitle())
-                .exArticleType(article.getType())
-                .exLocation(article.getLocation())
-                .imageResponses(article.getImage().stream().map(  )
-                        .collect(Collectors.toList()) )
-                .favoriteResponse(article.getFavorite().stream()
-                        .map(Favorite::toResponse)
-                        .collect(Collectors.toList()))
-                .build();
-    }
+    public static ExArticleResponse toResponse(ExArticle article) {
+        ExArticleResponse exArticleResponse = null;
 
+//        if (article.favorite.size() == 0) {
+//            exArticleResponse = ExArticleResponse.builder()
+//                    .exArticleId(article.getId())
+//                    .exArticleTitle(article.getTitle())
+//                    .exArticleType(article.getType())
+//                    .exLocation(article.getLocation())
+//                    .imageResponses(article.getImage().stream().map(Image::toResponse)
+//                            .collect(Collectors.toList())).build();
+//        } else { //null 이 아닌경우
+//            log.info("notnullllllllllll");
+            exArticleResponse = ExArticleResponse.builder()
+                    .exArticleId(article.getId())
+                    .exArticleTitle(article.getTitle())
+                    .exArticleType(article.getType())
+                    .exLocation(article.getLocation())
+                    .imageResponses(article.getImage().stream().map(Image::toResponse)
+                            .collect(Collectors.toList()))
+                    .favoriteResponse(article.favorite.stream().map(Favorite::toResponse).collect(Collectors.toList()))
+                    .build();
+//        }
+
+        return exArticleResponse;
+    }
 
 
 }

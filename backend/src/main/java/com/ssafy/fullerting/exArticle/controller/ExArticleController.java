@@ -38,7 +38,7 @@ public class ExArticleController {
     }
 
 
-    @GetMapping("")
+    @GetMapping("/all")
     @Operation(summary = "작물거래 전체 조회 ", description = "작물거래 전체 조회")
     public ResponseEntity<MessageUtils> allArticle() {
         List<ExArticleResponse> exArticleResponse = exArticleService.allArticle();
@@ -46,7 +46,6 @@ public class ExArticleController {
 
         log.info("[all article]: {}", exArticleResponse);
         return ResponseEntity.ok().body(MessageUtils.success(exArticleResponse));
-
     }
 
     @PostMapping("/{ex_article_id}/like")
@@ -69,7 +68,7 @@ public class ExArticleController {
 
         log.info("[search article keyword]: {}", exArticleResponses);
 
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success(exArticleResponses));
     }
 
 }

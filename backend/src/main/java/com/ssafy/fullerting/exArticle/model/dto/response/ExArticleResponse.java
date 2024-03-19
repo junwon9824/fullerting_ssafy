@@ -3,7 +3,9 @@ package com.ssafy.fullerting.exArticle.model.dto.response;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.favorite.model.dto.response.FavoriteResponse;
+import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.image.model.dto.response.ImageResponse;
+import com.ssafy.fullerting.image.model.entity.Image;
 import lombok.*;
 
 import java.util.List;
@@ -40,12 +42,13 @@ public class ExArticleResponse {
                 .exArticleTitle(article.getTitle())
                 .exArticleType(article.getType())
                 .imageResponses(article.getImage().stream()
-                        .map(image -> fromEntity() )
+                        .map(Image::toResponse)
                         .collect(Collectors.toList()))
                 .favoriteResponse(article.getFavorite().stream()
-                        .map(FavoriteResponse::fromEntity)
+                        .map(Favorite::toResponse)
                         .collect(Collectors.toList()))
                 .build();
+
     }
 
 }

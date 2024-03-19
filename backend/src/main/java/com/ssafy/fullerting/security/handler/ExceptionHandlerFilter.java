@@ -28,37 +28,39 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) {
-        try{
+        try {
             filterChain.doFilter(request, response);
-        }catch ( MalformedJwtException e){
+        } catch (MalformedJwtException e) {
             log.error("exception : 잘못된 엑세스 토큰 시그니처");
             setErrorResponse(response, TOKEN_SIGNATURE_ERROR.getHttpStatus(), TOKEN_SIGNATURE_ERROR.getMessage());
-        }catch (ExpiredJwtException e){
+        } catch (ExpiredJwtException e) {
             log.error("exception : 엑세스 토큰 기간 만료");
             setErrorResponse(response, EXPIRED_TOKEN.getHttpStatus(), EXPIRED_TOKEN.getMessage());
-        }catch (UnsupportedJwtException | SignatureException e){
+        } catch (UnsupportedJwtException | SignatureException e) {
             log.error("exception : 지원되지 않는 엑세스 토큰");
             setErrorResponse(response, NOT_SUPPORT_TOKEN.getHttpStatus(), NOT_SUPPORT_TOKEN.getMessage());
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             log.error("exception : 잘못된 엑세스 토큰");
             setErrorResponse(response, INVALID_TOKEN.getHttpStatus(), INVALID_TOKEN.getMessage());
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("exception : {}", e);
+            e.printStackTrace();
             setErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
     private void setErrorResponse(
             HttpServletResponse response,
             HttpStatus status,
             String errorMassage
-    ){
+    ) {
         ObjectMapper objectMapper = new ObjectMapper();
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        try{
+        try {
             String jsonResponse = objectMapper.writeValueAsString(MessageUtils.fail(status.name(), errorMassage));
             response.getWriter().write(jsonResponse);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
