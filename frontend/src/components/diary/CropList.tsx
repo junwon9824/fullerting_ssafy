@@ -1,17 +1,6 @@
 import styled from "styled-components";
 import CropProfile from "./CropProfile";
 
-interface CropType {
-  packDiaryId: number;
-  cropType: string;
-  packDiaryTitle: string;
-  packDiaryCulStartAt: string;
-  packDiaryCulEndAt: string | null;
-  packDiaryGrowthStep: string;
-  packDiaryCreatedAt: string;
-  cropTypeImgUrl: string;
-}
-
 const CardListBox = styled.div`
   display: flex;
   width: 19.875rem;

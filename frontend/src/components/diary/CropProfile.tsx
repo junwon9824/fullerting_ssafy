@@ -1,16 +1,5 @@
 import styled from "styled-components";
 
-interface CropType {
-  packDiaryId: number;
-  cropType: string;
-  packDiaryTitle: string;
-  packDiaryCulStartAt: string;
-  packDiaryCulEndAt: string | null;
-  packDiaryGrowthStep: string;
-  packDiaryCreatedAt: string;
-  cropTypeImgUrl: string;
-}
-
 interface CropProfileType {
   crop: CropType;
   direction?: "row" | "column";

@@ -9,27 +9,8 @@ import Button from "../../components/common/Button/primaryButton";
 import RecognizeButton from "../../components/diary/RecognizeButton";
 import DiaryList from "../../components/diary/DiaryList";
 import MenuBar from "../../components/diary/MenuBar";
-
-interface CropType {
-  packDiaryId: number;
-  cropType: string;
-  packDiaryTitle: string;
-  packDiaryCulStartAt: string;
-  packDiaryCulEndAt: string | null;
-  packDiaryGrowthStep: string;
-  packDiaryCreatedAt: string;
-  cropTypeImgUrl: string;
-}
-
-interface DiaryType {
-  diaryId: number;
-  packDiaryId: number;
-  diaryBehavior: "다이어리" | "물주기";
-  diaryTitle: string;
-  diaryContent: string;
-  diarySelectedAt: string;
-  diaryCreatedAt: string;
-}
+import { useAtom } from "jotai";
+import { cropAtom } from "../../stores/diary";
 
 const TopBox = styled.div`
   display: flex;
@@ -53,16 +34,7 @@ const ButtonBox = styled.div`
 `;
 
 const DiaryPage = () => {
-  const crop: CropType = {
-    packDiaryId: 1,
-    cropType: "토마토",
-    packDiaryTitle: "똘똘한토마토",
-    packDiaryCulStartAt: "2024-03-01",
-    packDiaryCulEndAt: "2024-04-01",
-    packDiaryGrowthStep: "2",
-    packDiaryCreatedAt: "2024-03-01",
-    cropTypeImgUrl: "tomato_img.jpg",
-  };
+  const [crop, setCrop] = useAtom(cropAtom);
 
   const diaries: DiaryType[] = [
     {

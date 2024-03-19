@@ -1,15 +1,5 @@
 import styled from "styled-components";
 
-interface DiaryType {
-  diaryId: number;
-  packDiaryId: number;
-  diaryBehavior: "다이어리" | "물주기";
-  diaryTitle: string;
-  diaryContent: string;
-  diarySelectedAt: string;
-  diaryCreatedAt: string;
-}
-
 const DiaryBox = styled.div`
   display: flex;
   flex-direction: column;
