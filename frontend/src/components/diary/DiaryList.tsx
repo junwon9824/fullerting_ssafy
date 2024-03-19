@@ -68,12 +68,12 @@ const InfoBox = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: bold;
 `;
 const Content = styled.div`
-  font-size: 0.8rem;
-  line-height: 1.375rem;
+  font-size: 0.95rem;
+  line-height: 1.35rem;
 `;
 const WaterContent = styled.div`
   padding: 0.75rem 0.8rem;
@@ -82,21 +82,21 @@ const WaterContent = styled.div`
   align-items: center;
 
   gap: 0.5rem;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: bold;
 `;
 const WaterIcon = styled.div`
   display: flex;
   justify-items: center;
   align-items: center;
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1.3rem;
+  height: 1.3rem;
   border-radius: 50%;
   background-color: ${({ theme }) => theme.colors.blue0};
 `;
 const WaterIconSVG = styled.svg`
   width: 100%;
-  height: 80%;
+  height: 85%;
 `;
 const DiaryCard = ({ diary }: { diary: DiaryType }) => {
   const diaryDate = new Date(diary.diarySelectedAt);
