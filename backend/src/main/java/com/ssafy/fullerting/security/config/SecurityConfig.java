@@ -55,12 +55,6 @@ public class SecurityConfig {
                                 "/v1/file/upload",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-<<<<<<< HEAD
-                                "/swagger-resources/**",
-                                "/v1/pack_diaries/**"
-                        ).permitAll()
-                        .anyRequest().authenticated());
-=======
                                 "/swagger-resources/**"
                         ).permitAll().anyRequest().authenticated())
                 // 예외처리
@@ -72,11 +66,10 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .addFilterBefore(new SecurityContextPersistenceFilter(), DisableEncodeUrlFilter.class)
-        // JWT 필터
+                // JWT 필터
                 .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(exceptionHandlerFilter, JwtValidationFilter.class);
 
->>>>>>> 33fa6f345a33c4f1f99892020e91f3e3ca53a56c
 
 
         return http.build();

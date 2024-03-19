@@ -8,7 +8,7 @@ import com.ssafy.fullerting.record.packdiary.exception.PackDiaryException;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.CreatePackDiaryRequest;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
-import com.ssafy.fullerting.user.model.entity.User;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class PackDiaryServiceImpl implements PackDiaryService {
     private final CropTypeRepository cropTypeRepository;
 
     @Override
-    public void createPackDiary(User user, CreatePackDiaryRequest createPackDiaryRequest) {
+    public void createPackDiary(CustomUser user, CreatePackDiaryRequest createPackDiaryRequest) {
         Crop crop = cropTypeRepository.findById(createPackDiaryRequest.getCropTypeId()).orElseThrow(()->new PackDiaryException(NOT_EXISTS_CROP));
         packDiaryRepository.save(PackDiary.builder()
                 .id(null)

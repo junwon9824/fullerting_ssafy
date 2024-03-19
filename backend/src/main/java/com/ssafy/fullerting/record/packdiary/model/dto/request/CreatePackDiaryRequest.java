@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @Getter
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CreatePackDiaryRequest {
     private Long cropTypeId;
     private String packDiaryTitle;

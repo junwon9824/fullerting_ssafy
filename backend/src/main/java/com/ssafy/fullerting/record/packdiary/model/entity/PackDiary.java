@@ -1,7 +1,7 @@
 package com.ssafy.fullerting.record.packdiary.model.entity;
 
 import com.ssafy.fullerting.crop.type.model.entity.Crop;
-import com.ssafy.fullerting.user.model.entity.User;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -24,7 +24,7 @@ public class PackDiary { //작물일지
 
     @ManyToOne
     @JoinColumn(name="user_id")
-    private User user;
+    private CustomUser user;
 
     @OneToOne
     @JoinColumn(name="crop_type_id")
