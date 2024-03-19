@@ -20,5 +20,5 @@ from RecognizeCrop import views as CropViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('test/', CropViews.calc_ai)
+    path('v1/calc', CropViews.calc_ai)
 ]
