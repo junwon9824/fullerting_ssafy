@@ -54,7 +54,7 @@ const ContentBox = styled.div`
 
 const ImageBox = styled.div`
   width: 100%;
-  height: 7.6875rem;
+  height: 10rem;
   background-color: #41acac;
 `;
 
@@ -68,12 +68,12 @@ const InfoBox = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: bold;
 `;
 const Content = styled.div`
-  font-size: 0.95rem;
-  line-height: 1.35rem;
+  font-size: 0.9rem;
+  line-height: 1.5rem;
 `;
 const WaterContent = styled.div`
   padding: 0.75rem 0.8rem;
@@ -82,7 +82,7 @@ const WaterContent = styled.div`
   align-items: center;
 
   gap: 0.5rem;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: bold;
 `;
 const WaterIcon = styled.div`

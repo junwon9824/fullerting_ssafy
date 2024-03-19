@@ -27,7 +27,7 @@ const GrowthStep = styled.span`
 
 const Content = styled.div`
   font-size: 1rem;
-  line-height: 1.375rem;
+  line-height: 1.725rem;
 `;
 
 const CropTips = () => {
