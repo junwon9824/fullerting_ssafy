@@ -22,6 +22,9 @@ COPY . /app/
 # Collect static files
 # RUN python manage.py migrate
 
+# gunicorn 설치
+RUN pip install gunicorn
+
 
 # Docker 컨테이너 내에서 실행될 명령을 지정합니다.
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myproject.wsgi:application"]
