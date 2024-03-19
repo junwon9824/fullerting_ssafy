@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app/
 
 # Collect static files
-RUN python manage.py runserver
+# RUN python manage.py migrate
 
 
 # Docker 컨테이너 내에서 실행될 명령을 지정합니다.
