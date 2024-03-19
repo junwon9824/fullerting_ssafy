@@ -6,6 +6,7 @@ import com.ssafy.fullerting.crop.type.repository.CropTypeRepository;
 import com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode;
 import com.ssafy.fullerting.record.packdiary.exception.PackDiaryException;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.CreatePackDiaryRequest;
+import com.ssafy.fullerting.record.packdiary.model.dto.response.GetAllPackDiaryResponse;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode.NOT_EXISTS_CROP;
 
@@ -40,5 +43,11 @@ public class PackDiaryServiceImpl implements PackDiaryService {
                     .build()
             );
         }
+    }
+
+    @Override
+    public List<GetAllPackDiaryResponse> getAllPackDiary() {
+        List<PackDiary> packDiaryList = packDiaryRepository.findAll();
+        return packDiaryList.stream().map(GetAllPackDiaryResponse::fromResponse).collect(Collectors.toList());
     }
 }
