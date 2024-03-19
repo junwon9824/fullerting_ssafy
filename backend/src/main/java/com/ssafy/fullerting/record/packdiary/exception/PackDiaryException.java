@@ -1,4 +1,13 @@
 package com.ssafy.fullerting.record.packdiary.exception;
 
-public class PackDiaryException {
+import lombok.Getter;
+
+@Getter
+public class PackDiaryException extends RuntimeException{
+    private final PackDiaryErrorCode errorCode;
+
+    public PackDiaryException(PackDiaryErrorCode errorCode){
+        super(errorCode.getMessage());
+        this.errorCode=errorCode;
+    }
 }

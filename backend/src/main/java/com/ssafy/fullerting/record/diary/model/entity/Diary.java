@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
 @Table(name="diary")
@@ -39,7 +40,7 @@ public class Diary { //작물일기
 
     @Column(name = "diary_selected_at")
     @NotNull
-    private Date selectedAt; //선택일
+    private LocalDate selectedAt; //선택일
 
     @Column(name = "diary_created_at")
     @NotNull

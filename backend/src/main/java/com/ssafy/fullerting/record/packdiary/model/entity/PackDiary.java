@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
 @Table(name="pack_diary")
@@ -36,10 +36,10 @@ public class PackDiary { //작물일지
 
     @Column(name = "pack_diary_cul_start_at")
     @NotNull
-    private Date culStartAt; //재배시작일
+    private LocalDate culStartAt; //재배시작일
 
     @Column(name = "pack_diary_cul_end_at")
-    private Date culEndAt; //재배종료일
+    private LocalDate culEndAt; //재배종료일
 
     @Column(name = "pack_diary_growth_step", columnDefinition = "INT DEFAULT 0")
     @NotNull

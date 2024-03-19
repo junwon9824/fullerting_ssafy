@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class PackDiaryController {
     private final PackDiaryService packDiaryService;
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity createPackDiary(@AuthenticationPrincipal User user, @RequestBody CreatePackDiaryRequest createPackDiaryRequest){
+        log.debug("test!!!!!!!!!!!!!!!!!!!!!!!!!! : " + createPackDiaryRequest.getCropTypeId());
         packDiaryService.createPackDiary(user, createPackDiaryRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
