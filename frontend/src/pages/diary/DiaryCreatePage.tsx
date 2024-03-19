@@ -11,6 +11,7 @@ import { useState } from "react";
 import { BottomButton } from "../../components/common/Button/LargeButton";
 import StyledTextArea from "../../components/common/Input/StyledTextArea";
 import useInput from "../../hooks/useInput";
+import FileUploadInput from "../../components/common/Input/FileUploadInput";
 
 const DiaryCreatePage = () => {
   const [crop, setCrop] = useAtom(cropAtom);
@@ -57,6 +58,8 @@ const DiaryCreatePage = () => {
             onChange={setContent}
             maxLength={300}
           />
+
+          <FileUploadInput />
         </LayoutInnerBox>
       </LayoutMainBox>
       <BottomButton onClick={handleConfirmClick} text="확인" />
