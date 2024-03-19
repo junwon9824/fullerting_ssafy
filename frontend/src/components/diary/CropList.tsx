@@ -40,7 +40,7 @@ const CropList = () => {
   const crops: CropType[] = [
     {
       packDiaryId: 1,
-      cropType: "토마토",
+      cropTypeName: "토마토",
       packDiaryTitle: "똘똘한토마토",
       packDiaryCulStartAt: "2024-03-01",
       packDiaryCulEndAt: "2024-04-01",
@@ -50,7 +50,7 @@ const CropList = () => {
     },
     {
       packDiaryId: 2,
-      cropType: "브로콜리",
+      cropTypeName: "브로콜리",
       packDiaryTitle: "데프콘",
       packDiaryCulStartAt: "2024-02-15",
       packDiaryCulEndAt: "2024-04-15",

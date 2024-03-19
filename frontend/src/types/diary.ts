@@ -1,6 +1,6 @@
 interface CropType {
   packDiaryId: number;
-  cropType: string;
+  cropTypeName: string;
   packDiaryTitle: string;
   packDiaryCulStartAt: string;
   packDiaryCulEndAt: string | null;
@@ -21,7 +21,6 @@ interface DiaryType {
 
 interface TipType {
   cropTipId: number;
-  cropType: string;
   cropTipGrowthStep: number;
   cropTipContent: string;
 }
