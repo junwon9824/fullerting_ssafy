@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +75,7 @@ public class ExArticle {
     private List<Image> image;
 
     @OneToMany(mappedBy = "exArticle")
-    private List<Favorite> favorite;
+    private List<Favorite> favorite=new ArrayList<>();
 
     public void setdeal(Deal deal) {
         this.deal = deal;

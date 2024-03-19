@@ -109,6 +109,7 @@ public class ExArticleService {
         favorite.setExArticle(article);
         favorite.setUser(userResponse.toEntity(userResponse));
 
+
         article.addfavorite(favorite);
 
         favoriteRepository.save(favorite);
