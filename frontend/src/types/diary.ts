@@ -18,3 +18,10 @@ interface DiaryType {
   diarySelectedAt: string;
   diaryCreatedAt: string;
 }
+
+interface TipType {
+  cropTipId: number;
+  cropType: string;
+  cropTipGrowthStep: number;
+  cropTipContent: string;
+}
