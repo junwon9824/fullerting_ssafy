@@ -18,7 +18,6 @@ RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 소스 코드 복사
-# 소스 코드 복사
 COPY ./ /app/myproject/
 
 # gunicorn 설치
