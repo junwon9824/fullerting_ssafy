@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app/myproject
 
 # 의존성 설치
-COPY requirements.txt /app/
+COPY requirements.txt /app/myproject/
 
 # 최신 버전의 pip를 설치합니다.
 RUN /usr/local/bin/python -m pip install --upgrade pip
