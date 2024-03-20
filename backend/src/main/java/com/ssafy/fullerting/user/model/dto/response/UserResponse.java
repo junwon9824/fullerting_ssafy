@@ -17,7 +17,7 @@ public class UserResponse {
     private String rank;
     private String location;
 
-    public CustomUser toEntity(UserResponse userResponse){
+    public static CustomUser toEntity(UserResponse userResponse){
         return  CustomUser.builder()
                 .email(userResponse.email)
                 .id(userResponse.id)

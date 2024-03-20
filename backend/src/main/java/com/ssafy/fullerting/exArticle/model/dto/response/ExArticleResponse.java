@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Data
 @Builder
+@ToString
 public class ExArticleResponse {
 
     private String exLocation;
@@ -35,20 +36,22 @@ public class ExArticleResponse {
                 .build();
     }
 
-    public static ExArticleResponse fromEntity(ExArticle article) {
-        return ExArticleResponse.builder()
-                .exLocation(article.getLocation())
-                .exArticleId(article.getId())
-                .exArticleTitle(article.getTitle())
-                .exArticleType(article.getType())
-                .imageResponses(article.getImage().stream()
-                        .map(Image::toResponse)
-                        .collect(Collectors.toList()))
-                .favoriteResponse(article.getFavorite().stream()
-                        .map(Favorite::toResponse)
-                        .collect(Collectors.toList()))
-                .build();
-
-    }
+//    public static ExArticleResponse fromEntity(ExArticle article) {
+//        return ExArticleResponse.builder()
+//                .exLocation(article.getLocation())
+//                .exArticleId(article.getId())
+//                .exArticleTitle(article.getTitle())
+//                .exArticleType(article.getType())
+//                .imageResponses(article.getImage().stream()
+//                        .map(Image::toResponse)
+//                        .collect(Collectors.toList()))
+//
+//                .favoriteResponse(article.getFavorite().stream()
+//                        .map(Favorite::toResponse)
+//                        .collect(Collectors.toList()))
+//
+//                .build();
+//
+//    }
 
 }

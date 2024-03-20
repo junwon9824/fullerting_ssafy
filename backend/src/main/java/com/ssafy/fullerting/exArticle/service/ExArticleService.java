@@ -20,6 +20,7 @@ import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -83,7 +84,17 @@ public class ExArticleService {
 
     public List<ExArticleResponse> allArticle() {
         List<ExArticle> exArticle = exArticleRepository.findAll();
-        List<ExArticleResponse> exArticleResponses = exArticle.stream().map(ExArticle::toResponse).collect(Collectors.toList());
+        CustomUser user = UserResponse.toEntity(userService.getUserInfo());
+
+        log.info("eeeeeeeeeeeee" + exArticle.stream().
+                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
+
+
+        List<ExArticleResponse> exArticleResponses =
+                exArticle.stream().map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).
+                        collect(Collectors.toList());
+
+        log.info("exArticleResponses" + exArticleResponses.stream().filter(exArticleResponse -> exArticleResponse.getExArticleId()==28).toString());
 
         return exArticleResponses;
     }
@@ -118,8 +129,8 @@ public class ExArticleService {
     public List<ExArticleResponse> keyword(String keyword) { //keyword 검색.
         List<ExArticle> exArticles = exArticleRepository.findAllByTitleContaining(keyword).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-
-        return exArticles.stream().map(ExArticle::toResponse).collect(Collectors.toList());
+        CustomUser user = UserResponse.toEntity(userService.getUserInfo());
+        return exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
     }
 
 }

@@ -45,7 +45,7 @@ public class Image {
     public static ImageResponse toResponse(Image image)
     {
         return ImageResponse.builder()
-                .exArticle(image.getExArticle())
+//                .exArticle(image.getExArticle())
                 .img_store_url(image.getImg_store_url())
                 .id(image.getId())
                 .build();
