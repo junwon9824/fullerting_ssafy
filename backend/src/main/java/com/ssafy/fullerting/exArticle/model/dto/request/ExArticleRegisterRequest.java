@@ -25,7 +25,9 @@ public class ExArticleRegisterRequest {
 
     private String ex_article_location;
     private int deal_cur_price;
-    private Long  packdiaryid; //packdiary id .
+
+    @Builder.Default
+    private Long packdiaryid = null; // packdiary id
     private List<Favorite> favorite;
 
 }

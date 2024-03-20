@@ -66,9 +66,10 @@ public class ExArticleService {
         S3Response response =
                 amazonS3Service.uploadFile(files);
 
-        PackDiary packDiary = packDiaryRepository.findById(exArticleRegisterRequest.getPackdiaryid()).orElseThrow(() ->
-                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        Optional<PackDiary> packDiary = null;
 
+        if (exArticleRegisterRequest.getPackdiaryid() != null)
+            packDiary = packDiaryRepository.findById(exArticleRegisterRequest.getPackdiaryid());
 
 
         LocalDateTime createdAt = LocalDateTime.now(); // 현재 시각 설정
@@ -84,7 +85,7 @@ public class ExArticleService {
                 .location(exArticleRegisterRequest.getEx_article_location())
                 .user(customUser)
                 .favorite(exArticleRegisterRequest.getFavorite())
-                .packDiary(packDiary)
+                .packDiary(packDiary.orElse(null))
                 .build();
 
         log.info("exxxxx" + exArticle.toString());
