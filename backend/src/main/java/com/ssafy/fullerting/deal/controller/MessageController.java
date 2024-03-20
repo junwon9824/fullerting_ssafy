@@ -25,9 +25,9 @@ public class MessageController {
     private final UserService userService;
 
 
-        @MessageMapping("/deal/{chattingRoomId}/messages")  // (2)
+        @MessageMapping("/chattings/{chattingRoomId}/messages")  // (2)
         public void chat(@DestinationVariable Long chattingRoomId, DealstartRequest dealstartRequest) {  // (3)
-            messagingTemplate.convertAndSend("/sub/ws/" + chattingRoomId, dealstartRequest.getContent());
+            messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest.getContent());
             log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getContent(), dealstartRequest.getSenderid(), chattingRoomId);
         }
 
