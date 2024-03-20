@@ -5,13 +5,12 @@ const BadgesContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  margin: 1rem 0;
 `;
 
 const Badge = styled.img`
   width: 5.625rem;
   height: 5.625rem;
-  margin: 2rem 0;
+  margin: 1.5rem 0;
 `;
 
 const BadgeText = styled.div`
