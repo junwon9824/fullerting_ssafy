@@ -18,6 +18,7 @@ import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
 import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
 import CropCreatePage from "../pages/diary/CropCreatePage";
 import TradeGeneralDetail from "../pages/trade/TradeGeneralDetail";
+import TradeProposeDetail from "../pages/trade/TradeProposeDetail";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
@@ -38,6 +39,7 @@ const tradeRoutes = [
   { path: "/trade", element: <TradePage /> },
   { path: "/trade/post", element: <TradePost /> },
   { path: "/trade/generaldetail", element: <TradeGeneralDetail /> },
+  { path: "/trade/proposedetail", element: <TradeProposeDetail /> },
 ];
 
 const mypageRoutes = [
