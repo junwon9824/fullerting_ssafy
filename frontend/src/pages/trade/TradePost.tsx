@@ -1,13 +1,17 @@
 import styled from "styled-components";
 import StyledInput from "../../components/common/Input/StyledInput";
-import BasicLayout from "../../components/common/Layout/BasicLayout";
+import TradePostLayout from "../../components/common/Layout/TradePostLayout";
 import useInput from "../../hooks/useInput";
 import NonCheck from "/src/assets/svg/noncheck.svg";
 import Check from "/src/assets/svg/check.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StyledTextArea from "../../components/common/Input/StyledTextArea";
 import CheckModal from "../../components/Trade/finishModal";
 import SelectModal from "../../components/Trade/SelectModal";
+import Diary from "/src/assets/svg/plus-diary.svg";
+import Camera from "/src/assets/svg/camera.svg";
+import MultiFileUploadInput from "../../components/common/Input/MultiFileUploadInput";
+
 interface BackGround {
   backgroundColor?: string;
   zIndex?: number;
@@ -60,12 +64,21 @@ const CashText = styled.div`
   font-weight: 400;
   color: #000000;
 `;
-// const SelectBackGround = styled.div<BackGround>`
-//   width: 100%;
-//   height: 100%;
-//   background-color: ${(props) => props.backgroundColor};
-//   z-index: ${(props) => props.zIndex};
-// `;
+const DiaryBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 19.875rem;
+  gap: 0.6rem;
+`;
+const Label = styled.label`
+  display: flex;
+  color: ${({ theme }) => theme.colors.gray0};
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: bold;
+`;
 const SelectBackGround = styled.div<BackGround>`
   position: fixed; // 화면 전체에 고정되도록 설정
   top: 0;
@@ -80,27 +93,58 @@ const SelectBackGround = styled.div<BackGround>`
   justify-content: center; // 자식 요소들을 가운데 정렬
   align-items: center; // 자식 요소들을 수직 중앙 정렬
 `;
+const DiarySquare = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 1rem;
+  border: 2px solid ${({ theme }) => theme.colors.gray1};
+  background: ${({ theme }) => theme.colors.white};
+`;
 const TradePost = () => {
   const [title, setTitle] = useInput("");
   const [check, setCheck] = useState([true, false]);
   const [cashCheck, setCashCheck] = useState<boolean>(false);
   const [cash, setCash] = useInput("");
   const [content, setContent] = useInput("");
+  const closeModal = () => {
+    setModal(false);
+  };
   const handleRadioClick = (index: number) => {
     setCheck(check.map((a, i) => !a));
   };
-  const [modal, setModal] = useState<boolean>(true);
+  const [modal, setModal] = useState<boolean>(false);
   const handleCashClick = () => {
     setCashCheck(!cashCheck);
   };
+  const openModal = () => {
+    setModal(true);
+  };
+  useEffect(() => {
+    console.log(document.body);
+    // 모달이 열리면 body의 overflow를 hidden으로 설정
+    if (modal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    // 컴포넌트가 언마운트 될 때 원래 상태로 복구
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [modal]);
   return (
     <>
       {modal && (
         <SelectBackGround backgroundColor="rgba(4.87, 4.87, 4.87, 0.28)">
-          <SelectModal />
+          <SelectModal closeModal={closeModal} />
         </SelectBackGround>
       )}
-      <BasicLayout title="작물거래">
+      <TradePostLayout title="작물거래">
         <StyledInput
           label="제목"
           type="text"
@@ -187,7 +231,16 @@ const TradePost = () => {
           maxLength={300}
           isRequired={false}
         />
-      </BasicLayout>
+        <DiaryBox>
+          <Label>작물 일지</Label>
+          <DiarySquare onClick={openModal}>
+            <img src={Diary} alt="diary" />
+          </DiarySquare>
+        </DiaryBox>
+        <DiaryBox>
+          <MultiFileUploadInput />
+        </DiaryBox>
+      </TradePostLayout>
     </>
   );
 };

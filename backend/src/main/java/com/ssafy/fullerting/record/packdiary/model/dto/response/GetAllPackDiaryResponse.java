@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.record.packdiary.model.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,7 @@ public class GetAllPackDiaryResponse {
     private LocalDate packDiaryCulStartAt;
     private LocalDate packDiaryCulEndAt;
     private int packDiaryGrowthStep;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp packDiaryCreatedAt;
     private String cropTypeName;
     private String cropTypeImgUrl;

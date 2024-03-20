@@ -56,7 +56,6 @@ public class UserService {
         String email = (String) principal;
 
         CustomUser customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-        tokenRepository.findById(customUser.getId()).orElseThrow(() -> new JwtException(JwtErrorCode.NOT_EXISTS_TOKEN));
         return customUser.toResponse();
     }
 

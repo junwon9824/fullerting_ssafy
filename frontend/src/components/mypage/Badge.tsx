@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import arrow from "/src/assets/svg/arrow_forward_ios.svg";
 import pul from "/src/assets/svg/pullleft.svg";
@@ -12,7 +13,8 @@ const ProfileContent = styled.div`
 const BadgesContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-right: auto; // 오른쪽으로 여백을 줘서 Next와 떨어지게 함
+  margin-right: auto;
+  margin-top: 1rem;
 `;
 
 const Badge = styled.div`
@@ -21,11 +23,13 @@ const Badge = styled.div`
   border-radius: 50%;
   background-color: #cdc8c8;
   margin-right: 0.8rem;
+  background-image: url(${(props) => props.imageUrl});
+  background-size: cover;
 `;
 
 const AdditionalBadges = styled.div`
-  font-size: 0.875rem; // 추가 뱃지 수의 폰트 사이즈 설정
-  line-height: 3.125rem; // 뱃지 높이에 맞춤
+  font-size: 0.875rem;
+  line-height: 3.125rem;
   color: #606060;
   margin-right: 0.5rem;
 `;
@@ -36,12 +40,13 @@ const ProfileText = styled.div`
 `;
 
 const Nickname = styled.span`
-  font-family: "GamtanRoad Dotum TTF";
   color: #000;
+
+  font-family: "GamtanRoad Dotum TTF";
   font-size: 0.875rem;
   font-style: normal;
-  font-weight: 400;
-  line-height: 1.125rem;
+  font-weight: bold;
+  line-height: 1.3rem;
 `;
 
 const Line = styled.hr`
@@ -58,76 +63,41 @@ const Maintop = () => {
     { imageUrl: pul },
     { imageUrl: pul },
     { imageUrl: pul },
-    { imageUrl: pul },
   ];
 
-  const additionalBadges = badges.length - 4;
-  const goToBadge = () => {
-    navigate("/mypage/allbadge");
-  };
-  const goToPropose = () => {
-    navigate("/mypage/proposepost");
-  };
-  const goToLike = () => {
-    navigate("/mypage/likedpost");
-  };
-  const goToTrans = () => {
-    navigate("/mypage/transpost");
-  };
-  const goToLogout = () => {
-    navigate("/mypage/logout");
-  };
+  const pages = [
+    { title: "보유 뱃지", onClick: () => navigate("/mypage/allbadge") },
+    { title: "", onClick: () => navigate("/mypage/allbadge") },
+    { title: "나의 제안 목록", onClick: () => navigate("/mypage/proposepost") },
+    { title: "관심 게시글", onClick: () => navigate("/mypage/likedpost") },
+    { title: "나의 거래 게시글", onClick: () => navigate("/mypage/transpost") },
+    { title: "로그아웃", onClick: () => navigate("/mypage/logout") },
+  ];
 
   return (
     <>
-      <ProfileContent onClick={goToBadge}>
-        <ProfileText>
-          <Nickname>보유 뱃지</Nickname>
-        </ProfileText>
-      </ProfileContent>
-      <ProfileContent onClick={goToBadge}>
-        <ProfileText></ProfileText>
-        <BadgesContainer>
-          {badges.slice(0, 4).map((badge, index) => (
-            <Badge
-              key={index}
-              style={{ backgroundImage: `url(${badge.imageUrl})` }}
-            />
-          ))}
-          {additionalBadges > 0 && (
-            <AdditionalBadges>+{additionalBadges}</AdditionalBadges>
-          )}
-        </BadgesContainer>
-      </ProfileContent>
-      <Line />
-      <ProfileContent onClick={goToPropose}>
-        <ProfileText>
-          <Nickname>나의 제안 목록</Nickname>
-        </ProfileText>
-        <img src={arrow} alt="" />
-      </ProfileContent>
-      <Line />
-      <ProfileContent onClick={goToLike}>
-        <ProfileText>
-          <Nickname>관심 게시글</Nickname>
-        </ProfileText>
-        <img src={arrow} alt="" />
-      </ProfileContent>
-      <Line />
-      <ProfileContent onClick={goToTrans}>
-        <ProfileText>
-          <Nickname>나의 거래 게시글</Nickname>
-        </ProfileText>
-        <img src={arrow} alt="" />
-      </ProfileContent>
-      <Line />
-      <ProfileContent onClick={goToLogout}>
-        <ProfileText>
-          <Nickname>로그아웃</Nickname>
-        </ProfileText>
-        <img src={arrow} alt="" />
-      </ProfileContent>
-      <Line />
+      {pages.map((page, index) => (
+        <React.Fragment key={index}>
+          <ProfileContent onClick={page.onClick}>
+            <ProfileText>
+              <Nickname>{page.title}</Nickname>
+            </ProfileText>
+            {page.title === "" ? (
+              <BadgesContainer>
+                {badges.slice(0, 4).map((badge, index) => (
+                  <Badge key={index} imageUrl={badge.imageUrl} />
+                ))}
+                {badges.length - 4 > 0 && (
+                  <AdditionalBadges>+{badges.length - 4}</AdditionalBadges>
+                )}
+              </BadgesContainer>
+            ) : (
+              <img src={arrow} alt="" />
+            )}
+          </ProfileContent>
+          {page.title !== "보유 뱃지" && <Line />}
+        </React.Fragment>
+      ))}
     </>
   );
 };
