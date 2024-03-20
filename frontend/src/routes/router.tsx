@@ -7,7 +7,7 @@ import TradePage from "../pages/trade/trade";
 import MyPage from "../pages/profile/MyPage";
 import AllBadge from "../pages/profile/AllBadge";
 import EditProfile from "../pages/profile/EditProfile";
-import LikedPost from "../pages/profile/LikedPost";
+import MyPost from "../pages/profile/MyPost";
 import Logout from "../pages/profile/Logout";
 import ProposePost from "../pages/profile/ProposePost";
 import TransPost from "../pages/profile/TransPost";
@@ -17,7 +17,7 @@ import TradePost from "../pages/trade/TradePost";
 import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
 import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
 import CropCreatePage from "../pages/diary/CropCreatePage";
-
+import TradeGeneralDetail from "../pages/trade/TradeGeneralDetail";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
@@ -37,6 +37,7 @@ const diaryRoutes = [
 const tradeRoutes = [
   { path: "/trade", element: <TradePage /> },
   { path: "/trade/post", element: <TradePost /> },
+  { path: "/trade/generaldetail", element: <TradeGeneralDetail /> },
 ];
 
 const mypageRoutes = [
@@ -47,7 +48,7 @@ const mypageRoutes = [
       { index: true, element: <MyPage /> },
       { path: "editprofile", element: <EditProfile /> },
       { path: "allbadge", element: <AllBadge /> },
-      { path: "likedpost", element: <LikedPost /> },
+      { path: "likedpost", element: <MyPost /> },
       { path: "proposepost", element: <ProposePost /> },
       { path: "transpost", element: <TransPost /> },
       { path: "logout", element: <Logout /> },
