@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.fullerting.global.s3.model.entity.response.S3ManyFilesResponse;
 import com.ssafy.fullerting.global.s3.model.entity.response.S3OneFileResponse;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -110,7 +113,17 @@ public class AmazonS3Service {
 
 
     public void deleteFile(String fileName){
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
-        System.out.println(bucket);
+
+        try {
+            String path = new URL(fileName).getPath();
+            String S3key = path.substring(1);
+
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, S3key));
+            log.info("파일 S3에서 삭제 : [{} : {}] ", bucket, S3key);
+        } catch (MalformedURLException e) {
+            log.error("잘못된 URL 형식 : {}", fileName, e);
+            throw new RuntimeException();
+        }
+
     }
 }

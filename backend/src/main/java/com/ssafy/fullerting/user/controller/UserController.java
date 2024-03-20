@@ -46,6 +46,8 @@ public class UserController {
     @PostMapping("/profile")
     @Operation(summary = "유저 프로필 사진 업로드", description = "유저의 프로필 사진을 업로드한다")
     public ResponseEntity<MessageUtils> uploadProfileImg(MultipartFile multipartFile) {
+
+
         return ResponseEntity.ok().body(MessageUtils.success(userService.uploadThumbAndSaveDB(multipartFile)));
     }
 

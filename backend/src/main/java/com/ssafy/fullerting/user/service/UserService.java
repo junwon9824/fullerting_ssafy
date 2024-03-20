@@ -73,6 +73,10 @@ public class UserService {
         CustomUser user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
         // 기존에 프로필 사진이 있었으면 지운다.
+        String thumbnail = user.getThumbnail();
+        if (thumbnail != null) {
+            amazonS3Service.deleteFile(thumbnail);
+        }
 
         // 사진을 받아 S3 에 저장하고
         String s3URL = amazonS3Service.uploadThunmail(multipartFile).getUrl();
