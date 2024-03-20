@@ -1,12 +1,13 @@
 package com.ssafy.fullerting.exArticle.controller;
 
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleKeywordResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
-import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.service.ExArticleService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 
-import com.ssafy.fullerting.user.model.entity.CustomUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -41,12 +41,22 @@ public class ExArticleController {
     @GetMapping("/all")
     @Operation(summary = "작물거래 전체 조회 ", description = "작물거래 전체 조회")
     public ResponseEntity<MessageUtils> allArticle() {
-        List<ExArticleResponse> exArticleResponse = exArticleService.allArticle();
+        List<ExArticleAllResponse > exArticleResponse = exArticleService.allArticle();
 
 
-        log.info("[all article]: {}", exArticleResponse);
+        log.info("[all article ]: {}", exArticleResponse);
         return ResponseEntity.ok().body(MessageUtils.success(exArticleResponse));
     }
+
+    @GetMapping("/{ex_article_id}/detail")
+    @Operation(summary = "작물거래 상세 조회 ", description = "작물거래 상세 조회")
+    public ResponseEntity<MessageUtils> detail(@PathVariable Long ex_article_id) {
+        ExArticleDetailResponse detail = exArticleService.detail(ex_article_id);
+
+        log.info("[detail article]: {}", detail);
+        return ResponseEntity.ok().body(MessageUtils.success(detail));
+    }
+
 
     @PostMapping("/{ex_article_id}/like")
     @Operation(summary = "작물거래 좋아요 등록  ", description = "작물거래 좋아요 등록")
@@ -64,7 +74,7 @@ public class ExArticleController {
     @GetMapping("/search")
     @Operation(summary = "작물 거래 게시물 키워드 검색 ", description = "작물 거래 게시물 키워드 검색")
     public ResponseEntity<MessageUtils> like(@RequestParam String keyword) {
-        List<ExArticleResponse> exArticleResponses= exArticleService.keyword(keyword);
+        List<ExArticleKeywordResponse > exArticleResponses = exArticleService.keyword(keyword);
 
         log.info("[search article keyword]: {}", exArticleResponses);
 
