@@ -69,7 +69,7 @@ public class ExArticleService {
         PackDiary packDiary = packDiaryRepository.findById(exArticleRegisterRequest.getPackdiaryid()).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
-         
+
 
         LocalDateTime createdAt = LocalDateTime.now(); // 현재 시각 설정
 
