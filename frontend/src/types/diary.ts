@@ -9,6 +9,12 @@ interface CropType {
   cropTypeImgUrl: string;
 }
 
+interface CropTypeType {
+  cropTypeId: number;
+  cropTypeImgUrl: string;
+  cropTypeName: string;
+}
+
 interface DiaryType {
   diaryId: number;
   packDiaryId: number;
