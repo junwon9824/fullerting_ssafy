@@ -3,6 +3,8 @@ import useInput from "../../hooks/useInput";
 import { useNavigate } from "react-router-dom";
 import StyledInput from "../common/Input/StyledInput";
 import { LargeButton } from "../common/Button/LargeButton";
+import { useMutation } from "@tanstack/react-query";
+import { userLogin } from "../../apis/UserApi";
 
 const LoginBox = styled.div`
   display: flex;
@@ -49,7 +51,20 @@ const LoginForm = () => {
     navigate("/join");
   };
 
-  const handleConfirmClick = () => {};
+  const { mutate, isError, error, isSuccess } = useMutation({
+    mutationFn: userLogin,
+    onSuccess: (res) => {
+      sessionStorage.setItem("accessToken", res.data_body.accessToken);
+      navigate("/");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const handleConfirmClick = () => {
+    mutate({ email: email, password: password });
+  };
 
   return (
     <LoginBox>
