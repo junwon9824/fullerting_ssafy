@@ -1,8 +1,7 @@
-package com.ssafy.fullerting.deal.model.entity;
+package com.ssafy.fullerting.trans.model.entity;
 
-import com.ssafy.fullerting.deal.model.dto.response.DealResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.trans.model.dto.response.TransResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,28 +14,30 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @ToString
-@Table(name = "deal")
-public class Deal {
+@Table(name = "trans")
+public class Trans {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "deal_id", nullable = false)
+    @Column(name = "trans_id", nullable = false)
     private Long id;
 
     @OneToOne
     @JoinColumn(name = "ex_article_id", nullable = false)
     private ExArticle exArticle;
 
-    @Column(name = "deal_cur_price", nullable = false)
-    private int deal_cur_price;
+    @Column(name = "trans_sell_price", nullable = false)
+    private int trans_sell_price;
 
     public void setexarticle(ExArticle exArticle){
         this.exArticle=exArticle;
     }
 
-    public DealResponse toResponse(CustomUser customUser){
-        return DealResponse.builder()
-                .exArticleResponse(this.exArticle.toResponse(this.exArticle,customUser))
+    public TransResponse toResponse(Trans trans)
+    {
+        return TransResponse.builder()
+                .id(trans.getId())
+                .price(trans.getTrans_sell_price())
                 .build();
     }
 }

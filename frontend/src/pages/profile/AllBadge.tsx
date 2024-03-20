@@ -8,7 +8,7 @@ import BadgeTop from "../../components/mypage/badge/BadgeTop";
 const AllBadge = () => {
   return (
     <>
-      <TopBar title="보유 뱃지" showBack={false} />
+      <TopBar title="보유 뱃지" />
       <LayoutMainBox>
         <LayoutInnerBox>
           <BadgeTop />

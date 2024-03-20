@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.record.packdiary.model.entity;
 
 import com.ssafy.fullerting.crop.type.model.entity.Crop;
+import com.ssafy.fullerting.record.packdiary.model.dto.response.PackDiaryResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +12,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="pack_diary")
+@Table(name = "pack_diary")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
@@ -24,11 +25,11 @@ public class PackDiary { //작물일지
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private CustomUser user;
 
     @OneToOne
-    @JoinColumn(name="crop_type_id")
+    @JoinColumn(name = "crop_type_id")
     private Crop crop; //작물
 
     @Column(name = "pack_diary_title", length = 30)
@@ -49,5 +50,11 @@ public class PackDiary { //작물일지
     @Column(name = "pack_diary_created_at")
     @NotNull
     private Timestamp createdAt; //생성일
+
+    public PackDiaryResponse toResponse(PackDiary packDiary) {
+        return PackDiaryResponse.builder()
+                .packDiaryId(packDiary.getId())
+                .build();
+    }
 
 }
