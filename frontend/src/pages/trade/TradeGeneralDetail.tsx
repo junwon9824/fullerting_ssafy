@@ -10,6 +10,9 @@ const ImgBox = styled.img`
   height: 15.5625rem;
   display: flex;
 `;
+const ProfileBox = styled.div`
+  width: 100%;
+`;
 const TradeGeneralDetail = () => {
   return (
     <>
