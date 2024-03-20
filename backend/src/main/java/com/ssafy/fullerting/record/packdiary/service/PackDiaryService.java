@@ -9,4 +9,5 @@ import java.util.List;
 public interface PackDiaryService {
     void createPackDiary(CustomUser user, CreatePackDiaryRequest createPackDiaryRequest);
     List<GetAllPackDiaryResponse> getAllPackDiary();
+    void endCropCultivation(Long packDiaryId);
 }

@@ -16,11 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode.NOT_EXISTS_CROP;
+import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -32,23 +33,34 @@ public class PackDiaryServiceImpl implements PackDiaryService {
     @Override
     public void createPackDiary(CustomUser user, CreatePackDiaryRequest createPackDiaryRequest) {
         Crop crop = cropTypeRepository.findById(createPackDiaryRequest.getCropTypeId()).orElseThrow(()->new PackDiaryException(NOT_EXISTS_CROP));
-        if(crop != null) {
-            packDiaryRepository.save(PackDiary.builder()
-                    .user(user)
-                    .crop(crop)
-                    .title(createPackDiaryRequest.getPackDiaryTitle())
-                    .culStartAt(createPackDiaryRequest.getPackDiaryCulStartAt())
-                    .culEndAt(null)
-                    .growthStep(0)
-                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                    .build()
-            );
-        }
+        packDiaryRepository.save(PackDiary.builder()
+                .user(user)
+                .crop(crop)
+                .title(createPackDiaryRequest.getPackDiaryTitle())
+                .culStartAt(createPackDiaryRequest.getPackDiaryCulStartAt())
+                .culEndAt(null)
+                .growthStep(0)
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                .build()
+        );
     }
 
     @Override
     public List<GetAllPackDiaryResponse> getAllPackDiary() {
         List<PackDiary> packDiaryList = packDiaryRepository.findAll();
         return packDiaryList.stream().map(GetAllPackDiaryResponse::fromResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public void endCropCultivation(Long packDiaryId) {
+        PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
+        packDiary = packDiary.toBuilder()
+                .culEndAt(LocalDate.now())
+                .build();
+        try {
+            packDiaryRepository.save(packDiary);
+        } catch (Exception e){
+            throw new PackDiaryException(TRANSACTION_FAIL);
+        }
     }
 }
