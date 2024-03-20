@@ -55,7 +55,10 @@ public class SecurityConfig {
                                 "/v1/file/upload",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/swagger-resources/**"
+                                "/swagger-resources/**",
+                                "/ws" // 웹 소켓 엔드포인트
+
+
                         ).permitAll().anyRequest().authenticated())
                 // 예외처리
 //                .exceptionHandling(exceptionHandling ->
