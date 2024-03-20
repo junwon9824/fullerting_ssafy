@@ -5,7 +5,9 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.ssafy.fullerting.global.s3.entity.response.S3Response;
+import com.ssafy.fullerting.global.s3.model.entity.response.S3ManyFilesResponse;
+import com.ssafy.fullerting.global.s3.model.entity.response.S3OneFileResponse;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +19,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -32,8 +36,19 @@ public class AmazonS3Service {
 
     private final AmazonS3 amazonS3;
 
-    public S3Response uploadFile(List<MultipartFile> multipartFiles){
-        S3Response response = new S3Response();
+    // 썸네일 하나만 받는 경우
+    public S3OneFileResponse uploadThunmail(MultipartFile multipartFile) {
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "업로드할 파일이 없습니다.");
+        }
+
+        return new S3OneFileResponse(uploadToS3ReturnURL(multipartFile, 0));
+    }
+    
+    
+    // 여러개의 파일을 받는 경우
+    public S3ManyFilesResponse uploadFiles(List<MultipartFile> multipartFiles){
+        S3ManyFilesResponse response = new S3ManyFilesResponse();
 
         // 파일을 순차적으로 처리하고, 각 파일에 대한 URL을 수집
         IntStream.range(0, multipartFiles.size())
@@ -58,6 +73,7 @@ public class AmazonS3Service {
             amazonS3.putObject(new PutObjectRequest(bucket, UUIDFileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
 
+            log.info("파일 업로드 : [{}] to [{}] ", file.getOriginalFilename(), UUIDFileName);
             return getS3FileURL(UUIDFileName);
         } catch (IOException e){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
@@ -80,16 +96,34 @@ public class AmazonS3Service {
 
     // 확장자 추출
     private String getFileExtension(String fileName){
-        try{
-            return fileName.substring(fileName.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일" + fileName + ") 입니다.");
+        // 허용하는 파일 확장자 목록
+        List<String> allowedExtensions = Arrays.asList(".jpg", ".jpeg", ".png", ".svg");
+
+        if (fileName.lastIndexOf("." ) == -1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "파일 확장자가 없습니다.");
         }
+
+        String extension = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
+        if (!allowedExtensions.contains(extension)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "jpg, jpeg, svg, png 파일만 등록 가능합니다.");
+        }
+
+        return extension;
     }
 
 
     public void deleteFile(String fileName){
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
-        System.out.println(bucket);
+
+        try {
+            String path = new URL(fileName).getPath();
+            String S3key = path.substring(1);
+
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, S3key));
+            log.info("파일 S3에서 삭제 : [{} : {}] ", bucket, S3key);
+        } catch (MalformedURLException e) {
+            log.error("잘못된 URL 형식 : {}", fileName, e);
+            throw new RuntimeException();
+        }
+
     }
 }

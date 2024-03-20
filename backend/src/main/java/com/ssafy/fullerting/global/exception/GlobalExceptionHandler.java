@@ -11,11 +11,21 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<MessageUtils> handleResponseStatusException(ResponseStatusException e) {
+        log.error("ResponseStatusException: {}", e.getMessage());
+        return ResponseEntity
+                .status(e.getStatusCode())
+                .body(MessageUtils.fail(String.valueOf(e.getStatusCode().value()), e.getReason()));
+    }
+
     @ExceptionHandler(UserException.class)
     public ResponseEntity userExceptionHandler(UserException e){
         log.error(Arrays.toString(e.getStackTrace()));
