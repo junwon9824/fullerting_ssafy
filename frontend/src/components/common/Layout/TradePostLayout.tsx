@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { PropsWithChildren } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { NavBar, TopBar } from "../Navigator/navigator";
 import { BottomButton } from "../Button/LargeButton";
 
@@ -23,8 +23,8 @@ const InnerBox = styled.div`
   gap: 1.56rem;
   padding: 1.12rem 0;
 `;
-const handleCheck = () => {};
-const BasicLayout = ({
+
+const TradePostLayout = ({
   children,
   title,
   showEdit,
@@ -32,6 +32,10 @@ const BasicLayout = ({
   title: string;
   showEdit?: boolean;
 }) => {
+  const navigate = useNavigate();
+  const handleCheck = () => {
+    navigate("/trade");
+  };
   return (
     <>
       <TopBar title={title} showEdit={showEdit} />
@@ -43,4 +47,4 @@ const BasicLayout = ({
   );
 };
 
-export default BasicLayout;
+export default TradePostLayout;
