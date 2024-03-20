@@ -16,8 +16,9 @@ const MenuBox = styled.button`
   text-align: center;
   flex-direction: column;
   font-size: 1rem;
-  color: ${({ theme }) => theme.colors.gray0};
   font-weight: bold;
+  color: ${({ selected, theme }) =>
+    selected ? theme.colors.black : theme.colors.gray0};
   height: 1.8rem;
   width: 9.93rem;
 `;
@@ -34,18 +35,18 @@ const Menu = ({ text }) => {
 
   const handleMenuClick = () => {
     setMenu(text);
-    console.log("Menu clicked: ", text);
+    // console.log("Menu clicked: ", text);
 
-    if (text === "다이어리") {
-      navigate("/diary/detail");
-    } else if (text === "작물꿀팁") {
-      navigate("/diary/detail/tips");
-    }
+    // if (text === "다이어리") {
+    //   navigate("/diary/detail");
+    // } else if (text === "작물꿀팁") {
+    //   navigate("/diary/detail/tips");
+    // }
   };
 
   return (
     <FlexColumnBox>
-      <MenuBox onClick={handleMenuClick}>
+      <MenuBox selected={selected} onClick={handleMenuClick}>
         <span>{text}</span>
       </MenuBox>
       {selected ? <HalfColoredLine /> : <HalfLine />}

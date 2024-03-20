@@ -1,16 +1,5 @@
 import styled from "styled-components";
 
-interface CropType {
-  packDiaryId: number;
-  cropType: string;
-  packDiaryTitle: string;
-  packDiaryCulStartAt: string;
-  packDiaryCulEndAt: string | null;
-  packDiaryGrowthStep: string;
-  packDiaryCreatedAt: string;
-  cropTypeImgUrl: string;
-}
-
 interface CropProfileType {
   crop: CropType;
   direction?: "row" | "column";
@@ -107,7 +96,7 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
           </CropTitle>
           <CropDescriptionBox>
             <span>
-              {crop.cropType} {crop.packDiaryGrowthStep}단계
+              {crop.cropTypeName} {crop.packDiaryGrowthStep}단계
             </span>
             <span> · </span>
             <span>{calculateDDay(crop.packDiaryCreatedAt)}</span>

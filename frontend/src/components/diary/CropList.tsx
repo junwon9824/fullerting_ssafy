@@ -1,17 +1,6 @@
 import styled from "styled-components";
 import CropProfile from "./CropProfile";
 
-interface CropType {
-  packDiaryId: number;
-  cropType: string;
-  packDiaryTitle: string;
-  packDiaryCulStartAt: string;
-  packDiaryCulEndAt: string | null;
-  packDiaryGrowthStep: string;
-  packDiaryCreatedAt: string;
-  cropTypeImgUrl: string;
-}
-
 const CardListBox = styled.div`
   display: flex;
   width: 19.875rem;
@@ -51,7 +40,7 @@ const CropList = () => {
   const crops: CropType[] = [
     {
       packDiaryId: 1,
-      cropType: "토마토",
+      cropTypeName: "토마토",
       packDiaryTitle: "똘똘한토마토",
       packDiaryCulStartAt: "2024-03-01",
       packDiaryCulEndAt: "2024-04-01",
@@ -61,13 +50,23 @@ const CropList = () => {
     },
     {
       packDiaryId: 2,
-      cropType: "브로콜리",
+      cropTypeName: "브로콜리",
       packDiaryTitle: "데프콘",
       packDiaryCulStartAt: "2024-02-15",
       packDiaryCulEndAt: "2024-04-15",
       packDiaryGrowthStep: "1",
       packDiaryCreatedAt: "2024-02-15",
       cropTypeImgUrl: "corn_img.jpg",
+    },
+    {
+      packDiaryId: 1,
+      cropTypeName: "토마토",
+      packDiaryTitle: "똘똘한토마토",
+      packDiaryCulStartAt: "2024-03-01",
+      packDiaryCulEndAt: "2024-04-01",
+      packDiaryGrowthStep: "2",
+      packDiaryCreatedAt: "2024-03-01",
+      cropTypeImgUrl: "wheat_img.jpg",
     },
   ];
 

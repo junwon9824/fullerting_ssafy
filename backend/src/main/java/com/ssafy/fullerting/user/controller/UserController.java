@@ -23,6 +23,11 @@ public class UserController {
 
     private final UserService userService;
 
+//    @PostMapping("/profile")
+//    public ResponseEntity<MessageUtils> profileUpload() {
+//
+//    }
+
     @PostMapping("/register")
     @Operation(summary = "유저 회원가입", description = "이메일, 비밀번호, 닉네임을 입력받아 회원가입을 진행한다")
     public ResponseEntity<MessageUtils> register(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
@@ -36,6 +41,5 @@ public class UserController {
     public ResponseEntity<MessageUtils> getUserInfo() {
         return ResponseEntity.ok().body(MessageUtils.success(userService.getUserInfo()));
     }
-
 
 }

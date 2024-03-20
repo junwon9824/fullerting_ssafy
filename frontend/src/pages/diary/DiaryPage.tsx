@@ -9,27 +9,9 @@ import Button from "../../components/common/Button/primaryButton";
 import RecognizeButton from "../../components/diary/RecognizeButton";
 import DiaryList from "../../components/diary/DiaryList";
 import MenuBar from "../../components/diary/MenuBar";
-
-interface CropType {
-  packDiaryId: number;
-  cropType: string;
-  packDiaryTitle: string;
-  packDiaryCulStartAt: string;
-  packDiaryCulEndAt: string | null;
-  packDiaryGrowthStep: string;
-  packDiaryCreatedAt: string;
-  cropTypeImgUrl: string;
-}
-
-interface DiaryType {
-  diaryId: number;
-  packDiaryId: number;
-  diaryBehavior: "다이어리" | "물주기";
-  diaryTitle: string;
-  diaryContent: string;
-  diarySelectedAt: string;
-  diaryCreatedAt: string;
-}
+import { useAtom } from "jotai";
+import { cropAtom, menuAtom } from "../../stores/diary";
+import CropTips from "../../components/diary/CropTips";
 
 const TopBox = styled.div`
   display: flex;
@@ -53,16 +35,8 @@ const ButtonBox = styled.div`
 `;
 
 const DiaryPage = () => {
-  const crop: CropType = {
-    packDiaryId: 1,
-    cropType: "토마토",
-    packDiaryTitle: "똘똘한토마토",
-    packDiaryCulStartAt: "2024-03-01",
-    packDiaryCulEndAt: "2024-04-01",
-    packDiaryGrowthStep: "2",
-    packDiaryCreatedAt: "2024-03-01",
-    cropTypeImgUrl: "tomato_img.jpg",
-  };
+  const [crop, setCrop] = useAtom(cropAtom);
+  const [menu, setMenu] = useAtom(menuAtom);
 
   const diaries: DiaryType[] = [
     {
@@ -71,7 +45,7 @@ const DiaryPage = () => {
       diaryBehavior: "다이어리",
       diaryTitle: "토마토는 빨강색",
       diaryContent:
-        "멋쟁이 토마토 울퉁불통멋진몸매에 빨간 옷을 입고 나는야 주스될거야",
+        "멋쟁이 토마토 울퉁불통멋진몸매에 빨간 옷을 입고 나는야 주스될거야 꿀꺽 나는야 춤을 출거야 멋쟁이 토마토 토마토~~",
       diarySelectedAt: "2024-03-05",
       diaryCreatedAt: "2024-03-05T10:00:00Z",
     },
@@ -81,6 +55,15 @@ const DiaryPage = () => {
       diaryBehavior: "물주기",
       diaryTitle: "",
       diaryContent: "",
+      diarySelectedAt: "2024-03-04",
+      diaryCreatedAt: "2024-03-05T12:00:00Z",
+    },
+    {
+      diaryId: 3,
+      packDiaryId: 1,
+      diaryBehavior: "다이어리",
+      diaryTitle: "케찹 만들거임",
+      diaryContent: "오므라이스 감자튀김",
       diarySelectedAt: "2024-03-04",
       diaryCreatedAt: "2024-03-05T12:00:00Z",
     },
@@ -112,9 +95,11 @@ const DiaryPage = () => {
           </TopBox>
           <MiddleBox>
             <MenuBar />
-            <div>calendar</div>
-            <span>2024년</span>
-            <DiaryList diaries={diaries} />
+            {menu === "작물꿀팁" ? (
+              <CropTips />
+            ) : (
+              <DiaryList diaries={diaries} />
+            )}
           </MiddleBox>
         </LayoutInnerBox>
       </LayoutMainBox>

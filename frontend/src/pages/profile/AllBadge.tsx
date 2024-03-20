@@ -3,13 +3,16 @@ import {
   LayoutInnerBox,
 } from "../../components/common/Layout/Box";
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
+import BadgeImage from "../../components/mypage/badge/BadgeImage";
+import BadgeTop from "../../components/mypage/badge/BadgeTop";
 const AllBadge = () => {
   return (
     <>
       <TopBar title="보유 뱃지" showBack={false} />
       <LayoutMainBox>
         <LayoutInnerBox>
-          <h1>전체뱃지</h1>
+          <BadgeTop />
+          <BadgeImage />
         </LayoutInnerBox>
       </LayoutMainBox>
       <NavBar />

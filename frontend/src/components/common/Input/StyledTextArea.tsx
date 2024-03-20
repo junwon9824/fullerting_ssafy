@@ -26,7 +26,7 @@ const TextArea = styled.textarea`
     color: ${({ theme }) => theme.colors.gray1};
   }
   font-size: 0.875rem;
-  font-weight: bold;
+  /* font-weight: bold; */
   padding: 0.75rem 1rem;
   resize: none;
 `;

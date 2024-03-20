@@ -63,19 +63,19 @@ const Maintop = () => {
 
   const additionalBadges = badges.length - 4;
   const goToBadge = () => {
-    navigate("/allbadge");
+    navigate("/mypage/allbadge");
   };
   const goToPropose = () => {
-    navigate("/proposepost");
+    navigate("/mypage/proposepost");
   };
   const goToLike = () => {
-    navigate("/likedpost");
+    navigate("/mypage/likedpost");
   };
   const goToTrans = () => {
-    navigate("/transpost");
+    navigate("/mypage/transpost");
   };
   const goToLogout = () => {
-    navigate("/logout");
+    navigate("/mypage/logout");
   };
 
   return (

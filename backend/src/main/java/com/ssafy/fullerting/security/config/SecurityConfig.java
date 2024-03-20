@@ -66,7 +66,7 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .addFilterBefore(new SecurityContextPersistenceFilter(), DisableEncodeUrlFilter.class)
-        // JWT 필터
+                // JWT 필터
                 .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(exceptionHandlerFilter, JwtValidationFilter.class);
 
