@@ -4,7 +4,7 @@ import BasicLayout from "../../components/common/Layout/BasicLayout";
 import useInput from "../../hooks/useInput";
 import NonCheck from "/src/assets/svg/noncheck.svg";
 import Check from "/src/assets/svg/check.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StyledTextArea from "../../components/common/Input/StyledTextArea";
 import CheckModal from "../../components/Trade/finishModal";
 import SelectModal from "../../components/Trade/SelectModal";
@@ -86,6 +86,9 @@ const TradePost = () => {
   const [cashCheck, setCashCheck] = useState<boolean>(false);
   const [cash, setCash] = useInput("");
   const [content, setContent] = useInput("");
+  const closeModal = () => {
+    setModal(false);
+  };
   const handleRadioClick = (index: number) => {
     setCheck(check.map((a, i) => !a));
   };
@@ -93,11 +96,25 @@ const TradePost = () => {
   const handleCashClick = () => {
     setCashCheck(!cashCheck);
   };
+  useEffect(() => {
+    console.log(document.body);
+    // 모달이 열리면 body의 overflow를 hidden으로 설정
+    if (modal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    // 컴포넌트가 언마운트 될 때 원래 상태로 복구
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [modal]);
   return (
     <>
       {modal && (
         <SelectBackGround backgroundColor="rgba(4.87, 4.87, 4.87, 0.28)">
-          <SelectModal />
+          <SelectModal closeModal={closeModal} />
         </SelectBackGround>
       )}
       <BasicLayout title="작물거래">
