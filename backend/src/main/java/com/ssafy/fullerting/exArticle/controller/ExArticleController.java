@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.exArticle.controller;
 
+import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleDoneRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
@@ -8,6 +9,9 @@ import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.service.ExArticleService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 
+import com.ssafy.fullerting.user.model.dto.response.UserResponse;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,12 +31,15 @@ import java.util.List;
 public class ExArticleController {
 
     private final ExArticleService exArticleService;
+    private final UserService userService;
 
     @PostMapping("")
     @Operation(summary = "작물 거래 게시물 등록 ", description = "작물등록진행")
-    public ResponseEntity<MessageUtils> register(@RequestBody ExArticleRegisterRequest exArticleRegisterRequest, @AuthenticationPrincipal String email) {
+    public ResponseEntity<MessageUtils> register(@RequestPart(value = "file") List<MultipartFile> file,
+                                                 @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
+                                                 @AuthenticationPrincipal String email) {
 
-        exArticleService.register(exArticleRegisterRequest, email);
+        exArticleService.register(exArticleRegisterRequest, email, file);
         log.info("[register article ]: {}", exArticleRegisterRequest.toString());
 
         return ResponseEntity.ok().body(MessageUtils.success());
@@ -41,7 +49,7 @@ public class ExArticleController {
     @GetMapping("/all")
     @Operation(summary = "작물거래 전체 조회 ", description = "작물거래 전체 조회")
     public ResponseEntity<MessageUtils> allArticle() {
-        List<ExArticleAllResponse > exArticleResponse = exArticleService.allArticle();
+        List<ExArticleAllResponse> exArticleResponse = exArticleService.allArticle();
 
 
         log.info("[all article ]: {}", exArticleResponse);
@@ -69,16 +77,28 @@ public class ExArticleController {
 
     }
 
+
+    @PostMapping("/{ex_article_id}/done")
+    @Operation(summary = "작물거래 완료   ", description = "작물거래 완료   ")
+    public ResponseEntity<MessageUtils> done(@PathVariable Long ex_article_id, @RequestBody ExArticleDoneRequest exArticleDoneRequest) {
+
+        exArticleService.done(ex_article_id, exArticleDoneRequest);
+
+        log.info("[done article]: {}", ex_article_id);
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
     //    작물 거래 게시물 키워드 검색
 //    /v1/exchanges/search?keyword={keyword}
     @GetMapping("/search")
     @Operation(summary = "작물 거래 게시물 키워드 검색 ", description = "작물 거래 게시물 키워드 검색")
     public ResponseEntity<MessageUtils> like(@RequestParam String keyword) {
-        List<ExArticleKeywordResponse > exArticleResponses = exArticleService.keyword(keyword);
+        List<ExArticleKeywordResponse> exArticleResponses = exArticleService.keyword(keyword);
 
         log.info("[search article keyword]: {}", exArticleResponses);
 
         return ResponseEntity.ok().body(MessageUtils.success(exArticleResponses));
     }
+
 
 }
