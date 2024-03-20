@@ -1,15 +1,27 @@
+import Search from "../../components/common/Input/Search";
+import useInput from "../../hooks/useInput";
+import Post from "../../components/Trade/post";
 import {
   LayoutMainBox,
   LayoutInnerBox,
 } from "../../components/common/Layout/Box";
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
+
 const ProposePost = () => {
+  const [search, setSearch] = useInput("");
   return (
     <>
-      <TopBar title="나의 제안 목록" showBack={false} />
+      <TopBar title="나의 제안 목록" />
       <LayoutMainBox>
         <LayoutInnerBox>
-          <h1>나의 제안 목록</h1>
+          <Search
+            type="text"
+            id="search"
+            name="search"
+            placeholder="내용 또는 작성자를 입력해주세요"
+            onChange={setSearch}
+          />
+          <Post />
         </LayoutInnerBox>
       </LayoutMainBox>
       <NavBar />

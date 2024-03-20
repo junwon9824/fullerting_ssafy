@@ -22,7 +22,7 @@ const Badgecontainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   width: 100%;
 `;
 
@@ -41,7 +41,6 @@ const Allcount = styled.div`
   font-style: normal;
   font-weight: bold;
   margin-left: 0.3rem;
-  padding-top: 2.2rem;
 `;
 
 const Imagecontainer = styled.div`

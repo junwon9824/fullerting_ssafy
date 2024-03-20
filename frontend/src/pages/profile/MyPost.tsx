@@ -1,16 +1,16 @@
+import Search from "../../components/common/Input/Search";
+import Post from "../../components/Trade/post";
+import useInput from "../../hooks/useInput";
 import {
   LayoutMainBox,
   LayoutInnerBox,
 } from "../../components/common/Layout/Box";
-import Post from "../../components/Trade/post";
-import useInput from "../../hooks/useInput";
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
-import Search from "../../components/common/Input/Search";
-const TransPost = () => {
+const LikedPost = () => {
   const [search, setSearch] = useInput("");
   return (
     <>
-      <TopBar title="나의 거래 목록" />
+      <TopBar title="관심 게시물" />
       <LayoutMainBox>
         <LayoutInnerBox>
           <Search
@@ -27,4 +27,4 @@ const TransPost = () => {
     </>
   );
 };
-export default TransPost;
+export default LikedPost;
