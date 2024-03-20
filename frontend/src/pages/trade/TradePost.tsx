@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import StyledInput from "../../components/common/Input/StyledInput";
-import BasicLayout from "../../components/common/Layout/BasicLayout";
+import TradePostLayout from "../../components/common/Layout/TradePostLayout";
 import useInput from "../../hooks/useInput";
 import NonCheck from "/src/assets/svg/noncheck.svg";
 import Check from "/src/assets/svg/check.svg";
@@ -144,7 +144,7 @@ const TradePost = () => {
           <SelectModal closeModal={closeModal} />
         </SelectBackGround>
       )}
-      <BasicLayout title="작물거래">
+      <TradePostLayout title="작물거래">
         <StyledInput
           label="제목"
           type="text"
@@ -240,7 +240,7 @@ const TradePost = () => {
         <DiaryBox>
           <MultiFileUploadInput />
         </DiaryBox>
-      </BasicLayout>
+      </TradePostLayout>
     </>
   );
 };
