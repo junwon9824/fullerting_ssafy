@@ -99,7 +99,7 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
               {crop.cropTypeName} {crop.packDiaryGrowthStep}단계
             </span>
             <span> · </span>
-            <span>{calculateDDay(crop.packDiaryCreatedAt)}</span>
+            <span>{calculateDDay(crop.packDiaryCulStartAt)}</span>
           </CropDescriptionBox>
           {direction !== "column" && (
             <CropEnd>"재배까지 20일 남았습니다"</CropEnd>

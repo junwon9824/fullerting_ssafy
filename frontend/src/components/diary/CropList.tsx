@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import CropProfile from "./CropProfile";
+import { useQuery } from "@tanstack/react-query";
+import { getCropList } from "../../apis/DiaryApi";
 
 const CardListBox = styled.div`
   display: flex;
@@ -37,67 +39,81 @@ const CardItemDecoBox = styled.div`
 `;
 
 const CropList = () => {
-  const crops: CropType[] = [
-    {
-      packDiaryId: 1,
-      cropTypeName: "토마토",
-      packDiaryTitle: "똘똘한토마토",
-      packDiaryCulStartAt: "2024-03-01",
-      packDiaryCulEndAt: "2024-04-01",
-      packDiaryGrowthStep: "2",
-      packDiaryCreatedAt: "2024-03-01",
-      cropTypeImgUrl: "wheat_img.jpg",
-    },
-    {
-      packDiaryId: 2,
-      cropTypeName: "브로콜리",
-      packDiaryTitle: "데프콘",
-      packDiaryCulStartAt: "2024-02-15",
-      packDiaryCulEndAt: "2024-04-15",
-      packDiaryGrowthStep: "1",
-      packDiaryCreatedAt: "2024-02-15",
-      cropTypeImgUrl: "corn_img.jpg",
-    },
-    {
-      packDiaryId: 1,
-      cropTypeName: "토마토",
-      packDiaryTitle: "똘똘한토마토",
-      packDiaryCulStartAt: "2024-03-01",
-      packDiaryCulEndAt: "2024-04-01",
-      packDiaryGrowthStep: "2",
-      packDiaryCreatedAt: "2024-03-01",
-      cropTypeImgUrl: "wheat_img.jpg",
-    },
-  ];
+  // const crops: CropType[] = [
+  //   {
+  //     packDiaryId: 1,
+  //     cropTypeName: "토마토",
+  //     packDiaryTitle: "똘똘한토마토",
+  //     packDiaryCulStartAt: "2024-03-01",
+  //     packDiaryCulEndAt: "2024-04-01",
+  //     packDiaryGrowthStep: "2",
+  //     packDiaryCreatedAt: "2024-03-01",
+  //     cropTypeImgUrl: "wheat_img.jpg",
+  //   },
+  //   {
+  //     packDiaryId: 2,
+  //     cropTypeName: "브로콜리",
+  //     packDiaryTitle: "데프콘",
+  //     packDiaryCulStartAt: "2024-02-15",
+  //     packDiaryCulEndAt: "2024-04-15",
+  //     packDiaryGrowthStep: "1",
+  //     packDiaryCreatedAt: "2024-02-15",
+  //     cropTypeImgUrl: "corn_img.jpg",
+  //   },
+  //   {
+  //     packDiaryId: 1,
+  //     cropTypeName: "토마토",
+  //     packDiaryTitle: "똘똘한토마토",
+  //     packDiaryCulStartAt: "2024-03-01",
+  //     packDiaryCulEndAt: "2024-04-01",
+  //     packDiaryGrowthStep: "2",
+  //     packDiaryCreatedAt: "2024-03-01",
+  //     cropTypeImgUrl: "wheat_img.jpg",
+  //   },
+  // ];
+
+  const accessToken = sessionStorage.getItem("accessToken");
+
+  const { isLoading, data: crops } = useQuery({
+    queryKey: ["crops"],
+    queryFn: accessToken ? () => getCropList(accessToken) : undefined,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!crops) {
+    return <div>작물을 등록해주세요</div>;
+  }
 
   return (
     <CardListBox>
-      {crops &&
-        crops.map((crop, index) => (
-          <CardItemBox key={index}>
-            <CardItemDecoBox>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="106"
-                height="27"
-                viewBox="0 0 106 27"
-                fill="none"
-              >
-                <circle cx="5" cy="22" r="5" fill="#A8A9AD" />
-                <circle cx="53" cy="22" r="5" fill="#A8A9AD" />
-                <circle cx="77" cy="22" r="5" fill="#A8A9AD" />
-                <circle cx="101" cy="22" r="5" fill="#A8A9AD" />
-                <circle cx="29" cy="22" r="5" fill="#A8A9AD" />
-                <rect x="2" width="6" height="22" rx="2" fill="#575759" />
-                <rect x="26" width="6" height="22" rx="2" fill="#575759" />
-                <rect x="50" width="6" height="22" rx="2" fill="#575759" />
-                <rect x="74" width="6" height="22" rx="2" fill="#575759" />
-                <rect x="98" width="6" height="22" rx="2" fill="#575759" />
-              </svg>
-            </CardItemDecoBox>
-            <CropProfile crop={crop} direction="column" />
-          </CardItemBox>
-        ))}
+      {crops.map((crop: CropType) => (
+        <CardItemBox key={crop.packDiaryId}>
+          <CardItemDecoBox>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="106"
+              height="27"
+              viewBox="0 0 106 27"
+              fill="none"
+            >
+              <circle cx="5" cy="22" r="5" fill="#A8A9AD" />
+              <circle cx="53" cy="22" r="5" fill="#A8A9AD" />
+              <circle cx="77" cy="22" r="5" fill="#A8A9AD" />
+              <circle cx="101" cy="22" r="5" fill="#A8A9AD" />
+              <circle cx="29" cy="22" r="5" fill="#A8A9AD" />
+              <rect x="2" width="6" height="22" rx="2" fill="#575759" />
+              <rect x="26" width="6" height="22" rx="2" fill="#575759" />
+              <rect x="50" width="6" height="22" rx="2" fill="#575759" />
+              <rect x="74" width="6" height="22" rx="2" fill="#575759" />
+              <rect x="98" width="6" height="22" rx="2" fill="#575759" />
+            </svg>
+          </CardItemDecoBox>
+          <CropProfile crop={crop} direction="column" />
+        </CardItemBox>
+      ))}
     </CardListBox>
   );
 };
