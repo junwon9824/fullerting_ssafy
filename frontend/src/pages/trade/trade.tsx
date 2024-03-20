@@ -12,14 +12,6 @@ import useInput from "../../hooks/useInput";
 import Tomato from "/src/assets/images/토마토.png";
 import Post from "../../components/Trade/post";
 
-const ImgBox = styled.img`
-  width: 8rem;
-  height: 8rem;
-  border-radius: 0.9375rem;
-  top: 0;
-  left: 0;
-  z-index: -1;
-`;
 const TradePage = () => {
   const [search, setSearch] = useInput("");
   return (
