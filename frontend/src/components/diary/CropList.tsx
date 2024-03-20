@@ -60,7 +60,7 @@ const CropList = () => {
   }
 
   const handleCardClick = (cropData: CropType) => {
-    navigate("/diary/detail");
+    navigate(`/diary/${cropData.packDiaryId}`);
     setCrop(cropData);
   };
 

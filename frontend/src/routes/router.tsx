@@ -27,9 +27,9 @@ const authRoutes = [
 // 다이어리 관련 경로
 const diaryRoutes = [
   { path: "/diary", element: <CropPage /> },
-  { path: "/diary/detail", element: <DiaryPage /> },
-  { path: "/diary/detail/create", element: <DiaryCreatePage /> },
-  { path: "/diary/detail/water", element: <DiaryWaterPage /> },
+  { path: "/diary/:packDiaryId", element: <DiaryPage /> },
+  { path: "/diary/:packDiaryId/create", element: <DiaryCreatePage /> },
+  { path: "/diary/:packDiaryId/water", element: <DiaryWaterPage /> },
   { path: "/diary/create", element: <CropCreatePage /> },
 ];
 
