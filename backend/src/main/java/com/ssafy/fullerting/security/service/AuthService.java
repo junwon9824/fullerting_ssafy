@@ -78,8 +78,6 @@ public class AuthService {
             log.info("로그아웃으로 인한 access토큰 블랙리스트 추가 : {}", accessToken);
         }
 
-
-
     }
 
     // SecurityContext에 저장된 auth 객체 조조히

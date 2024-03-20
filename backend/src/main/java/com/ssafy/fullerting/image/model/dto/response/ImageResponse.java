@@ -16,15 +16,15 @@ public class ImageResponse {
 
     private Long id;
 
-    private ExArticle exArticle;
+//    private ExArticle exArticle;
 
     private String img_store_url;
 
-    public Image toEntity(Image image){
+    public Image toEntity(ImageResponse imageResponse){
         return Image.builder()
-                .id(image.getId())
-                .img_store_url(image.getImg_store_url())
-                .exArticle(image.getExArticle())
+                .id(imageResponse.getId())
+                .img_store_url(imageResponse.getImg_store_url())
+//                .exArticle(imageResponse.getExArticle())
 
                 .build();
     }

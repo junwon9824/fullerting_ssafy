@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class CropTypeController {
     private final CropTypeService cropTypeService;
 
+    /**
+     * 작물종류 전체조회
+     * @return
+     */
     @GetMapping
     public ResponseEntity<MessageUtils> getAllCropType() {
         return ResponseEntity.ok().body(MessageUtils.success(cropTypeService.getAllCropType()));

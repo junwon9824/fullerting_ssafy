@@ -30,7 +30,7 @@ const ImgBox = styled.div`
   border-radius: 0.9375rem;
   top: 0;
   left: 0;
-  z-index: 2;
+  /* z-index: 2; */
   position: relative;
   overflow: hidden;
 
@@ -45,7 +45,7 @@ const ContentBox = styled.div`
   display: flex;
   justify-content: space-between;
   position: relative;
-  z-index: -1;
+  /* z-index: -1; */
 `;
 
 const LikeBox = styled.div<ClickLike>`
@@ -55,7 +55,7 @@ const LikeBox = styled.div<ClickLike>`
   position: absolute;
   bottom: 0.38rem;
   right: 0.38rem;
-  z-index: 3;
+  /* z-index: 3; */
 `;
 
 const StyledImg = styled.img`
@@ -147,8 +147,10 @@ const Post = () => {
   const navigate = useNavigate();
   const handelWriteClick = () => {
     navigate("/trade/post");
+    console.log(1);
   };
   const handleLike = (index: number) => {
+    console.log(1);
     setLike(like.map((like, i) => (i === index ? !like : like)));
   };
   return (

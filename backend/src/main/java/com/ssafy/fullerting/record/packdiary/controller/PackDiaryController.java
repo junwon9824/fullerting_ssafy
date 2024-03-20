@@ -20,6 +20,11 @@ public class PackDiaryController {
     private final PackDiaryService packDiaryService;
     private final UserService userService;
 
+    /**
+     * 작물일지 생성
+     * @param createPackDiaryRequest
+     * @return
+     */
     @PostMapping
     public ResponseEntity<MessageUtils> createPackDiary(@RequestBody CreatePackDiaryRequest createPackDiaryRequest){
         UserResponse userResponse = userService.getUserInfo();
@@ -27,6 +32,10 @@ public class PackDiaryController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
+    /**
+     * 작물일지 전체조회
+     * @return
+     */
     @GetMapping
     public ResponseEntity<MessageUtils> getAllPackDiary(){
         return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getAllPackDiary()));

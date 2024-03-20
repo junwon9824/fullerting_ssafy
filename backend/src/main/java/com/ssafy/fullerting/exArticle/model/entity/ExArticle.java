@@ -3,6 +3,7 @@ package com.ssafy.fullerting.exArticle.model.entity;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
+import com.ssafy.fullerting.favorite.model.dto.response.FavoriteResponse;
 import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.global.BaseTimeEntity;
 import com.ssafy.fullerting.image.model.entity.Image;
@@ -75,7 +76,7 @@ public class ExArticle {
     private List<Image> image;
 
     @OneToMany(mappedBy = "exArticle")
-    private List<Favorite> favorite=new ArrayList<>();
+    private List<Favorite> favorite = new ArrayList<>();
 
     public void setdeal(Deal deal) {
         this.deal = deal;
@@ -85,29 +86,25 @@ public class ExArticle {
         this.favorite.add(favorite);
     }
 
-    public static ExArticleResponse toResponse(ExArticle article) {
+    public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
 
-//        if (article.favorite.size() == 0) {
-//            exArticleResponse = ExArticleResponse.builder()
-//                    .exArticleId(article.getId())
-//                    .exArticleTitle(article.getTitle())
-//                    .exArticleType(article.getType())
-//                    .exLocation(article.getLocation())
-//                    .imageResponses(article.getImage().stream().map(Image::toResponse)
-//                            .collect(Collectors.toList())).build();
-//        } else { //null 이 아닌경우
-//            log.info("notnullllllllllll");
-            exArticleResponse = ExArticleResponse.builder()
-                    .exArticleId(article.getId())
-                    .exArticleTitle(article.getTitle())
-                    .exArticleType(article.getType())
-                    .exLocation(article.getLocation())
-                    .imageResponses(article.getImage().stream().map(Image::toResponse)
-                            .collect(Collectors.toList()))
-                    .favoriteResponse(article.favorite.stream().map(Favorite::toResponse).collect(Collectors.toList()))
-                    .build();
-//        }
+        List<FavoriteResponse> favoriteResponses
+                = article.favorite.stream().map(
+                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+
+        exArticleResponse = ExArticleResponse.builder()
+                .exArticleId(article.getId())
+                .exArticleTitle(article.getTitle())
+                .exArticleType(article.getType())
+                .exLocation(article.getLocation())
+                .imageResponses(article.getImage().stream().map(Image::toResponse)
+                        .collect(Collectors.toList()))
+                .favoriteResponse(article.favorite.stream().map(
+                        favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList()))
+                .build();
+
+        log.info("favvvvvvvvvvv" + favoriteResponses);
 
         return exArticleResponse;
     }
