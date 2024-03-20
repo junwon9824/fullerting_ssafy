@@ -2,7 +2,6 @@ package com.ssafy.fullerting.user.controller;
 
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,9 +9,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -40,6 +40,15 @@ public class UserController {
     @Operation(summary = "유저정보조회", description = "현재 로그인 중인 유저의 상세 정보를 조회한다 <br> [헤더 Bearer: Access토큰 필요] <br> 토큰을 통해 유저정보를 조회한다")
     public ResponseEntity<MessageUtils> getUserInfo() {
         return ResponseEntity.ok().body(MessageUtils.success(userService.getUserInfo()));
+    }
+
+
+    @PostMapping("/profile")
+    @Operation(summary = "유저 프로필 사진 업로드", description = "유저의 프로필 사진을 업로드한다")
+    public ResponseEntity<MessageUtils> uploadProfileImg(MultipartFile multipartFile) {
+
+
+        return ResponseEntity.ok().body(MessageUtils.success(userService.uploadThumbAndSaveDB(multipartFile)));
     }
 
 }

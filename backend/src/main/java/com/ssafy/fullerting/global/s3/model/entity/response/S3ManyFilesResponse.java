@@ -1,4 +1,4 @@
-package com.ssafy.fullerting.global.s3.entity.response;
+package com.ssafy.fullerting.global.s3.model.entity.response;
 
 import lombok.Data;
 
@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-public class S3Response {
+public class S3ManyFilesResponse {
     private Map<String, String> urls;
 
-    public S3Response() {
+    public S3ManyFilesResponse() {
         urls = new HashMap<>();
     }
 

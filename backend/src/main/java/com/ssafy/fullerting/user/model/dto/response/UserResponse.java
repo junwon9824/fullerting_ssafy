@@ -25,7 +25,7 @@ public class UserResponse {
                 .nickname(userResponse.nickname)
                 .rank(userResponse.rank)
                 .role(userResponse.role)
-                .thumbnail(userResponse.getThumbnail())
+                .thumbnail(userResponse.thumbnail)
                 .build();
     }
 }
