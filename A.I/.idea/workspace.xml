@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="89dd5687-ae39-4877-ae10-6fc756be0c7d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/exArticle/controller/ExArticleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/exArticle/controller/ExArticleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/exArticle/model/dto/response/ExArticleResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/exArticle/model/dto/response/ExArticleResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/exArticle/model/entity/ExArticle.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/exArticle/model/entity/ExArticle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/exArticle/service/ExArticleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/exArticle/service/ExArticleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/favorite/model/dto/response/FavoriteResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/favorite/model/dto/response/FavoriteResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/security/handler/ExceptionHandlerFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/ssafy/fullerting/security/handler/ExceptionHandlerFilter.java" afterDir="false" />
-    </list>
+    <list default="true" id="89dd5687-ae39-4877-ae10-6fc756be0c7d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -30,8 +23,9 @@
     "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/dev",
-    "last_opened_file_path": "C:/Users/SSAFY/Downloads/fullerting/A.I",
+    "git-widget-placeholder": "develop",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/SSAFY/Desktop/S10P22C102/A.I",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -62,13 +56,6 @@
       <method v="2" />
     </configuration>
   </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
-      </set>
-    </attachedChunks>
-  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -79,6 +66,7 @@
       <updated>1710826520175</updated>
       <workItem from="1710826521233" duration="7000" />
       <workItem from="1710826734456" duration="31000" />
+      <workItem from="1710830672048" duration="4000" />
     </task>
     <servers />
   </component>

@@ -49,20 +49,28 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         }
     }
 
-    private void setErrorResponse(
-            HttpServletResponse response,
-            HttpStatus status,
-            String errorMassage
-    ) {
-        ObjectMapper objectMapper = new ObjectMapper();
+    private void setErrorResponse(HttpServletResponse response, HttpStatus status, String errorMassage) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        try {
-            String jsonResponse = objectMapper.writeValueAsString(MessageUtils.fail(status.name(), errorMassage));
+
+        try{
+            // 피드백 -> ObjectMapper 객체 캐스팅하면서 생성가능?
+            String jsonResponse = (new ObjectMapper()).writeValueAsString(MessageUtils.fail(status.name(), errorMassage));
             response.getWriter().write(jsonResponse);
-        } catch (IOException e) {
+
+        }catch (IOException e){
             e.printStackTrace();
         }
+
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+//        try {
+//            String jsonResponse = objectMapper.writeValueAsString(MessageUtils.fail(status.name(), errorMassage));
+//            response.getWriter().write(jsonResponse);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
 
