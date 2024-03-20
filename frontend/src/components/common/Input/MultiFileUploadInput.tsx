@@ -53,8 +53,8 @@ const PreviewImage = styled.img`
 
 const DeleteImageButton = styled.div`
   position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
+  top: 0;
+  right: 0;
   width: 1.5rem;
   height: 1.5rem;
   background-color: rgba(59, 59, 59, 0.804);
@@ -102,7 +102,7 @@ const MultiFileUploadInput: React.FC = () => {
     setSelectedFiles(newSelectedFiles);
     setPreviewURLs(newPreviewURLs);
   };
-
+  useEffect(() => console.log(...selectedFiles));
   return (
     <>
       <LabelSpan>사진 등록</LabelSpan>
