@@ -77,7 +77,7 @@ const DiaryPage = () => {
       <LayoutMainBox>
         <LayoutInnerBox>
           <TopBox>
-            <CropProfile crop={crop} />
+            {crop && <CropProfile crop={crop} />}
             <ButtonBox>
               <RecognizeButton />
               <Button

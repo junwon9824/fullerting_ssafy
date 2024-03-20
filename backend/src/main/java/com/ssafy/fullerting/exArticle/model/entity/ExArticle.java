@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.exArticle.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
@@ -80,7 +81,7 @@ public class ExArticle {
     @OneToOne(mappedBy = "exArticle")
     private Trans trans;
 
-    @OneToMany(mappedBy = "exArticle")
+    @OneToMany(mappedBy = "exArticle" , fetch = FetchType.LAZY)
     private List<Image> image;
 
     @OneToMany(mappedBy = "exArticle")
@@ -88,6 +89,12 @@ public class ExArticle {
 
     public void setdeal(Deal deal) {
         this.deal = deal;
+    }
+    public void setdone( ) {
+        this.isDone = true;
+    }
+    public void setpurchaserid( Long id) {
+        this.purchaserId = id;
     }
 
     public void addfavorite(Favorite favorite) {

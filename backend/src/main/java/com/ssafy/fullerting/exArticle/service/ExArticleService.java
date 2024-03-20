@@ -5,6 +5,7 @@ import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.deal.service.DealService;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
+import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleDoneRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
@@ -15,6 +16,12 @@ import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.favorite.repository.favoriteRepository;
+import com.ssafy.fullerting.global.s3.entity.response.S3Response;
+import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
+import com.ssafy.fullerting.image.model.entity.Image;
+import com.ssafy.fullerting.image.repository.ImageRepository;
+import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
+import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
 import com.ssafy.fullerting.trans.model.entity.Trans;
 import com.ssafy.fullerting.trans.repository.TransRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
@@ -28,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,18 +51,28 @@ public class ExArticleService {
     private final UserRepository userRepository;
     private final favoriteRepository favoriteRepository;
     private final TransRepository transRepository;
+    private final PackDiaryRepository packDiaryRepository;
     private final DealService dealService;
     private final UserService userService;
+    private final AmazonS3Service amazonS3Service;
+    private final ImageRepository imageRepository;
 
 
-    public void register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
+    public void register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
 
         CustomUser customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 //        log.info("ussssss"+customUser.getEmail());
         log.info("ussssss" + email1);
+        S3Response response =
+                amazonS3Service.uploadFile(files);
+
+        PackDiary packDiary = packDiaryRepository.findById(exArticleRegisterRequest.getPackdiaryid()).orElseThrow(() ->
+                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
 
 
         LocalDateTime createdAt = LocalDateTime.now(); // 현재 시각 설정
+
 
         ExArticle exArticle = ExArticle.builder()
                 .id(exArticleRegisterRequest.getId())
@@ -66,11 +84,25 @@ public class ExArticleService {
                 .location(exArticleRegisterRequest.getEx_article_location())
                 .user(customUser)
                 .favorite(exArticleRegisterRequest.getFavorite())
+                .packDiary(packDiary)
                 .build();
 
         log.info("exxxxx" + exArticle.toString());
 //        exArticleRepository.saveAndFlush(exArticle);
         ExArticle exArticle1 = exArticleRepository.save(exArticle);
+
+
+        List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
+            Image image = new Image();
+            image.setImg_store_url(stringStringEntry.getValue());
+            image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
+                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
+            imageRepository.save(image);
+            return image;
+        }).collect(Collectors.toList());
+
+//        exArticle1.setImage(images);
+        ExArticle article = exArticleRepository.save(exArticle1);
 
         if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.DEAL)) {
             Deal deal = Deal.builder()
@@ -101,7 +133,7 @@ public class ExArticleService {
             exArticle1.setTrans(trans);
         }
 
-
+        log.info("iiiiiii" + article.getImage());
     }
 
     public List<ExArticleAllResponse> allArticle() {
@@ -163,5 +195,20 @@ public class ExArticleService {
 
         return article.toDetailResponse(article, user);
 
+    }
+
+    public void done(Long exArticleId, ExArticleDoneRequest exArticleDoneRequest) {
+        //구매자 누군지 설정, 거래완료 true
+
+        CustomUser customUser = UserResponse.toEntity(userService.getUserInfo());
+        ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() ->
+                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
+        log.info("exxxx" + exArticle.getPurchaserId());
+        exArticle.setdone();
+        exArticle.setpurchaserid(exArticleDoneRequest.getExArticlePurchaserId());
+
+        exArticleRepository.save(exArticle);
+        log.info("exxxx" + exArticle.getPurchaserId());
     }
 }

@@ -61,6 +61,7 @@ const TopBox = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   width: 100%;
   position: fixed;
+  z-index: 6;
 `;
 const TopInnerBox = styled.div`
   display: flex;
