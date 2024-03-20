@@ -13,7 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/pack_diaries")
+@RequestMapping("/v1/pack-diaries")
 @RequiredArgsConstructor //생성자 주입
 @Slf4j
 public class PackDiaryController {
@@ -40,4 +40,16 @@ public class PackDiaryController {
     public ResponseEntity<MessageUtils> getAllPackDiary(){
         return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getAllPackDiary()));
     }
+
+    /**
+     * 작물재배 종료
+     * @param packDiaryId
+     * @return
+     */
+    @PatchMapping("/{pack_diary_id}/end")
+    public ResponseEntity<MessageUtils> endCropCultivation(@PathVariable("pack_diary_id") Long packDiaryId){
+        packDiaryService.endCropCultivation(packDiaryId);
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
 }

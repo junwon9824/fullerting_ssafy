@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/crop_types")
+@RequestMapping("/v1/crop-types")
 @RequiredArgsConstructor //생성자 주입
 @Slf4j
 public class CropTypeController {
