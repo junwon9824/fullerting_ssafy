@@ -5,6 +5,7 @@ import com.ssafy.fullerting.record.packdiary.model.dto.request.CreatePackDiaryRe
 import com.ssafy.fullerting.record.packdiary.service.PackDiaryService;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.service.UserService;
+import io.lettuce.core.ScriptOutputType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

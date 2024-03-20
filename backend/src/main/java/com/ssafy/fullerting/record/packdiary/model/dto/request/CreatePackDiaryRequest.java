@@ -19,6 +19,5 @@ import java.time.LocalDate;
 public class CreatePackDiaryRequest {
     private Long cropTypeId;
     private String packDiaryTitle;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate packDiaryCulStartAt;
 }
