@@ -6,12 +6,17 @@ import com.ssafy.fullerting.deal.service.DealService;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleKeywordResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.favorite.repository.favoriteRepository;
+import com.ssafy.fullerting.trans.model.entity.Trans;
+import com.ssafy.fullerting.trans.repository.TransRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
@@ -37,6 +42,7 @@ public class ExArticleService {
     private final DealRepository dealRepository;
     private final UserRepository userRepository;
     private final favoriteRepository favoriteRepository;
+    private final TransRepository transRepository;
     private final DealService dealService;
     private final UserService userService;
 
@@ -80,22 +86,37 @@ public class ExArticleService {
             exArticle1.setdeal(deal);
 //            System.out.println("exarttttt22222      " + exArticle.toString());
         }
+
+        if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.SHARING)) {
+            Trans trans = Trans.builder()
+                    .trans_sell_price(exArticleRegisterRequest.getDeal_cur_price())
+                    .build();
+
+            trans.setexarticle(exArticle);
+
+            System.out.println("exarttttt   " + exArticle.toString());
+
+            transRepository.save(trans);
+
+            exArticle1.setTrans(trans);
+        }
+
+
     }
 
-    public List<ExArticleResponse> allArticle() {
+    public List<ExArticleAllResponse> allArticle() {
 
         List<ExArticle> exArticle = exArticleRepository.findAll();
         CustomUser user = UserResponse.toEntity(userService.getUserInfo());
 
-        log.info("eeeeeeeeeeeee" + exArticle.stream().
-                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
+//        log.info("eeeeeeeeeeeee" + exArticle.stream().
+//                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
 
 
-        List<ExArticleResponse> exArticleResponses =
-                exArticle.stream().map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).
+        List<ExArticleAllResponse> exArticleResponses =
+                exArticle.stream().map(exArticle1 -> exArticle1.toAllResponse(exArticle1, user)).
                         collect(Collectors.toList());
 
-        log.info("exArticleResponses" + exArticleResponses.stream().filter(exArticleResponse -> exArticleResponse.getExArticleId()==28).map(exArticleResponse -> exArticleResponse.getFavoriteResponse()).collect(Collectors.toList()));
 
         return exArticleResponses;
     }
@@ -127,11 +148,20 @@ public class ExArticleService {
         favoriteRepository.save(favorite);
     }
 
-    public List<ExArticleResponse> keyword(String keyword) { //keyword 검색.
+    public List<ExArticleKeywordResponse> keyword(String keyword) { //keyword 검색.
         List<ExArticle> exArticles = exArticleRepository.findAllByTitleContaining(keyword).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
         CustomUser user = UserResponse.toEntity(userService.getUserInfo());
-        return exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
+        return exArticles.stream().map(exArticle -> exArticle.tokeyResponse(exArticle, user)).collect(Collectors.toList());
+
     }
 
+    public ExArticleDetailResponse detail(Long ex_article_id) {
+        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser user = userResponse.toEntity(userResponse);
+
+        return article.toDetailResponse(article, user);
+
+    }
 }

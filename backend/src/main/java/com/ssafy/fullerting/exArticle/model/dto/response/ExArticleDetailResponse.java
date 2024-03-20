@@ -1,11 +1,15 @@
 package com.ssafy.fullerting.exArticle.model.dto.response;
 
+import com.ssafy.fullerting.deal.model.dto.response.DealResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.favorite.model.dto.response.FavoriteResponse;
 import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.image.model.dto.response.ImageResponse;
 import com.ssafy.fullerting.image.model.entity.Image;
+import com.ssafy.fullerting.record.packdiary.model.dto.response.PackDiaryResponse;
+import com.ssafy.fullerting.trans.model.dto.response.TransResponse;
+import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import lombok.*;
 
 import java.util.List;
@@ -16,14 +20,17 @@ import java.util.stream.Collectors;
 @Data
 @Builder
 @ToString
-public class ExArticleResponse {
+public class ExArticleDetailResponse {
 
-    private String exLocation;
-    private Long exArticleId;
-    private String exArticleTitle;
-    private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
     private List<ImageResponse> imageResponses; //
-//    private  FavoriteResponse favoriteResponse;
+    private FavoriteResponse favoriteResponse;
+    private PackDiaryResponse packDiaryResponse;
+    private ExArticleResponse exArticleResponse;
+    private DealResponse dealResponse;
+    private UserResponse userResponse;
+    private TransResponse transResponse;
+
+    
 
 //    public ExArticle toEntity(ExArticleResponse exArticleResponse) {
 //        return ExArticle.builder()

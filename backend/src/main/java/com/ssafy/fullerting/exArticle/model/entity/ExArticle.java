@@ -1,12 +1,17 @@
 package com.ssafy.fullerting.exArticle.model.entity;
 
 import com.ssafy.fullerting.deal.model.entity.Deal;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleKeywordResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.favorite.model.dto.response.FavoriteResponse;
 import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.global.BaseTimeEntity;
 import com.ssafy.fullerting.image.model.entity.Image;
+import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
+import com.ssafy.fullerting.trans.model.entity.Trans;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,9 +47,9 @@ public class ExArticle {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime created_at;
 
-//    @ManyToOne
-//    @JoinColumn(name = "pack_diary_id")
-//    private PackDiary packDiary;
+    @ManyToOne
+    @JoinColumn(name = "pack_diary_id")
+    private PackDiary packDiary;
 
     @Column(name = "ex_article_title", nullable = false)
     private String title;
@@ -72,6 +77,9 @@ public class ExArticle {
     private Deal deal;
 
 
+    @OneToOne(mappedBy = "exArticle")
+    private Trans trans;
+
     @OneToMany(mappedBy = "exArticle")
     private List<Image> image;
 
@@ -89,9 +97,15 @@ public class ExArticle {
     public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
 
-        List<FavoriteResponse> favoriteResponses
-                = article.favorite.stream().map(
-                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+        //        List<FavoriteResponse> favoriteResponses
+//                = article.favorite.stream().map(
+//                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+
+        Favorite favorite1 = null;
+
+        if (!article.getFavorite().isEmpty()) {
+            favorite1 = article.getFavorite().get(0);
+        }
 
         exArticleResponse = ExArticleResponse.builder()
                 .exArticleId(article.getId())
@@ -100,14 +114,120 @@ public class ExArticle {
                 .exLocation(article.getLocation())
                 .imageResponses(article.getImage().stream().map(Image::toResponse)
                         .collect(Collectors.toList()))
-                .favoriteResponse(article.favorite.stream().map(
-                        favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList()))
+//                .favoriteResponse(
+//                        favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
+//                                .builder().islike(false).isLikeCnt(0).build()
+//                )
                 .build();
 
-        log.info("favvvvvvvvvvv" + favoriteResponses);
 
         return exArticleResponse;
     }
 
+    public static ExArticleKeywordResponse tokeyResponse(ExArticle article, CustomUser customUser) {
+        ExArticleKeywordResponse response = null;
+
+        //        List<FavoriteResponse> favoriteResponses
+//                = article.favorite.stream().map(
+//                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+
+        Favorite favorite1 = null;
+
+        if (!article.getFavorite().isEmpty()) {
+            favorite1 = article.getFavorite().get(0);
+        }
+
+        response = ExArticleKeywordResponse.builder()
+                .exArticleResponse(article.toResponse(article, customUser))
+                .favoriteResponse(favorite1 != null ? favorite1.toResponse(customUser) :
+                        FavoriteResponse.builder()
+                                .isLikeCnt(0)
+                                .islike(false)
+                                .build())
+                .build();
+
+
+        return response;
+    }
+
+    public static ExArticleAllResponse toAllResponse(ExArticle article, CustomUser customUser) {
+        ExArticleAllResponse exArticleAllResponse = null;
+
+        //        List<FavoriteResponse> favoriteResponses
+//                = article.favorite.stream().map(
+//                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+
+        Favorite favorite1 = null;
+
+        if (!article.getFavorite().isEmpty()) {
+            favorite1 = article.getFavorite().get(0);
+        }
+
+        exArticleAllResponse = exArticleAllResponse.builder()
+//                .exArticleId(article.getId())
+//                .exArticleTitle(article.getTitle())
+//                .exArticleType(article.getType())
+//                .exLocation(article.getLocation())
+//                .imageResponses(article.getImage().stream().map(Image::toResponse)
+//                        .collect(Collectors.toList()))
+
+                .favoriteResponse(
+                        favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
+                                .builder().islike(false).isLikeCnt(0).build()
+                )
+                .exArticleResponse(
+                        article.toResponse(article, customUser)
+                )
+                .packDiaryResponse(
+                        article.packDiary != null ? article.packDiary.toResponse(article.packDiary) : null
+                )
+                .build();
+
+
+        return exArticleAllResponse;
+    }
+
+    public static ExArticleDetailResponse toDetailResponse(ExArticle article, CustomUser customUser) {
+        ExArticleDetailResponse exArticleDetailResponse = null;
+
+        //        List<FavoriteResponse> favoriteResponses
+//                = article.favorite.stream().map(
+//                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+
+        Favorite favorite1 = null;
+
+        if (!article.getFavorite().isEmpty()) {
+            favorite1 = article.getFavorite().get(0);
+        }
+
+
+        exArticleDetailResponse = exArticleDetailResponse.builder()
+//                .exArticleId(article.getId())
+//                .exArticleTitle(article.getTitle())
+//                .exArticleType(article.getType())
+//                .exLocation(article.getLocation())
+                .imageResponses(article.getImage().stream().map(Image::toResponse)
+                        .collect(Collectors.toList()))
+                .favoriteResponse(
+                        favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
+                                .builder().islike(false).isLikeCnt(0).build()
+                )
+                .userResponse(customUser.toResponse())
+                .dealResponse(article.deal.toResponse(customUser))
+                .packDiaryResponse(article.packDiary != null ?
+                        article.packDiary.toResponse(article.getPackDiary())
+                        : null
+                )
+                .transResponse(
+                        article.trans != null ?
+                                article.trans.toResponse(article.trans)
+                                : null
+                )
+                .exArticleResponse(article.toResponse(article, customUser))
+                .build();
+
+
+        return exArticleDetailResponse;
+    }
 
 }
