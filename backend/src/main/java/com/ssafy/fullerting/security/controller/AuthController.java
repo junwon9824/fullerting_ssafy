@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/auth")
-@Tag(name="회원 기능 API", description = "인가,인증과 관련된 작업을 수행한다")
+@Tag(name="회원 기능 API", description = "[JWT 토큰을 이용해야해서 포스트맨으로 테스트 필요한 API] 인가,인증과 관련된 작업을 수행한다")
 public class AuthController {
 
     private final AuthService authService;

@@ -40,18 +40,29 @@ public class JwtValidationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
 
-        //토큰이 없는경우
-        if(!StringUtils.hasText(authorizationHeader)){
+        // 코드 리뷰 버전
+        String [] list = StringUtils.split(authorizationHeader, BEARER_PREFIX);
+
+        //authorizationHeader 가 null 이 아니고 authorizationHeader에 앞에 BEARER_PREFIX 가 있을 경우만 accessToken 값 있음, 아니면 null
+        String accessToken = (list != null && list.length == 2 && list[0].isEmpty()) ? list[1] : null;
+
+        if(accessToken == null){
             doFilter(request, response, filterChain);
             return;
         }
-        //Bear로 시작하지 않는 경우
-        if(!authorizationHeader.startsWith(BEARER_PREFIX)){
-            doFilter(request, response, filterChain);
-            return;
-        }
+
+//        //토큰이 없는경우
+//        if(!StringUtils.hasText(authorizationHeader)){
+//            doFilter(request, response, filterChain);
+//            return;
+//        }
+//        //Bear로 시작하지 않는 경우
+//        if(!authorizationHeader.startsWith(BEARER_PREFIX)){
+//            doFilter(request, response, filterChain);
+//            return;
+//        }
         //jwt추출
-        String accessToken = authorizationHeader.split(" ")[1];
+//        String accessToken = authorizationHeader.split(" ")[1];
 
         //엑세스 토큰 검증
         Jws<Claims> claimsJws = jwtUtils.validateAccessToken(accessToken);

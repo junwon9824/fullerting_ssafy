@@ -39,9 +39,7 @@ public class UserController {
     @GetMapping("/info")
     @Operation(summary = "유저정보조회", description = "현재 로그인 중인 유저의 상세 정보를 조회한다 <br> [헤더 Bearer: Access토큰 필요] <br> 토큰을 통해 유저정보를 조회한다")
     public ResponseEntity<MessageUtils> getUserInfo() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok().body(MessageUtils.success(userService.getUserInfo()));
     }
-
 
 }
