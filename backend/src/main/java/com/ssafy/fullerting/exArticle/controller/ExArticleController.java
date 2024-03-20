@@ -44,7 +44,7 @@ public class ExArticleController {
         List<ExArticleResponse> exArticleResponse = exArticleService.allArticle();
 
 
-        log.info("[all article]: {}", exArticleResponse);
+        log.info("[all articlessssssssssssss]: {}", exArticleResponse);
         return ResponseEntity.ok().body(MessageUtils.success(exArticleResponse));
     }
 

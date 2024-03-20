@@ -37,6 +37,7 @@ public class Favorite {
         // 해당 게시글에 얼마나 많은 유저가 좋아요 눌럿나, 내가 좋아요 누른지 여부
 
         return FavoriteResponse.builder()
+                .id(this.id)
                 .isLikeCnt(this.exArticle.getFavorite().size())
                 .islike(this.user == user ? true : false)
                 .build();
