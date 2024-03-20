@@ -1,8 +1,10 @@
 import styled from "styled-components";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { fetchBadges } from "../../apis/MyPage";
 import arrow from "/src/assets/svg/arrow_forward_ios.svg";
-import pul from "/src/assets/svg/pullleft.svg";
+import { useQuery } from "@tanstack/react-query";
 
 const ProfileContent = styled.div`
   display: flex;
@@ -23,7 +25,7 @@ const Badge = styled.div`
   border-radius: 50%;
   background-color: #cdc8c8;
   margin-right: 0.8rem;
-  background-image: url(${(props) => props.imageUrl});
+  background-image: url(${(props) => props.badgeImg});
   background-size: cover;
 `;
 
@@ -56,14 +58,33 @@ const Line = styled.hr`
 `;
 const Maintop = () => {
   const navigate = useNavigate();
-  const badges = [
-    { imageUrl: pul },
-    { imageUrl: pul },
-    { imageUrl: pul },
-    { imageUrl: pul },
-    { imageUrl: pul },
-    { imageUrl: pul },
-  ];
+  console.log("Maintop 컴포넌트 렌더링");
+
+  // useEffect(() => {
+  //   fetchBadges()
+  //     .then((data) => console.log("가가가가가가", data.data_body))
+  //     .catch((err) => console.error("아아아아아아", err));
+  // }, []);
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["badges"],
+    queryFn: fetchBadges,
+  });
+
+  // 로딩 상태 처리
+  if (isLoading) {
+    console.log("데이터 로딩 중...");
+    return <div>로딩 중...</div>;
+  }
+
+  // 에러 처리
+  if (error) {
+    console.error("뱃지 데이터를 가져오는데 실패했습니다:", error);
+    return <div>뱃지 데이터를 가져오는데 실패했습니다: {error.message}</div>;
+  }
+
+  // 데이터가 성공적으로 로드되었을 때의 로그
+  console.log("로드된 데이터:", data);
 
   const pages = [
     { title: "보유 뱃지", onClick: () => navigate("/mypage/allbadge") },
@@ -82,18 +103,20 @@ const Maintop = () => {
             <ProfileText>
               <Nickname>{page.title}</Nickname>
             </ProfileText>
-            {page.title === "" ? (
+            {page.title === "" && (
               <BadgesContainer>
-                {badges.slice(0, 4).map((badge, index) => (
-                  <Badge key={index} imageUrl={badge.imageUrl} />
-                ))}
-                {badges.length - 4 > 0 && (
-                  <AdditionalBadges>+{badges.length - 4}</AdditionalBadges>
+                {data &&
+                  data
+                    .slice(0, 4)
+                    .map((badge, index) => (
+                      <Badge key={index} badgeImg={badge.badgeImg} />
+                    ))}
+                {data && data.length - 4 > 0 && (
+                  <AdditionalBadges>+{data.length - 4}</AdditionalBadges>
                 )}
               </BadgesContainer>
-            ) : (
-              <img src={arrow} alt="" />
             )}
+            <img src={arrow} alt="" />
           </ProfileContent>
           {page.title !== "보유 뱃지" && <Line />}
         </React.Fragment>
