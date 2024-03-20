@@ -2,6 +2,9 @@ import styled from "styled-components";
 import CropProfile from "./CropProfile";
 import { useQuery } from "@tanstack/react-query";
 import { getCropList } from "../../apis/DiaryApi";
+import { useNavigate } from "react-router-dom";
+import { cropAtom } from "../../stores/diary";
+import { useAtom } from "jotai";
 
 const CardListBox = styled.div`
   display: flex;
@@ -39,40 +42,9 @@ const CardItemDecoBox = styled.div`
 `;
 
 const CropList = () => {
-  // const crops: CropType[] = [
-  //   {
-  //     packDiaryId: 1,
-  //     cropTypeName: "토마토",
-  //     packDiaryTitle: "똘똘한토마토",
-  //     packDiaryCulStartAt: "2024-03-01",
-  //     packDiaryCulEndAt: "2024-04-01",
-  //     packDiaryGrowthStep: "2",
-  //     packDiaryCreatedAt: "2024-03-01",
-  //     cropTypeImgUrl: "wheat_img.jpg",
-  //   },
-  //   {
-  //     packDiaryId: 2,
-  //     cropTypeName: "브로콜리",
-  //     packDiaryTitle: "데프콘",
-  //     packDiaryCulStartAt: "2024-02-15",
-  //     packDiaryCulEndAt: "2024-04-15",
-  //     packDiaryGrowthStep: "1",
-  //     packDiaryCreatedAt: "2024-02-15",
-  //     cropTypeImgUrl: "corn_img.jpg",
-  //   },
-  //   {
-  //     packDiaryId: 1,
-  //     cropTypeName: "토마토",
-  //     packDiaryTitle: "똘똘한토마토",
-  //     packDiaryCulStartAt: "2024-03-01",
-  //     packDiaryCulEndAt: "2024-04-01",
-  //     packDiaryGrowthStep: "2",
-  //     packDiaryCreatedAt: "2024-03-01",
-  //     cropTypeImgUrl: "wheat_img.jpg",
-  //   },
-  // ];
-
   const accessToken = sessionStorage.getItem("accessToken");
+  const [crop, setCrop] = useAtom(cropAtom);
+  const navigate = useNavigate();
 
   const { isLoading, data: crops } = useQuery({
     queryKey: ["crops"],
@@ -87,10 +59,18 @@ const CropList = () => {
     return <div>작물을 등록해주세요</div>;
   }
 
+  const handleCardClick = (cropData: CropType) => {
+    navigate("/diary/detail");
+    setCrop(cropData);
+  };
+
   return (
     <CardListBox>
       {crops.map((crop: CropType) => (
-        <CardItemBox key={crop.packDiaryId}>
+        <CardItemBox
+          key={crop.packDiaryId}
+          onClick={() => handleCardClick(crop)}
+        >
           <CardItemDecoBox>
             <svg
               xmlns="http://www.w3.org/2000/svg"
