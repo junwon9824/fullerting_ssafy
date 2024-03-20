@@ -58,6 +58,16 @@ const CropList = () => {
       packDiaryCreatedAt: "2024-02-15",
       cropTypeImgUrl: "corn_img.jpg",
     },
+    {
+      packDiaryId: 1,
+      cropTypeName: "토마토",
+      packDiaryTitle: "똘똘한토마토",
+      packDiaryCulStartAt: "2024-03-01",
+      packDiaryCulEndAt: "2024-04-01",
+      packDiaryGrowthStep: "2",
+      packDiaryCreatedAt: "2024-03-01",
+      cropTypeImgUrl: "wheat_img.jpg",
+    },
   ];
 
   return (
