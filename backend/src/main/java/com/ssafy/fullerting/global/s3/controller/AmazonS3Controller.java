@@ -19,7 +19,6 @@ public class AmazonS3Controller {
 
     @PostMapping("/uploadFile")
     public ResponseEntity<S3ManyFilesResponse> uploadFile(List<MultipartFile> multipartFiles){
-        log.info("들어옴?");
         return ResponseEntity.ok(amazonS3Service.uploadFiles(multipartFiles));
     }
 

@@ -96,16 +96,16 @@ public class AmazonS3Service {
         // 허용하는 파일 확장자 목록
         List<String> allowedExtensions = Arrays.asList(".jpg", ".jpeg", ".png", ".svg");
 
-        try{
-            String extension = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
-            if (!allowedExtensions.contains(extension)) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "jpg, jpeg, svg, png 파일만 등록 가능합니다.");
-            }
-
-            return extension;
-        } catch (StringIndexOutOfBoundsException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일" + fileName + ") 입니다.");
+        if (fileName.lastIndexOf("." ) == -1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "파일 확장자가 없습니다.");
         }
+
+        String extension = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
+        if (!allowedExtensions.contains(extension)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "jpg, jpeg, svg, png 파일만 등록 가능합니다.");
+        }
+
+        return extension;
     }
 
 
