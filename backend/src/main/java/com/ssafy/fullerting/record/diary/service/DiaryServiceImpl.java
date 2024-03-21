@@ -1,6 +1,8 @@
 package com.ssafy.fullerting.record.diary.service;
 
+import com.ssafy.fullerting.record.diary.exception.DiaryException;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetAllDiaryResponse;
+import com.ssafy.fullerting.record.diary.model.dto.response.GetDetailDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetSelectedAtDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.entity.Diary;
 import com.ssafy.fullerting.record.diary.repository.DiaryRepository;
@@ -13,6 +15,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.NOT_EXISTS_DIARY;
 
 @RequiredArgsConstructor
 @Service
@@ -39,5 +43,13 @@ public class DiaryServiceImpl implements DiaryService{
                 })
                 .sorted(Comparator.comparing(GetAllDiaryResponse::getDiarySelectedAt).reversed()) //날짜 최신순 정렬
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public GetDetailDiaryResponse getDetailDiary(Long diaryId) {
+        Diary diary = diaryRepository.findById(diaryId).orElseThrow(()->new DiaryException(NOT_EXISTS_DIARY));
+        GetDetailDiaryResponse getDetailDiaryResponse = GetDetailDiaryResponse.fromResponse(diary);
+
+        return getDetailDiaryResponse;
     }
 }
