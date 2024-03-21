@@ -81,7 +81,7 @@ public class ExArticle {
     @OneToOne(mappedBy = "exArticle")
     private Trans trans;
 
-    @OneToMany(mappedBy = "exArticle" , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "exArticle", fetch = FetchType.LAZY)
     private List<Image> image;
 
     @OneToMany(mappedBy = "exArticle")
@@ -90,10 +90,12 @@ public class ExArticle {
     public void setdeal(Deal deal) {
         this.deal = deal;
     }
-    public void setdone( ) {
+
+    public void setdone() {
         this.isDone = true;
     }
-    public void setpurchaserid( Long id) {
+
+    public void setpurchaserid(Long id) {
         this.purchaserId = id;
     }
 
@@ -119,6 +121,7 @@ public class ExArticle {
                 .exArticleTitle(article.getTitle())
                 .exArticleType(article.getType())
                 .exLocation(article.getLocation())
+                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDeal_cur_price() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
                 .imageResponses(article.getImage().stream().map(Image::toResponse)
                         .collect(Collectors.toList()))
 //                .favoriteResponse(
@@ -190,7 +193,7 @@ public class ExArticle {
                 )
                 .build();
 
-
+        log.info("exArticleAllResponseexArticleAllResponse"+exArticleAllResponse);
         return exArticleAllResponse;
     }
 
