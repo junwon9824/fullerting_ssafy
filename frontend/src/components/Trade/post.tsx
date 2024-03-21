@@ -37,6 +37,7 @@ interface ExArticleResponse {
   exArticleTitle: string;
   exArticleType: string;
   imageResponses: ImageResponse[];
+  price: number;
 }
 
 interface FavoriteResponse {
@@ -167,15 +168,12 @@ const WriteBox = styled.img`
 
 const Post = () => {
   const [favorite, setFavorite] = useState<string>("");
-  const [word, setword] = useState<number>(12);
   const navigate = useNavigate();
   const handelWriteClick = () => {
     navigate("/trade/post");
     console.log(data);
   };
-  // const handleLike = (index: number) => {
-  //   data?.map((item: DataItem) => item);
-  // };
+  const handleLike = (index: number) => {};
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
     queryKey: ["tradeList"],
@@ -191,12 +189,12 @@ const Post = () => {
               src={item.exArticleResponse.imageResponses[0].img_store_url}
               alt="tomato"
             />
-            {/* <LikeBox onClick={() => handleLike(index)}>
+            <LikeBox onClick={() => handleLike(index)}>
               <img
                 src={item.favoriteResponse.islike ? RedLike : Like}
                 alt="like button"
               />
-            </LikeBox> */}
+            </LikeBox>
           </ImgBox>
           <Town>
             <img src={Location} alt="location" />
@@ -204,7 +202,27 @@ const Post = () => {
           </Town>
           <Title>{item.exArticleResponse.exArticleTitle}</Title>
           <State gap={0.44} fontSize={1}>
-            <StateIcon
+            {item.exArticleResponse.price === 0 ? (
+              <StateIcon
+                width={1.5}
+                height={0.9375}
+                backgroundColor="#A0D8B3"
+                color="#ffffff"
+              >
+                나눔
+              </StateIcon>
+            ) : (
+              <StateIcon
+                width={1.5}
+                height={0.9375}
+                backgroundColor="#A0D8B3"
+                color="#ffffff"
+              >
+                현재
+              </StateIcon>
+            )}
+            {item.exArticleResponse.price}원
+            {/* <StateIcon
               width={1.5}
               height={0.9375}
               backgroundColor="#A0D8B3"
@@ -212,7 +230,7 @@ const Post = () => {
             >
               현재
             </StateIcon>
-            300원
+            300원 */}
           </State>
 
           <State
@@ -227,7 +245,7 @@ const Post = () => {
                 alt="gray"
                 style={{ marginRight: "0.19rem" }}
               />
-              {word}
+              {item.favoriteResponse.isLikeCnt}
             </HeartBox>
             <ExplainBox>
               <StateIcon
@@ -245,64 +263,21 @@ const Post = () => {
                   ? "거래"
                   : "error"}
               </StateIcon>
+              {item.packDiaryResponse ? (
+                <StateIcon
+                  width={2.5625}
+                  height={0.9375}
+                  backgroundColor="#A0D8B3"
+                  color="#8c8c8c"
+                >
+                  작물일지
+                </StateIcon>
+              ) : null}
             </ExplainBox>
           </State>
         </PostBox>
       ))}
-      {/* {like.map((like, index) => (
-        <PostBox>
-          <ImgBox key={index}>
-            <StyledImg src={Tomato} alt="tomato" />
-            <LikeBox onClick={() => handleLike(index)}>
-              <StyledImg src={like ? RedLike : Like} alt="like button" />
-            </LikeBox>
-          </ImgBox>
-          <Town>
-            <img src={Location} alt="location" />
-            {data?.[index].exArticleResponse.exLocation}
-          </Town>
-          <Title>{data?.[index].exArticleResponse.exArticleTitle}</Title>
-          <State gap={0.44} fontSize={1}>
-            <StateIcon
-              width={1.5}
-              height={0.9375}
-              backgroundColor="#A0D8B3"
-              color="#ffffff"
-            >
-              현재
-            </StateIcon>
-            300원
-          </State>
 
-          <State
-            // gap={3.75}
-            fontSize={0.5625}
-            color="#BEBEBE"
-            justifyContent="space-between"
-          >
-            <HeartBox>
-              <img
-                src={GrayHeart}
-                alt="gray"
-                style={{ marginRight: "0.19rem" }}
-              />
-              {word}
-            </HeartBox>
-            <ExplainBox>
-              {stateArray.map((text, index) => (
-                <StateIcon
-                  width={text === "작물일지" ? 2.5625 : 1.5}
-                  height={0.9375}
-                  backgroundColor={text === "작물일지" ? "#A0D8B3" : "#F4F4F4"}
-                  color="#8c8c8c"
-                >
-                  {text}
-                </StateIcon>
-              ))}
-            </ExplainBox>
-          </State>
-        </PostBox>
-      ))} */}
       <WriteBox src={Write} onClick={handelWriteClick} />
     </ContentBox>
   );
