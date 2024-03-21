@@ -89,32 +89,68 @@ const DiaryPage = () => {
 
   const diaries: DiaryType[] = [
     {
-      diaryId: 1,
-      packDiaryId: 1,
-      diaryBehavior: "다이어리",
-      diaryTitle: "토마토는 빨강색",
-      diaryContent:
-        "멋쟁이 토마토 울퉁불통멋진몸매에 빨간 옷을 입고 나는야 주스될거야 꿀꺽 나는야 춤을 출거야 멋쟁이 토마토 토마토~~",
-      diarySelectedAt: "2024-03-05",
-      diaryCreatedAt: "2024-03-05T10:00:00Z",
+      diarySelectedAt: "2024-03-12",
+      getSelectedAtDiaryResponse: [
+        {
+          diaryId: 6,
+          diaryBehavior: "다이어리",
+          diaryTitle: "무수니 성장중!",
+          diaryContent: "무수니가 쑥쑥 잘 자라고 있다.",
+          diaryCreatedAt: "2024-03-11 15:00:00",
+        },
+        {
+          diaryId: 7,
+          diaryBehavior: "물주기",
+          diaryTitle: "",
+          diaryContent: "",
+          diaryCreatedAt: "2024-03-11 15:00:00",
+        },
+      ],
     },
     {
-      diaryId: 2,
-      packDiaryId: 1,
-      diaryBehavior: "물주기",
-      diaryTitle: "",
-      diaryContent: "",
-      diarySelectedAt: "2024-03-04",
-      diaryCreatedAt: "2024-03-05T12:00:00Z",
+      diarySelectedAt: "2024-03-11",
+      getSelectedAtDiaryResponse: [
+        {
+          diaryId: 4,
+          diaryBehavior: "다이어리",
+          diaryTitle: "무수니 발아",
+          diaryContent: "하루가 지났더니 무수니가 발아하는 것 같다",
+          diaryCreatedAt: "2024-03-10 15:00:00",
+        },
+        {
+          diaryId: 5,
+          diaryBehavior: "다이어리",
+          diaryTitle: "무수니 성장",
+          diaryContent: "조금씩 성장하는 무수니",
+          diaryCreatedAt: "2024-03-10 15:00:00",
+        },
+      ],
     },
     {
-      diaryId: 3,
-      packDiaryId: 1,
-      diaryBehavior: "다이어리",
-      diaryTitle: "케찹 만들거임",
-      diaryContent: "오므라이스 감자튀김",
-      diarySelectedAt: "2024-03-04",
-      diaryCreatedAt: "2024-03-05T12:00:00Z",
+      diarySelectedAt: "2024-03-10",
+      getSelectedAtDiaryResponse: [
+        {
+          diaryId: 1,
+          diaryBehavior: "다이어리",
+          diaryTitle: "무수니 씨앗",
+          diaryContent: "오늘 처음으로 무수니의 씨앗을 뿌렸다.",
+          diaryCreatedAt: "2024-03-09 15:00:00",
+        },
+        {
+          diaryId: 2,
+          diaryBehavior: "다이어리",
+          diaryTitle: "무수니 씨앗 자랐나",
+          diaryContent: "무수니 씨앗이 조금 자란거같기도 하고..?",
+          diaryCreatedAt: "2024-03-09 15:00:00",
+        },
+        {
+          diaryId: 3,
+          diaryBehavior: "다이어리",
+          diaryTitle: "무수니 씨앗 자라고 있는중",
+          diaryContent: "저녁 늦게 다시 보니 조금 자랐다!",
+          diaryCreatedAt: "2024-03-09 15:00:00",
+        },
+      ],
     },
   ];
 
