@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import StyledInput from "../../common/Input/StyledInput";
 import { BottomButton } from "../../common/Button/LargeButton";
+import { getUsersInfo } from "../../../apis/MyPage";
+import { useQuery } from "@tanstack/react-query";
 
 const BiddingBox = styled.div`
   background-color: #eee;
@@ -39,6 +41,17 @@ const Name = styled.div`
 `;
 
 const Maintop = () => {
+  const { data: profile, error } = useQuery({
+    queryKey: ["Edit"],
+    queryFn: getUsersInfo,
+  });
+  if (error) {
+    console.error("프로필 데이터를 가져오는데 실패했습니다:", error);
+    return <div>사용자 데이터를 가져오는데 실패했습니다: {error.message}</div>;
+  }
+
+  console.log("프로필 수정페이지", profile?.data.data_body);
+
   const setPassword = () => {
     console.log("비밀번호변경");
   };
@@ -54,12 +67,12 @@ const Maintop = () => {
           type="nickname"
           id="nickname"
           name="nickname"
-          placeholder="닉네임"
+          placeholder={profile?.data.data_body.nickname}
           onChange={setPassword}
         />
         <Name>이메일</Name>
         <BiddingBox>
-          <CashText>ssafy@ssafy.com</CashText>
+          <CashText>{profile?.data.data_body.email}</CashText>
         </BiddingBox>
         <Name>비밀번호</Name>
         <BiddingBox>

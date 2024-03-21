@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import load from "../../../assets/svg/loader.svg";
 import { fetchBadges } from "../../../apis/MyPage";
 import { useQuery } from "@tanstack/react-query";
 
@@ -21,8 +20,9 @@ const BadgeText = styled.div`
   font-family: "GamtanRoad Dotum TTF";
   font-size: 0.75rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: bold;
   white-space: pre-wrap;
+  line-height: 1.125rem; /* 150% */
 `;
 
 const AllBadgesPage = () => {
