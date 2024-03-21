@@ -138,7 +138,7 @@ public class ExArticleService {
 
             transRepository.save(trans);
 
-            exArticle1.setTrans(trans);
+            exArticle1.setTrans(trans); 
             exArticleRepository.save(exArticle1);
 
         }
