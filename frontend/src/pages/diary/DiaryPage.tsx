@@ -12,6 +12,9 @@ import MenuBar from "../../components/diary/MenuBar";
 import { useAtom } from "jotai";
 import { cropAtom, menuAtom } from "../../stores/diary";
 import CropTips from "../../components/diary/CropTips";
+import { useQuery } from "@tanstack/react-query";
+import { getCropData } from "../../apis/DiaryApi";
+import { useParams } from "react-router-dom";
 
 const TopBox = styled.div`
   display: flex;
@@ -37,6 +40,7 @@ const ButtonBox = styled.div`
 const DiaryPage = () => {
   const [crop, setCrop] = useAtom(cropAtom);
   const [menu, setMenu] = useAtom(menuAtom);
+  const { packDiaryId } = useParams();
 
   const diaries: DiaryType[] = [
     {
@@ -68,6 +72,24 @@ const DiaryPage = () => {
       diaryCreatedAt: "2024-03-05T12:00:00Z",
     },
   ];
+
+  const accessToken = sessionStorage.getItem("accessToken");
+
+  const { isLoading } = useQuery({
+    queryKey: ["cropData"],
+    queryFn:
+      packDiaryId && accessToken
+        ? () => {
+            getCropData(accessToken, packDiaryId).then((data) => {
+              setCrop(data);
+            });
+          }
+        : undefined,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const handleHarvestClick = () => {};
 

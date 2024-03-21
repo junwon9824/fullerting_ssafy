@@ -12,6 +12,18 @@ export const getCropList = async (accessToken: string) => {
   }
 };
 
+export const getCropData = async (accessToken: string, packDiaryId: string) => {
+  try {
+    const response = await api.get(`/pack-diaries/${packDiaryId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error getCropData:", error);
+    throw error;
+  }
+};
+
 export const getCropType = async (accessToken: string) => {
   try {
     const response = await api.get("/crop-types", {
