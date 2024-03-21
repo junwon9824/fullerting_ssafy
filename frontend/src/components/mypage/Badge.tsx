@@ -107,7 +107,7 @@ const Maintop = () => {
                 )}
               </BadgesContainer>
             )}
-            <img src={arrow} alt="" />
+            {page.title !== "" && <img src={arrow} alt="" />}
           </ProfileContent>
           {page.title !== "보유 뱃지" && <Line />}
         </React.Fragment>
