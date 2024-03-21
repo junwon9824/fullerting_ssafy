@@ -16,7 +16,8 @@ import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.favorite.repository.favoriteRepository;
-import com.ssafy.fullerting.global.s3.entity.response.S3Response;
+
+import com.ssafy.fullerting.global.s3.model.entity.response.S3ManyFilesResponse;
 import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
 import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.image.repository.ImageRepository;
@@ -63,12 +64,13 @@ public class ExArticleService {
         CustomUser customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 //        log.info("ussssss"+customUser.getEmail());
         log.info("ussssss" + email1);
-        S3Response response =
-                amazonS3Service.uploadFile(files);
+        S3ManyFilesResponse response =
+                amazonS3Service.uploadFiles(files);
 
-        PackDiary packDiary = packDiaryRepository.findById(exArticleRegisterRequest.getPackdiaryid()).orElseThrow(() ->
-                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        Optional<PackDiary> packDiary = null;
 
+        if (exArticleRegisterRequest.getPackdiaryid() != null)
+            packDiary = packDiaryRepository.findById(exArticleRegisterRequest.getPackdiaryid());
 
 
         LocalDateTime createdAt = LocalDateTime.now(); // 현재 시각 설정
@@ -84,7 +86,7 @@ public class ExArticleService {
                 .location(exArticleRegisterRequest.getEx_article_location())
                 .user(customUser)
                 .favorite(exArticleRegisterRequest.getFavorite())
-                .packDiary(packDiary)
+                .packDiary(packDiary != null ? packDiary.orElse(null) : null)
                 .build();
 
         log.info("exxxxx" + exArticle.toString());

@@ -7,6 +7,7 @@ import com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode;
 import com.ssafy.fullerting.record.packdiary.exception.PackDiaryException;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.CreatePackDiaryRequest;
 import com.ssafy.fullerting.record.packdiary.model.dto.response.GetAllPackDiaryResponse;
+import com.ssafy.fullerting.record.packdiary.model.dto.response.GetDetailPackDiaryResponse;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
@@ -33,22 +34,34 @@ public class PackDiaryServiceImpl implements PackDiaryService {
     @Override
     public void createPackDiary(CustomUser user, CreatePackDiaryRequest createPackDiaryRequest) {
         Crop crop = cropTypeRepository.findById(createPackDiaryRequest.getCropTypeId()).orElseThrow(()->new PackDiaryException(NOT_EXISTS_CROP));
-        packDiaryRepository.save(PackDiary.builder()
-                .user(user)
-                .crop(crop)
-                .title(createPackDiaryRequest.getPackDiaryTitle())
-                .culStartAt(createPackDiaryRequest.getPackDiaryCulStartAt())
-                .culEndAt(null)
-                .growthStep(0)
-                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                .build()
-        );
+        try {
+            packDiaryRepository.save(PackDiary.builder()
+                    .user(user)
+                    .crop(crop)
+                    .title(createPackDiaryRequest.getPackDiaryTitle())
+                    .culStartAt(createPackDiaryRequest.getPackDiaryCulStartAt())
+                    .culEndAt(null)
+                    .growthStep(0)
+                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                    .build()
+            );
+        } catch(Exception e){
+            throw new PackDiaryException(TRANSACTION_FAIL);
+        }
     }
 
     @Override
     public List<GetAllPackDiaryResponse> getAllPackDiary() {
         List<PackDiary> packDiaryList = packDiaryRepository.findAll();
         return packDiaryList.stream().map(GetAllPackDiaryResponse::fromResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public GetDetailPackDiaryResponse getDetailPackDiary(Long packDiaryId) {
+        PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
+        GetDetailPackDiaryResponse getDetailPackDiaryResponse = GetDetailPackDiaryResponse.fromResponse(packDiary);
+
+        return getDetailPackDiaryResponse;
     }
 
     @Override
