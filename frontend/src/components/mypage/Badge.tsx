@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import load from "../../assets/svg/loader.svg";
 import { fetchBadges } from "../../apis/MyPage";
 import arrow from "/src/assets/svg/arrow_forward_ios.svg";
 import { useQuery } from "@tanstack/react-query";
@@ -60,30 +60,21 @@ const Maintop = () => {
   const navigate = useNavigate();
   console.log("Maintop 컴포넌트 렌더링");
 
-  // useEffect(() => {
-  //   fetchBadges()
-  //     .then((data) => console.log("가가가가가가", data.data_body))
-  //     .catch((err) => console.error("아아아아아아", err));
-  // }, []);
-
   const { data, isLoading, error } = useQuery({
     queryKey: ["badges"],
     queryFn: fetchBadges,
   });
 
-  // 로딩 상태 처리
   if (isLoading) {
     console.log("데이터 로딩 중...");
-    return <div>로딩 중...</div>;
+    return <img src={load} alt="" style={{ width: "80px", height: "80px" }} />;
   }
 
-  // 에러 처리
   if (error) {
     console.error("뱃지 데이터를 가져오는데 실패했습니다:", error);
     return <div>뱃지 데이터를 가져오는데 실패했습니다: {error.message}</div>;
   }
 
-  // 데이터가 성공적으로 로드되었을 때의 로그
   console.log("로드된 데이터:", data);
 
   const pages = [
