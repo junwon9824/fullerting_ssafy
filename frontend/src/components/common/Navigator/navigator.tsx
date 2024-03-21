@@ -174,7 +174,7 @@ const TopBar = ({
 
 const navItems: NavItem[] = [
   { Icon: Home, path: "/" },
-  { Icon: Cart, path: "/cart" },
+  { Icon: Cart, path: "/trade" },
   { Icon: Chat, path: "/chat" },
   { Icon: Diary, path: "/diary" },
   { Icon: Mypage, path: "/mypage" },

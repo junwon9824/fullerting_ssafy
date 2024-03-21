@@ -23,7 +23,7 @@ const TestPage = () => {
     const handleConfirmClick = () => { };
 
     useEffect(() => {
-        const socket = new SockJS("wss://j10c102.p.ssafy.io/api/ws"); // 또는 다른 HTTPS URL
+        const socket = new SockJS("https://j10c102.p.ssafy.io/api/ws"); // 또는 다른 HTTPS URL
 
         const stompClient = Stomp.over(socket);
 
