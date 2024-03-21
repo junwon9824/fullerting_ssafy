@@ -124,7 +124,9 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
           {direction !== "column" && (
             <CropEnd>
               {crop.packDiaryCulEndAt === null
-                ? `"수확까지 ${crop.cropGrowDay}일 남았습니다"`
+                ? `"수확까지 ${
+                    crop.cropGrowDay ? crop.cropGrowDay : "?"
+                  }일 남았습니다"`
                 : `"${crop.packDiaryCulEndAt} 수확완료😊"`}
             </CropEnd>
           )}
