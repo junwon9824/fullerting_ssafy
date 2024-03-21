@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import profileImage from "/src/assets/svg/profileimage.svg";
 import arrow from "/src/assets/svg/arrow_forward_ios.svg";
+import { getUsersInfo } from "../../apis/MyPage";
+import { useQuery } from "@tanstack/react-query";
 
 const ProfileContent = styled.div`
   display: flex;
@@ -50,19 +52,30 @@ const Grade = styled.span`
 `;
 
 const Maintop = () => {
+  console.log("메인 TOP 컴포넌트");
   const navigate = useNavigate();
 
   const goToProfilePage = () => {
     navigate("editprofile");
   };
+  const { data: badges, error } = useQuery({
+    queryKey: ["Info"],
+    queryFn: getUsersInfo,
+  });
 
+  if (error) {
+    console.error("뱃지 데이터를 가져오는데 실패했습니다:", error);
+    return <div>사용자 데이터를 가져오는데 실패했습니다: {error.message}</div>;
+  }
+
+  console.log("여기는 메인 TOP", badges?.data.data_body);
   return (
     <ProfileContent onClick={goToProfilePage}>
       <ProfileContainer>
         <ProfileImageContainer />
         <ProfileText>
-          <Nickname>닉네임</Nickname>
-          <Grade>등급</Grade>
+          <Nickname>{badges?.data.data_body.nickname}</Nickname>
+          <Grade>{badges?.data.data_body.rank}</Grade>
         </ProfileText>
       </ProfileContainer>
       <img src={arrow} alt="" />

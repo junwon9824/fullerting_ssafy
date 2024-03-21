@@ -26,26 +26,25 @@ const BadgeText = styled.div`
 `;
 
 const AllBadgesPage = () => {
-  console.log("뱃지 페이지");
-
   const {
     data: badges,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["badges"],
+    queryKey: ["allbadges"],
     queryFn: fetchBadges,
   });
 
   if (isLoading) {
     console.log("데이터 로딩 중...");
-    return <img src={load} alt="" style={{ width: "80px", height: "80px" }} />;
+    return <div>로딩중</div>;
   }
 
   if (error) {
     console.error("뱃지 데이터를 가져오는데 실패했습니다:", error);
     return <div>뱃지 데이터를 가져오는데 실패했습니다: {error.message}</div>;
   }
+  console.log("전체전체", badges);
 
   return (
     <BadgesContainer>
