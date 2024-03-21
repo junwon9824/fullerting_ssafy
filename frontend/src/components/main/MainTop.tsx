@@ -45,6 +45,7 @@ const MainText = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: normal;
+  ${({ theme }) => theme.fonts.logo}
 `;
 
 const DiaryBox = styled.button`
