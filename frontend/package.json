@@ -25,7 +25,8 @@
     "styled-components": "^6.1.8",
     "styled-reset": "^4.5.2",
     "uuid": "^9.0.1",
-    "vite-svg-loader": "^5.1.0"
+    "vite-svg-loader": "^5.1.0",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@types/react": "^18.2.64",
