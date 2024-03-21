@@ -36,6 +36,18 @@ export const getCropType = async (accessToken: string) => {
   }
 };
 
+export const getTipList = async (accessToken: string, cropTypeId: number) => {
+  try {
+    const response = await api.get(`/crop-tips/${cropTypeId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error getCropType:", error);
+    throw error;
+  }
+};
+
 export const createCrop = async (
   cropData: {
     cropTypeId: number;

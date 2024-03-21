@@ -15,6 +15,7 @@ import CropTips from "../../components/diary/CropTips";
 import { useQuery } from "@tanstack/react-query";
 import { getCropData } from "../../apis/DiaryApi";
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const TopBox = styled.div`
   display: flex;
@@ -73,22 +74,30 @@ const DiaryPage = () => {
     },
   ];
 
+  useEffect(() => {
+    setMenu("다이어리");
+  }, []);
+
   const accessToken = sessionStorage.getItem("accessToken");
 
-  const { isLoading } = useQuery({
+  const {
+    isLoading,
+    data: cropData,
+    isSuccess,
+  } = useQuery({
     queryKey: ["cropData"],
     queryFn:
       packDiaryId && accessToken
-        ? () => {
-            getCropData(accessToken, packDiaryId).then((data) => {
-              setCrop(data);
-            });
-          }
+        ? () => getCropData(accessToken, packDiaryId)
         : undefined,
   });
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (isSuccess) {
+    setCrop(cropData);
   }
 
   const handleHarvestClick = () => {};
@@ -99,8 +108,8 @@ const DiaryPage = () => {
       <LayoutMainBox>
         <LayoutInnerBox>
           <TopBox>
-            {crop && <CropProfile crop={crop} />}
-            {crop && crop.packDiaryCulEndAt === null && (
+            {cropData && <CropProfile crop={cropData} />}
+            {cropData && cropData.packDiaryCulEndAt === null && (
               <ButtonBox>
                 <RecognizeButton />
                 <Button
