@@ -4,9 +4,11 @@ import Location from "/src/assets/svg/location.svg";
 import Like from "/src/assets/svg/notlike.svg";
 import GrayHeart from "/src/assets/svg/grayheart.svg";
 import RedLike from "/src/assets/svg/like.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
+import { getTradeList } from "../../apis/TradeApi";
+import { QueryKey, useQuery } from "@tanstack/react-query";
 
 interface ClickLike {
   onClick: () => void;
@@ -23,6 +25,29 @@ interface Icon {
   backgroundColor: string;
   color: string;
   text?: string;
+}
+interface ImageResponse {
+  id: number;
+  img_store_url: string;
+}
+
+interface ExArticleResponse {
+  exLocation: string;
+  exArticleId: number;
+  exArticleTitle: string;
+  exArticleType: string;
+  imageResponses: ImageResponse[];
+}
+
+interface FavoriteResponse {
+  islike: boolean;
+  isLikeCnt: number;
+}
+
+interface DataItem {
+  exArticleResponse: ExArticleResponse;
+  packDiaryResponse: null | number; // 여기서는 예시로 null을 지정했지만, 필요에 따라 다른 타입을 지정할 수 있습니다.
+  favoriteResponse: FavoriteResponse;
 }
 const ImgBox = styled.div`
   width: 9rem;
@@ -59,8 +84,8 @@ const LikeBox = styled.div<ClickLike>`
 `;
 
 const StyledImg = styled.img`
-  width: 100%;
-  height: 100%;
+  width: 9.5rem;
+  height: 9.5rem;
   object-fit: cover; /* 이미지가 컨테이너를 채우도록 설정 */
 `;
 
@@ -139,23 +164,92 @@ const WriteBox = styled.img`
   right: 1.19rem;
   bottom: 4.75rem;
 `;
-const stateArray = ["제안", "작물일지"];
 
 const Post = () => {
-  const [like, setLike] = useState([false, false, false, false, false]);
+  const [favorite, setFavorite] = useState<string>("");
   const [word, setword] = useState<number>(12);
   const navigate = useNavigate();
   const handelWriteClick = () => {
     navigate("/trade/post");
-    console.log(1);
+    console.log(data);
   };
-  const handleLike = (index: number) => {
-    console.log(1);
-    setLike(like.map((like, i) => (i === index ? !like : like)));
-  };
+  // const handleLike = (index: number) => {
+  //   data?.map((item: DataItem) => item);
+  // };
+  const accessToken = sessionStorage.getItem("accessToken");
+  const { isLoading, data, error } = useQuery({
+    queryKey: ["tradeList"],
+    queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
+  });
+
   return (
     <ContentBox>
-      {like.map((like, index) => (
+      {data?.map((item: DataItem, index: number) => (
+        <PostBox>
+          <ImgBox key={index}>
+            <StyledImg
+              src={item.exArticleResponse.imageResponses[0].img_store_url}
+              alt="tomato"
+            />
+            {/* <LikeBox onClick={() => handleLike(index)}>
+              <img
+                src={item.favoriteResponse.islike ? RedLike : Like}
+                alt="like button"
+              />
+            </LikeBox> */}
+          </ImgBox>
+          <Town>
+            <img src={Location} alt="location" />
+            {item.exArticleResponse.exLocation}
+          </Town>
+          <Title>{item.exArticleResponse.exArticleTitle}</Title>
+          <State gap={0.44} fontSize={1}>
+            <StateIcon
+              width={1.5}
+              height={0.9375}
+              backgroundColor="#A0D8B3"
+              color="#ffffff"
+            >
+              현재
+            </StateIcon>
+            300원
+          </State>
+
+          <State
+            // gap={3.75}
+            fontSize={0.5625}
+            color="#BEBEBE"
+            justifyContent="space-between"
+          >
+            <HeartBox>
+              <img
+                src={GrayHeart}
+                alt="gray"
+                style={{ marginRight: "0.19rem" }}
+              />
+              {word}
+            </HeartBox>
+            <ExplainBox>
+              <StateIcon
+                width={1.5}
+                height={0.9375}
+                backgroundColor="#F4F4F4"
+                color="#8c8c8c"
+              >
+                {item.exArticleResponse.exArticleType === "DEAL"
+                  ? "제안"
+                  : item.exArticleResponse.exArticleType === "SHARING"
+                  ? "나눔"
+                  : item.exArticleResponse.exArticleType ===
+                    "GENERAL_TRANSACTION"
+                  ? "거래"
+                  : "error"}
+              </StateIcon>
+            </ExplainBox>
+          </State>
+        </PostBox>
+      ))}
+      {/* {like.map((like, index) => (
         <PostBox>
           <ImgBox key={index}>
             <StyledImg src={Tomato} alt="tomato" />
@@ -165,9 +259,9 @@ const Post = () => {
           </ImgBox>
           <Town>
             <img src={Location} alt="location" />
-            오선동
+            {data?.[index].exArticleResponse.exLocation}
           </Town>
-          <Title>토마토 500g 판매</Title>
+          <Title>{data?.[index].exArticleResponse.exArticleTitle}</Title>
           <State gap={0.44} fontSize={1}>
             <StateIcon
               width={1.5}
@@ -208,7 +302,7 @@ const Post = () => {
             </ExplainBox>
           </State>
         </PostBox>
-      ))}
+      ))} */}
       <WriteBox src={Write} onClick={handelWriteClick} />
     </ContentBox>
   );
