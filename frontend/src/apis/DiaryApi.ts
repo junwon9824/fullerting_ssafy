@@ -66,3 +66,16 @@ export const createCrop = async (
     throw error;
   }
 };
+
+export const updateHarvest = async (packDiaryId: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.patch(`/pack-diaries/${packDiaryId}/end`, null, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error userLogin: ", error);
+    throw error;
+  }
+};
