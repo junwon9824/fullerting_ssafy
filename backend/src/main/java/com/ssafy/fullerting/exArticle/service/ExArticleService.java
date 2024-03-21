@@ -120,11 +120,16 @@ public class ExArticleService {
             exArticle1.setdeal(deal);
             exArticleRepository.save(exArticle1);
 //            System.out.println("exarttttt22222      " + exArticle.toString());
-        }
+        } else {
+ //sharing,generaltransaction
+            int price = 0;
 
-        if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.SHARING)) {
+            if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.GENERAL_TRANSACTION)) {
+                price = exArticleRegisterRequest.getDeal_cur_price();
+            }
+
             Trans trans = Trans.builder()
-                    .trans_sell_price(exArticleRegisterRequest.getDeal_cur_price())
+                    .trans_sell_price(price)
                     .build();
 
             trans.setexarticle(exArticle);
@@ -154,7 +159,7 @@ public class ExArticleService {
                 exArticle.stream().map(exArticle1 -> exArticle1.toAllResponse(exArticle1, user)).
                         collect(Collectors.toList());
 
-        log.info("exarticleeeee"+exArticleResponses.toString() );
+        log.info("exarticleeeee" + exArticleResponses.toString());
 
         return exArticleResponses;
     }
