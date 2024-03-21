@@ -93,7 +93,9 @@ const DiaryPage = () => {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div style={{ backgroundColor: "gray", height: "6.25rem" }}>loading</div>
+    );
   }
 
   if (isSuccess) {
@@ -108,8 +110,8 @@ const DiaryPage = () => {
       <LayoutMainBox>
         <LayoutInnerBox>
           <TopBox>
-            {cropData && <CropProfile crop={cropData} />}
-            {cropData && cropData.packDiaryCulEndAt === null && (
+            <CropProfile crop={cropData} />
+            {cropData.packDiaryCulEndAt === null && (
               <ButtonBox>
                 <RecognizeButton />
                 <Button
