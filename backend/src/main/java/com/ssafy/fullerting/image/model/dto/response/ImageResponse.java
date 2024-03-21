@@ -25,7 +25,6 @@ public class ImageResponse {
                 .id(imageResponse.getId())
                 .img_store_url(imageResponse.getImg_store_url())
 //                .exArticle(imageResponse.getExArticle())
-
                 .build();
     }
 
