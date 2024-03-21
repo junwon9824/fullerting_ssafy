@@ -30,6 +30,7 @@ const CardItemBox = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   gap: 0.3rem;
   margin: 0.5rem 0;
+  cursor: pointer;
 `;
 
 const CardItemDecoBox = styled.div`
