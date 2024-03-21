@@ -69,29 +69,31 @@ const DiaryPage = () => {
     },
   ];
 
-  const handleClick = () => {};
+  const handleHarvestClick = () => {};
 
   return (
     <>
-      <TopBar title="작물일기" showBack={false} showEdit={true} />
+      <TopBar title="작물일기" showEdit={true} />
       <LayoutMainBox>
         <LayoutInnerBox>
           <TopBox>
             {crop && <CropProfile crop={crop} />}
-            <ButtonBox>
-              <RecognizeButton />
-              <Button
-                onClick={handleClick}
-                width={9.5}
-                height={2.5625}
-                borderRadius={1.28125}
-                backgroundColor="#A0D8B3"
-                color="white"
-                fontSize="1"
-                fontWeight="bold"
-                text="종료하기"
-              />
-            </ButtonBox>
+            {crop && crop.packDiaryCulEndAt === null && (
+              <ButtonBox>
+                <RecognizeButton />
+                <Button
+                  onClick={handleHarvestClick}
+                  width={9.5}
+                  height={2.5625}
+                  borderRadius={1.28125}
+                  backgroundColor="#A0D8B3"
+                  color="white"
+                  fontSize="1"
+                  fontWeight="bold"
+                  text="수확하기"
+                />
+              </ButtonBox>
+            )}
           </TopBox>
           <MiddleBox>
             <MenuBar />

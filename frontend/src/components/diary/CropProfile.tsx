@@ -84,6 +84,16 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
     return `D+${diffDays}`;
   };
 
+  const calculateDDayDifference = (startDate: string, endDate: string) => {
+    const startMillis = new Date(startDate).getTime();
+    const endMillis = new Date(endDate).getTime();
+
+    const differenceMillis = Math.abs(endMillis - startMillis);
+    const differenceDays = Math.ceil(differenceMillis / (1000 * 60 * 60 * 24));
+
+    return differenceDays;
+  };
+
   return (
     <CropProfileBox>
       <Box>
@@ -99,10 +109,24 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
               {crop.cropTypeName} {crop.packDiaryGrowthStep}단계
             </span>
             <span> · </span>
-            <span>{calculateDDay(crop.packDiaryCulStartAt)}</span>
+            {crop.packDiaryCulEndAt === null ? (
+              <span>{calculateDDay(crop.packDiaryCulStartAt)}</span>
+            ) : (
+              <span>
+                {calculateDDayDifference(
+                  crop.packDiaryCulStartAt,
+                  crop.packDiaryCulEndAt
+                )}
+                일
+              </span>
+            )}
           </CropDescriptionBox>
           {direction !== "column" && (
-            <CropEnd>"재배까지 20일 남았습니다"</CropEnd>
+            <CropEnd>
+              {crop.packDiaryCulEndAt === null
+                ? "재배까지 20일 남았습니다"
+                : `"${crop.packDiaryCulEndAt} 수확완료😊"`}
+            </CropEnd>
           )}
         </Align>
       </Box>
