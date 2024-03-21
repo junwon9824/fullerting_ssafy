@@ -1,22 +1,10 @@
 import { api } from "./Base";
 
-// export const getUsersInfo = async (accessToken: string) => {
-//   try {
-//     console.log("dddddddddddddddddd")
-//     const response = await api.get(`/users/info`, {
-//       headers: { Authorization: `Bearer ${accessToken}` },
-//     });
-//     return response.data.data_body;
-//   } catch (error) {
-//     console.error("Error Info:sdddddddddddddddddd", error);
-//     throw error;
-//   }
-// }
+
 export const fetchBadges = () => {
   const accessToken = sessionStorage.getItem('accessToken');
 
   if (!accessToken) {
-    console.log("abababababab")
     return Promise.reject(new Error('Access token is not available.')); 
   }
   
@@ -25,7 +13,6 @@ export const fetchBadges = () => {
       Authorization: `Bearer ${accessToken}`,
     },
   }).then(response => {
-    console.log("ddfdfdfdfdfdfdfd")
    return response.data.data_body;
 }).catch(error => {
     
@@ -52,3 +39,23 @@ export const getUsersInfo = () => {
   });
 };
 
+export const logoutUser = async () => {
+  const accessToken = sessionStorage.getItem('accessToken');
+
+  if (!accessToken) {
+    return Promise.reject(new Error('Access token is not available.'));
+  }
+
+  return api.post(`/auth/logout`, {}, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }).then(response => {
+    console.log("로그아웃 성공")
+    sessionStorage.removeItem('accessToken'); 
+    return response.data;
+  }).catch(error => {
+    console.log("로그아웃 실패")
+    throw error;
+  });
+};

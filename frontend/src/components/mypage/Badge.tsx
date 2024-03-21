@@ -2,9 +2,10 @@ import styled from "styled-components";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import load from "../../assets/svg/loader.svg";
-import { fetchBadges } from "../../apis/MyPage";
+import { fetchBadges, logoutUser } from "../../apis/MyPage";
 import arrow from "/src/assets/svg/arrow_forward_ios.svg";
 import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 const LogoutModalOverlay = styled.div`
   position: fixed;
@@ -126,6 +127,26 @@ const Maintop = () => {
   const navigate = useNavigate();
   console.log("Maintop 컴포넌트 렌더링");
 
+  const { mutate: performLogout } = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      console.log("로그아웃 성공 로그아웃 성공");
+      navigate("/");
+    },
+
+    onError: (error) => {
+      console.error("로그아웃 실패:", error);
+    },
+  });
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const confirmLogout = () => {
+    performLogout();
+  };
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["badges"],
     queryFn: fetchBadges,
@@ -151,13 +172,6 @@ const Maintop = () => {
     { title: "나의 거래 게시글", onClick: () => navigate("/mypage/transpost") },
     { title: "로그아웃", onClick: () => setIsModalOpen(true) },
   ];
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-  const confirmLogout = () => {
-    navigate("/");
-  };
 
   return (
     <>
