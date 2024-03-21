@@ -47,6 +47,9 @@ public class CustomUser implements UserDetails{
     @Column(name = "user_location", length = 20)
     private String location;
 
+    @Column(name = "fcm_token", length = 255)
+    private String fcmToken;
+
 
     
     // 메서드 설정
@@ -94,6 +97,7 @@ public class CustomUser implements UserDetails{
                 .thumbnail(this.thumbnail)
                 .rank(this.rank)
                 .location(this.location)
+                .fcmToken(this.fcmToken)
                 .build();
     }
 
