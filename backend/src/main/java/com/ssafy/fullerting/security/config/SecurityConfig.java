@@ -4,6 +4,8 @@ package com.ssafy.fullerting.security.config;
 import com.ssafy.fullerting.security.Filter.JwtValidationFilter;
 import com.ssafy.fullerting.security.handler.AuthFailureHandler;
 import com.ssafy.fullerting.security.handler.ExceptionHandlerFilter;
+import com.ssafy.fullerting.security.handler.OAuthSuccessHandler;
+import com.ssafy.fullerting.security.service.CustomOAuth2Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,8 @@ public class SecurityConfig {
     private final JwtValidationFilter jwtValidationFilter;
     private final AuthFailureHandler authFailureHandler;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
+    private final OAuthSuccessHandler oAuthSuccessHandler;
+    private final CustomOAuth2Service customOAuth2Service;
 
     // 패스워드 암호화 방식
     @Bean
@@ -45,11 +49,21 @@ public class SecurityConfig {
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfig()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
+//                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(customizer ->
+                        customizer
+//                                .failureHandler(authFailureHandler)
+                                .successHandler(oAuthSuccessHandler)
+                                .userInfoEndpoint(userInfoEndpoint ->
+                                        userInfoEndpoint.userService(customOAuth2Service))
+                )
 
                 // 인가 경로 설정
                 .authorizeHttpRequests((requests) ->
                         requests.requestMatchers(
                                 "/error",
+                                "/oauth2/**",
+                                "/login/**",
                                 "/v1/auth/login",
                                 "/v1/users/register",
                                 "/v1/file/upload",
@@ -65,7 +79,6 @@ public class SecurityConfig {
 //                // 토큰 사용을 위해 JSESSIONID 발급 중지
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .addFilterBefore(new SecurityContextPersistenceFilter(), DisableEncodeUrlFilter.class)
                 // JWT 필터
                 .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(exceptionHandlerFilter, JwtValidationFilter.class);

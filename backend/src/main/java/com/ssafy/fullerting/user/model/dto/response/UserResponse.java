@@ -16,7 +16,7 @@ public class UserResponse {
     private String thumbnail;
     private String rank;
     private String location;
-    private String fcmToken;
+    private String authProvider;
 
 
     public static CustomUser toEntity(UserResponse userResponse){
@@ -28,7 +28,7 @@ public class UserResponse {
                 .rank(userResponse.rank)
                 .role(userResponse.role)
                 .thumbnail(userResponse.thumbnail)
-                .fcmToken(userResponse.fcmToken)
+                .authProvider(userResponse.authProvider)
                 .build();
     }
 }

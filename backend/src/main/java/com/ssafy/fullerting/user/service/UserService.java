@@ -1,8 +1,6 @@
 package com.ssafy.fullerting.user.service;
 
 import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
-import com.ssafy.fullerting.security.exception.JwtErrorCode;
-import com.ssafy.fullerting.security.exception.JwtException;
 import com.ssafy.fullerting.security.repository.TokenRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
@@ -19,10 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -48,7 +42,7 @@ public class UserService {
                 .build();
     }
 
-    public void registerUser(UserRegisterRequest request) {
+    public void registUser(UserRegisterRequest request) {
         // 등록하려는 유저정보가 이미 DB에 있으면 예외처리
         userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
             throw new UserException(UserErrorCode.ALREADY_IN_EMAIL);

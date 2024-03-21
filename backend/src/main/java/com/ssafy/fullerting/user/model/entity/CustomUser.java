@@ -5,11 +5,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.security.AuthProvider;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,9 +49,8 @@ public class CustomUser implements UserDetails{
     @Column(name = "user_location", length = 20)
     private String location;
 
-    @Column(name = "fcm_token", length = 255)
-    private String fcmToken;
-
+    @Column(name = "user_provider", nullable = false, length = 20)
+    private String authProvider;
 
     
     // 메서드 설정
@@ -97,8 +98,21 @@ public class CustomUser implements UserDetails{
                 .thumbnail(this.thumbnail)
                 .rank(this.rank)
                 .location(this.location)
-                .fcmToken(this.fcmToken)
+                .authProvider(this.authProvider)
                 .build();
     }
+
+
+
+    public static CustomUser of(OAuth2User oAuth2User) {
+        Map<String, Object> map = oAuth2User.getAttributes();
+        return CustomUser.builder()
+                .email((String) map.get("email"))
+                .nickname((String) map.get("name")) // 예시입니다. 실제 속성명에 맞게 조정 필요
+                .thumbnail((String) map.get("picture"))
+                .authProvider(((String) map.get("provider")).toUpperCase()) // 'provider'가 String이라고 가정할 때
+                .build();
+    }
+
 
 }
