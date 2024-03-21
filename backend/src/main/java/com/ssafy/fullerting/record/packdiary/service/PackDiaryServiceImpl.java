@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.record.packdiary.service;
 
+import com.ssafy.fullerting.crop.step.model.entity.Step;
 import com.ssafy.fullerting.crop.step.repository.CropStepRepository;
 import com.ssafy.fullerting.crop.type.model.entity.Crop;
 import com.ssafy.fullerting.crop.type.model.entity.enums.CropType;
@@ -13,6 +14,7 @@ import com.ssafy.fullerting.record.packdiary.model.dto.response.GetCropStepRespo
 import com.ssafy.fullerting.record.packdiary.model.dto.response.GetDetailPackDiaryResponse;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
+import com.ssafy.fullerting.record.steplog.model.entity.StepLog;
 import com.ssafy.fullerting.record.steplog.repository.CropStepLogRepository;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
@@ -89,13 +91,15 @@ public class PackDiaryServiceImpl implements PackDiaryService {
     @Override
     public GetCropStepResponse getCropStep(Long packDiaryId, MultipartFile imageFile) {
         Mono<AICropStepResponse> aiCropStepResponse = webClientService.callAIApi(imageFile);
+
+        return null;
 //        //현재 작물일지
 //        PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
 //        //갱신할 작물 단계
-//        Step step = cropStepRepository.findByCropIdAndStep(packDiary.getCrop().getId(), Integer.parseInt(aiCropStepResponse.getGrade())).orElseThrow();
-//
+//        Step step = cropStepRepository.findByCropIdAndStep(packDiary.getCrop().getId(), Integer.parseInt(aiCropStepResponse.block().getGrade())).orElseThrow();
+//        System.out.println("단계!!!!!!!!!!!!!! :" + Integer.parseInt(aiCropStepResponse.block().getGrade()));
 //        //단계가 갱신된 경우
-//        if(packDiary.getGrowthStep() < Integer.parseInt(aiCropStepResponse.getGrade())){
+//        if(packDiary.getGrowthStep() < Integer.parseInt(aiCropStepResponse.block().getGrade())){
 //            //작물일지 단계 갱신
 //            packDiaryRepository.save(packDiary.toBuilder()
 //                    .growthStep(step.getStep())
@@ -123,6 +127,5 @@ public class PackDiaryServiceImpl implements PackDiaryService {
 //                    .cropRenewal(false)
 //                    .build();
 //        }
-        return null;
     }
 }
