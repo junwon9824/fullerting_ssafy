@@ -22,8 +22,8 @@ const TestPage = () => {
 
  
     useEffect(() => {
-        // const socket = new SockJS("https://j10c102.p.ssafy.io/api/ws"); // 또는 다른 HTTPS URL
-        const socket = new SockJS("http://localhost:8080/ws"); // 또는 다른 HTTPS URL
+        const socket = new SockJS("https://j10c102.p.ssafy.io/ws"); // 또는 다른 HTTPS URL
+        // const socket = new SockJS("http://localhost:8080/ws"); // 또는 다른 HTTPS URL
 
         const stompClient = Stomp.over(socket);
 
