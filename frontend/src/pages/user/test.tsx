@@ -23,7 +23,7 @@ const TestPage = () => {
     const handleConfirmClick = () => { };
 
     useEffect(() => {
-        const socket = new SockJS("ws://localhost:8181/ws");
+        const socket = new SockJS("http://localhost:8080/ws");
 
         const stompClient = Stomp.over(socket);
 
