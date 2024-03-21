@@ -58,7 +58,7 @@ const AllBadgesPage = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["badges"],
+    queryKey: ["topbadges"],
     queryFn: fetchBadges,
   });
 
