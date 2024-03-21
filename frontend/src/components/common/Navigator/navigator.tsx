@@ -15,7 +15,7 @@ interface NavItem {
   path: string;
 }
 
-const NavBox = styled.div`
+const NavBox = styled.nav`
   display: flex;
   width: 100%;
   justify-content: center;
@@ -53,7 +53,7 @@ interface TopBarType {
   showTitle?: boolean;
 }
 
-const TopBox = styled.div`
+const TopBox = styled.header`
   display: inline-flex;
   padding: 0rem 1.3125rem;
   justify-content: center;
