@@ -8,6 +8,7 @@ interface CropType {
   cropTypeId?: number;
   cropTypeName: string;
   cropTypeImgUrl?: string;
+  cropGrowDay: number | null;
 }
 
 interface CropTypeType {

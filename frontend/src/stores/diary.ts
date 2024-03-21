@@ -12,4 +12,5 @@ export const cropAtom = atom<CropType | null>({
   cropTypeId: 1,
   cropTypeName: "무순",
   cropTypeImgUrl: "dump",
+  cropGrowDay: 0,
 });
