@@ -44,11 +44,10 @@ const CardItemDecoBox = styled.div`
 
 const CropList = () => {
   const accessToken = sessionStorage.getItem("accessToken");
-  const [crop, setCrop] = useAtom(cropAtom);
   const navigate = useNavigate();
 
-  const { isLoading, data: crops } = useQuery({
-    queryKey: ["crops"],
+  const { isLoading, data: cropList } = useQuery({
+    queryKey: ["cropList"],
     queryFn: accessToken ? () => getCropList(accessToken) : undefined,
   });
 
@@ -56,18 +55,17 @@ const CropList = () => {
     return <div>Loading...</div>;
   }
 
-  if (!crops) {
+  if (!cropList) {
     return <div>작물을 등록해주세요</div>;
   }
 
   const handleCardClick = (cropData: CropType) => {
     navigate(`/diary/${cropData.packDiaryId}`);
-    setCrop(cropData);
   };
 
   return (
     <CardListBox>
-      {crops.map((crop: CropType) => (
+      {cropList.map((crop: CropType) => (
         <CardItemBox
           key={crop.packDiaryId}
           onClick={() => handleCardClick(crop)}
