@@ -17,7 +17,9 @@ import java.time.LocalDate;
 @Getter
 public class GetDetailPackDiaryResponse {
     private Long packDiaryId;
-    private Crop crop;
+    private long cropTypeId;
+    private String cropTypeName;
+    private String cropTypeImgUrl;
     private String packDiaryTitle;
     private LocalDate packDiaryCulStartAt;
     private LocalDate packDiaryCulEndAt;
@@ -29,7 +31,9 @@ public class GetDetailPackDiaryResponse {
     public static GetDetailPackDiaryResponse fromResponse(PackDiary packDiary){
         return GetDetailPackDiaryResponse.builder()
                 .packDiaryId(packDiary.getId())
-                .crop(packDiary.getCrop())
+                .cropTypeId(packDiary.getCrop().getId())
+                .cropTypeName(packDiary.getCrop().getName())
+                .cropTypeImgUrl(packDiary.getCrop().getImgUrl())
                 .packDiaryTitle(packDiary.getTitle())
                 .packDiaryCulStartAt(packDiary.getCulStartAt())
                 .packDiaryCulEndAt(packDiary.getCulEndAt())
