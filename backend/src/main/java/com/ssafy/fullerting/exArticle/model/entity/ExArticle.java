@@ -193,7 +193,7 @@ public class ExArticle {
                 )
                 .build();
 
-        log.info("exArticleAllResponseexArticleAllResponse"+exArticleAllResponse);
+        log.info("exArticleAllResponseexArticleAllResponse" + exArticleAllResponse);
         return exArticleAllResponse;
     }
 
@@ -223,7 +223,7 @@ public class ExArticle {
                                 .builder().islike(false).isLikeCnt(0).build()
                 )
                 .userResponse(customUser.toResponse())
-                .dealResponse(article.deal.toResponse(customUser))
+                .dealResponse(article.deal != null ? article.deal.toResponse(customUser) : null)
                 .packDiaryResponse(article.packDiary != null ?
                         article.packDiary.toResponse(article.getPackDiary())
                         : null
