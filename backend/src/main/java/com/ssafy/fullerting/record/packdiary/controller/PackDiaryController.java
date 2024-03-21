@@ -42,6 +42,16 @@ public class PackDiaryController {
     }
 
     /**
+     * 작물일지 상세조회
+     * @param packDiaryId
+     * @return
+     */
+    @GetMapping("/{pack_diary_id}")
+    public ResponseEntity<MessageUtils> getDetailPackDiary(@PathVariable("pack_diary_id") Long packDiaryId){
+        return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getDetailPackDiary(packDiaryId)));
+    }
+
+    /**
      * 작물재배 종료
      * @param packDiaryId
      * @return
