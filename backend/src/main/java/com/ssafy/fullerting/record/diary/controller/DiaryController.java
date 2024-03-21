@@ -26,4 +26,9 @@ public class DiaryController {
     public ResponseEntity<MessageUtils> getAllDiary(@PathVariable("pack_diary_id") Long packDiaryId){
         return ResponseEntity.ok().body(MessageUtils.success(diaryService.getAllDiary(packDiaryId)));
     }
+
+    @GetMapping("/{pack_diary_id}/{diary_id}")
+    public ResponseEntity<MessageUtils> getDetailDiary(@PathVariable("diary_id") Long diaryId){
+        return ResponseEntity.ok().body(MessageUtils.success(diaryService.getDetailDiary(diaryId)));
+    }
 }
