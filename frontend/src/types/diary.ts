@@ -1,12 +1,13 @@
 interface CropType {
   packDiaryId: number;
-  cropTypeName: string;
   packDiaryTitle: string;
   packDiaryCulStartAt: string;
   packDiaryCulEndAt: string | null;
-  packDiaryGrowthStep: string;
+  packDiaryGrowthStep: number;
   packDiaryCreatedAt: string;
-  cropTypeImgUrl: string;
+  cropTypeId?: number;
+  cropTypeName: string;
+  cropTypeImgUrl?: string;
 }
 
 interface CropTypeType {
