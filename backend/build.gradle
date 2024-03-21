@@ -43,6 +43,9 @@ dependencies {
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.518'
 	testImplementation 'com.amazonaws:aws-java-sdk-s3:1.12.518'
 
+	//WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -51,10 +54,10 @@ dependencies {
 
 
 //	implementation 'org.springframework:spring-messaging:5.3.14'
-	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 //	implementation 'org.springframework:spring-websocket:5.3.14'
-
-
+	implementation 'org.webjars:stomp-websocket:2.3.3-1' // stomp
+	implementation 'org.springframework.boot:spring-boot-starter-websocket' // 스프링에서 제공하는 웹소켓
+	implementation 'org.webjars:sockjs-client:1.1.2' // sockjs
 
 }
 

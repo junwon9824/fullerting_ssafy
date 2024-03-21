@@ -62,7 +62,7 @@ const CropCreatePage = () => {
   const accessToken = sessionStorage.getItem("accessToken");
 
   const { data: types } = useQuery({
-    queryKey: ["crops"],
+    queryKey: ["types"],
     queryFn: accessToken ? () => getCropType(accessToken) : undefined,
   });
 

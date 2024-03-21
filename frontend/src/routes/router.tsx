@@ -41,7 +41,7 @@ const tradeRoutes = [
   { path: "/trade/post", element: <TradePost /> },
   { path: "/trade/generaldetail", element: <TradeGeneralDetail /> },
   { path: "/trade/proposedetail", element: <TradeProposeDetail /> },
-  // { path: "/trade/test", element: <TestPage /> },
+  { path: "/trade/test", element: <TestPage /> },
 ];
 
 const mypageRoutes = [

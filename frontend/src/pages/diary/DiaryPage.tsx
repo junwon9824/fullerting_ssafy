@@ -12,6 +12,10 @@ import MenuBar from "../../components/diary/MenuBar";
 import { useAtom } from "jotai";
 import { cropAtom, menuAtom } from "../../stores/diary";
 import CropTips from "../../components/diary/CropTips";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getCropData, updateHarvest } from "../../apis/DiaryApi";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const TopBox = styled.div`
   display: flex;
@@ -37,6 +41,7 @@ const ButtonBox = styled.div`
 const DiaryPage = () => {
   const [crop, setCrop] = useAtom(cropAtom);
   const [menu, setMenu] = useAtom(menuAtom);
+  const { packDiaryId } = useParams();
 
   const diaries: DiaryType[] = [
     {
@@ -69,7 +74,43 @@ const DiaryPage = () => {
     },
   ];
 
-  const handleHarvestClick = () => {};
+  useEffect(() => {
+    setMenu("다이어리");
+  }, []);
+
+  const accessToken = sessionStorage.getItem("accessToken");
+
+  const {
+    isLoading,
+    data: cropData,
+    isSuccess,
+    refetch: refetchCropData,
+  } = useQuery({
+    queryKey: ["cropData"],
+    queryFn:
+      packDiaryId && accessToken
+        ? () => getCropData(accessToken, packDiaryId)
+        : undefined,
+  });
+
+  if (isSuccess) {
+    setCrop(cropData);
+  }
+
+  const { mutate } = useMutation({
+    mutationFn: updateHarvest,
+    onSuccess: (res) => {
+      console.log(res);
+      refetchCropData();
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const handleHarvestClick = () => {
+    mutate(packDiaryId);
+  };
 
   return (
     <>
@@ -77,8 +118,8 @@ const DiaryPage = () => {
       <LayoutMainBox>
         <LayoutInnerBox>
           <TopBox>
-            {crop && <CropProfile crop={crop} />}
-            {crop && crop.packDiaryCulEndAt === null && (
+            {cropData && <CropProfile crop={cropData} />}
+            {cropData?.packDiaryCulEndAt === null && (
               <ButtonBox>
                 <RecognizeButton />
                 <Button
