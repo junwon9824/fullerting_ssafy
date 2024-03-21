@@ -1,11 +1,63 @@
 import styled from "styled-components";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import load from "../../assets/svg/loader.svg";
 import { fetchBadges } from "../../apis/MyPage";
 import arrow from "/src/assets/svg/arrow_forward_ios.svg";
 import { useQuery } from "@tanstack/react-query";
 
+const LogoutModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const LogoutModalContent = styled.div`
+  background-color: white;
+  padding: 2rem 3rem;
+  border-radius: 1rem;
+  text-align: center;
+`;
+
+const LogoutButtonleft = styled.button`
+  width: 4.125rem;
+  height: 1.875rem;
+  border-radius: 0.625rem;
+  color: #fff;
+  margin-top: 2rem;
+  margin-right: 0.5rem;
+  font-family: "Noto Sans";
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: var(--sub0, #a0d8b3);
+`;
+
+const LogoutButtonright = styled.button`
+  width: 4.125rem;
+  height: 1.875rem;
+  border-radius: 0.625rem;
+  color: #fff;
+  margin-left: 0.5rem;
+  font-family: "Noto Sans";
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: var(--gray1, #8c8c8c);
+`;
+
+const LogoutText = styled.div`
+  color: #000;
+  text-align: center;
+  font-size: 0.9rem;
+  font-style: normal;
+  font-weight: bold;
+`;
 const ProfileContent = styled.div`
   display: flex;
   align-items: center;
@@ -56,7 +108,21 @@ const Line = styled.hr`
   width: 19.87513rem;
   height: 0.0625rem;
 `;
+
+const LogoutModal = ({ onClose, onConfirm }) => {
+  return (
+    <LogoutModalOverlay>
+      <LogoutModalContent>
+        <LogoutText>정말 로그아웃하시겠습니까?</LogoutText>
+        <LogoutButtonleft onClick={onConfirm}>확인</LogoutButtonleft>
+        <LogoutButtonright onClick={onClose}>취소</LogoutButtonright>
+      </LogoutModalContent>
+    </LogoutModalOverlay>
+  );
+};
+
 const Maintop = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   console.log("Maintop 컴포넌트 렌더링");
 
@@ -83,11 +149,21 @@ const Maintop = () => {
     { title: "나의 제안 목록", onClick: () => navigate("/mypage/proposepost") },
     { title: "관심 게시글", onClick: () => navigate("/mypage/likedpost") },
     { title: "나의 거래 게시글", onClick: () => navigate("/mypage/transpost") },
-    { title: "로그아웃", onClick: () => navigate("/mypage/logout") },
+    { title: "로그아웃", onClick: () => setIsModalOpen(true) },
   ];
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  const confirmLogout = () => {
+    navigate("/");
+  };
 
   return (
     <>
+      {isModalOpen && (
+        <LogoutModal onClose={closeModal} onConfirm={confirmLogout} />
+      )}
       {pages.map((page, index) => (
         <React.Fragment key={index}>
           <ProfileContent onClick={page.onClick}>
