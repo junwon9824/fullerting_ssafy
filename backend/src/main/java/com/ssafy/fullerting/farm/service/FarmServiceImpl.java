@@ -26,7 +26,7 @@ public class FarmServiceImpl implements FarmService {
     private final FarmRepository farmRepository;
     private final WebClient.Builder webClientBuilder;
 
-    @Value("${api.key}")
+//    @Value("${api.key}") 
     private String apiKey;
 
 //    @PostConstruct //어플리케이션 실행 시 자동으로 호출
