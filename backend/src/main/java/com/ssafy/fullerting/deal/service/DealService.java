@@ -7,8 +7,11 @@ import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.global.utils.MessageUtils;
+import com.ssafy.fullerting.trans.model.dto.response.TransResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,4 +21,5 @@ public class DealService {
     public void selectdeal() {
 
     }
+
 }

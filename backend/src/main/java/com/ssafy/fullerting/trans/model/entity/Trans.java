@@ -1,11 +1,14 @@
 package com.ssafy.fullerting.trans.model.entity;
 
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
+import com.ssafy.fullerting.trans.model.dto.response.MyAllTransResponse;
 import com.ssafy.fullerting.trans.model.dto.response.TransResponse;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,15 +32,23 @@ public class Trans {
     @Column(name = "trans_sell_price", nullable = false)
     private int trans_sell_price;
 
-    public void setexarticle(ExArticle exArticle){
-        this.exArticle=exArticle;
+    public void setexarticle(ExArticle exArticle) {
+        this.exArticle = exArticle;
     }
 
-    public TransResponse toResponse(Trans trans)
-    {
+    public TransResponse toResponse(Trans trans) {
         return TransResponse.builder()
                 .id(trans.getId())
                 .price(trans.getTrans_sell_price())
                 .build();
     }
+
+    public MyAllTransResponse toMyAllTransResponse(Trans trans, CustomUser customUser) {
+        return MyAllTransResponse.builder()
+                .id(trans.getId())
+                .price(trans.getTrans_sell_price())
+                .exArticleResponse(trans.getExArticle().toResponse(trans.getExArticle(), customUser))
+                .build();
+    }
+
 }

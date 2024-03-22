@@ -13,14 +13,17 @@ import ProposePost from "../pages/profile/ProposePost";
 import TransPost from "../pages/profile/TransPost";
 import DiaryPage from "../pages/diary/DiaryPage";
 import MyPageLayout from "../pages/profile/MyPageLayout";
-
+import TradePostPage from "../pages/trade/TradePostPage";
 import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
 import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
 import CropCreatePage from "../pages/diary/CropCreatePage";
 import TradeGeneralDetail from "../pages/trade/TradeGeneralDetail";
 import TradeProposeDetail from "../pages/trade/TradeProposeDetail";
 import TestPage from "../pages/user/test";
-import TradePostPage from "../pages/trade/TradePostPage";
+import CommunityLayout from "../pages/community/CommunityLayout";
+import Community from "../pages/community/Community";
+import CreateCommunity from "../pages/community/CreateCommunity";
+import CommunityDetail from "../pages/community/CommunityDetail";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
@@ -61,8 +64,26 @@ const mypageRoutes = [
   },
 ];
 
+const communityRoutes = [
+  {
+    path: "/community",
+    element: <CommunityLayout />,
+    children: [
+      { index: true, element: <Community /> },
+      { path: "detail", element: <CommunityDetail /> },
+      { path: "create", element: <CreateCommunity /> },
+    ],
+  },
+];
+
 // 모든 경로를 하나의 배열로 결합
-const routes = [...authRoutes, ...diaryRoutes, ...tradeRoutes, ...mypageRoutes];
+const routes = [
+  ...authRoutes,
+  ...diaryRoutes,
+  ...tradeRoutes,
+  ...mypageRoutes,
+  ...communityRoutes,
+];
 
 // 라우터 생성
 const router = createBrowserRouter(routes);
