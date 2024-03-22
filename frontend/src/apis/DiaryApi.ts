@@ -37,7 +37,9 @@ export const getDiaryList = async (packDiaryId: string) => {
   }
 };
 
-export const getCropType = async (accessToken: string) => {
+export const getCropType = async () => {
+  const accessToken = sessionStorage.getItem("accessToken");
+
   try {
     const response = await api.get("/crop-types", {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -63,15 +65,14 @@ export const getTipList = async (cropTypeId: number) => {
   }
 };
 
-export const createCrop = async (
-  cropData: {
-    cropTypeId: number;
-    packDiaryTitle: string;
-    packDiaryCulStartAt: string;
-  },
-  accessToken: string
-) => {
+export const createCrop = async (cropData: {
+  cropTypeId: number;
+  packDiaryTitle: string;
+  packDiaryCulStartAt: string;
+}) => {
   try {
+    const accessToken = sessionStorage.getItem("accessToken");
+
     const response = await api.post("/pack-diaries", cropData, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
