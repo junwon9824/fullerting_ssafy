@@ -1,27 +1,37 @@
 package com.ssafy.fullerting.record.diary.service;
 
 import com.ssafy.fullerting.record.diary.exception.DiaryException;
+import com.ssafy.fullerting.record.diary.model.dto.request.CreateDiaryRequest;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetAllDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetDetailDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetSelectedAtDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.entity.Diary;
+import com.ssafy.fullerting.record.diary.model.entity.enums.DiaryBehavior;
 import com.ssafy.fullerting.record.diary.repository.DiaryRepository;
+import com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode;
+import com.ssafy.fullerting.record.packdiary.exception.PackDiaryException;
+import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
+import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.NOT_EXISTS_DIARY;
+import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode.NOT_EXISTS_PACK_DIARY;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class DiaryServiceImpl implements DiaryService{
+    private final PackDiaryRepository packDiaryRepository;
     private final DiaryRepository diaryRepository;
 
     @Override
@@ -51,5 +61,23 @@ public class DiaryServiceImpl implements DiaryService{
         GetDetailDiaryResponse getDetailDiaryResponse = GetDetailDiaryResponse.toResponse(diary);
 
         return getDetailDiaryResponse;
+    }
+
+    @Override
+    public void createDiary(Long packDiaryId, CreateDiaryRequest createDiaryRequest) {
+        PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
+        try {
+            diaryRepository.save(Diary.builder()
+                    .packDiary(packDiary)
+                    .behavior(String.valueOf(DiaryBehavior.다이어리))
+                    .title(createDiaryRequest.getDiaryTitle())
+                    .content(createDiaryRequest.getDiaryContent())
+                    .selectedAt(createDiaryRequest.getDiarySelectedAt())
+                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                    .build()
+            );
+        } catch(Exception e){
+            throw new DiaryException(NOT_EXISTS_DIARY);
+        }
     }
 }
