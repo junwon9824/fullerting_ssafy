@@ -25,7 +25,7 @@ public class GetAllPackDiaryResponse {
     private String cropTypeName;
     private String cropTypeImgUrl;
 
-    public static GetAllPackDiaryResponse fromResponse(PackDiary packDiary){
+    public static GetAllPackDiaryResponse toResponse(PackDiary packDiary){
         return GetAllPackDiaryResponse.builder()
                 .packDiaryId(packDiary.getId())
                 .packDiaryTitle(packDiary.getTitle())
