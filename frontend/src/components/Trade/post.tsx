@@ -191,7 +191,7 @@ const Post = () => {
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
   const { mutate: handleLikeClick } = useLike();
-
+  console.log(data);
   return (
     <ContentBox>
       {data?.map((item: DataItem, index: number) => (
