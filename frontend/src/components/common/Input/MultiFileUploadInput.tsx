@@ -86,7 +86,6 @@ const MultiFileUploadInput: React.FC = () => {
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(selectedFiles);
     const files = e.target.files ? Array.from(e.target.files) : [];
     setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
 
