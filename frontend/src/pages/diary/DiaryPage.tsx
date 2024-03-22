@@ -152,30 +152,30 @@ const DiaryPage = () => {
     <>
       <TopBar title="작물일기" showEdit={true} />
       <LayoutMainBox>
-        <LayoutInnerBox style={{ marginTop: "12.8rem" }}>
+        <LayoutInnerBox>
           <FixedContainer>
             <TopBox>
               {cropData && <CropProfile crop={cropData} />}
-              {cropData?.packDiaryCulEndAt === null && (
-                <ButtonBox>
-                  <RecognizeButton />
-                  <Button
-                    onClick={handleHarvestClick}
-                    width={9.5}
-                    height={2.5625}
-                    borderRadius={1.28125}
-                    backgroundColor="#A0D8B3"
-                    color="white"
-                    fontSize="1"
-                    fontWeight="bold"
-                    text="수확하기"
-                  />
-                </ButtonBox>
-              )}
+              <ButtonBox>
+                <RecognizeButton />
+                <Button
+                  onClick={handleHarvestClick}
+                  width={9.5}
+                  height={2.5625}
+                  borderRadius={1.28125}
+                  backgroundColor={
+                    cropData?.packDiaryCulEndAt !== null ? "#c8c8c8" : "#A0D8B3"
+                  }
+                  color="white"
+                  fontSize="1"
+                  fontWeight="bold"
+                  text="수확하기"
+                />
+              </ButtonBox>
             </TopBox>
             <MenuBar />
           </FixedContainer>
-          <MiddleBox>
+          <MiddleBox style={{ marginTop: "16rem" }}>
             {menu === "작물꿀팁" ? (
               <CropTips />
             ) : (
