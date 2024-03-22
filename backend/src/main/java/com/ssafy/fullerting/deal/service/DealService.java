@@ -1,9 +1,14 @@
 package com.ssafy.fullerting.deal.service;
 
+import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
+import com.ssafy.fullerting.bidLog.model.entity.BidLog;
+import com.ssafy.fullerting.bidLog.repository.BidRepository;
 import com.ssafy.fullerting.deal.model.dto.request.DealProposeRequest;
 import com.ssafy.fullerting.deal.model.dto.response.DealResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
+import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
+import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
@@ -22,11 +27,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DealService {
     private final DealRepository dealRepository;
+    private final BidRepository bidRepository;
+    private final ExArticleRepository exArticleRepository;
     private final UserService userService;
 
-    public void selectdeal() {
-
-    }
 
     public List<DealResponse> selectDeals() {
         UserResponse userResponse = userService.getUserInfo();
@@ -38,4 +42,5 @@ public class DealService {
             return deal.toResponse(customUser);
         }).collect(Collectors.toList());
     }
+
 }
