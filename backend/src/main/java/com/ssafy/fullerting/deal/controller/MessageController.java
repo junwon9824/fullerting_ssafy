@@ -29,6 +29,7 @@ public class MessageController {
     public void chat(@DestinationVariable Long chattingRoomId, DealstartRequest dealstartRequest) {
         messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest.getContent());
         log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getContent(), dealstartRequest.getSenderid(), chattingRoomId);
+
     }
 
 //    @SubscribeMapping("/sub/chattings/{chattingRoomId}")
