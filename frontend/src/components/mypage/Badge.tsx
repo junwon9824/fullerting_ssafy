@@ -7,6 +7,17 @@ import arrow from "/src/assets/svg/arrow_forward_ios.svg";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 
+interface BadgeProps {
+  badgeImg: string;
+}
+interface LogoutModalProps {
+  onClose: () => void;
+  onConfirm: () => void;
+}
+interface BadgeData {
+  badgeImg: string;
+}
+
 const LogoutModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -72,7 +83,7 @@ const BadgesContainer = styled.div`
   margin-top: 1rem;
 `;
 
-const Badge = styled.div`
+const Badge = styled.div<BadgeProps>`
   width: 3.125rem;
   height: 3.125rem;
   border-radius: 50%;
@@ -110,7 +121,7 @@ const Line = styled.hr`
   height: 0.0625rem;
 `;
 
-const LogoutModal = ({ onClose, onConfirm }) => {
+const LogoutModal: React.FC<LogoutModalProps> = ({ onClose, onConfirm }) => {
   return (
     <LogoutModalOverlay>
       <LogoutModalContent>
@@ -189,7 +200,7 @@ const Maintop = () => {
                 {data &&
                   data
                     .slice(0, 4)
-                    .map((badge, index) => (
+                    .map((badge: BadgeData, index: number) => (
                       <Badge key={index} badgeImg={badge.badgeImg} />
                     ))}
                 {data && data.length - 4 > 0 && (

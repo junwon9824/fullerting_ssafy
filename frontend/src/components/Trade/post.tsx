@@ -7,9 +7,16 @@ import RedLike from "/src/assets/svg/like.svg";
 import { useEffect, useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
-import { getTradeList } from "../../apis/TradeApi";
-import { QueryKey, useQuery } from "@tanstack/react-query";
-
+import { getLike, getTradeList, useLike } from "../../apis/TradeApi";
+import {
+  QueryClient,
+  QueryKey,
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { v4 as uuid } from "uuid";
 interface ClickLike {
   onClick: () => void;
 }
@@ -49,6 +56,10 @@ interface DataItem {
   exArticleResponse: ExArticleResponse;
   packDiaryResponse: null | number; // 여기서는 예시로 null을 지정했지만, 필요에 따라 다른 타입을 지정할 수 있습니다.
   favoriteResponse: FavoriteResponse;
+}
+interface ToggleLikeParams {
+  accessToken: string;
+  postId: number;
 }
 const ImgBox = styled.div`
   width: 9rem;
@@ -171,14 +182,16 @@ const Post = () => {
   const navigate = useNavigate();
   const handelWriteClick = () => {
     navigate("/trade/post");
-    console.log(data);
+    handleLikeClick(75);
+    console.log("데이터임", data);
   };
-  const handleLike = (index: number) => {};
+
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
     queryKey: ["tradeList"],
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
+  const { mutate: handleLikeClick } = useLike();
 
   return (
     <ContentBox>
@@ -189,12 +202,12 @@ const Post = () => {
               src={item.exArticleResponse.imageResponses[0].img_store_url}
               alt="tomato"
             />
-            <LikeBox onClick={() => handleLike(index)}>
+            {/* <LikeBox onClick={() => handleLikeClick(index)}>
               <img
                 src={item.favoriteResponse.islike ? RedLike : Like}
                 alt="like button"
               />
-            </LikeBox>
+            </LikeBox> */}
           </ImgBox>
           <Town>
             <img src={Location} alt="location" />
