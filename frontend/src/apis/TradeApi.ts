@@ -1,5 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { api } from "./Base";
+import { imageFilesAtom } from "../stores/trade";
+import { atom } from "jotai";
 interface LikeData {
   success_code: number;
   result_code: string;
@@ -11,7 +13,7 @@ interface PostData {
   imgFiles: File[];
   ex_article_location: string;
   exArticleType: string;
-  packdiaryid: number;
+  packdiaryid: string;
   deal_cur_price: string;
 }
 
