@@ -7,10 +7,11 @@ import RedLike from "/src/assets/svg/like.svg";
 import { useEffect, useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
-import { getLike, getTradeList } from "../../apis/TradeApi";
+import { getLike, getTradeList, useLike } from "../../apis/TradeApi";
 import {
   QueryClient,
   QueryKey,
+  queryOptions,
   useMutation,
   useQuery,
   useQueryClient,
@@ -181,39 +182,18 @@ const Post = () => {
   const navigate = useNavigate();
   const handelWriteClick = () => {
     navigate("/trade/post");
-    console.log(data);
+    handleLikeClick(75);
+    console.log("데이터임", data);
   };
-  
+
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
     queryKey: ["tradeList"],
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
- 
-    const queryClient = useQueryClient();
-    const { mutate: handleLike } = useMutation(
-      getLike,{
-    
-     
-      
-      
-        onSuccess: () => {
-          // 성공 시, 특정 쿼리 무효화
-          queryClient.invalidateQueries(['tradeList']);
-        },
-        onError: (error :string) => {
-          // 오류 처리
-          console.error("좋아요 변경 실패", error);
-        },
-      }
-    )
+  const { mutate: handleLikeClick } = useLike();
 
-  
-  const handleLikeClick = (postId :number) => {
-    // 좋아요 버튼 클릭 시 뮤테이션 실행
-    handleLike({ accessToken, postId });
-  };
-  
+  return (
     <ContentBox>
       {data?.map((item: DataItem, index: number) => (
         <PostBox>
@@ -222,12 +202,12 @@ const Post = () => {
               src={item.exArticleResponse.imageResponses[0].img_store_url}
               alt="tomato"
             />
-            <LikeBox onClick={() => handleLike(index)}>
+            {/* <LikeBox onClick={() => handleLikeClick(index)}>
               <img
                 src={item.favoriteResponse.islike ? RedLike : Like}
                 alt="like button"
               />
-            </LikeBox>
+            </LikeBox> */}
           </ImgBox>
           <Town>
             <img src={Location} alt="location" />
