@@ -38,4 +38,13 @@ public class DealController {
     }
 
 
+    @GetMapping("/mybidarticles")
+    @Operation(summary = "내가 입찰 제안한 게시물 조회 ", description = "내가 입찰 제안한 게시물 조회")
+    public ResponseEntity<MessageUtils> mybidarticles() {
+
+        log.info("[selectFavorite  ]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(dealService.mybidarticles()));
+
+    }
+
 }
