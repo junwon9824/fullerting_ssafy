@@ -107,6 +107,19 @@ const CalCardBox = styled.div`
   gap: 0.5rem;
 `;
 
+const SpecialDate = styled.span`
+  font-size: 0.65rem;
+  color: ${({ theme }) => theme.colors.gray1};
+`;
+
+const SDateCalCardBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0.45rem;
+`;
+
 const DiaryCard = ({ diary }: { diary: DiaryEntry }) => {
   return (
     <BorderBox>
@@ -127,7 +140,7 @@ const DiaryCard = ({ diary }: { diary: DiaryEntry }) => {
   );
 };
 
-const WaterCard = ({ diary }: { diary: DiaryEntry }) => {
+const WaterCard = () => {
   return (
     <BorderBox>
       <WaterContent>
@@ -151,41 +164,60 @@ const WaterCard = ({ diary }: { diary: DiaryEntry }) => {
   );
 };
 
-const Calender = (month, day) => {
-  console.log(month);
+const Calender = (date: { date: string }) => {
+  const [, month, day] = date.date.split("-");
 
   return (
     <DateBox>
-      <Month>{`${month.month < 10 ? "0" : ""}${month.month}월`}</Month>
-      <Day>{`${month.day < 10 ? "0" : ""}${month.day}`}</Day>
+      <Month>{month}월</Month>
+      <Day>{day}</Day>
     </DateBox>
   );
 };
 
 const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
+  const isSpecialDate = (dateString: string) => {
+    const today = new Date();
+    const date = new Date(dateString);
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    const weekAgo = new Date(today);
+    weekAgo.setDate(today.getDate() - 7);
+
+    if (date.toDateString() === today.toDateString()) {
+      return "오늘";
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return "어제";
+    } else {
+      const diffTime = Math.abs(today.getTime() - date.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return `${diffDays}일 전`;
+    }
+  };
+
   return (
     <>
       <div>calendar</div>
-      <span>2024년</span>
+
       <DiaryBox>
         {diaries.map((item, index) => (
-          <CalCardBox key={index}>
-            <Calender
-              month={new Date(item.diarySelectedAt).getMonth() + 1}
-              day={new Date(item.diarySelectedAt).getDay()}
-            />
-            <DiaryCardBox>
-              {item.getSelectedAtDiaryResponse.map((diary, idx) => (
-                <div key={idx}>
-                  {diary.diaryBehavior === "다이어리" ? (
-                    <DiaryCard diary={diary} />
-                  ) : (
-                    <WaterCard diary={diary} />
-                  )}
-                </div>
-              ))}
-            </DiaryCardBox>
-          </CalCardBox>
+          <SDateCalCardBox>
+            <SpecialDate>{isSpecialDate(item.diarySelectedAt)}</SpecialDate>
+            <CalCardBox key={index}>
+              <Calender date={item.diarySelectedAt} />
+              <DiaryCardBox>
+                {item.getSelectedAtDiaryResponse.map((diary, idx) => (
+                  <div key={idx}>
+                    {diary.diaryBehavior === "다이어리" ? (
+                      <DiaryCard diary={diary} />
+                    ) : (
+                      <WaterCard />
+                    )}
+                  </div>
+                ))}
+              </DiaryCardBox>
+            </CalCardBox>
+          </SDateCalCardBox>
         ))}
       </DiaryBox>
     </>
