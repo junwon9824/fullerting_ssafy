@@ -13,7 +13,7 @@ import ProposePost from "../pages/profile/ProposePost";
 import TransPost from "../pages/profile/TransPost";
 import DiaryPage from "../pages/diary/DiaryPage";
 import MyPageLayout from "../pages/profile/MyPageLayout";
-
+import TradePostPage from "../pages/trade/TradePostPage";
 import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
 import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
 import CropCreatePage from "../pages/diary/CropCreatePage";
