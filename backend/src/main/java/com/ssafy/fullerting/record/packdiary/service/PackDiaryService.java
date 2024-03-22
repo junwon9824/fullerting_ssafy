@@ -15,5 +15,5 @@ public interface PackDiaryService {
     List<GetAllPackDiaryResponse> getAllPackDiary();
     GetDetailPackDiaryResponse getDetailPackDiary(Long packDiaryId);
     void endCropCultivation(Long packDiaryId);
-    AICropStepResponse getCropStep(Long packDiaryId, SerializableMultipartFile imageFile);
+    AICropStepResponse getCropStep(Long packDiaryId, MultipartFile imageFile);
 }

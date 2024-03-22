@@ -1,8 +1,10 @@
+package com.ssafy.fullerting.record.packdiary;
+
+import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-
 public class ByteArrayMultipartFile implements MultipartFile, Serializable {
 
     private final byte[] content;
@@ -16,6 +18,8 @@ public class ByteArrayMultipartFile implements MultipartFile, Serializable {
         this.originalFilename = originalFilename;
         this.contentType = contentType;
     }
+
+
 
     @Override
     public String getName() {

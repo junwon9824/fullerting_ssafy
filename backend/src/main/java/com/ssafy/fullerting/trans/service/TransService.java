@@ -3,6 +3,8 @@ package com.ssafy.fullerting.trans.service;
 import com.ssafy.fullerting.deal.model.dto.request.DealProposeRequest;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
+import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
+import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
@@ -78,9 +80,24 @@ public class TransService {
 
         List<Trans> trans = transRepository.findAllTrans(customUser.getId());
 
+//        log.info("transssssssssss"+trans.stream().map(trans1 -> trans1.getExArticle()));
+
+
         List<MyAllTransResponse> transResponse = trans.stream().map(trans1 ->
                 trans1.toMyAllTransResponse(trans1, customUser)).collect(Collectors.toList());
 
+
+        ExArticle exArticle;
+        transResponse = transResponse.stream().map(myAllTransResponse -> {
+                    ExArticle exArticle2 = exArticleRepository.findById(myAllTransResponse.getExarticleid())
+                            .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+                    myAllTransResponse.setExArticleResponse(exArticle2.toResponse(exArticle2, customUser));
+                    return myAllTransResponse;
+                }
+        ).collect(Collectors.toList());
+
+
         return transResponse;
+
     }
 }

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Entity
-@ToString
+//@ToString
 @Table(name = "img_store")
 public class Image {
 
