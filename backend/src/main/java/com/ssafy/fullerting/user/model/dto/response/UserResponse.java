@@ -16,6 +16,8 @@ public class UserResponse {
     private String thumbnail;
     private String rank;
     private String location;
+    private String authProvider;
+
 
     public static CustomUser toEntity(UserResponse userResponse){
         return  CustomUser.builder()
@@ -26,6 +28,7 @@ public class UserResponse {
                 .rank(userResponse.rank)
                 .role(userResponse.role)
                 .thumbnail(userResponse.thumbnail)
+                .authProvider(userResponse.authProvider)
                 .build();
     }
 }
