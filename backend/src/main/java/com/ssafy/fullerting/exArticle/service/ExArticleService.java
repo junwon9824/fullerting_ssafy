@@ -254,4 +254,13 @@ public class ExArticleService {
         List<ExArticleResponse> exArticleResponses = exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
         return exArticleResponses;
     }
+
+    public List<ExArticleResponse> finishedarticles() {
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser user = UserResponse.toEntity(userResponse);
+
+        List<ExArticle> exArticles = exArticleRepository.findAllByUserIDAndDone(user.getId()); //내 article 중
+        List<ExArticleResponse> exArticleResponses = exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
+        return exArticleResponses;
+    }
 }
