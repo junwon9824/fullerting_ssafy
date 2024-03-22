@@ -10,10 +10,11 @@ import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleKeywordResponse;
-import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
+import com.ssafy.fullerting.favorite.exception.FavoriteErrorCode;
+import com.ssafy.fullerting.favorite.exception.FavoriteException;
 import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.favorite.repository.favoriteRepository;
 
@@ -33,8 +34,6 @@ import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -121,7 +120,7 @@ public class ExArticleService {
             exArticleRepository.save(exArticle1);
 //            System.out.println("exarttttt22222      " + exArticle.toString());
         } else {
- //sharing,generaltransaction
+            //sharing,generaltransaction
             int price = 0;
 
             if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.GENERAL_TRANSACTION)) {
@@ -138,7 +137,7 @@ public class ExArticleService {
 
             transRepository.save(trans);
 
-            exArticle1.setTrans(trans); 
+            exArticle1.setTrans(trans);
             exArticleRepository.save(exArticle1);
 
         }
@@ -221,5 +220,28 @@ public class ExArticleService {
 
         exArticleRepository.save(exArticle);
         log.info("exxxx" + exArticle.getPurchaserId());
+    }
+
+    public void deletelike(Long ex_article_id) {
+        //좋아요 삭제
+        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() ->
+                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
+        UserResponse userResponse = userService.getUserInfo();
+        Long userid = userResponse.getId();
+
+        Long articleid = article.getId();
+
+        Favorite favorite1 = favoriteRepository.findByUserIdAndExArticleId(userid, articleid).
+                orElseThrow(() -> new FavoriteException(FavoriteErrorCode.NOT_EXISTS));
+
+//
+//        Favorite favorite = new Favorite();
+//        favorite.setExArticle(article);
+//        favorite.setUser(userResponse.toEntity(userResponse));
+
+        article.deletefavorite(favorite1);
+
+        favoriteRepository.delete(favorite1);
     }
 }
