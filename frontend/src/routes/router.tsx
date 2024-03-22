@@ -70,8 +70,8 @@ const communityRoutes = [
     element: <CommunityLayout />,
     children: [
       { index: true, element: <Community /> },
-      { path: "detail", element: <CommunityDetail /> },
-      { path: "create", element: <CreateCommunity /> },
+      { path: "createcommunity", element: <CreateCommunity /> },
+      { path: "communitydetail", element: <CommunityDetail /> },
     ],
   },
 ];

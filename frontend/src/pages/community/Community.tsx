@@ -4,6 +4,8 @@ import { LayoutMainBox } from "../../components/common/Layout/Box";
 import useInput from "../../hooks/useInput";
 import Search from "../../components/common/Input/Search";
 import RadioButton from "../../components/common/Button/radioButton";
+import Write from "/src/assets/images/글쓰기.png";
+import { useNavigate } from "react-router-dom";
 
 const LayoutInnerBox = styled.div`
   display: flex;
@@ -17,16 +19,27 @@ const LayoutInnerBox = styled.div`
 const Button = styled.div`
   margin-top: 1rem;
 `;
-const MainPage = () => {
+const WriteBox = styled.img`
+  position: fixed;
+  right: 1.19rem;
+  bottom: 4.75rem;
+`;
+
+const Community = () => {
   const [search, setSearch] = useInput("");
+  const navigate = useNavigate();
   const handleRadioButtonChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     console.log(event.target.value);
   };
+  const handelWriteClick = () => {
+    navigate("createcommunity");
+  };
+
   return (
     <>
-      <TopBar title="커뮤니티" showBack={false} />
+      <TopBar title="커뮤니티" />
       <LayoutMainBox>
         <LayoutInnerBox>
           <Search
@@ -58,6 +71,7 @@ const MainPage = () => {
               onChange={handleRadioButtonChange}
             />
           </Button>
+          <WriteBox src={Write} onClick={handelWriteClick} />
         </LayoutInnerBox>
       </LayoutMainBox>
       <NavBar />
@@ -65,4 +79,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default Community;
