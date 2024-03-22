@@ -110,7 +110,6 @@ const DiaryPage = () => {
   const accessToken = sessionStorage.getItem("accessToken");
 
   const {
-    isLoading,
     data: cropData,
     isSuccess,
     refetch: refetchCropData,
@@ -133,7 +132,7 @@ const DiaryPage = () => {
 
   const { mutate } = useMutation({
     mutationFn: updateHarvest,
-    onSuccess: (res) => {
+    onSuccess: () => {
       refetchCropData();
     },
     onError: (err) => {
@@ -142,7 +141,7 @@ const DiaryPage = () => {
   });
 
   const handleHarvestClick = () => {
-    mutate(packDiaryId);
+    if (packDiaryId) mutate(packDiaryId);
   };
 
   const handleButtonClick = () => {
