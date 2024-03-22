@@ -4,10 +4,10 @@ package com.ssafy.fullerting.favorite.exception;
 import lombok.Getter;
 
 @Getter
-public class likeException extends RuntimeException {
-    private final LikeErrorCode  likeErrorCode;
+public class FavoriteException extends RuntimeException {
+    private final FavoriteErrorCode likeErrorCode;
 
-    public likeException(LikeErrorCode likeErrorCode ) {
+    public FavoriteException(FavoriteErrorCode likeErrorCode ) {
         super(likeErrorCode.getMessage());
         this.likeErrorCode= likeErrorCode;
     }
