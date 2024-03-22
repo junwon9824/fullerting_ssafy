@@ -5,9 +5,9 @@ interface CropType {
   packDiaryCulEndAt: string | null;
   packDiaryGrowthStep: number;
   packDiaryCreatedAt: string;
-  cropTypeId?: number;
+  cropTypeId: number;
   cropTypeName: string;
-  cropTypeImgUrl?: string;
+  cropTypeImgUrl: string;
   cropGrowDay: number | null;
 }
 

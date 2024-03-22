@@ -49,7 +49,9 @@ export const getCropType = async (accessToken: string) => {
   }
 };
 
-export const getTipList = async (accessToken: string, cropTypeId: number) => {
+export const getTipList = async (cropTypeId: number) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+
   try {
     const response = await api.get(`/crop-tips/${cropTypeId}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
