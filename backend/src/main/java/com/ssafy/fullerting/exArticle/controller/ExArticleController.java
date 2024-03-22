@@ -80,7 +80,7 @@ public class ExArticleController {
 
     @DeleteMapping("/{ex_article_id}/delete")
     @Operation(summary = "작물거래 좋아요 삭제  ", description = "작물거래 좋아요 삭제 ")
-    public ResponseEntity<MessageUtils> deletelike (@PathVariable Long ex_article_id) {
+    public ResponseEntity<MessageUtils> deletelike(@PathVariable Long ex_article_id) {
         exArticleService.deletelike(ex_article_id);
 
         log.info("[delete article]: {}", ex_article_id);
@@ -112,7 +112,7 @@ public class ExArticleController {
 
     @GetMapping("/category/like")
     @Operation(summary = "관심 조회하기 ", description = "관심 카테고리 조회하기 ")
-    public ResponseEntity<MessageUtils> selectFavorite( ) {
+    public ResponseEntity<MessageUtils> selectFavorite() {
 
         log.info("[selectFavorite  ]: {}");
         return ResponseEntity.ok().body(MessageUtils.success(exArticleService.selectFavorite()));
@@ -121,11 +121,20 @@ public class ExArticleController {
 
     @GetMapping("/done")
     @Operation(summary = "나의 종료된 거래 게시물 조회하기 ", description = "나의 종료된 거래 게시물 조회하기 ")
-    public ResponseEntity<MessageUtils> finishedarticles( ) {
+    public ResponseEntity<MessageUtils> finishedarticles() {
 
         log.info("[finishedarticles  ]: {}");
         return ResponseEntity.ok().body(MessageUtils.success(exArticleService.finishedarticles()));
 
     }
 
+    @DeleteMapping("/{ex_article_id}")
+    @Operation(summary = "나의 작물 거래 게시물 삭제 ", description = "나의 작물 거래 게시물 삭제 ")
+    public ResponseEntity<MessageUtils> deletearticle(@PathVariable Long ex_article_id) {
+
+        log.info("[finishedarticles  ]: {}");
+        exArticleService.deletearticle(ex_article_id);
+        return ResponseEntity.ok().body(MessageUtils.success());
+
+    }
 }
