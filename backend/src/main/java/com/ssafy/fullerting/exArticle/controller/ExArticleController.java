@@ -118,4 +118,14 @@ public class ExArticleController {
         return ResponseEntity.ok().body(MessageUtils.success(exArticleService.selectFavorite()));
 
     }
+
+    @GetMapping("/done")
+    @Operation(summary = "나의 종료된 거래 게시물 조회하기 ", description = "나의 종료된 거래 게시물 조회하기 ")
+    public ResponseEntity<MessageUtils> finishedarticles( ) {
+
+        log.info("[finishedarticles  ]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(exArticleService.finishedarticles()));
+
+    }
+
 }

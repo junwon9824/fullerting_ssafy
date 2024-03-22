@@ -13,7 +13,7 @@ import { useAtom } from "jotai";
 import { cropAtom, menuAtom } from "../../stores/diary";
 import CropTips from "../../components/diary/CropTips";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getCropData, updateHarvest } from "../../apis/DiaryApi";
+import { getCropData, getDiaryList, updateHarvest } from "../../apis/DiaryApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -87,37 +87,6 @@ const DiaryPage = () => {
   const { packDiaryId } = useParams();
   const navigate = useNavigate();
 
-  const diaries: DiaryType[] = [
-    {
-      diaryId: 1,
-      packDiaryId: 1,
-      diaryBehavior: "다이어리",
-      diaryTitle: "토마토는 빨강색",
-      diaryContent:
-        "멋쟁이 토마토 울퉁불통멋진몸매에 빨간 옷을 입고 나는야 주스될거야 꿀꺽 나는야 춤을 출거야 멋쟁이 토마토 토마토~~",
-      diarySelectedAt: "2024-03-05",
-      diaryCreatedAt: "2024-03-05T10:00:00Z",
-    },
-    {
-      diaryId: 2,
-      packDiaryId: 1,
-      diaryBehavior: "물주기",
-      diaryTitle: "",
-      diaryContent: "",
-      diarySelectedAt: "2024-03-04",
-      diaryCreatedAt: "2024-03-05T12:00:00Z",
-    },
-    {
-      diaryId: 3,
-      packDiaryId: 1,
-      diaryBehavior: "다이어리",
-      diaryTitle: "케찹 만들거임",
-      diaryContent: "오므라이스 감자튀김",
-      diarySelectedAt: "2024-03-04",
-      diaryCreatedAt: "2024-03-05T12:00:00Z",
-    },
-  ];
-
   useEffect(() => {
     setMenu("다이어리");
   }, []);
@@ -137,6 +106,11 @@ const DiaryPage = () => {
         : undefined,
   });
 
+  const { data: diaryList } = useQuery({
+    queryKey: ["diaryList"],
+    queryFn: packDiaryId ? () => getDiaryList(packDiaryId) : undefined,
+  });
+
   if (isSuccess) {
     setCrop(cropData);
   }
@@ -144,11 +118,10 @@ const DiaryPage = () => {
   const { mutate } = useMutation({
     mutationFn: updateHarvest,
     onSuccess: (res) => {
-      console.log(res);
       refetchCropData();
     },
-    onError: (error) => {
-      console.log(error);
+    onError: (err) => {
+      console.log(err);
     },
   });
 
@@ -189,7 +162,7 @@ const DiaryPage = () => {
             {menu === "작물꿀팁" ? (
               <CropTips />
             ) : (
-              <DiaryList diaries={diaries} />
+              diaryList && <DiaryList diaries={diaryList} />
             )}
           </MiddleBox>
         </LayoutInnerBox>

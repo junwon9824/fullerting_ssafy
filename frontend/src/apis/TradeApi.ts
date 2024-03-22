@@ -5,6 +5,15 @@ interface LikeData {
   result_code: string;
   result_message: string;
 }
+interface PostData {
+  exArticleTitle: string;
+  exArticleContent: string;
+  exArticleType: string;
+  img: Array<string>;
+  ex_article_location: string;
+  deal_cur_price: string;
+}
+
 export const getTradeList = async (accessToken: string) => {
   try {
     const response = await api.get("/exchanges/all", {
@@ -13,21 +22,6 @@ export const getTradeList = async (accessToken: string) => {
     return response.data.data_body;
   } catch (e) {
     console.log(e);
-    throw e;
-  }
-};
-
-export const getLikeㅁㄴㅇㄹㅁㄴㅇㄹㅁㄴㅇㅋㄹ = async (
-  accessToken: string,
-  postId: number
-) => {
-  try {
-    const response = await api.post(`/exchanges/${postId}/like`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    return response.data;
-  } catch (e) {
-    console.log(1);
     throw e;
   }
 };
@@ -47,6 +41,45 @@ export const useLike = () => {
       return api.post(`/exchanges/${postId}/like`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
+    },
+    onSuccess: (res) => {
+      console.log(res);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+};
+
+export const usePost = () => {
+  return useMutation({
+    mutationFn: (data: PostData) => {
+      const {
+        exArticleTitle,
+        exArticleContent,
+        exArticleType,
+        img,
+        ex_article_location,
+        deal_cur_price,
+      } = data;
+      const accessToken = sessionStorage.getItem("accessToken");
+      if (!accessToken) {
+        alert("로그인해라");
+      }
+      return api.post(
+        "/exchanges",
+        {
+          exArticleTitle,
+          exArticleContent,
+          exArticleType,
+          img,
+          ex_article_location,
+          deal_cur_price,
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
     },
     onSuccess: (res) => {
       console.log(res);
