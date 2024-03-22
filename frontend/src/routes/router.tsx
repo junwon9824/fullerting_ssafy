@@ -76,7 +76,6 @@ const communityRoutes = [
   },
 ];
 
-// 모든 경로를 하나의 배열로 결합
 const routes = [
   ...authRoutes,
   ...diaryRoutes,
@@ -85,7 +84,6 @@ const routes = [
   ...communityRoutes,
 ];
 
-// 라우터 생성
 const router = createBrowserRouter(routes);
 
 export default router;
