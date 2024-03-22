@@ -2,7 +2,7 @@ import {
   LayoutMainBox,
   LayoutInnerBox,
 } from "../../components/common/Layout/Box";
-import Post from "../../components/Trade/post";
+import MyTrade from "../../components/mypage/trade/MyTrade";
 import useInput from "../../hooks/useInput";
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
 import Search from "../../components/common/Input/Search";
@@ -20,7 +20,7 @@ const TransPost = () => {
             placeholder="내용 또는 작성자를 입력해주세요"
             onChange={setSearch}
           />
-          <Post />
+          <MyTrade />
         </LayoutInnerBox>
       </LayoutMainBox>
       <NavBar />

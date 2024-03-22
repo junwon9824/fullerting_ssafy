@@ -20,6 +20,10 @@ import CropCreatePage from "../pages/diary/CropCreatePage";
 import TradeGeneralDetail from "../pages/trade/TradeGeneralDetail";
 import TradeProposeDetail from "../pages/trade/TradeProposeDetail";
 import TestPage from "../pages/user/test";
+import CommunityLayout from "../pages/community/CommunityLayout";
+import Community from "../pages/community/Community";
+import CreateCommunity from "../pages/community/CreateCommunity";
+import CommunityDetail from "../pages/community/CommunityDetail";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
@@ -60,8 +64,26 @@ const mypageRoutes = [
   },
 ];
 
+const communityRoutes = [
+  {
+    path: "/community",
+    element: <CommunityLayout />,
+    children: [
+      { index: true, element: <Community /> },
+      { path: "detail", element: <CommunityDetail /> },
+      { path: "create", element: <CreateCommunity /> },
+    ],
+  },
+];
+
 // 모든 경로를 하나의 배열로 결합
-const routes = [...authRoutes, ...diaryRoutes, ...tradeRoutes, ...mypageRoutes];
+const routes = [
+  ...authRoutes,
+  ...diaryRoutes,
+  ...tradeRoutes,
+  ...mypageRoutes,
+  ...communityRoutes,
+];
 
 // 라우터 생성
 const router = createBrowserRouter(routes);
