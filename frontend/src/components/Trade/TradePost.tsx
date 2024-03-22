@@ -137,6 +137,7 @@ const TradePost = () => {
       document.body.style.overflow = "unset";
     };
   }, [modal]);
+
   return (
     <>
       {modal && (

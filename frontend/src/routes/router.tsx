@@ -13,13 +13,14 @@ import ProposePost from "../pages/profile/ProposePost";
 import TransPost from "../pages/profile/TransPost";
 import DiaryPage from "../pages/diary/DiaryPage";
 import MyPageLayout from "../pages/profile/MyPageLayout";
-import TradePost from "../pages/trade/TradePost";
+
 import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
 import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
 import CropCreatePage from "../pages/diary/CropCreatePage";
 import TradeGeneralDetail from "../pages/trade/TradeGeneralDetail";
 import TradeProposeDetail from "../pages/trade/TradeProposeDetail";
 import TestPage from "../pages/user/test";
+import TradePostPage from "../pages/trade/TradePostPage";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
@@ -38,7 +39,7 @@ const diaryRoutes = [
 // 거래 관련 경로
 const tradeRoutes = [
   { path: "/trade", element: <TradePage /> },
-  { path: "/trade/post", element: <TradePost /> },
+  { path: "/trade/post", element: <TradePostPage /> },
   { path: "/trade/generaldetail", element: <TradeGeneralDetail /> },
   { path: "/trade/proposedetail", element: <TradeProposeDetail /> },
   { path: "/trade/test", element: <TestPage /> },

@@ -17,21 +17,6 @@ export const getTradeList = async (accessToken: string) => {
   }
 };
 
-export const getLikeㅁㄴㅇㄹㅁㄴㅇㄹㅁㄴㅇㅋㄹ = async (
-  accessToken: string,
-  postId: number
-) => {
-  try {
-    const response = await api.post(`/exchanges/${postId}/like`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    return response.data;
-  } catch (e) {
-    console.log(1);
-    throw e;
-  }
-};
-
 export const useLike = () => {
   // useMutation 훅은 여기에서 동기적으로 호출됩니다.
 
@@ -45,6 +30,26 @@ export const useLike = () => {
         throw new Error("No access token available");
       }
       return api.post(`/exchanges/${postId}/like`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+    },
+    onSuccess: (res) => {
+      console.log(res);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+};
+
+export const usePost = () => {
+  return useMutation({
+    mutationFn: () => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      if (!accessToken) {
+        alert("로그인해라");
+      }
+      return api.post("/exchanges", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
     },

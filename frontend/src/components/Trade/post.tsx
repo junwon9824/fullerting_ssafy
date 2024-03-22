@@ -7,7 +7,7 @@ import RedLike from "/src/assets/svg/like.svg";
 import { useEffect, useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
-import { getLike, getTradeList, useLike } from "../../apis/TradeApi";
+import { getTradeList, useLike } from "../../apis/TradeApi";
 import {
   QueryClient,
   QueryKey,
@@ -16,7 +16,6 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { v4 as uuid } from "uuid";
 interface ClickLike {
   onClick: () => void;
 }
