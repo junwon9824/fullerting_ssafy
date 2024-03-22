@@ -20,7 +20,7 @@ public class ExArticleRegisterRequest {
     private Long id;
     private String exArticleTitle;
     private String exArticleContent;
-    private String exArticlePlace;
+//    private String exArticlePlace;
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
 
     private String ex_article_location;
