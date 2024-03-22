@@ -80,6 +80,22 @@ const SVGBox = styled.svg`
   height: 45%;
 `;
 
+const FixedContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 3.125rem;
+  width: 100%;
+  background-color: white;
+  z-index: 3;
+
+  width: 19.875rem;
+  gap: 1.5rem;
+  padding: 1.12rem 0;
+`;
+
 const DiaryPage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [crop, setCrop] = useAtom(cropAtom);
@@ -137,28 +153,30 @@ const DiaryPage = () => {
     <>
       <TopBar title="작물일기" showEdit={true} />
       <LayoutMainBox>
-        <LayoutInnerBox>
-          <TopBox>
-            {cropData && <CropProfile crop={cropData} />}
-            {cropData?.packDiaryCulEndAt === null && (
-              <ButtonBox>
-                <RecognizeButton />
-                <Button
-                  onClick={handleHarvestClick}
-                  width={9.5}
-                  height={2.5625}
-                  borderRadius={1.28125}
-                  backgroundColor="#A0D8B3"
-                  color="white"
-                  fontSize="1"
-                  fontWeight="bold"
-                  text="수확하기"
-                />
-              </ButtonBox>
-            )}
-          </TopBox>
-          <MiddleBox>
+        <LayoutInnerBox style={{ marginTop: "12.8rem" }}>
+          <FixedContainer>
+            <TopBox>
+              {cropData && <CropProfile crop={cropData} />}
+              {cropData?.packDiaryCulEndAt === null && (
+                <ButtonBox>
+                  <RecognizeButton />
+                  <Button
+                    onClick={handleHarvestClick}
+                    width={9.5}
+                    height={2.5625}
+                    borderRadius={1.28125}
+                    backgroundColor="#A0D8B3"
+                    color="white"
+                    fontSize="1"
+                    fontWeight="bold"
+                    text="수확하기"
+                  />
+                </ButtonBox>
+              )}
+            </TopBox>
             <MenuBar />
+          </FixedContainer>
+          <MiddleBox>
             {menu === "작물꿀팁" ? (
               <CropTips />
             ) : (

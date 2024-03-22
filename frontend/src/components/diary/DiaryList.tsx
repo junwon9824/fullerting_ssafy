@@ -3,6 +3,8 @@ import styled from "styled-components";
 const DiaryBox = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   gap: 1.5rem;
 `;
@@ -25,17 +27,17 @@ const DateBox = styled.div`
   background-color: ${({ theme }) => theme.colors.primary};
   gap: 0.1rem;
 
-  width: 2.35rem;
-  height: 2.35rem;
+  width: 2.2rem;
+  height: 2.2rem;
   border-radius: 0.3125rem;
 `;
 
 const Month = styled.span`
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 `;
 
 const Day = styled.span`
-  font-size: 1.1rem;
+  font-size: 0.9rem;
 `;
 
 const BorderBox = styled.div`
