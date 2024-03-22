@@ -1,79 +1,129 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import useInput from "../../hooks/useInput";
-import { Line } from "../../components/common/Line";
-import SockJS from "sockjs-client";
-import Stomp from "stompjs";
-import { LayoutMainBox } from "../../components/common/Layout/Box";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  createContext,
+} from "react";
+import { Client, IMessage } from "@stomp/stompjs"; // STOMP 프로토콜을 사용하기 위한 라이브러리를 가져옵니다.
+import axios from "axios"; // HTTP 클라이언트 라이브러리를 가져옵니다.
+import { Link, useParams } from "react-router-dom"; // 라우터 관련 기능을 사용하기 위한 라이브러리를 가져옵니다.
+import { api } from "../../apis/Base";
 
-const TestPage = () => {
-    const [email, setEmail] = useInput("");
-    const [password, setPassword] = useInput("");
-    const [receivedMessages, setReceivedMessages] = useState<string[]>([]);
+interface MessageReq {
+  messageType: boolean;
+  content: string;
+  senderId: number;
+  chattingRoomId: number;
+}
 
-    const handleClick = () => {
-        // 거래 종료 이벤트를 발행하는 함수
-        const dealEndData = {
-            // 이벤트에 필요한 데이터를 객체로 전달
-            // 예: 거래 ID, 종료 시간 등
-        };
-        publishDealEndEvent();
+interface MessageRes {
+  id: string;
+  messageType: boolean;
+  content: string;
+  createdTime: string;
+  senderId: number;
+  chattingRoomId: number;
+}
+
+function TestPage() {
+  // const {chatId} = useParams();
+
+  const chattingRoomId = 91; // 현재 게시물 (exarticleid 를 채팅룸 id 로 한다.)
+
+  const [stompClient, setStompClient] = useState<Client | null>(null); // STOMP 클라이언트 상태 관리
+  const [messages, setMessages] = useState<MessageRes[]>([]); // 채팅 메시지 목록 상태 관리
+  const [writer, setWriter] = useState<string>(""); // 메시지 작성자 이름 상태 관리
+  const [newMessage, setNewMessage] = useState<string>(""); // 새 메시지 입력 상태 관리
+
+  const loadMessages = async () => {
+    //기존 디비에 저장된 제안 목록 불러오기
+    try {
+      // const response = await api.get(
+      //     `/exchanges/${chattingRoomId}/suggestion`
+      // );
+      const response = await axios.get(
+        `http://localhost:8080/v1/exchanges/${chattingRoomId}/suggestion`
+      );
+
+      console.log(response.data);
+      // const messages
+      setMessages(response.data);
+    } catch (error) {
+      console.error("채팅 내역 로드 실패", error);
+    }
+  };
+
+  useEffect(() => {
+    loadMessages();
+    const client = new Client({
+      brokerURL: `ws://localhost:8080/ws`, // Server WebSocket URL
+      reconnectDelay: 5000, // 연결 끊겼을 때, 재연결시도까지 지연시간(ms)
+      onConnect: () => {
+        console.log("WebSocket 연결됨"); // 이 위치가 서버와의 연결이 성공적으로 이루어졌음을 보장
+        client.subscribe(
+          `/sub/chattings/${chattingRoomId}/messages`,
+          (message: IMessage) => {
+            const msg: MessageRes = JSON.parse(message.body); // 메시지를 JSON형태로 파싱
+            setMessages((prevMessages) => [...prevMessages, msg]); // 기존 메시지 목록에 새 메시지 추가
+          }
+        );
+      },
+    });
+    client.activate(); // STOMP 클라이언트 활성화
+    setStompClient(client); // STOMP 클라이언트 상태 업데이트
+    return () => {
+      client.deactivate(); // 컴포넌트 언마운트 시, STOMP 클라이언트 비활성화
     };
+  }, [chattingRoomId]); // chatId가 변경될 때마다 useEffect 실행
 
- 
-    useEffect(() => {
-        const socket = new SockJS("https://j10c102.p.ssafy.io/ws"); // 또는 다른 HTTPS URL
-        // const socket = new SockJS("http://localhost:8080/ws"); // 또는 다른 HTTPS URL
+  const sendMessage = async () => {
+    if (newMessage.trim() !== "") {
+      try {
+        const messageReq = {
+          messageType: false, // 메시지 타입 설정, 필요에 따라 조정 가능
+          content: newMessage,
+          senderId: 1, // 실제 애플리케이션에서는 사용자 인증 정보로부터 가져온 실제 사용자 ID를 사용해야 합니다.
+          chattingRoomId: chattingRoomId,
+        };
 
-        const stompClient = Stomp.over(socket);
+        await axios.post(
+          `http://localhost:8080/v1/exchanges/${chattingRoomId}/deal_bid`,
+          messageReq
+        ); //입찰 제안하기
 
-        stompClient.connect({}, function (frame) {
-            console.log("Connected: " + frame);
-            const subscription = stompClient.subscribe("/sub/chattings/1", function (message) {
-                console.log("Received message: " + message.body);
-                // 이곳에서 메시지를 처리할 수 있습니다.
-                setReceivedMessages(prevMessages => [...prevMessages, message.body]);
-            });
+        setNewMessage(""); // 메시지 전송 후 입력 필드 초기화
+      } catch (error) {
+        console.error("메시지 전송 실패", error);
+      }
+    }
+  };
 
-            return () => {
-                // 컴포넌트가 언마운트될 때 구독 해제
-                subscription.unsubscribe();
-                // 연결 해제
-                stompClient.disconnect(() => {
-                    console.log('Disconnected from the server');
-                });
-            };
-            
-        });
-    }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 함
+  return (
+    <div>
+      <div>
+        <ul>
+          {messages.map((msg) => (
+            <li key={msg.id}>
+              {msg.senderId}: {msg.content} ({msg.createdTime})
+              <hr />
+            </li>
+          ))}
+        </ul>
 
-    // 거래 종료 이벤트를 발행하는 함수
-    const publishDealEndEvent = () => {
-        const socket = new SockJS("/ws"); // 웹소켓 엔드포인트에 연결
-        const stompClient = Stomp.over(socket);
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+        />
 
-        stompClient.connect({}, function (frame) {
-            console.log("Connected: " + frame);
-            //   stompClient.send("/app/deal-end", {}, JSON.stringify(dealEndData));
-            // 연결 해제
-            stompClient.disconnect(() => {
-                console.log('Disconnected from the server');
-            });
-        });
-    }; 
-
-    return (
-        <LayoutMainBox>
-            <div>socket</div>
-            <button onClick={handleClick}>거래 종료</button>
-            <Line />
-            <div>
-                {receivedMessages.map((message, index) => (
-                    <div key={index}>{message}</div>
-                ))}
-            </div>
-        </LayoutMainBox>
-    );
-};
+        <button onClick={sendMessage}>
+          {/* <PaperPlaneTilt size={32} /> Add icon import or component */}
+          전송
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default TestPage;
