@@ -103,6 +103,10 @@ public class ExArticle {
         this.favorite.add(favorite);
     }
 
+    public void deletefavorite(Favorite favorite) {
+        this.favorite.remove(favorite); //favorite remove
+    }
+
     public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
 

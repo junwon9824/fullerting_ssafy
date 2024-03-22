@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface ExArticleRepository extends JpaRepository<ExArticle,Long > {
     Optional<List<ExArticle>> findAllByTitleContaining(String keyword);
-     List<ExArticle> findAllByType(ExArticleType type);
+    List<ExArticle> findAllByType(ExArticleType type);
+    List<ExArticle> findAllByUserIdAndFavoriteIsNotEmpty(Long userid);
 
 }
