@@ -107,11 +107,7 @@ const CalCardBox = styled.div`
   gap: 0.5rem;
 `;
 
-const DiaryCard = ({ diary }: { diary: DiaryType }) => {
-  const diaryDate = new Date(diary.diarySelectedAt);
-  const month = diaryDate.getMonth() + 1;
-  const day = diaryDate.getDate();
-
+const DiaryCard = ({ diary }: { diary: DiaryEntry }) => {
   return (
     <BorderBox>
       <ContentBox>
@@ -131,11 +127,7 @@ const DiaryCard = ({ diary }: { diary: DiaryType }) => {
   );
 };
 
-const WaterCard = ({ diary }: { diary: DiaryType }) => {
-  const diaryDate = new Date(diary.diarySelectedAt);
-  const month = diaryDate.getMonth() + 1;
-  const day = diaryDate.getDate();
-
+const WaterCard = ({ diary }: { diary: DiaryEntry }) => {
   return (
     <BorderBox>
       <WaterContent>
@@ -176,14 +168,6 @@ const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
       <div>calendar</div>
       <span>2024년</span>
       <DiaryBox>
-        {/* {diaries &&
-          diaries.map((diary) =>
-            diary.diaryBehavior === "다이어리" ? (
-              <DiaryCard key={diary.diaryId} diary={diary} />
-            ) : (
-              <WaterCard key={diary.diaryId} diary={diary} />
-            )
-          )} */}
         {diaries.map((item, index) => (
           <CalCardBox key={index}>
             <Calender

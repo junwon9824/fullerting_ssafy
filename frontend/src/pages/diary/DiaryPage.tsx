@@ -13,7 +13,7 @@ import { useAtom } from "jotai";
 import { cropAtom, menuAtom } from "../../stores/diary";
 import CropTips from "../../components/diary/CropTips";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getCropData, updateHarvest } from "../../apis/DiaryApi";
+import { getCropData, getDiaryList, updateHarvest } from "../../apis/DiaryApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -87,73 +87,6 @@ const DiaryPage = () => {
   const { packDiaryId } = useParams();
   const navigate = useNavigate();
 
-  const diaries: DiaryType[] = [
-    {
-      diarySelectedAt: "2024-03-12",
-      getSelectedAtDiaryResponse: [
-        {
-          diaryId: 6,
-          diaryBehavior: "다이어리",
-          diaryTitle: "무수니 성장중!",
-          diaryContent: "무수니가 쑥쑥 잘 자라고 있다.",
-          diaryCreatedAt: "2024-03-11 15:00:00",
-        },
-        {
-          diaryId: 7,
-          diaryBehavior: "물주기",
-          diaryTitle: "",
-          diaryContent: "",
-          diaryCreatedAt: "2024-03-11 15:00:00",
-        },
-      ],
-    },
-    {
-      diarySelectedAt: "2024-03-11",
-      getSelectedAtDiaryResponse: [
-        {
-          diaryId: 4,
-          diaryBehavior: "다이어리",
-          diaryTitle: "무수니 발아",
-          diaryContent: "하루가 지났더니 무수니가 발아하는 것 같다",
-          diaryCreatedAt: "2024-03-10 15:00:00",
-        },
-        {
-          diaryId: 5,
-          diaryBehavior: "다이어리",
-          diaryTitle: "무수니 성장",
-          diaryContent: "조금씩 성장하는 무수니",
-          diaryCreatedAt: "2024-03-10 15:00:00",
-        },
-      ],
-    },
-    {
-      diarySelectedAt: "2024-03-10",
-      getSelectedAtDiaryResponse: [
-        {
-          diaryId: 1,
-          diaryBehavior: "다이어리",
-          diaryTitle: "무수니 씨앗",
-          diaryContent: "오늘 처음으로 무수니의 씨앗을 뿌렸다.",
-          diaryCreatedAt: "2024-03-09 15:00:00",
-        },
-        {
-          diaryId: 2,
-          diaryBehavior: "다이어리",
-          diaryTitle: "무수니 씨앗 자랐나",
-          diaryContent: "무수니 씨앗이 조금 자란거같기도 하고..?",
-          diaryCreatedAt: "2024-03-09 15:00:00",
-        },
-        {
-          diaryId: 3,
-          diaryBehavior: "다이어리",
-          diaryTitle: "무수니 씨앗 자라고 있는중",
-          diaryContent: "저녁 늦게 다시 보니 조금 자랐다!",
-          diaryCreatedAt: "2024-03-09 15:00:00",
-        },
-      ],
-    },
-  ];
-
   useEffect(() => {
     setMenu("다이어리");
   }, []);
@@ -173,6 +106,11 @@ const DiaryPage = () => {
         : undefined,
   });
 
+  const { data: diaryList } = useQuery({
+    queryKey: ["diaryList"],
+    queryFn: packDiaryId ? () => getDiaryList(packDiaryId) : undefined,
+  });
+
   if (isSuccess) {
     setCrop(cropData);
   }
@@ -180,11 +118,10 @@ const DiaryPage = () => {
   const { mutate } = useMutation({
     mutationFn: updateHarvest,
     onSuccess: (res) => {
-      console.log(res);
       refetchCropData();
     },
-    onError: (error) => {
-      console.log(error);
+    onError: (err) => {
+      console.log(err);
     },
   });
 
@@ -225,7 +162,7 @@ const DiaryPage = () => {
             {menu === "작물꿀팁" ? (
               <CropTips />
             ) : (
-              <DiaryList diaries={diaries} />
+              diaryList && <DiaryList diaries={diaryList} />
             )}
           </MiddleBox>
         </LayoutInnerBox>

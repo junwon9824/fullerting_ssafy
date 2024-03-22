@@ -24,6 +24,19 @@ export const getCropData = async (accessToken: string, packDiaryId: string) => {
   }
 };
 
+export const getDiaryList = async (packDiaryId: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.get(`/diaries/${packDiaryId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error getDiaryList:", error);
+    throw error;
+  }
+};
+
 export const getCropType = async (accessToken: string) => {
   try {
     const response = await api.get("/crop-types", {
