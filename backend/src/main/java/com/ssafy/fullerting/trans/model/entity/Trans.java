@@ -6,6 +6,7 @@ import com.ssafy.fullerting.trans.model.dto.response.TransResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 @Entity
 @ToString
 @Table(name = "trans")
+@Slf4j
 public class Trans {
 
     @Id
@@ -44,10 +46,12 @@ public class Trans {
     }
 
     public MyAllTransResponse toMyAllTransResponse(Trans trans, CustomUser customUser) {
+//        log.info("aaaaaaaaaaaaa"+trans.getExArticle());
+
         return MyAllTransResponse.builder()
                 .id(trans.getId())
                 .price(trans.getTrans_sell_price())
-                .exArticleResponse(trans.getExArticle().toResponse(trans.getExArticle(), customUser))
+                .exarticleid(trans.getExArticle().getId())
                 .build();
     }
 

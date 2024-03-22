@@ -71,7 +71,7 @@ public class PackDiaryController {
      * @return
      */
     @PostMapping("/{pack_diary_id}/crop-step")
-    public ResponseEntity<MessageUtils> getCropStep(@PathVariable("pack_diary_id") Long packDiaryId, @RequestPart("cropImage") SerializableMultipartFile imageFile){
+    public ResponseEntity<MessageUtils> getCropStep(@PathVariable("pack_diary_id") Long packDiaryId, @RequestPart("cropImage") MultipartFile imageFile){
         return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getCropStep(packDiaryId, imageFile)));
     }
 

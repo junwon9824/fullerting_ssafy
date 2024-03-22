@@ -62,7 +62,9 @@ public class SerializableMultipartFile implements MultipartFile, Serializable {
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         byte[] bytes = (byte[]) in.readObject();
-//        this.multipartFile = new ByteArrayMultipartFile(bytes);
+        this.multipartFile = new ByteArrayMultipartFile(bytes, "example.txt", "example.txt", "text/plain");
+
         /////////////////////////////수정필요
+
     }
 }

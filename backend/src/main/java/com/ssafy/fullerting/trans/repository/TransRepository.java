@@ -13,7 +13,7 @@ public interface TransRepository extends JpaRepository<Trans, Long> {
 
     Optional<Trans> findByExArticleId(Long aLong);
 
-    @Query("select t from  Trans t where t.exArticle.trans is not null and t. exArticle.user.id=:userid")
+    @Query("select t from  Trans t    where t.exArticle.trans is not null and t. exArticle.user.id=:userid")
     List<Trans> findAllTrans(Long userid);
 
 }

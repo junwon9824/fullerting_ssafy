@@ -16,5 +16,5 @@ public class MyAllTransResponse {
 
     private int price;
 
-    private ExArticleResponse exArticleResponse;
+    private Long exarticleid;
 }

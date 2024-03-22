@@ -78,9 +78,13 @@ public class TransService {
 
         List<Trans> trans = transRepository.findAllTrans(customUser.getId());
 
-        List<MyAllTransResponse> transResponse = trans.stream().map(trans1 ->
-                trans1.toMyAllTransResponse(trans1, customUser)).collect(Collectors.toList());
+//        log.info("transssssssssss"+trans.stream().map(trans1 -> trans1.getExArticle()));
 
-        return transResponse;
+
+            List<MyAllTransResponse> transResponse = trans.stream().map(trans1 ->
+                    trans1.toMyAllTransResponse(trans1, customUser)).collect(Collectors.toList());
+
+            return transResponse;
+
     }
 }
