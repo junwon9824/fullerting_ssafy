@@ -158,26 +158,55 @@ const TradePost = () => {
   const [selectedFiles] = useAtom(imageFilesAtom);
   const { mutate: handlePost } = usePost();
   const navigate = useNavigate();
-  const handleCheckClick = () => {
-    // API 요청을 위한 formData 생성
+  //   const handleCheckClick = () => {
+  //     // API 요청을 위한 formData 생성
+  //     const formData = new FormData();
+  //     formData.append("title", title);
+  //     formData.append("content", content);
+  //     selectedFiles.forEach((file) => formData.append("files", file));
+  //     formData.append("place", place);
+  //     formData.append("type", tradeType);
+  //     if (diary) {
+  //       formData.append("diary", diary.toString());
+  //     }
+  //     formData.append("cash", cash);
+
+  //     // mutate 함수를 호출하여 API 요청
+  //     handlePost(formData);
+
+  //     // 요청 후 페이지 이동
+  //     navigate("/trade");
+  //   };
+  const handleCheckClick = async () => {
     const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    selectedFiles.forEach((file) => formData.append("files", file));
-    formData.append("place", place);
-    formData.append("type", tradeType);
-    if (diary) {
-      formData.append("diary", diary.toString());
+
+    // selectedFiles는 File 타입의 배열입니다. 각 파일을 formData에 추가합니다.
+    // selectedFiles.forEach((file) => {
+    //   formData.append("file", file);
+    // });
+
+    // 나머지 필요한 정보를 formData에 추가합니다.
+    const exArticleRegisterRequest = JSON.stringify({
+      exArticleTitle: title,
+      exArticleContent: content,
+      ex_article_location: place,
+      exArticleType: tradeType,
+      packdiaryid: diary,
+      deal_cur_price: cash,
+    });
+
+    formData.append("exArticleRegisterRequest", exArticleRegisterRequest);
+    try {
+      for (var entries of formData) console.log(entries);
+      await handlePost(formData);
+
+      // 요청 성공 후 페이지 이동 또는 상태 업데이트
+      navigate("/trade");
+    } catch (error) {
+      // 오류 처리
+      console.error("업로드 실패:", error);
     }
-    formData.append("cash", cash);
-
-    // mutate 함수를 호출하여 API 요청
-    handlePost(formData);
-
-    // 요청 후 페이지 이동
-    navigate("/trade");
   };
-
   return (
     <>
       {modal && (
