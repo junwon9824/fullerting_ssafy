@@ -1,9 +1,75 @@
 import styled from "styled-components";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import load from "../../assets/svg/loader.svg";
+import { fetchBadges, logoutUser } from "../../apis/MyPage";
 import arrow from "/src/assets/svg/arrow_forward_ios.svg";
-import pul from "/src/assets/svg/pullleft.svg";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
+interface BadgeProps {
+  badgeImg: string;
+}
+interface LogoutModalProps {
+  onClose: () => void;
+  onConfirm: () => void;
+}
+interface BadgeData {
+  badgeImg: string;
+}
+
+const LogoutModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const LogoutModalContent = styled.div`
+  background-color: white;
+  padding: 2rem 3rem;
+  border-radius: 1rem;
+  text-align: center;
+`;
+
+const LogoutButtonleft = styled.button`
+  width: 4.125rem;
+  height: 1.875rem;
+  border-radius: 0.625rem;
+  color: #fff;
+  margin-top: 2rem;
+  margin-right: 0.5rem;
+  font-family: "Noto Sans";
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: var(--sub0, #a0d8b3);
+`;
+
+const LogoutButtonright = styled.button`
+  width: 4.125rem;
+  height: 1.875rem;
+  border-radius: 0.625rem;
+  color: #fff;
+  margin-left: 0.5rem;
+  font-family: "Noto Sans";
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: var(--gray1, #8c8c8c);
+`;
+
+const LogoutText = styled.div`
+  color: #000;
+  text-align: center;
+  font-size: 0.9rem;
+  font-style: normal;
+  font-weight: bold;
+`;
 const ProfileContent = styled.div`
   display: flex;
   align-items: center;
@@ -17,13 +83,13 @@ const BadgesContainer = styled.div`
   margin-top: 1rem;
 `;
 
-const Badge = styled.div`
+const Badge = styled.div<BadgeProps>`
   width: 3.125rem;
   height: 3.125rem;
   border-radius: 50%;
   background-color: #cdc8c8;
   margin-right: 0.8rem;
-  background-image: url(${(props) => props.imageUrl});
+  background-image: url(${(props) => props.badgeImg});
   background-size: cover;
 `;
 
@@ -54,16 +120,60 @@ const Line = styled.hr`
   width: 19.87513rem;
   height: 0.0625rem;
 `;
+
+const LogoutModal: React.FC<LogoutModalProps> = ({ onClose, onConfirm }) => {
+  return (
+    <LogoutModalOverlay>
+      <LogoutModalContent>
+        <LogoutText>정말 로그아웃하시겠습니까?</LogoutText>
+        <LogoutButtonleft onClick={onConfirm}>확인</LogoutButtonleft>
+        <LogoutButtonright onClick={onClose}>취소</LogoutButtonright>
+      </LogoutModalContent>
+    </LogoutModalOverlay>
+  );
+};
+
 const Maintop = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const badges = [
-    { imageUrl: pul },
-    { imageUrl: pul },
-    { imageUrl: pul },
-    { imageUrl: pul },
-    { imageUrl: pul },
-    { imageUrl: pul },
-  ];
+  console.log("Maintop 컴포넌트 렌더링");
+
+  const { mutate: performLogout } = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      console.log("로그아웃 성공 로그아웃 성공");
+      navigate("/");
+    },
+
+    onError: (error) => {
+      console.error("로그아웃 실패:", error);
+    },
+  });
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const confirmLogout = () => {
+    performLogout();
+  };
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["badges"],
+    queryFn: fetchBadges,
+  });
+
+  if (isLoading) {
+    console.log("데이터 로딩 중...");
+    return <img src={load} alt="" style={{ width: "80px", height: "80px" }} />;
+  }
+
+  if (error) {
+    console.error("뱃지 데이터를 가져오는데 실패했습니다:", error);
+    return <div>뱃지 데이터를 가져오는데 실패했습니다: {error.message}</div>;
+  }
+
+  console.log("로드된 데이터:", data);
 
   const pages = [
     { title: "보유 뱃지", onClick: () => navigate("/mypage/allbadge") },
@@ -71,29 +181,34 @@ const Maintop = () => {
     { title: "나의 제안 목록", onClick: () => navigate("/mypage/proposepost") },
     { title: "관심 게시글", onClick: () => navigate("/mypage/likedpost") },
     { title: "나의 거래 게시글", onClick: () => navigate("/mypage/transpost") },
-    { title: "로그아웃", onClick: () => navigate("/mypage/logout") },
+    { title: "로그아웃", onClick: () => setIsModalOpen(true) },
   ];
 
   return (
     <>
+      {isModalOpen && (
+        <LogoutModal onClose={closeModal} onConfirm={confirmLogout} />
+      )}
       {pages.map((page, index) => (
         <React.Fragment key={index}>
           <ProfileContent onClick={page.onClick}>
             <ProfileText>
               <Nickname>{page.title}</Nickname>
             </ProfileText>
-            {page.title === "" ? (
+            {page.title === "" && (
               <BadgesContainer>
-                {badges.slice(0, 4).map((badge, index) => (
-                  <Badge key={index} imageUrl={badge.imageUrl} />
-                ))}
-                {badges.length - 4 > 0 && (
-                  <AdditionalBadges>+{badges.length - 4}</AdditionalBadges>
+                {data &&
+                  data
+                    .slice(0, 4)
+                    .map((badge: BadgeData, index: number) => (
+                      <Badge key={index} badgeImg={badge.badgeImg} />
+                    ))}
+                {data && data.length - 4 > 0 && (
+                  <AdditionalBadges>+{data.length - 4}</AdditionalBadges>
                 )}
               </BadgesContainer>
-            ) : (
-              <img src={arrow} alt="" />
             )}
+            {page.title !== "" && <img src={arrow} alt="" />}
           </ProfileContent>
           {page.title !== "보유 뱃지" && <Line />}
         </React.Fragment>

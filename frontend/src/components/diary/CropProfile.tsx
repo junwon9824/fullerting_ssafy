@@ -64,12 +64,12 @@ const CropEnd = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  font-size: 0.75rem;
-  height: 1.5625rem;
+  font-size: 0.64rem;
   background-color: ${({ theme }) => theme.colors.sub0};
-  padding: 0 1rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 0.78125rem;
+  line-height: 1rem;
+  font-weight: bold;
 `;
 
 const CropProfile = ({ crop, direction }: CropProfileType) => {
@@ -82,6 +82,16 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
     const diffTime = Math.abs(today.getTime() - createdDate.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return `D+${diffDays}`;
+  };
+
+  const calculateDDayDifference = (startDate: string, endDate: string) => {
+    const startMillis = new Date(startDate).getTime();
+    const endMillis = new Date(endDate).getTime();
+
+    const differenceMillis = Math.abs(endMillis - startMillis);
+    const differenceDays = Math.ceil(differenceMillis / (1000 * 60 * 60 * 24));
+
+    return differenceDays;
   };
 
   return (
@@ -99,10 +109,25 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
               {crop.cropTypeName} {crop.packDiaryGrowthStep}단계
             </span>
             <span> · </span>
-            <span>{calculateDDay(crop.packDiaryCreatedAt)}</span>
+            {crop.packDiaryCulEndAt === null ? (
+              <span>{calculateDDay(crop.packDiaryCulStartAt)}</span>
+            ) : (
+              <span>수확😊</span>
+            )}
           </CropDescriptionBox>
           {direction !== "column" && (
-            <CropEnd>"재배까지 20일 남았습니다"</CropEnd>
+            <CropEnd>
+              {crop.packDiaryCulEndAt === null
+                ? `" 수확까지 ${
+                    crop.cropGrowDay ? crop.cropGrowDay : "?"
+                  }일 남았습니다 "`
+                : `${crop.packDiaryCulStartAt} ~ ${
+                    crop.packDiaryCulEndAt
+                  } (${calculateDDayDifference(
+                    crop.packDiaryCulStartAt,
+                    crop.packDiaryCulEndAt
+                  )}일)`}
+            </CropEnd>
           )}
         </Align>
       </Box>

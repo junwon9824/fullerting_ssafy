@@ -1,5 +1,7 @@
+import { useAtom } from "jotai";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
+import { imageFilesAtom } from "../../../stores/trade";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -40,8 +42,12 @@ const FileUploadIcon = styled.svg`
   height: 2rem;
 `;
 
-const InputBox = styled.input`
-  display: none;
+const InputBox = styled.input.attrs({
+  type: "file",
+  accept: "image/*", // 이미지 파일만 받도록 설정
+  capture: "environment", // 카메라 사용 활성화
+})`
+  display: none; // 여전히 입력 필드를 숨깁니다.
 `;
 
 const PreviewImage = styled.img`
@@ -76,10 +82,11 @@ const CounterText = styled.div`
   font-size: 0.625rem;
 `;
 const MultiFileUploadInput: React.FC = () => {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log(selectedFiles);
     const files = e.target.files ? Array.from(e.target.files) : [];
     setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
 
@@ -102,7 +109,7 @@ const MultiFileUploadInput: React.FC = () => {
     setSelectedFiles(newSelectedFiles);
     setPreviewURLs(newPreviewURLs);
   };
-  useEffect(() => console.log(...selectedFiles));
+
   return (
     <>
       <LabelSpan>사진 등록</LabelSpan>
@@ -138,7 +145,9 @@ const MultiFileUploadInput: React.FC = () => {
           <InputBox
             id="file"
             type="file"
-            multiple
+            accept="image/*" // 이미지 파일만 받도록 설정
+            capture="environment" // 카메라 사용 활성화
+            multiple // 필요에 따라 여러 파일을 선택할 수 있도록 합니다. 필요 없다면 이 줄을 제거하세요.
             onChange={handleFileChange}
           />
         </RegisterBox>

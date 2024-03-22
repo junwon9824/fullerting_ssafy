@@ -1,7 +1,9 @@
 package com.ssafy.fullerting.deal.model.entity;
 
+import com.ssafy.fullerting.deal.model.dto.response.DealResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
- import jakarta.persistence.*;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -32,4 +34,9 @@ public class Deal {
         this.exArticle=exArticle;
     }
 
+    public DealResponse toResponse(CustomUser customUser){
+        return DealResponse.builder()
+                .exArticleResponse(this.exArticle.toResponse(this.exArticle,customUser))
+                .build();
+    }
 }

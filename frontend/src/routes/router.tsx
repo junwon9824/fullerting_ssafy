@@ -7,17 +7,23 @@ import TradePage from "../pages/trade/trade";
 import MyPage from "../pages/profile/MyPage";
 import AllBadge from "../pages/profile/AllBadge";
 import EditProfile from "../pages/profile/EditProfile";
-import LikedPost from "../pages/profile/LikedPost";
+import MyPost from "../pages/profile/MyPost";
 import Logout from "../pages/profile/Logout";
 import ProposePost from "../pages/profile/ProposePost";
 import TransPost from "../pages/profile/TransPost";
 import DiaryPage from "../pages/diary/DiaryPage";
 import MyPageLayout from "../pages/profile/MyPageLayout";
-import TradePost from "../pages/trade/TradePost";
+import TradePostPage from "../pages/trade/TradePostPage";
 import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
 import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
 import CropCreatePage from "../pages/diary/CropCreatePage";
-
+import TradeGeneralDetail from "../pages/trade/TradeGeneralDetail";
+import TradeProposeDetail from "../pages/trade/TradeProposeDetail";
+import TestPage from "../pages/user/test";
+import CommunityLayout from "../pages/community/CommunityLayout";
+import Community from "../pages/community/Community";
+import CreateCommunity from "../pages/community/CreateCommunity";
+import CommunityDetail from "../pages/community/CommunityDetail";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
@@ -27,16 +33,19 @@ const authRoutes = [
 // 다이어리 관련 경로
 const diaryRoutes = [
   { path: "/diary", element: <CropPage /> },
-  { path: "/diary/detail", element: <DiaryPage /> },
-  { path: "/diary/detail/create", element: <DiaryCreatePage /> },
-  { path: "/diary/detail/water", element: <DiaryWaterPage /> },
+  { path: "/diary/:packDiaryId", element: <DiaryPage /> },
+  { path: "/diary/:packDiaryId/create", element: <DiaryCreatePage /> },
+  { path: "/diary/:packDiaryId/water", element: <DiaryWaterPage /> },
   { path: "/diary/create", element: <CropCreatePage /> },
 ];
 
 // 거래 관련 경로
 const tradeRoutes = [
   { path: "/trade", element: <TradePage /> },
-  { path: "/trade/post", element: <TradePost /> },
+  { path: "/trade/post", element: <TradePostPage /> },
+  { path: "/trade/generaldetail", element: <TradeGeneralDetail /> },
+  { path: "/trade/proposedetail", element: <TradeProposeDetail /> },
+  { path: "/trade/test", element: <TestPage /> },
 ];
 
 const mypageRoutes = [
@@ -47,7 +56,7 @@ const mypageRoutes = [
       { index: true, element: <MyPage /> },
       { path: "editprofile", element: <EditProfile /> },
       { path: "allbadge", element: <AllBadge /> },
-      { path: "likedpost", element: <LikedPost /> },
+      { path: "likedpost", element: <MyPost /> },
       { path: "proposepost", element: <ProposePost /> },
       { path: "transpost", element: <TransPost /> },
       { path: "logout", element: <Logout /> },
@@ -55,8 +64,26 @@ const mypageRoutes = [
   },
 ];
 
+const communityRoutes = [
+  {
+    path: "/community",
+    element: <CommunityLayout />,
+    children: [
+      { index: true, element: <Community /> },
+      { path: "createcommunity", element: <CreateCommunity /> },
+      { path: "communitydetail", element: <CommunityDetail /> },
+    ],
+  },
+];
+
 // 모든 경로를 하나의 배열로 결합
-const routes = [...authRoutes, ...diaryRoutes, ...tradeRoutes, ...mypageRoutes];
+const routes = [
+  ...authRoutes,
+  ...diaryRoutes,
+  ...tradeRoutes,
+  ...mypageRoutes,
+  ...communityRoutes,
+];
 
 // 라우터 생성
 const router = createBrowserRouter(routes);

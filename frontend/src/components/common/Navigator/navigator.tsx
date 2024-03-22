@@ -15,7 +15,7 @@ interface NavItem {
   path: string;
 }
 
-const NavBox = styled.div`
+const NavBox = styled.nav`
   display: flex;
   width: 100%;
   justify-content: center;
@@ -53,7 +53,7 @@ interface TopBarType {
   showTitle?: boolean;
 }
 
-const TopBox = styled.div`
+const TopBox = styled.header`
   display: inline-flex;
   padding: 0rem 1.3125rem;
   justify-content: center;
@@ -61,6 +61,7 @@ const TopBox = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   width: 100%;
   position: fixed;
+  z-index: 6;
 `;
 const TopInnerBox = styled.div`
   display: flex;
@@ -173,7 +174,7 @@ const TopBar = ({
 
 const navItems: NavItem[] = [
   { Icon: Home, path: "/" },
-  { Icon: Cart, path: "/cart" },
+  { Icon: Cart, path: "/trade" },
   { Icon: Chat, path: "/chat" },
   { Icon: Diary, path: "/diary" },
   { Icon: Mypage, path: "/mypage" },

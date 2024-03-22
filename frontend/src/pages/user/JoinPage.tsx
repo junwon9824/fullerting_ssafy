@@ -8,6 +8,9 @@ import {
   LayoutInnerBox,
   LayoutMainBox,
 } from "../../components/common/Layout/Box";
+import { useMutation } from "@tanstack/react-query";
+import { userJoin } from "../../apis/UserApi";
+import { useNavigate } from "react-router-dom";
 
 const JoinPage = () => {
   const [name, setName] = useInput("");
@@ -17,8 +20,34 @@ const JoinPage = () => {
   const [verifyPassword, setVerifyPassword] = useInput("");
   const [isEmailVerify, setIsEmailVerify] = useState<boolean>(false);
 
-  const handleAuthCodeSend = async () => {};
-  const handleConfirmClick = () => {};
+  const navigate = useNavigate();
+
+  const { mutate } = useMutation({
+    mutationFn: userJoin,
+    onSuccess: (res) => {
+      console.log(res);
+      navigate("/login");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const handleAuthCodeSend = () => {};
+  const handleAuthCodeConfirm = () => {
+    // 인증번호 확인 로직 추가 필요
+    setIsEmailVerify(true);
+  };
+  const handleConfirmClick = () => {
+    if (isEmailVerify && password === verifyPassword) {
+      mutate({
+        email: email,
+        password: password,
+        nickname: name,
+        authProvider: "MYAPP",
+      });
+    }
+  };
 
   return (
     <>
@@ -43,7 +72,7 @@ const JoinPage = () => {
             name="code"
             placeholder="인증번호"
             onChange={setEmail}
-            onClick={handleAuthCodeSend}
+            onClick={handleAuthCodeConfirm}
             disabled={isEmailVerify}
           />
           <StyledInput

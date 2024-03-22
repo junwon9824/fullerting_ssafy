@@ -16,7 +16,7 @@ const LayoutInnerBox = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.82rem;
+  gap: 1.5rem;
   padding: 1.12rem 0;
 `;
 

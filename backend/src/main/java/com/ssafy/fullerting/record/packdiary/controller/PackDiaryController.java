@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.record.packdiary.controller;
 
 import com.ssafy.fullerting.global.utils.MessageUtils;
+import com.ssafy.fullerting.record.packdiary.SerializableMultipartFile;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.CreatePackDiaryRequest;
 import com.ssafy.fullerting.record.packdiary.service.PackDiaryService;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/v1/pack-diaries")
@@ -42,6 +44,16 @@ public class PackDiaryController {
     }
 
     /**
+     * 작물일지 상세조회
+     * @param packDiaryId
+     * @return
+     */
+    @GetMapping("/{pack_diary_id}")
+    public ResponseEntity<MessageUtils> getDetailPackDiary(@PathVariable("pack_diary_id") Long packDiaryId){
+        return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getDetailPackDiary(packDiaryId)));
+    }
+
+    /**
      * 작물재배 종료
      * @param packDiaryId
      * @return
@@ -50,6 +62,17 @@ public class PackDiaryController {
     public ResponseEntity<MessageUtils> endCropCultivation(@PathVariable("pack_diary_id") Long packDiaryId){
         packDiaryService.endCropCultivation(packDiaryId);
         return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
+    /**
+     * 작물 생육단계 파악
+     * @param packDiaryId
+     * @param imageFile
+     * @return
+     */
+    @PostMapping("/{pack_diary_id}/crop-step")
+    public ResponseEntity<MessageUtils> getCropStep(@PathVariable("pack_diary_id") Long packDiaryId, @RequestPart("cropImage") MultipartFile imageFile){
+        return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getCropStep(packDiaryId, imageFile)));
     }
 
 }

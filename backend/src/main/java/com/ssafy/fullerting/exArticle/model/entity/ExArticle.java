@@ -1,12 +1,18 @@
 package com.ssafy.fullerting.exArticle.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.fullerting.deal.model.entity.Deal;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleKeywordResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.favorite.model.dto.response.FavoriteResponse;
 import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.global.BaseTimeEntity;
 import com.ssafy.fullerting.image.model.entity.Image;
+import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
+import com.ssafy.fullerting.trans.model.entity.Trans;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,7 +30,7 @@ import java.util.stream.Collectors;
 @Setter
 @Builder
 @Entity
-@ToString
+//@ToString
 @Table(name = "ex_article")
 @Slf4j
 public class ExArticle {
@@ -42,9 +48,9 @@ public class ExArticle {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime created_at;
 
-//    @ManyToOne
-//    @JoinColumn(name = "pack_diary_id")
-//    private PackDiary packDiary;
+    @ManyToOne
+    @JoinColumn(name = "pack_diary_id")
+    private PackDiary packDiary;
 
     @Column(name = "ex_article_title", nullable = false)
     private String title;
@@ -72,7 +78,10 @@ public class ExArticle {
     private Deal deal;
 
 
-    @OneToMany(mappedBy = "exArticle")
+    @OneToOne(mappedBy = "exArticle")
+    private Trans trans;
+
+    @OneToMany(mappedBy = "exArticle", fetch = FetchType.LAZY)
     private List<Image> image;
 
     @OneToMany(mappedBy = "exArticle")
@@ -82,32 +91,157 @@ public class ExArticle {
         this.deal = deal;
     }
 
+    public void setdone() {
+        this.isDone = true;
+    }
+
+    public void setpurchaserid(Long id) {
+        this.purchaserId = id;
+    }
+
     public void addfavorite(Favorite favorite) {
         this.favorite.add(favorite);
     }
 
+    public void deletefavorite(Favorite favorite) {
+        this.favorite.remove(favorite); //favorite remove
+    }
+
     public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
+            log.info(" articlearticle"+article);
+        //        List<FavoriteResponse> favoriteResponses
+//                = article.favorite.stream().map(
+//                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
 
-        List<FavoriteResponse> favoriteResponses
-                = article.favorite.stream().map(
-                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+        Favorite favorite1 = null;
+
+        if (!article.getFavorite().isEmpty()) {
+            favorite1 = article.getFavorite().get(0);
+        }
 
         exArticleResponse = ExArticleResponse.builder()
                 .exArticleId(article.getId())
                 .exArticleTitle(article.getTitle())
                 .exArticleType(article.getType())
                 .exLocation(article.getLocation())
+                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDeal_cur_price() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
                 .imageResponses(article.getImage().stream().map(Image::toResponse)
                         .collect(Collectors.toList()))
-                .favoriteResponse(article.favorite.stream().map(
-                        favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList()))
+//                .favoriteResponse(
+//                        favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
+//                                .builder().islike(false).isLikeCnt(0).build()
+//                )
                 .build();
 
-        log.info("favvvvvvvvvvv" + favoriteResponses);
 
         return exArticleResponse;
     }
 
+    public static ExArticleKeywordResponse tokeyResponse(ExArticle article, CustomUser customUser) {
+        ExArticleKeywordResponse response = null;
+
+        //        List<FavoriteResponse> favoriteResponses
+//                = article.favorite.stream().map(
+//                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+
+        Favorite favorite1 = null;
+
+        if (!article.getFavorite().isEmpty()) {
+            favorite1 = article.getFavorite().get(0);
+        }
+
+        response = ExArticleKeywordResponse.builder()
+                .exArticleResponse(article.toResponse(article, customUser))
+                .favoriteResponse(favorite1 != null ? favorite1.toResponse(customUser) :
+                        FavoriteResponse.builder()
+                                .isLikeCnt(0)
+                                .islike(false)
+                                .build())
+                .build();
+
+
+        return response;
+    }
+
+    public static ExArticleAllResponse toAllResponse(ExArticle article, CustomUser customUser) {
+        ExArticleAllResponse exArticleAllResponse = null;
+
+        //        List<FavoriteResponse> favoriteResponses
+//                = article.favorite.stream().map(
+//                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+
+        Favorite favorite1 = null;
+
+        if (!article.getFavorite().isEmpty()) {
+            favorite1 = article.getFavorite().get(0);
+        }
+
+        exArticleAllResponse = exArticleAllResponse.builder()
+//                .exArticleId(article.getId())
+//                .exArticleTitle(article.getTitle())
+//                .exArticleType(article.getType())
+//                .exLocation(article.getLocation())
+//                .imageResponses(article.getImage().stream().map(Image::toResponse)
+//                        .collect(Collectors.toList()))
+
+                .favoriteResponse(
+                        favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
+                                .builder().islike(false).isLikeCnt(0).build()
+                )
+                .exArticleResponse(
+                        article.toResponse(article, customUser)
+                )
+                .packDiaryResponse(
+                        article.packDiary != null ? article.packDiary.toResponse(article.packDiary) : null
+                )
+                .build();
+
+        log.info("exArticleAllResponseexArticleAllResponse" + exArticleAllResponse);
+        return exArticleAllResponse;
+    }
+
+    public static ExArticleDetailResponse toDetailResponse(ExArticle article, CustomUser customUser) {
+        ExArticleDetailResponse exArticleDetailResponse = null;
+
+        //        List<FavoriteResponse> favoriteResponses
+//                = article.favorite.stream().map(
+//                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+
+        Favorite favorite1 = null;
+
+        if (!article.getFavorite().isEmpty()) {
+            favorite1 = article.getFavorite().get(0);
+        }
+
+
+        exArticleDetailResponse = exArticleDetailResponse.builder()
+//                .exArticleId(article.getId())
+//                .exArticleTitle(article.getTitle())
+//                .exArticleType(article.getType())
+//                .exLocation(article.getLocation())
+                .imageResponses(article.getImage().stream().map(Image::toResponse)
+                        .collect(Collectors.toList()))
+                .favoriteResponse(
+                        favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
+                                .builder().islike(false).isLikeCnt(0).build()
+                )
+                .userResponse(customUser.toResponse())
+                .dealResponse(article.deal != null ? article.deal.toResponse(customUser) : null)
+                .packDiaryResponse(article.packDiary != null ?
+                        article.packDiary.toResponse(article.getPackDiary())
+                        : null
+                )
+                .transResponse(
+                        article.trans != null ?
+                                article.trans.toResponse(article.trans)
+                                : null
+                )
+                .exArticleResponse(article.toResponse(article, customUser))
+                .build();
+
+
+        return exArticleDetailResponse;
+    }
 
 }

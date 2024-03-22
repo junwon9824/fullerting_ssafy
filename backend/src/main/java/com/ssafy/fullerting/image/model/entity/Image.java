@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @Entity
-@ToString
+//@ToString
 @Table(name = "img_store")
 public class Image {
 
@@ -35,7 +35,7 @@ public class Image {
 //    @JoinColumn(name = "article_id")
 //    private Diary diary;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ex_article_id")
     private ExArticle exArticle;
 
@@ -44,7 +44,6 @@ public class Image {
     public static ImageResponse toResponse(Image image)
     {
         return ImageResponse.builder()
-//                .exArticle(image.getExArticle())
                 .img_store_url(image.getImg_store_url())
                 .id(image.getId())
                 .build();

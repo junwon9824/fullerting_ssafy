@@ -1,23 +1,40 @@
 package com.ssafy.fullerting.deal.controller;
 
+import com.ssafy.fullerting.deal.model.dto.request.DealEndRequest;
+import com.ssafy.fullerting.deal.model.dto.request.DealstartRequest;
+import com.ssafy.fullerting.deal.model.entity.Deal;
+import com.ssafy.fullerting.user.model.dto.response.UserResponse;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
+@Slf4j
+@RequiredArgsConstructor
 public class MessageController {
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final UserService userService;
 
-    public MessageController(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
+    @MessageMapping("/chattings/{chattingRoomId}/messages")
+    public void chat(@DestinationVariable Long chattingRoomId, DealstartRequest dealstartRequest) {
+        messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest.getContent());
+        log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getContent(), dealstartRequest.getSenderid(), chattingRoomId);
     }
 
-    @GetMapping("/publish")
-    public void publishMessage() {
-        // "/topic/messages" 채널로 메시지 발행
-        messagingTemplate.convertAndSend("/topic/messages", "Hello, subscribers!");
-
-    }
+//    @SubscribeMapping("/sub/chattings/{chattingRoomId}")
+//    public void subscribeToChatRoom(@DestinationVariable Long chattingRoomId) {
+//        // 해당 채널을 구독하는 메서드 내용 추가
+//        log.info("User subscribed to chatting room: {}", chattingRoomId);
+//    }
 
 }

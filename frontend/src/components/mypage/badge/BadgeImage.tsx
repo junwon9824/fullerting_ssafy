@@ -1,17 +1,17 @@
 import styled from "styled-components";
-import pull from "/src/assets/svg/pullright.svg";
+import { fetchBadges } from "../../../apis/MyPage";
+import { useQuery } from "@tanstack/react-query";
 
 const BadgesContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  margin: 1rem 0;
 `;
 
 const Badge = styled.img`
   width: 5.625rem;
   height: 5.625rem;
-  margin: 2rem 0;
+  margin: 1.5rem 0.5rem;
 `;
 
 const BadgeText = styled.div`
@@ -20,18 +20,48 @@ const BadgeText = styled.div`
   font-family: "GamtanRoad Dotum TTF";
   font-size: 0.75rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: bold;
+  white-space: pre-wrap;
+  line-height: 1.125rem; /* 150% */
 `;
 
 const AllBadgesPage = () => {
-  const badges = new Array(10).fill({ imageUrl: pull, name: "더미 뱃지" });
+  const {
+    data: badges,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["allbadges"],
+    queryFn: fetchBadges,
+  });
+
+  if (isLoading) {
+    console.log("데이터 로딩 중...");
+    return <div>로딩중</div>;
+  }
+
+  if (error) {
+    console.error("뱃지 데이터를 가져오는데 실패했습니다:", error);
+    return <div>뱃지 데이터를 가져오는데 실패했습니다: {error.message}</div>;
+  }
+  console.log("전체전체", badges);
 
   return (
     <BadgesContainer>
       {badges.map((badge, index) => (
         <div key={index}>
-          <Badge src={badge.imageUrl} alt={`뱃지 ${index + 1}`} />
-          <BadgeText>{badge.name}</BadgeText>
+          <Badge src={badge.badgeImg} alt={`뱃지 ${index + 1}`} />
+          <BadgeText>
+            {badge.badgeName.length > 10 ? (
+              <>
+                {badge.badgeName.slice(0, 9)}
+                <br />
+                {badge.badgeName.slice(9)}
+              </>
+            ) : (
+              badge.badgeName
+            )}
+          </BadgeText>
         </div>
       ))}
     </BadgesContainer>

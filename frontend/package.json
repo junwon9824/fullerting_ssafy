@@ -10,24 +10,29 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.27.5",
+    "@tanstack/react-query": "^5.28.6",
     "@tanstack/react-query-devtools": "^5.27.8",
+    "@types/uuid": "^9.0.8",
     "axios": "^1.6.8",
     "dotenv": "^16.4.5",
     "jotai": "^2.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
+    "react-uuid": "^2.0.0",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
     "styled-components": "^6.1.8",
     "styled-reset": "^4.5.2",
-    "vite-svg-loader": "^5.1.0"
+    "uuid": "^9.0.1",
+    "vite-svg-loader": "^5.1.0",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@types/react": "^18.2.64",
     "@types/react-dom": "^18.2.21",
     "@types/sockjs-client": "^1.5.4",
+    "@types/stompjs": "^2.3.9",
     "@types/styled-components": "^5.1.34",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
     "@typescript-eslint/parser": "^7.1.1",

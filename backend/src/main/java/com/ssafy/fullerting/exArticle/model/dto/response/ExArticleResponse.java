@@ -23,18 +23,17 @@ public class ExArticleResponse {
     private String exArticleTitle;
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
     private List<ImageResponse> imageResponses; //
-    private List<FavoriteResponse> favoriteResponse;
+    private int price;
+//    private  FavoriteResponse favoriteResponse;
 
-    public ExArticle toEntity(ExArticleResponse exArticleResponse) {
-        return ExArticle.builder()
-                .location(exArticleResponse.exLocation)
-                .title(exArticleResponse.exArticleTitle)
-                .type(exArticleResponse.exArticleType)
-                .favorite(favoriteResponse.stream()
-                        .map(favoriteResponse1 -> favoriteResponse1.toEntity(favoriteResponse1))
-                        .collect(Collectors.toList()))
-                .build();
-    }
+//    public ExArticle toEntity(ExArticleResponse exArticleResponse) {
+//        return ExArticle.builder()
+//                .location(exArticleResponse.exLocation)
+//                .title(exArticleResponse.exArticleTitle)
+//                .type(exArticleResponse.exArticleType)
+//                .favorite(favoriteResponse.toEntity(favoriteResponse))
+//                .build();
+//    }
 
 //    public static ExArticleResponse fromEntity(ExArticle article) {
 //        return ExArticleResponse.builder()

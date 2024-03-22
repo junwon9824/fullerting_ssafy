@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,11 +20,14 @@ public class ExArticleRegisterRequest {
     private Long id;
     private String exArticleTitle;
     private String exArticleContent;
-    private String exArticlePlace;
+//    private String exArticlePlace;
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
-    private List<String> img; // 파일 업로드를 위한 리스트
+
     private String ex_article_location;
     private int deal_cur_price;
+
+    @Builder.Default
+    private Long packdiaryid = null; // packdiary id
     private List<Favorite> favorite;
 
 }

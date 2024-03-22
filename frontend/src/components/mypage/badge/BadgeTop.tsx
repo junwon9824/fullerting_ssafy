@@ -2,6 +2,9 @@ import styled from "styled-components";
 import pullleft from "/src/assets/svg/pullleft.svg";
 import pullright from "/src/assets/svg/pullright.svg";
 import { Line } from "../../../components/common/Line";
+import { fetchBadges } from "../../../apis/MyPage";
+import { useQuery } from "@tanstack/react-query";
+import load from "../../../assets/svg/loader.svg";
 
 const Topcontainer = styled.div`
   display: flex;
@@ -22,7 +25,7 @@ const Badgecontainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   width: 100%;
 `;
 
@@ -41,7 +44,6 @@ const Allcount = styled.div`
   font-style: normal;
   font-weight: bold;
   margin-left: 0.3rem;
-  padding-top: 2.2rem;
 `;
 
 const Imagecontainer = styled.div`
@@ -50,6 +52,28 @@ const Imagecontainer = styled.div`
 `;
 
 const AllBadgesPage = () => {
+  console.log("페이지 들어옴");
+  const {
+    data: badges,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["topbadges"],
+    queryFn: fetchBadges,
+  });
+
+  if (isLoading) {
+    console.log("데이터 로딩 중...");
+    return <img src={load} alt="" style={{ width: "80px", height: "80px" }} />;
+  }
+
+  if (error) {
+    console.error("뱃지 데이터를 가져오는데 실패했습니다:", error);
+    return <div>뱃지 데이터를 가져오는데 실패했습니다: {error.message}</div>;
+  }
+
+  console.log("로드된 데이터:", badges);
+
   return (
     <>
       <Topcontainer>
@@ -57,7 +81,7 @@ const AllBadgesPage = () => {
       </Topcontainer>
       <Badgecontainer>
         <div style={{ display: "flex", alignItems: "flex-end" }}>
-          <Count>5</Count>
+          <Count>{badges.length}</Count>
           <Allcount>/10</Allcount>
         </div>
         <Imagecontainer>
