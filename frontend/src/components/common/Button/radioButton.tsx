@@ -22,7 +22,7 @@ const StyledRadioButton = styled.label`
     background-color: #ffffff;
     color: #c8c8c8;
     padding: 8px 12px;
-    border: 1px solid #eee;
+    border: 0.1rem solid #d7d7d7;
     border-radius: 100px;
   }
 

@@ -13,13 +13,17 @@ import ProposePost from "../pages/profile/ProposePost";
 import TransPost from "../pages/profile/TransPost";
 import DiaryPage from "../pages/diary/DiaryPage";
 import MyPageLayout from "../pages/profile/MyPageLayout";
-import TradePost from "../pages/trade/TradePost";
+import TradePostPage from "../pages/trade/TradePostPage";
 import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
 import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
 import CropCreatePage from "../pages/diary/CropCreatePage";
 import TradeGeneralDetail from "../pages/trade/TradeGeneralDetail";
 import TradeProposeDetail from "../pages/trade/TradeProposeDetail";
 import TestPage from "../pages/user/test";
+import CommunityLayout from "../pages/community/CommunityLayout";
+import Community from "../pages/community/Community";
+import CreateCommunity from "../pages/community/CreateCommunity";
+import CommunityDetail from "../pages/community/CommunityDetail";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
@@ -38,7 +42,7 @@ const diaryRoutes = [
 // 거래 관련 경로
 const tradeRoutes = [
   { path: "/trade", element: <TradePage /> },
-  { path: "/trade/post", element: <TradePost /> },
+  { path: "/trade/post", element: <TradePostPage /> },
   { path: "/trade/generaldetail", element: <TradeGeneralDetail /> },
   { path: "/trade/proposedetail", element: <TradeProposeDetail /> },
   { path: "/trade/test", element: <TestPage /> },
@@ -60,10 +64,26 @@ const mypageRoutes = [
   },
 ];
 
-// 모든 경로를 하나의 배열로 결합
-const routes = [...authRoutes, ...diaryRoutes, ...tradeRoutes, ...mypageRoutes];
+const communityRoutes = [
+  {
+    path: "/community",
+    element: <CommunityLayout />,
+    children: [
+      { index: true, element: <Community /> },
+      { path: "createcommunity", element: <CreateCommunity /> },
+      { path: "communitydetail", element: <CommunityDetail /> },
+    ],
+  },
+];
 
-// 라우터 생성
+const routes = [
+  ...authRoutes,
+  ...diaryRoutes,
+  ...tradeRoutes,
+  ...mypageRoutes,
+  ...communityRoutes,
+];
+
 const router = createBrowserRouter(routes);
 
 export default router;

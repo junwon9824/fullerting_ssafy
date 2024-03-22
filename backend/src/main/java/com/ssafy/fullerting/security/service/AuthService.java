@@ -27,23 +27,13 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final TokenService tokenService;
-    private final JwtUtils jwtUtils;
 
     public IssuedToken login(LoginRequest loginRequest) {
         // 사용자가 입력한 정보
         String inputEmail = loginRequest.getEmail();
         String inputPassword = loginRequest.getPassword();
 
-//        Authentication currAuth = SecurityContextHolder.getContext().getAuthentication();
-//        System.out.println(currAuth.toString());
-//        if (!(currAuth instanceof AnonymousAuthenticationToken)) {
-//            logout();
-//        } -> jwt 사용할 땐 contextHolder 인증객체 계속 초기화해서 불필요
-//
         try {
-            // CustomAuthenticationProvider를 호출해 인증로직을 수행한다
-            // 인증에 성공하면 인증에 성공한 인증 객체를 리턴한다
-
             Authentication authentication =
                     authenticationManager.authenticate(new CustomAuthenticationToken(inputEmail, inputPassword));
             // 성공한 인증객체를 ContextHolder에 등록

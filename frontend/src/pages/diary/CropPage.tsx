@@ -20,6 +20,18 @@ const PlusButton = styled.button`
   background-color: ${({ theme }) => theme.colors.primary};
 `;
 
+const SearchContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 3.125rem;
+  width: 100%;
+  background-color: white;
+  z-index: 3;
+  padding: 0.4rem;
+`;
+
 const CropPage = () => {
   const [search, setSearch] = useInput("");
   const navigate = useNavigate();
@@ -31,15 +43,17 @@ const CropPage = () => {
   return (
     <>
       <TopBar title="작물일지" showBack={false} />
+      <SearchContainer>
+        <Search
+          type="text"
+          id="search"
+          name="search"
+          placeholder="작물명 또는 닉네임을 입력해주세요"
+          onChange={setSearch}
+        />
+      </SearchContainer>
       <LayoutMainBox>
-        <LayoutInnerBox>
-          <Search
-            type="text"
-            id="search"
-            name="search"
-            placeholder="작물명 또는 닉네임을 입력해주세요"
-            onChange={setSearch}
-          />
+        <LayoutInnerBox style={{ marginTop: "3.125rem" }}>
           <CropList />
         </LayoutInnerBox>
       </LayoutMainBox>

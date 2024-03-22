@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.record.packdiary.controller;
 
 import com.ssafy.fullerting.global.utils.MessageUtils;
+import com.ssafy.fullerting.record.packdiary.SerializableMultipartFile;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.CreatePackDiaryRequest;
 import com.ssafy.fullerting.record.packdiary.service.PackDiaryService;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;

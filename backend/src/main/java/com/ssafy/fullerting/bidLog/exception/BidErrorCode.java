@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 public enum BidErrorCode {
 
     NOT_EXISTS("존재하지 않는 입찰 입니다.",HttpStatus.BAD_REQUEST),
+    NOT_DEAL("제안게시물이 아니므로 입찰할수 없습니다",HttpStatus.BAD_REQUEST),
     ALREADY_IN("이미 등록된 입찰 입니다.", HttpStatus.BAD_REQUEST);
 
     private final String message;

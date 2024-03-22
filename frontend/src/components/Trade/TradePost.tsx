@@ -11,6 +11,10 @@ import SelectModal from "../../components/Trade/SelectModal";
 import Diary from "/src/assets/svg/plus-diary.svg";
 import Camera from "/src/assets/svg/camera.svg";
 import MultiFileUploadInput from "../../components/common/Input/MultiFileUploadInput";
+import { useMutation } from "@tanstack/react-query";
+import { usePost } from "../../apis/TradeApi";
+import { useAtom } from "jotai";
+import { imageFilesAtom } from "../../stores/trade";
 
 interface BackGround {
   backgroundColor?: string;
@@ -137,6 +141,21 @@ const TradePost = () => {
       document.body.style.overflow = "unset";
     };
   }, [modal]);
+  const [selectedFiles] = useAtom(imageFilesAtom);
+  const { mutate: handlePost } = usePost();
+  const handleCheckClick = () => {
+    handlePost({
+      exArticleTitle: `${title}`,
+      exArticleContent: "내용",
+      exArticleType: "타입",
+      img: ["이미지1", "이미지2"],
+      ex_article_location: "위치",
+      deal_cur_price: 1000,
+    });
+  };
+  const click = () => {
+    console.log(selectedFiles);
+  };
   return (
     <>
       {modal && (
@@ -237,7 +256,7 @@ const TradePost = () => {
             <img src={Diary} alt="diary" />
           </DiarySquare>
         </DiaryBox>
-        <DiaryBox>
+        <DiaryBox onClick={click}>
           <MultiFileUploadInput />
         </DiaryBox>
       </TradePostLayout>

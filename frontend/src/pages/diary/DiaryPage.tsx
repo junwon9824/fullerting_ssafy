@@ -13,7 +13,7 @@ import { useAtom } from "jotai";
 import { cropAtom, menuAtom } from "../../stores/diary";
 import CropTips from "../../components/diary/CropTips";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getCropData, updateHarvest } from "../../apis/DiaryApi";
+import { getCropData, getDiaryList, updateHarvest } from "../../apis/DiaryApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -80,43 +80,28 @@ const SVGBox = styled.svg`
   height: 45%;
 `;
 
+const FixedContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 3.125rem;
+  width: 100%;
+  background-color: white;
+  z-index: 3;
+
+  width: 19.875rem;
+  gap: 1.5rem;
+  padding: 1.12rem 0;
+`;
+
 const DiaryPage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [crop, setCrop] = useAtom(cropAtom);
   const [menu, setMenu] = useAtom(menuAtom);
   const { packDiaryId } = useParams();
   const navigate = useNavigate();
-
-  const diaries: DiaryType[] = [
-    {
-      diaryId: 1,
-      packDiaryId: 1,
-      diaryBehavior: "다이어리",
-      diaryTitle: "토마토는 빨강색",
-      diaryContent:
-        "멋쟁이 토마토 울퉁불통멋진몸매에 빨간 옷을 입고 나는야 주스될거야 꿀꺽 나는야 춤을 출거야 멋쟁이 토마토 토마토~~",
-      diarySelectedAt: "2024-03-05",
-      diaryCreatedAt: "2024-03-05T10:00:00Z",
-    },
-    {
-      diaryId: 2,
-      packDiaryId: 1,
-      diaryBehavior: "물주기",
-      diaryTitle: "",
-      diaryContent: "",
-      diarySelectedAt: "2024-03-04",
-      diaryCreatedAt: "2024-03-05T12:00:00Z",
-    },
-    {
-      diaryId: 3,
-      packDiaryId: 1,
-      diaryBehavior: "다이어리",
-      diaryTitle: "케찹 만들거임",
-      diaryContent: "오므라이스 감자튀김",
-      diarySelectedAt: "2024-03-04",
-      diaryCreatedAt: "2024-03-05T12:00:00Z",
-    },
-  ];
 
   useEffect(() => {
     setMenu("다이어리");
@@ -125,7 +110,6 @@ const DiaryPage = () => {
   const accessToken = sessionStorage.getItem("accessToken");
 
   const {
-    isLoading,
     data: cropData,
     isSuccess,
     refetch: refetchCropData,
@@ -137,23 +121,27 @@ const DiaryPage = () => {
         : undefined,
   });
 
+  const { data: diaryList } = useQuery({
+    queryKey: ["diaryList"],
+    queryFn: packDiaryId ? () => getDiaryList(packDiaryId) : undefined,
+  });
+
   if (isSuccess) {
     setCrop(cropData);
   }
 
   const { mutate } = useMutation({
     mutationFn: updateHarvest,
-    onSuccess: (res) => {
-      console.log(res);
+    onSuccess: () => {
       refetchCropData();
     },
-    onError: (error) => {
-      console.log(error);
+    onError: (err) => {
+      console.log(err);
     },
   });
 
   const handleHarvestClick = () => {
-    mutate(packDiaryId);
+    if (packDiaryId) mutate(packDiaryId);
   };
 
   const handleButtonClick = () => {
@@ -164,32 +152,34 @@ const DiaryPage = () => {
     <>
       <TopBar title="작물일기" showEdit={true} />
       <LayoutMainBox>
-        <LayoutInnerBox>
-          <TopBox>
-            {cropData && <CropProfile crop={cropData} />}
-            {cropData?.packDiaryCulEndAt === null && (
-              <ButtonBox>
-                <RecognizeButton />
-                <Button
-                  onClick={handleHarvestClick}
-                  width={9.5}
-                  height={2.5625}
-                  borderRadius={1.28125}
-                  backgroundColor="#A0D8B3"
-                  color="white"
-                  fontSize="1"
-                  fontWeight="bold"
-                  text="수확하기"
-                />
-              </ButtonBox>
-            )}
-          </TopBox>
-          <MiddleBox>
+        <LayoutInnerBox style={{ marginTop: "12.8rem" }}>
+          <FixedContainer>
+            <TopBox>
+              {cropData && <CropProfile crop={cropData} />}
+              {cropData?.packDiaryCulEndAt === null && (
+                <ButtonBox>
+                  <RecognizeButton />
+                  <Button
+                    onClick={handleHarvestClick}
+                    width={9.5}
+                    height={2.5625}
+                    borderRadius={1.28125}
+                    backgroundColor="#A0D8B3"
+                    color="white"
+                    fontSize="1"
+                    fontWeight="bold"
+                    text="수확하기"
+                  />
+                </ButtonBox>
+              )}
+            </TopBox>
             <MenuBar />
+          </FixedContainer>
+          <MiddleBox>
             {menu === "작물꿀팁" ? (
               <CropTips />
             ) : (
-              <DiaryList diaries={diaries} />
+              diaryList && <DiaryList diaries={diaryList} />
             )}
           </MiddleBox>
         </LayoutInnerBox>

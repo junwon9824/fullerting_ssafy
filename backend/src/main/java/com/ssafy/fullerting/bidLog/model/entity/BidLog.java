@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.bidLog.model.entity;
 
+import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,6 +38,16 @@ public class BidLog {
 
     public void setDeal(Deal deal) {
         this.deal = deal;
+    }
+
+    public BidLogResponse tobidLogResponse(BidLog bidLog) {
+        return BidLogResponse.builder()
+                .bid_log_price(bidLog.bid_log_price)
+                .user_id(bidLog.user_id)
+                .localDateTime(bidLog.localDateTime)
+//                .deal(bidLog.deal)
+                .id(bidLog.id)
+                .build();
     }
 
 }
