@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 @Builder
 @Entity
-@ToString
+//@ToString
 @Table(name = "trans")
 @Slf4j
 public class Trans {
@@ -50,7 +50,6 @@ public class Trans {
 
         return MyAllTransResponse.builder()
                 .id(trans.getId())
-                .price(trans.getTrans_sell_price())
                 .exarticleid(trans.getExArticle().getId())
                 .build();
     }

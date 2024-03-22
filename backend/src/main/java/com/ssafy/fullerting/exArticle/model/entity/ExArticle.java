@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Setter
 @Builder
 @Entity
-@ToString
+//@ToString
 @Table(name = "ex_article")
 @Slf4j
 public class ExArticle {
