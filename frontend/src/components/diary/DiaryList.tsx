@@ -200,25 +200,29 @@ const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
       <div>calendar</div>
 
       <DiaryBox>
-        {diaries.map((item, index) => (
-          <SDateCalCardBox>
-            <SpecialDate>{isSpecialDate(item.diarySelectedAt)}</SpecialDate>
-            <CalCardBox key={index}>
-              <Calender date={item.diarySelectedAt} />
-              <DiaryCardBox>
-                {item.getSelectedAtDiaryResponse.map((diary, idx) => (
-                  <div key={idx}>
-                    {diary.diaryBehavior === "다이어리" ? (
-                      <DiaryCard diary={diary} />
-                    ) : (
-                      <WaterCard />
-                    )}
-                  </div>
-                ))}
-              </DiaryCardBox>
-            </CalCardBox>
-          </SDateCalCardBox>
-        ))}
+        {diaries.length === 0 ? (
+          <div>다이어리를 작성해 주세요</div>
+        ) : (
+          diaries.map((item, index) => (
+            <SDateCalCardBox>
+              <SpecialDate>{isSpecialDate(item.diarySelectedAt)}</SpecialDate>
+              <CalCardBox key={index}>
+                <Calender date={item.diarySelectedAt} />
+                <DiaryCardBox>
+                  {item.getSelectedAtDiaryResponse.map((diary, idx) => (
+                    <div key={idx}>
+                      {diary.diaryBehavior === "다이어리" ? (
+                        <DiaryCard diary={diary} />
+                      ) : (
+                        <WaterCard />
+                      )}
+                    </div>
+                  ))}
+                </DiaryCardBox>
+              </CalCardBox>
+            </SDateCalCardBox>
+          ))
+        )}
       </DiaryBox>
     </>
   );
