@@ -29,7 +29,7 @@ public class FarmServiceImpl implements FarmService {
     @Value("${api.key}")
     private String apiKey;
 
-//    @PostConstruct //어플리케이션 실행 시 자동으로 한번 호출
+//    @PostConstruct //어플리케이션 실행 시 자동으로 호출
     @Override
     public void getFarmInfoExAPI() {
         WebClient webClient = webClientBuilder.baseUrl("http://211.237.50.150:7080/").build();
