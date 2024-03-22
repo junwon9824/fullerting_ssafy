@@ -6,6 +6,7 @@ import com.ssafy.fullerting.record.diary.model.dto.response.GetAllDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetDetailDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetSelectedAtDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.entity.Diary;
+import com.ssafy.fullerting.record.diary.model.entity.enums.DiaryBehavior;
 import com.ssafy.fullerting.record.diary.repository.DiaryRepository;
 import com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode;
 import com.ssafy.fullerting.record.packdiary.exception.PackDiaryException;
@@ -24,7 +25,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.NOT_EXISTS_DIARY;
-import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.TRANSACTION_FAIL;
 import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode.NOT_EXISTS_PACK_DIARY;
 
 @RequiredArgsConstructor
@@ -65,24 +65,19 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Override
     public void createDiary(Long packDiaryId, CreateDiaryRequest createDiaryRequest) {
+        PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
         try {
-            PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
-            if(createDiaryRequest.getDiaryBehavior().equals("다이어리")){
-                diaryRepository.save(Diary.builder()
-                        .packDiary(packDiary)
-                        .behavior("다이어리")
-                        .title(createDiaryRequest.getDiaryTitle())
-                        .content(createDiaryRequest.getDiaryContent())
-                        .selectedAt(createDiaryRequest.getDiarySelectedAt())
-                        .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                        .build()
-                );
-            }
-            else {
-
-            }
-        } catch (Exception e){
-            throw new DiaryException(TRANSACTION_FAIL);
+            diaryRepository.save(Diary.builder()
+                    .packDiary(packDiary)
+                    .behavior(String.valueOf(DiaryBehavior.다이어리))
+                    .title(createDiaryRequest.getDiaryTitle())
+                    .content(createDiaryRequest.getDiaryContent())
+                    .selectedAt(createDiaryRequest.getDiarySelectedAt())
+                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                    .build()
+            );
+        } catch(Exception e){
+            throw new DiaryException(NOT_EXISTS_DIARY);
         }
     }
 }

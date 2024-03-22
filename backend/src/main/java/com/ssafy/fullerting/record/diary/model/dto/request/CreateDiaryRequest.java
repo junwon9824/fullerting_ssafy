@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @Builder
 @Getter
 public class CreateDiaryRequest {
-    private String diaryBehavior;
     private String diaryTitle;
     private String diaryContent;
     private LocalDate diarySelectedAt;

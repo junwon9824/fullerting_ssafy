@@ -25,14 +25,25 @@ public class DiaryController {
         return ResponseEntity.ok().body(MessageUtils.success(diaryService.getAllDiary(packDiaryId)));
     }
 
-
-    @GetMapping("/{pack_diary_id}/{diary_id}")
+    /**
+     * 작물일기 상세조회
+     * @param diaryId
+     * @return
+     */
+    @GetMapping("/{diary_id}/detail")
     public ResponseEntity<MessageUtils> getDetailDiary(@PathVariable("diary_id") Long diaryId){
         return ResponseEntity.ok().body(MessageUtils.success(diaryService.getDetailDiary(diaryId)));
     }
 
-    @PostMapping("{pack_diary_id}")
-    public ResponseEntity<MessageUtils> createDiary(@PathVariable("{pack_diary_id}") Long packDiaryId, @RequestBody CreateDiaryRequest createDiaryRequest){
+    /**
+     * 작물일기 작성
+     * @param packDiaryId
+     * @param createDiaryRequest
+     * @return
+     */
+    @PostMapping("/{pack_diary_id}")
+    public ResponseEntity<MessageUtils> createDiary(@PathVariable("pack_diary_id") Long packDiaryId, @RequestBody CreateDiaryRequest createDiaryRequest){
+        diaryService.createDiary(packDiaryId, createDiaryRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 }
