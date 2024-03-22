@@ -8,9 +8,10 @@ interface LikeData {
 interface PostData {
   exArticleTitle: string;
   exArticleContent: string;
-  exArticleType: string;
-  img: Array<string>;
+  imgFiles: File[];
   ex_article_location: string;
+  exArticleType: string;
+  packdiaryid: number;
   deal_cur_price: string;
 }
 
@@ -51,41 +52,84 @@ export const useLike = () => {
   });
 };
 
+// export const usePost = () => {
+//   return useMutation({
+//     mutationFn: async (postData: PostData) => {
+//       const {
+//         exArticleTitle,
+//         exArticleContent,
+//         imgFiles,
+//         ex_article_location,
+//         exArticleType,
+//         packdiaryid,
+//         deal_cur_price,
+//       } = postData;
+
+//       const accessToken = sessionStorage.getItem("accessToken");
+//       if (!accessToken) {
+//         throw new Error("로그인이 필요합니다.");
+//       }
+
+//       const formData = new FormData();
+
+//       // JSON 데이터를 별도의 객체로 준비하여 formData에 추가
+//       const jsonPayload = {
+//         exArticleTitle,
+//         exArticleContent,
+//         ex_article_location,
+//         exArticleType,
+//         packdiaryid,
+//         deal_cur_price,
+//       };
+//       formData.append("exArticleRegisterRequest", JSON.stringify(jsonPayload));
+
+//       // 파일 데이터를 formData에 추가
+//       imgFiles.forEach((file) => {
+//         formData.append("file", file);
+//       });
+
+//       // API 요청을 보냅니다.
+//       const response = await api.post("/exchanges", formData, {
+//         headers: {
+//           Authorization: `Bearer ${accessToken}`,
+//         },
+//       });
+
+//       return response.data;
+//     },
+//     onSuccess: (res) => {
+//       // 성공 처리 로직
+//       console.log("업로드 성공:", res);
+//     },
+//     onError: (error) => {
+//       // 에러 처리 로직
+//       console.error("업로드 에러:", error);
+//     },
+//   });
+// };
 export const usePost = () => {
   return useMutation({
-    mutationFn: (data: PostData) => {
-      const {
-        exArticleTitle,
-        exArticleContent,
-        exArticleType,
-        img,
-        ex_article_location,
-        deal_cur_price,
-      } = data;
+    mutationFn: async (formData: FormData) => {
       const accessToken = sessionStorage.getItem("accessToken");
       if (!accessToken) {
-        alert("로그인해라");
+        throw new Error("로그인이 필요합니다.");
       }
-      return api.post(
-        "/exchanges",
-        {
-          exArticleTitle,
-          exArticleContent,
-          exArticleType,
-          img,
-          ex_article_location,
-          deal_cur_price,
+
+      // API 요청을 보냅니다. formData는 바로 사용됩니다.
+      const response = await api.post("/exchanges", formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // 'Content-Type': 'multipart/form-data'는 FormData를 사용할 때 자동으로 설정됩니다.
         },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      });
+
+      return response.data;
     },
     onSuccess: (res) => {
-      console.log(res);
+      console.log("업로드 성공:", res);
     },
     onError: (error) => {
-      console.log(error);
+      console.error("업로드 에러:", error);
     },
   });
 };

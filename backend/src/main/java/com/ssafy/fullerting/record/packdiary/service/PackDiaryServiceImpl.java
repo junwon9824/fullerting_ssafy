@@ -61,13 +61,13 @@ public class PackDiaryServiceImpl implements PackDiaryService {
     @Override
     public List<GetAllPackDiaryResponse> getAllPackDiary() {
         List<PackDiary> packDiaryList = packDiaryRepository.findAll();
-        return packDiaryList.stream().map(GetAllPackDiaryResponse::fromResponse).collect(Collectors.toList());
+        return packDiaryList.stream().map(GetAllPackDiaryResponse::toResponse).collect(Collectors.toList());
     }
 
     @Override
     public GetDetailPackDiaryResponse getDetailPackDiary(Long packDiaryId) {
-        PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(() -> new PackDiaryException(NOT_EXISTS_PACK_DIARY));
-        GetDetailPackDiaryResponse getDetailPackDiaryResponse = GetDetailPackDiaryResponse.fromResponse(packDiary);
+        PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
+        GetDetailPackDiaryResponse getDetailPackDiaryResponse = GetDetailPackDiaryResponse.toResponse(packDiary);
 
         return getDetailPackDiaryResponse;
     }

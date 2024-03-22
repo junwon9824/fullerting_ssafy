@@ -10,6 +10,7 @@ import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.global.utils.MessageUtils;
@@ -41,6 +42,21 @@ public class DealService {
         return deals.stream().map(deal -> {
             return deal.toResponse(customUser);
         }).collect(Collectors.toList());
+    }
+
+    public List<ExArticleResponse> mybidarticles() {
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = userResponse.toEntity(userResponse);
+
+        List<BidLog> bidLogs = bidRepository.findAllByUser_id(customUser.getId());
+
+        List<ExArticleResponse> exArticleResponses = bidLogs.stream().map(bidLog -> {
+                    ExArticle article = bidLog.getDeal().getExArticle();
+                    return article.toResponse(article, customUser);
+                }).
+                collect(Collectors.toList());
+
+        return exArticleResponses;
     }
 
 }

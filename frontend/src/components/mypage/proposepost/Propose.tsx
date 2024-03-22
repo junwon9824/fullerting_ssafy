@@ -1,24 +1,21 @@
 import styled from "styled-components";
-import Tomato from "/src/assets/images/토마토.png";
 import Location from "/src/assets/svg/location.svg";
-import Like from "/src/assets/svg/notlike.svg";
 import GrayHeart from "/src/assets/svg/grayheart.svg";
-import RedLike from "/src/assets/svg/like.svg";
-import { useEffect, useState } from "react";
-import Write from "/src/assets/images/글쓰기.png";
-import { useNavigate } from "react-router-dom";
-import { getTradeList, useLike } from "../../apis/TradeApi";
-import {
-  QueryClient,
-  QueryKey,
-  queryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-interface ClickLike {
-  onClick: () => void;
+import { useQuery } from "@tanstack/react-query";
+import { getPropose } from "../../../apis/MyPage";
+interface ImageResponse {
+  img_store_url: string;
 }
+
+interface DataItem {
+  imageResponses: ImageResponse[];
+  exLocation: string;
+  exArticleTitle: string;
+  price: number;
+  isLikeCnt: number;
+  exArticleType: "DEAL" | "SHARING" | "GENERAL_TRANSACTION" | "OTHER";
+}
+
 interface StateGap {
   gap?: number;
   fontSize?: number;
@@ -53,20 +50,16 @@ interface FavoriteResponse {
 
 interface DataItem {
   exArticleResponse: ExArticleResponse;
-  packDiaryResponse: null | number; // 여기서는 예시로 null을 지정했지만, 필요에 따라 다른 타입을 지정할 수 있습니다.
+  packDiaryResponse: null | number;
   favoriteResponse: FavoriteResponse;
 }
-interface ToggleLikeParams {
-  accessToken: string;
-  postId: number;
-}
+
 const ImgBox = styled.div`
   width: 9rem;
   height: 9rem;
   border-radius: 0.9375rem;
   top: 0;
   left: 0;
-  /* z-index: 2; */
   position: relative;
   overflow: hidden;
 
@@ -74,30 +67,18 @@ const ImgBox = styled.div`
 `;
 const ContentBox = styled.div`
   width: 100%;
-  /* height: auto; */
   margin-bottom: 1.38rem;
   flex-wrap: wrap;
   overflow-y: hidden;
   display: flex;
   justify-content: space-between;
   position: relative;
-  /* z-index: -1; */
-`;
-
-const LikeBox = styled.div<ClickLike>`
-  width: 1.25rem;
-  height: 1.25rem;
-  display: flex;
-  position: absolute;
-  bottom: 0.38rem;
-  right: 0.38rem;
-  /* z-index: 3; */
 `;
 
 const StyledImg = styled.img`
   width: 9.5rem;
   height: 9.5rem;
-  object-fit: cover; /* 이미지가 컨테이너를 채우도록 설정 */
+  object-fit: cover;
 `;
 
 const Town = styled.div`
@@ -110,6 +91,7 @@ const Town = styled.div`
   font-weight: 400;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `;
 const PostBox = styled.div`
   width: 9rem;
@@ -134,7 +116,7 @@ const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.5625rem; /* 텍스트 크기 */
+  font-size: 0.5625rem;
 `;
 const State = styled.div<StateGap>`
   width: 100%;
@@ -170,51 +152,39 @@ const HeartBox = styled.div`
   gap: 0.19rem;
   align-items: center;
 `;
-const WriteBox = styled.img`
-  position: fixed;
-  right: 1.19rem;
-  bottom: 4.75rem;
-`;
-
-const Post = () => {
-  const [favorite, setFavorite] = useState<string>("");
-  const navigate = useNavigate();
-  const handelWriteClick = () => {
-    navigate("/trade/post");
-    handleLikeClick(75);
-    console.log("데이터임", data);
-  };
-
-  const accessToken = sessionStorage.getItem("accessToken");
+const Propose = () => {
   const { isLoading, data, error } = useQuery({
-    queryKey: ["tradeList"],
-    queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
+    queryKey: ["ProposeList"],
+    queryFn: () => getPropose(),
   });
-  const { mutate: handleLikeClick } = useLike();
-  console.log(data);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>{error.message}</div>;
+  }
+  console.log("나의 제안 목록", data);
+
   return (
     <ContentBox>
       {data?.map((item: DataItem, index: number) => (
         <PostBox>
           <ImgBox key={index}>
             <StyledImg
-              src={item.exArticleResponse.imageResponses[0].img_store_url}
+              src={item.imageResponses[0].img_store_url}
               alt="tomato"
             />
-            {/* <LikeBox onClick={() => handleLikeClick(index)}>
-              <img
-                src={item.favoriteResponse.islike ? RedLike : Like}
-                alt="like button"
-              />
-            </LikeBox> */}
           </ImgBox>
           <Town>
-            <img src={Location} alt="location" />
-            {item.exArticleResponse.exLocation}
+            <div>
+              <img src={Location} alt="location" />
+              {item.exLocation}
+            </div>
           </Town>
-          <Title>{item.exArticleResponse.exArticleTitle}</Title>
+          <Title>{item.exArticleTitle}</Title>
           <State gap={0.44} fontSize={1}>
-            {item.exArticleResponse.price === 0 ? (
+            {item.price === 0 ? (
               <StateIcon
                 width={1.5}
                 height={0.9375}
@@ -233,20 +203,9 @@ const Post = () => {
                 현재
               </StateIcon>
             )}
-            {item.exArticleResponse.price}원
-            {/* <StateIcon
-              width={1.5}
-              height={0.9375}
-              backgroundColor="#A0D8B3"
-              color="#ffffff"
-            >
-              현재
-            </StateIcon>
-            300원 */}
+            {item.price}원
           </State>
-
           <State
-            // gap={3.75}
             fontSize={0.5625}
             color="#BEBEBE"
             justifyContent="space-between"
@@ -257,24 +216,17 @@ const Post = () => {
                 alt="gray"
                 style={{ marginRight: "0.19rem" }}
               />
-              {item.favoriteResponse.isLikeCnt}
+              {item.isLikeCnt}
             </HeartBox>
+            <StateIcon
+              width={4}
+              height={1.3}
+              backgroundColor="#0c560f"
+              color="#ffffff"
+            >
+              {item.exArticleType === "DEAL" ? "제안한 게시물" : "error"}
+            </StateIcon>
             <ExplainBox>
-              <StateIcon
-                width={1.5}
-                height={0.9375}
-                backgroundColor="#F4F4F4"
-                color="#8c8c8c"
-              >
-                {item.exArticleResponse.exArticleType === "DEAL"
-                  ? "제안"
-                  : item.exArticleResponse.exArticleType === "SHARING"
-                  ? "나눔"
-                  : item.exArticleResponse.exArticleType ===
-                    "GENERAL_TRANSACTION"
-                  ? "거래"
-                  : "error"}
-              </StateIcon>
               {item.packDiaryResponse ? (
                 <StateIcon
                   width={2.5625}
@@ -289,10 +241,8 @@ const Post = () => {
           </State>
         </PostBox>
       ))}
-
-      <WriteBox src={Write} onClick={handelWriteClick} />
     </ContentBox>
   );
 };
 
-export default Post;
+export default Propose;
