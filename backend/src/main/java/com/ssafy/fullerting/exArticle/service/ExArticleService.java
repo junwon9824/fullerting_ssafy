@@ -150,7 +150,6 @@ public class ExArticleService {
 
         List<ExArticle> exArticle = exArticleRepository.findAll();
         CustomUser user = UserResponse.toEntity(userService.getUserInfo());
-        log.info("fffffffff");
 //        log.info("eeeeeeeeeeeee" + exArticle.stream().
 //                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
 
@@ -159,7 +158,6 @@ public class ExArticleService {
                 exArticle.stream().map(exArticle1 -> exArticle1.toAllResponse(exArticle1, user)).
                         collect(Collectors.toList());
 
-        log.info("exarticleeeee" + exArticleResponses.toString());
 
         return exArticleResponses;
     }

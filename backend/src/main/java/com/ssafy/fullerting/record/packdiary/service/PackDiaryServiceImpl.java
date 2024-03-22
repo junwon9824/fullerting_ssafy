@@ -86,7 +86,7 @@ public class PackDiaryServiceImpl implements PackDiaryService {
     }
 
     @Override
-    public AICropStepResponse getCropStep(Long packDiaryId, SerializableMultipartFile imageFile) {
+    public AICropStepResponse getCropStep(Long packDiaryId, MultipartFile imageFile) {
         Mono<AICropStepResponse> aiCropStepResponse = webClientService.callAIApi(imageFile);
 
 //        return null;
