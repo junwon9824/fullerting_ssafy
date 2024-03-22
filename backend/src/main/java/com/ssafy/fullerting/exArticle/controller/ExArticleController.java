@@ -78,6 +78,15 @@ public class ExArticleController {
     }
 
 
+    @DeleteMapping("/{ex_article_id}/delete")
+    @Operation(summary = "작물거래 좋아요 삭제  ", description = "작물거래 좋아요 삭제 ")
+    public ResponseEntity<MessageUtils> deletelike (@PathVariable Long ex_article_id) {
+        exArticleService.deletelike(ex_article_id);
+
+        log.info("[delete article]: {}", ex_article_id);
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
     @PostMapping("/{ex_article_id}/done")
     @Operation(summary = "작물거래 완료   ", description = "작물거래 완료   ")
     public ResponseEntity<MessageUtils> done(@PathVariable Long ex_article_id, @RequestBody ExArticleDoneRequest exArticleDoneRequest) {
@@ -101,4 +110,12 @@ public class ExArticleController {
     }
 
 
+    @GetMapping("/category/like")
+    @Operation(summary = "관심 조회하기 ", description = "관심 카테고리 조회하기 ")
+    public ResponseEntity<MessageUtils> selectFavorite( ) {
+
+        log.info("[selectFavorite  ]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(exArticleService.selectFavorite()));
+
+    }
 }
