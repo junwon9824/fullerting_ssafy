@@ -110,7 +110,7 @@ const Maintop = () => {
   };
 
   const navigate = useNavigate();
-
+  const token = sessionStorage.getItem("accessToken");
   const goToDiary = () => {
     navigate("/diary");
   };
@@ -118,17 +118,27 @@ const Maintop = () => {
     <MainContainer>
       <MainText>풀러팅</MainText>
       <TextBox>"2개의 작물을 가꾸고 계시군요"</TextBox>
-      {crop && (
-        <DiaryBox onClick={goToDiary}>
+      {token ? (
+        crop && (
+          <DiaryBox onClick={goToDiary}>
+            <Content>
+              <TextContent>
+                <DiaryText>{crop.packDiaryTitle}</DiaryText>
+                <BasicText>와 함께한 시간</BasicText>
+              </TextContent>
+              <DDayCounter>{crop.dDayCount}</DDayCounter>
+              <Diary>일지 작성하러 가기</Diary>
+            </Content>
+            <CropImage src={crop.cropTypeImgUrl} alt="Crop image" />
+          </DiaryBox>
+        )
+      ) : (
+        <DiaryBox>
           <Content>
             <TextContent>
-              <DiaryText>{crop.packDiaryTitle}</DiaryText>
-              <BasicText>와 함께한 시간</BasicText>
+              <DiaryText>로그인을 해주세요</DiaryText>
             </TextContent>
-            <DDayCounter>{crop.dDayCount}</DDayCounter>
-            <Diary>일지 작성하러 가기</Diary>
           </Content>
-          <CropImage src={crop.cropTypeImgUrl} alt="Crop image" />
         </DiaryBox>
       )}
     </MainContainer>
