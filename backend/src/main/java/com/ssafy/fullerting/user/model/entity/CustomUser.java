@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -108,9 +109,11 @@ public class CustomUser implements UserDetails{
         Map<String, Object> map = oAuth2User.getAttributes();
         return CustomUser.builder()
                 .email((String) map.get("email"))
-                .nickname((String) map.get("name")) // 예시입니다. 실제 속성명에 맞게 조정 필요
+                .nickname((String) map.get("nickname")) // 예시입니다. 실제 속성명에 맞게 조정 필요
+                .role("ROLE_MEMBER")
+                .rank("새싹")
                 .thumbnail((String) map.get("picture"))
-                .authProvider(((String) map.get("provider")).toUpperCase()) // 'provider'가 String이라고 가정할 때
+                .authProvider(((String) map.get("authProvider")).toUpperCase())
                 .build();
     }
 

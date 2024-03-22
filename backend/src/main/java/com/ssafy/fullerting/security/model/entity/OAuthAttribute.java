@@ -27,7 +27,6 @@ public class OAuthAttribute {
                 .name((String) attributes.get("name"))
                 // 닉네임 설정, 구글 API에서 직접 제공하지 않으므로 name에서 파생시키거나 다른 로직 적용
                 .nickname((String) attributes.get("name") + "-google") // 예시로 name을 닉네임으로 사용
-                .thumbnail((String) attributes.get("picture"))
                 .authProvider("google")
                 .attributes(attributes)
                 .userNameAttributeName("sub") // 구글의 고유 식별자 키는 "sub"

@@ -1,7 +1,6 @@
 package com.ssafy.fullerting.user.service;
 
 import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
-import com.ssafy.fullerting.security.repository.TokenRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
@@ -25,7 +24,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenRepository tokenRepository;
     private final AmazonS3Service amazonS3Service;
 
     public CustomUser createUserEntity(UserRegisterRequest userRegisterRequest) {
@@ -49,6 +47,17 @@ public class UserService {
         });
         // 유저 객체를 DB에 저장
         userRepository.save(createUserEntity(request));
+    }
+
+
+    public void registOauthUser(CustomUser customUser) {
+        try {
+            userRepository.save(customUser);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("오류 발생 : " + e);
+        }
+        log.info("유저 회원가입 성공 : {}", customUser.toString());
+
     }
 
     public UserResponse getUserInfo() {
