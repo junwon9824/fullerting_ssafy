@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import Location from "../../../assets/svg/location.svg";
 import StateIconComponent from "./StateIconComponent";
-import HeartBoxComponent from "./HeartBoxComponent";
 import ExplainBoxComponent from "./ExplainBoxComponent";
 interface ImageResponse {
   id: number;
@@ -16,29 +16,6 @@ interface DataItem {
   exArticleType: "DEAL" | "SHARING" | "GENERAL_TRANSACTION" | "OTHER";
 }
 
-interface ImageResponse {
-  id: number;
-  img_store_url: string;
-}
-
-interface ExArticleResponse {
-  exLocation: string;
-  exArticleId: number;
-  exArticleTitle: string;
-  exArticleType: "DEAL" | "SHARING" | "GENERAL_TRANSACTION" | "OTHER";
-  imageResponses: ImageResponse[];
-  price: number;
-}
-
-interface FavoriteResponse {
-  islike: boolean;
-  isLikeCnt: number;
-}
-interface DataItem {
-  exArticleResponse: ExArticleResponse;
-  packDiaryResponse: null | number;
-  favoriteResponse: FavoriteResponse;
-}
 const ImgBox = styled.div`
   width: 9rem;
   height: 9rem;
@@ -47,7 +24,6 @@ const ImgBox = styled.div`
   left: 0;
   position: relative;
   overflow: hidden;
-
   cursor: pointer;
 `;
 
@@ -86,16 +62,17 @@ const Title = styled.div`
 const PostBoxComponent: React.FC<{ item: DataItem }> = ({ item }) => (
   <PostBox>
     <ImgBox>
-      <StyledImg src={item.imageResponses[0]?.img_store_url} alt="Post Image" />
+      <StyledImg src={item.imageResponses[0].img_store_url} alt="tomato" />
     </ImgBox>
     <Town>
-      <img src={Location} alt="location" />
-      {item.exLocation}
+      <div>
+        <img src={Location} alt="location" />
+        {item.exLocation}
+      </div>
+      <ExplainBoxComponent item={item.exArticleType} />
     </Town>
     <Title>{item.exArticleTitle}</Title>
-    <StateIconComponent item={item.exArticleResponse} />
-    <HeartBoxComponent isLikeCnt={item.isLikeCnt} />
-    <ExplainBoxComponent packDiaryResponse={item.packDiaryResponse} />
+    <StateIconComponent item={item} />
   </PostBox>
 );
 
