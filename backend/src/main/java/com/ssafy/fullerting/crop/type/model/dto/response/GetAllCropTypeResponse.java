@@ -16,7 +16,7 @@ public class GetAllCropTypeResponse {
     private String cropTypeName;
     private String cropTypeImgUrl;
 
-    public static GetAllCropTypeResponse fromResponse(Crop crop){
+    public static GetAllCropTypeResponse toResponse(Crop crop){
         return GetAllCropTypeResponse.builder()
                 .cropTypeId(crop.getId())
                 .cropTypeName(crop.getName())

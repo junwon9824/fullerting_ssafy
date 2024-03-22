@@ -19,6 +19,6 @@ public class CropTipServiceImpl implements CropTipService{
     @Override
     public List<GetAllTipsForCropResponse> getAllTipsForCrop(Long cropTypeId) {
         List<Tip> tipList = cropTipRepository.findAllByCropId(cropTypeId);
-        return tipList.stream().map(GetAllTipsForCropResponse::fromResponse).collect(Collectors.toList());
+        return tipList.stream().map(GetAllTipsForCropResponse::toResponse).collect(Collectors.toList());
     }
 }

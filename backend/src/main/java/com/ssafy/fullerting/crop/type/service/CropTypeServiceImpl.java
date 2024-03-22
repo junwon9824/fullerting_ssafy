@@ -19,6 +19,6 @@ public class CropTypeServiceImpl implements CropTypeService{
     @Override
     public List<GetAllCropTypeResponse> getAllCropType() {
         List<Crop> cropList = cropTypeRepository.findAll();
-        return cropList.stream().map(GetAllCropTypeResponse::fromResponse).collect(Collectors.toList());
+        return cropList.stream().map(GetAllCropTypeResponse::toResponse).collect(Collectors.toList());
     }
 }
