@@ -11,6 +11,12 @@ import SelectModal from "../../components/Trade/SelectModal";
 import Diary from "/src/assets/svg/plus-diary.svg";
 import Camera from "/src/assets/svg/camera.svg";
 import MultiFileUploadInput from "../../components/common/Input/MultiFileUploadInput";
+import { useMutation } from "@tanstack/react-query";
+import { usePost } from "../../apis/TradeApi";
+import { useAtom } from "jotai";
+import { imageFilesAtom, selectedDiaryIdAtom } from "../../stores/trade";
+import { BottomButton } from "../common/Button/LargeButton";
+import { useNavigate } from "react-router-dom";
 
 interface BackGround {
   backgroundColor?: string;
@@ -104,21 +110,27 @@ const DiarySquare = styled.div`
   border: 2px solid ${({ theme }) => theme.colors.gray1};
   background: ${({ theme }) => theme.colors.white};
 `;
+
 const TradePost = () => {
   const [title, setTitle] = useInput("");
-  const [check, setCheck] = useState([true, false]);
+  const [check, setCheck] = useState([true, false, false]);
   const [cashCheck, setCashCheck] = useState<boolean>(false);
   const [cash, setCash] = useInput("");
+  const [place, setPlace] = useInput("");
   const [content, setContent] = useInput("");
-  const closeModal = () => {
-    setModal(false);
-  };
+  const [tradeType, setTradeType] = useState("");
+  const [diary, setSelectedDiaryId] = useAtom(selectedDiaryIdAtom);
+
   const handleRadioClick = (index: number) => {
     setCheck(check.map((a, i) => !a));
   };
   const [modal, setModal] = useState<boolean>(false);
   const handleCashClick = () => {
     setCashCheck(!cashCheck);
+  };
+  const handleDiarySelect = (diaryId: number) => {
+    setSelectedDiaryId(diaryId);
+    setModal(false); // 모달 닫기
   };
   const openModal = () => {
     setModal(true);
@@ -137,11 +149,43 @@ const TradePost = () => {
       document.body.style.overflow = "unset";
     };
   }, [modal]);
+  const tradeOptions = [
+    { title: "제안", value: "DEAL" },
+    { title: "일반 거래", value: "GENERAL_TRANSACTION" },
+    { title: "나눔", value: "SHARING" },
+  ];
+
+  const [selectedFiles] = useAtom(imageFilesAtom);
+  const { mutate: handlePost } = usePost();
+  const navigate = useNavigate();
+  const handleCheckClick = () => {
+    // API 요청을 위한 formData 생성
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    selectedFiles.forEach((file) => formData.append("files", file));
+    formData.append("place", place);
+    formData.append("type", tradeType);
+    if (diary) {
+      formData.append("diary", diary.toString());
+    }
+    formData.append("cash", cash);
+
+    // mutate 함수를 호출하여 API 요청
+    handlePost(formData);
+
+    // 요청 후 페이지 이동
+    navigate("/trade");
+  };
+
   return (
     <>
       {modal && (
         <SelectBackGround backgroundColor="rgba(4.87, 4.87, 4.87, 0.28)">
-          <SelectModal closeModal={closeModal} />
+          <SelectModal
+            closeModal={() => setModal(false)}
+            onDiarySelect={handleDiarySelect}
+          />
         </SelectBackGround>
       )}
       <TradePostLayout title="작물거래">
@@ -157,17 +201,17 @@ const TradePost = () => {
         <RadioBox>
           <TitleText>거래 방법</TitleText>
           <RadioBoxContainer>
-            {check.map((isChecked, index) => (
+            {tradeOptions.map((option, index) => (
               <SelectContainer
                 key={index}
-                onClick={() => handleRadioClick(index)}
+                onClick={() => setTradeType(option.value)}
               >
                 <img
-                  src={isChecked ? Check : NonCheck}
-                  alt={isChecked ? "Checked" : "Not checked"}
+                  src={tradeType === option.value ? Check : NonCheck}
+                  alt={option.title}
                   style={{ marginRight: "0.12rem" }}
                 />
-                <TitleText>{index === 0 ? "제안" : "일반 거래"}</TitleText>
+                <TitleText>{option.title}</TitleText>
               </SelectContainer>
             ))}
           </RadioBoxContainer>
@@ -219,7 +263,7 @@ const TradePost = () => {
           id="place"
           name="place"
           placeholder="거래 장소를 입력해주세요."
-          onChange={setCash}
+          onChange={setPlace}
           isRequired={false}
         />
         <StyledTextArea
@@ -241,6 +285,7 @@ const TradePost = () => {
           <MultiFileUploadInput />
         </DiaryBox>
       </TradePostLayout>
+      <BottomButton onClick={handleCheckClick} text="등록하기" />
     </>
   );
 };

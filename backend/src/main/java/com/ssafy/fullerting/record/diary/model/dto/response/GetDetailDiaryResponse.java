@@ -24,7 +24,7 @@ public class GetDetailDiaryResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp diaryCreatedAt;
 
-    public static GetDetailDiaryResponse fromResponse(Diary diary){
+    public static GetDetailDiaryResponse toResponse(Diary diary){
         return GetDetailDiaryResponse.builder()
                 .diaryId(diary.getId())
                 .packDiaryId(diary.getPackDiary().getId())

@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Setter
 @Builder
 @Entity
-@ToString
+//@ToString
 @Table(name = "ex_article")
 @Slf4j
 public class ExArticle {
@@ -109,7 +109,7 @@ public class ExArticle {
 
     public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
-
+            log.info(" articlearticle"+article);
         //        List<FavoriteResponse> favoriteResponses
 //                = article.favorite.stream().map(
 //                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());

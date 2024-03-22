@@ -17,14 +17,17 @@ interface CropTypeType {
   cropTypeName: string;
 }
 
-interface DiaryType {
+interface DiaryEntry {
   diaryId: number;
-  packDiaryId: number;
   diaryBehavior: "다이어리" | "물주기";
   diaryTitle: string | null;
   diaryContent: string | null;
-  diarySelectedAt: string;
   diaryCreatedAt: string;
+}
+
+interface DiaryType {
+  diarySelectedAt: string;
+  getSelectedAtDiaryResponse: DiaryEntry[];
 }
 
 interface TipType {

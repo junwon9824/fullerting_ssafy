@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -36,27 +37,42 @@ public class TokenService {
     public IssuedToken issueToken(Authentication authentication) {
         String accessToken;
         String refreshToken;
+        Long userId = null;
+        String email = null;
+//        Object principal = authentication.getPrincipal();
 
-        Long userId;
-        Object principal = authentication.getPrincipal();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-
+        // 인증 방식에 따라 이메일 추출
         if (authentication instanceof CustomAuthenticationToken) {
-            // 인증 객체에 유저 아이디를 담아서 보내는 경우, 인증 객체에서 바로 뽑아서 토큰 생성
             CustomAuthenticationToken customAuth = (CustomAuthenticationToken) authentication;
-            userId = customAuth.getUserId();
-        } else {
-            // 인증 객체에 유저 아이디가 없는 일반적인 경우, DB에서 유저 아이디 조회 후 토큰 생성
+            email = customAuth.getPrincipal().toString();
+        } else if (authentication.getPrincipal() instanceof OAuth2User) {
+            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+            email = oAuth2User.getAttribute("email");
+        }
+
+        // 이메일 사용해서 사용자 정보 조회
+        if (email != null) {
             try {
-                CustomUser customUser = dataBaseUserDetailsService.loadUserByUsername((String) principal);
+                CustomUser customUser = dataBaseUserDetailsService.loadUserByUsername(email);
                 userId = customUser.getId();
             } catch (UsernameNotFoundException e) {
                 throw new AuthException(AuthErrorCode.NOT_EXISTS);
             }
         }
+        // 사용자권한 추출
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-        accessToken = jwtUtils.issueAccessToken((String) principal, userId, authorities);
-        refreshToken = jwtUtils.issueRefreshToken((String) principal, userId, authorities);
+//        if (authentication instanceof CustomAuthenticationToken) {
+//            // 인증 객체에 유저 아이디를 담아서 보내는 경우, 인증 객체에서 바로 뽑아서 토큰 생성
+//            CustomAuthenticationToken customAuth = (CustomAuthenticationToken) authentication;
+//            email = (String) customAuth.getPrincipal();
+//            userId = customAuth.getUserId();
+//        } else if (authentication.getPrincipal() instanceof OAuth2User) {
+//            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+//            email = oAuth2User.getAttribute("email")
+
+        accessToken = jwtUtils.issueAccessToken(email, userId, authorities);
+        refreshToken = jwtUtils.issueRefreshToken(email, userId, authorities);
 
         // Redis에 토큰 저장
         tokenRepository.save(new Token(userId, refreshToken));

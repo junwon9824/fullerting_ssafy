@@ -42,7 +42,6 @@ const TradePostLayout = ({
       <MainBox>
         <InnerBox>{children || <Outlet />}</InnerBox>
       </MainBox>
-      <BottomButton onClick={handleCheck} text="등록하기" />
     </>
   );
 };

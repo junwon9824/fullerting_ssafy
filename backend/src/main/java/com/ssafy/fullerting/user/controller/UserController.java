@@ -12,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +29,7 @@ public class UserController {
     @PostMapping("/register")
     @Operation(summary = "유저 회원가입", description = "이메일, 비밀번호, 닉네임을 입력받아 회원가입을 진행한다")
     public ResponseEntity<MessageUtils> register(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
-        userService.registerUser(userRegisterRequest);
+        userService.registUser(userRegisterRequest);
         log.info("[New User]: {}", userRegisterRequest.toString());
         return ResponseEntity.ok().body(MessageUtils.success());
     }

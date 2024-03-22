@@ -1,5 +1,7 @@
 package com.ssafy.fullerting.deal.controller;
 
+import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
+import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.deal.model.dto.request.DealProposeRequest;
 import com.ssafy.fullerting.deal.service.DealService;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
@@ -14,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -23,17 +27,24 @@ public class DealController {
 
     private final DealService dealService;
 
-    @GetMapping("/{ex_article_id}/suggestion")
-    @Operation(summary = "가격 제안조회하기 ", description = "가격 제안 조회 하기")
-    public ResponseEntity<MessageUtils> selectdeal(@AuthenticationPrincipal String email) {
-        dealService.selectdeal();
-        log.info("[show deal]: {}");
-        return ResponseEntity.ok().body(MessageUtils.success());
+
+    @GetMapping("/category/deal")
+    @Operation(summary = "제안 카테고리만 조회하기 ", description = "제안  카테고리 조회하기 ")
+    public ResponseEntity<MessageUtils> selectDeals() {
+
+        log.info("[selectFavorite  ]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(dealService.selectDeals()));
 
     }
 
 
+    @GetMapping("/mybidarticles")
+    @Operation(summary = "내가 입찰 제안한 게시물 조회 ", description = "내가 입찰 제안한 게시물 조회")
+    public ResponseEntity<MessageUtils> mybidarticles() {
 
+        log.info("[selectFavorite  ]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(dealService.mybidarticles()));
 
+    }
 
 }

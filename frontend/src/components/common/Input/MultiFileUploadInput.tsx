@@ -1,5 +1,7 @@
+import { useAtom } from "jotai";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
+import { imageFilesAtom } from "../../../stores/trade";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -80,11 +82,10 @@ const CounterText = styled.div`
   font-size: 0.625rem;
 `;
 const MultiFileUploadInput: React.FC = () => {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(selectedFiles);
     const files = e.target.files ? Array.from(e.target.files) : [];
     setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
 

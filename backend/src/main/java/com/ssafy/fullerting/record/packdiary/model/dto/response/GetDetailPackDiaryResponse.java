@@ -28,7 +28,7 @@ public class GetDetailPackDiaryResponse {
     private Timestamp packDiaryCreatedAt;
     private Integer cropGrowDay; //작물 재배일
 
-    public static GetDetailPackDiaryResponse fromResponse(PackDiary packDiary){
+    public static GetDetailPackDiaryResponse toResponse(PackDiary packDiary){
         return GetDetailPackDiaryResponse.builder()
                 .packDiaryId(packDiary.getId())
                 .cropTypeId(packDiary.getCrop().getId())

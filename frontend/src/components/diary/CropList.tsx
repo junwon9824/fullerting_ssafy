@@ -3,9 +3,6 @@ import CropProfile from "./CropProfile";
 import { useQuery } from "@tanstack/react-query";
 import { getCropList } from "../../apis/DiaryApi";
 import { useNavigate } from "react-router-dom";
-import { cropAtom } from "../../stores/diary";
-import { useAtom } from "jotai";
-
 const CardListBox = styled.div`
   display: flex;
   width: 19.875rem;
@@ -36,10 +33,6 @@ const CardItemBox = styled.div`
 const CardItemDecoBox = styled.div`
   position: absolute;
   top: -0.8rem;
-  /* width: 6.625rem; */
-  /* height: 1.6875rem; */
-  /* flex-shrink: 0; */
-  /* z-index: 1; */
 `;
 
 const CropList = () => {

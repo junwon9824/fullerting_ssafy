@@ -19,7 +19,7 @@ public class GetSelectedAtDiaryResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp diaryCreatedAt;
 
-    public static GetSelectedAtDiaryResponse fromResponse(Diary diary){
+    public static GetSelectedAtDiaryResponse toResponse(Diary diary){
         return GetSelectedAtDiaryResponse.builder()
                 .diaryId(diary.getId())
                 .diaryBehavior(diary.getBehavior())

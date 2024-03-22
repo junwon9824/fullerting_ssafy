@@ -32,5 +32,7 @@ public class UserRegisterRequest {
     @Schema(example="happyday1",description = "유저가 앞으로 사용할 닉네임")
     private String nickname;
 
+    @Schema(example="MYAPP",description = "일반회원가입 : MYAPP, 소셜 회원가입 자동등록")
+    private String authProvider;
 
 }

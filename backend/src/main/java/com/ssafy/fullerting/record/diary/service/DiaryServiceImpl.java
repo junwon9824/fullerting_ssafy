@@ -46,7 +46,7 @@ public class DiaryServiceImpl implements DiaryService{
                     GetAllDiaryResponse response = new GetAllDiaryResponse();
                     response.setDiarySelectedAt(entry.getKey());
                     List<GetSelectedAtDiaryResponse> selectedAtDiaryResponseList = entry.getValue().stream()
-                            .map(GetSelectedAtDiaryResponse::fromResponse)
+                            .map(GetSelectedAtDiaryResponse::toResponse)
                             .collect(Collectors.toList());
                     response.setGetSelectedAtDiaryResponse(selectedAtDiaryResponseList);
                     return response;
@@ -58,7 +58,7 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public GetDetailDiaryResponse getDetailDiary(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(()->new DiaryException(NOT_EXISTS_DIARY));
-        GetDetailDiaryResponse getDetailDiaryResponse = GetDetailDiaryResponse.fromResponse(diary);
+        GetDetailDiaryResponse getDetailDiaryResponse = GetDetailDiaryResponse.toResponse(diary);
 
         return getDetailDiaryResponse;
     }

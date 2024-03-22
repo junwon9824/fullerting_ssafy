@@ -16,7 +16,7 @@ public class GetAllTipsForCropResponse {
     private int cropTipGrowthStep;
     private String cropTipContent;
 
-    public static GetAllTipsForCropResponse fromResponse(Tip tip){
+    public static GetAllTipsForCropResponse toResponse(Tip tip){
         return GetAllTipsForCropResponse.builder()
                 .cropTipId(tip.getId())
                 .cropTipGrowthStep(tip.getStep())

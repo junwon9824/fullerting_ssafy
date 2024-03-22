@@ -1,5 +1,7 @@
 package com.ssafy.fullerting.exArticle.service;
 
+import com.ssafy.fullerting.deal.exception.DealErrorCode;
+import com.ssafy.fullerting.deal.exception.DealException;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.deal.service.DealService;
@@ -25,6 +27,8 @@ import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.image.repository.ImageRepository;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
+import com.ssafy.fullerting.trans.exception.TransErrorCode;
+import com.ssafy.fullerting.trans.exception.TransException;
 import com.ssafy.fullerting.trans.model.entity.Trans;
 import com.ssafy.fullerting.trans.repository.TransRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
@@ -111,15 +115,15 @@ public class ExArticleService {
                     .deal_cur_price(exArticleRegisterRequest.getDeal_cur_price())
                     .build();
 
-            deal.setexarticle(exArticle);
+            deal.setexarticle(article);
 
             System.out.println("exarttttt   " + exArticle.toString());
 
             dealRepository.save(deal);
 
-            exArticle1.setdeal(deal);
-            exArticleRepository.save(exArticle1);
-//            System.out.println("exarttttt22222      " + exArticle.toString());
+            article.setdeal(deal);
+            exArticleRepository.save(article);
+            System.out.println("exarttttt22222      " + article.getDeal());
         } else {
             //sharing,generaltransaction
             int price = 0;
@@ -132,14 +136,14 @@ public class ExArticleService {
                     .trans_sell_price(price)
                     .build();
 
-            trans.setexarticle(exArticle);
+            trans.setexarticle(article);
 
             System.out.println("exarttttt   " + exArticle.toString());
 
             transRepository.save(trans);
 
-            exArticle1.setTrans(trans);
-            exArticleRepository.save(exArticle1);
+            article.setTrans(trans);
+            exArticleRepository.save(article);
 
         }
 
@@ -150,7 +154,6 @@ public class ExArticleService {
 
         List<ExArticle> exArticle = exArticleRepository.findAll();
         CustomUser user = UserResponse.toEntity(userService.getUserInfo());
-        log.info("fffffffff");
 //        log.info("eeeeeeeeeeeee" + exArticle.stream().
 //                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
 
@@ -159,7 +162,6 @@ public class ExArticleService {
                 exArticle.stream().map(exArticle1 -> exArticle1.toAllResponse(exArticle1, user)).
                         collect(Collectors.toList());
 
-        log.info("exarticleeeee" + exArticleResponses.toString());
 
         return exArticleResponses;
     }
@@ -253,5 +255,37 @@ public class ExArticleService {
         List<ExArticle> exArticles = exArticleRepository.findAllByUserIdAndFavoriteIsNotEmpty(user.getId()); //내 article 중
         List<ExArticleResponse> exArticleResponses = exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
         return exArticleResponses;
+    }
+
+    public List<ExArticleResponse> finishedarticles() {
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser user = UserResponse.toEntity(userResponse);
+
+        List<ExArticle> exArticles = exArticleRepository.findAllByUserIDAndDone(user.getId()); //내 article 중
+        List<ExArticleResponse> exArticleResponses = exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
+        return exArticleResponses;
+    }
+
+    public void deletearticle(Long ex_article_id) {
+        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(()
+                -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
+        List<Image> image = imageRepository.findAllByExArticleId(ex_article_id);
+
+        for (Image image1 : image) {
+            imageRepository.delete(image1);
+        }
+
+        if (article.getType().equals(ExArticleType.DEAL)) {
+            Deal deal = dealRepository.findById(article.getDeal().getId()).orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
+            dealRepository.delete(deal);
+        } else {
+            Trans trans = transRepository.findById(article.getTrans().getId()).orElseThrow(()
+                    -> new TransException(TransErrorCode.NOT_EXISTS));
+            transRepository.delete(trans);
+        }
+
+        exArticleRepository.delete(article);
+
     }
 }
