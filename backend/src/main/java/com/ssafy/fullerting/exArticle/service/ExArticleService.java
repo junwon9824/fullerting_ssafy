@@ -10,6 +10,7 @@ import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleKeywordResponse;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
@@ -79,7 +80,7 @@ public class ExArticleService {
                 .id(exArticleRegisterRequest.getId())
                 .title(exArticleRegisterRequest.getExArticleTitle())
                 .content(exArticleRegisterRequest.getExArticleContent())
-                .place(exArticleRegisterRequest.getExArticlePlace())
+//                .place(exArticleRegisterRequest.getExArticlePlace())
                 .type(exArticleRegisterRequest.getExArticleType())
                 .created_at(createdAt)
                 .location(exArticleRegisterRequest.getEx_article_location())
@@ -243,5 +244,14 @@ public class ExArticleService {
         article.deletefavorite(favorite1);
 
         favoriteRepository.delete(favorite1);
+    }
+
+    public List<ExArticleResponse> selectFavorite() {  //나의 관심 article 추출.
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser user = UserResponse.toEntity(userResponse);
+
+        List<ExArticle> exArticles = exArticleRepository.findAllByUserIdAndFavoriteIsNotEmpty(user.getId()); //내 article 중
+        List<ExArticleResponse> exArticleResponses = exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
+        return exArticleResponses;
     }
 }

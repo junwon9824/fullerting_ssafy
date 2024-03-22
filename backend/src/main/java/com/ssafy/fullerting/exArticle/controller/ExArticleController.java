@@ -110,4 +110,12 @@ public class ExArticleController {
     }
 
 
+    @GetMapping("/category/like")
+    @Operation(summary = "관심 조회하기 ", description = "관심 카테고리 조회하기 ")
+    public ResponseEntity<MessageUtils> selectFavorite( ) {
+
+        log.info("[selectFavorite  ]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(exArticleService.selectFavorite()));
+
+    }
 }
