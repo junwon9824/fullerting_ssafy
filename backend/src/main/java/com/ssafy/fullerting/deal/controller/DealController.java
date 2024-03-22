@@ -34,6 +34,14 @@ public class DealController {
 
 
 
+    @GetMapping("/category/deal")
+    @Operation(summary = "제안 조회하기 ", description = "제안  카테고리 조회하기 ")
+    public ResponseEntity<MessageUtils> selectDeals( ) {
+
+        log.info("[selectFavorite  ]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(dealService.selectDeals()));
+
+    }
 
 
 }
