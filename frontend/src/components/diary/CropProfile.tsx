@@ -64,12 +64,12 @@ const CropEnd = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
-  font-size: 0.75rem;
-  height: 1.5625rem;
+  font-size: 0.64rem;
   background-color: ${({ theme }) => theme.colors.sub0};
-  padding: 0 1rem;
+  padding: 0.25rem 0.5rem;
   border-radius: 0.78125rem;
+  line-height: 1rem;
+  font-weight: bold;
 `;
 
 const CropProfile = ({ crop, direction }: CropProfileType) => {
@@ -112,22 +112,21 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
             {crop.packDiaryCulEndAt === null ? (
               <span>{calculateDDay(crop.packDiaryCulStartAt)}</span>
             ) : (
-              <span>
-                {calculateDDayDifference(
-                  crop.packDiaryCulStartAt,
-                  crop.packDiaryCulEndAt
-                )}
-                일
-              </span>
+              <span>수확😊</span>
             )}
           </CropDescriptionBox>
           {direction !== "column" && (
             <CropEnd>
               {crop.packDiaryCulEndAt === null
-                ? `"수확까지 ${
+                ? `" 수확까지 ${
                     crop.cropGrowDay ? crop.cropGrowDay : "?"
-                  }일 남았습니다"`
-                : `"${crop.packDiaryCulEndAt} 수확완료😊"`}
+                  }일 남았습니다 "`
+                : `${crop.packDiaryCulStartAt} ~ ${
+                    crop.packDiaryCulEndAt
+                  } (${calculateDDayDifference(
+                    crop.packDiaryCulStartAt,
+                    crop.packDiaryCulEndAt
+                  )}일)`}
             </CropEnd>
           )}
         </Align>
