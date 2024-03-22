@@ -13,11 +13,19 @@ const HeartBox = styled.div`
   align-items: center;
 `;
 
+const State = styled.div`
+  font-size: 0.5625rem;
+  color: #bebebe;
+  justify-content: space-between;
+`;
+
 const HeartBoxComponent: React.FC<{ isLikeCnt: number }> = ({ isLikeCnt }) => (
-  <HeartBox>
-    <img src={GrayHeart} alt="like" style={{ marginRight: "0.19rem" }} />
-    {isLikeCnt}
-  </HeartBox>
+  <State>
+    <HeartBox>
+      <img src={GrayHeart} alt="like" style={{ marginRight: "0.19rem" }} />
+      {isLikeCnt}
+    </HeartBox>
+  </State>
 );
 
 export default HeartBoxComponent;

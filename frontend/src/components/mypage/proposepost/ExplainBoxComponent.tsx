@@ -1,6 +1,22 @@
 import React from "react";
 import styled from "styled-components";
+interface DataItem {
+  imageResponses: ImageResponse[];
+  exLocation: string;
+  exArticleTitle: string;
+  price: number;
+  isLikeCnt: number;
+  exArticleType: "DEAL" | "SHARING" | "GENERAL_TRANSACTION" | "OTHER";
+}
 
+interface Props {
+  item: DataItem["exArticleType"]; // 타입을 수정했습니다.
+}
+
+interface ImageResponse {
+  id: number;
+  img_store_url: string;
+}
 interface Icon {
   width?: number;
   height: number;
@@ -31,18 +47,16 @@ const ExplainBox = styled.div`
   gap: 0.25rem;
 `;
 
-const ExplainBoxComponent: React.FC<{ packDiaryResponse: null | number }> = ({
-  packDiaryResponse,
-}) => (
+const ExplainBoxComponent: React.FC<Props> = ({ item }) => (
   <ExplainBox>
-    {packDiaryResponse ? (
+    {item ? (
       <StateIcon
-        width={2.5625}
-        height={0.9375}
-        backgroundColor="#A0D8B3"
-        color="#8c8c8c"
+        width={4}
+        height={1.3}
+        backgroundColor="#0c560f"
+        color="#ffffff"
       >
-        작물일지
+        {item === "DEAL" ? "제안한 게시물" : "기타 게시물"}
       </StateIcon>
     ) : null}
   </ExplainBox>
