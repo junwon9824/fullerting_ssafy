@@ -11,6 +11,7 @@ import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.trans.exception.TransErrorCode;
 import com.ssafy.fullerting.trans.exception.TransException;
+import com.ssafy.fullerting.trans.model.dto.response.MyAllTransResponse;
 import com.ssafy.fullerting.trans.model.dto.response.TransResponse;
 import com.ssafy.fullerting.trans.model.entity.Trans;
 import com.ssafy.fullerting.trans.repository.TransRepository;
@@ -20,6 +21,7 @@ import com.ssafy.fullerting.user.service.UserService;
 import jakarta.transaction.TransactionalException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,7 +50,7 @@ public class TransService {
                 .filter(exArticleResponse -> exArticleResponse.getExArticleType().equals(ExArticleType.SHARING))
                 .collect(Collectors.toList());
 
-        log.info("exArticleResponsesexArticleResponses"+exArticleResponses.toString());
+        log.info("exArticleResponsesexArticleResponses" + exArticleResponses.toString());
 // sharing 만 가져와야한다.
 
         transResponse = exArticleResponses.stream().map(exArticleResponse -> {
@@ -69,4 +71,16 @@ public class TransService {
         return transResponse;
     }
 
+    public List<MyAllTransResponse> selectTrans() { //나의 일반거래
+
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = UserResponse.toEntity(userResponse);
+
+        List<Trans> trans = transRepository.findAllTrans(customUser.getId());
+
+        List<MyAllTransResponse> transResponse = trans.stream().map(trans1 ->
+                trans1.toMyAllTransResponse(trans1, customUser)).collect(Collectors.toList());
+
+        return transResponse;
+    }
 }

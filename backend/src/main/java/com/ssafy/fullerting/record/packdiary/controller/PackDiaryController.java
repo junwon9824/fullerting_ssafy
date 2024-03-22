@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.record.packdiary.controller;
 
 import com.ssafy.fullerting.global.utils.MessageUtils;
+import com.ssafy.fullerting.record.packdiary.SerializableMultipartFile;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.CreatePackDiaryRequest;
 import com.ssafy.fullerting.record.packdiary.service.PackDiaryService;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
@@ -70,7 +71,7 @@ public class PackDiaryController {
      * @return
      */
     @PostMapping("/{pack_diary_id}/crop-step")
-    public ResponseEntity<MessageUtils> getCropStep(@PathVariable("pack_diary_id") Long packDiaryId, @RequestPart("cropImage") MultipartFile imageFile){
+    public ResponseEntity<MessageUtils> getCropStep(@PathVariable("pack_diary_id") Long packDiaryId, @RequestPart("cropImage") SerializableMultipartFile imageFile){
         return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getCropStep(packDiaryId, imageFile)));
     }
 
