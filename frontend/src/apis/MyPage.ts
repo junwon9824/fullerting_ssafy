@@ -37,14 +37,14 @@ export const getUsersInfo = async () => {
 };
 
 
-export const getExchanges = async (postId:number) => {
+export const getExchanges = async () => {
   try {
     const accessToken = sessionStorage.getItem('accessToken');
     if (!accessToken) {
       throw new Error('Access token is not available.');
     }
 
-    const response = await api.get(`/exchanges/${postId}/detail`, {
+    const response = await api.get(`/exchanges/done`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return response.data.data_body;
