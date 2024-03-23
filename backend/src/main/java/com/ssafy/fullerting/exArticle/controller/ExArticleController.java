@@ -36,11 +36,12 @@ public class ExArticleController {
     @PostMapping("")
     @Operation(summary = "작물 거래 게시물 등록 ", description = "작물등록진행")
     public ResponseEntity<MessageUtils> register(
+            @RequestPart(value = "file") List<MultipartFile> file,
                                                  @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
                                                  @AuthenticationPrincipal String email) {
 
-//        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, file);
-        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email);
+        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, file);
+//        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email);
 
         log.info("[register article ]: {}", exArticleRegisterRequest.toString());
 
