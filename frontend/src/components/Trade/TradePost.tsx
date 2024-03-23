@@ -180,17 +180,21 @@ const TradePost = () => {
   const handleCheckClick = async () => {
     const formData = new FormData();
 
-    const Files = [] as File[]; // 파일 타입의 배열로 형 변환하여 변수 정의
 
     // const exArticleRegisterImageRequest = {
     //   selectedFiles: selectedFiles // 정의한 변수를 객체에 할당
     // };
 
     // selectedFiles는 File 타입의 배열입니다. 각 파일을 files에 추가합니다.
+    const Files = selectedFiles;
 
-    selectedFiles.forEach((file, index) => {
-      formData.append(`files[${index}]`, file); // 각 파일을 FormData에 추가
+    Files.forEach((file, index) => {
+      formData.append(`files`, file); // 각 파일을 FormData에 추가
     });
+
+    // Files.forEach((file, index) => {
+    //   formData.append(`files[${index}]`, file); // 각 파일을 FormData에 추가
+    // });
 
     // formData.append("files", Files); // 'file'은 서버에서 파일을 받을 때 사용할 키입니다.
 
@@ -200,13 +204,16 @@ const TradePost = () => {
       exArticleContent: content,
       ex_article_location: place,
       exArticleType: tradeType,
-      packdiaryid: diary,
+      packdiaryid: "5",
       deal_cur_price: cash,
     });
 
     formData.append("exArticleRegisterRequest", exArticleRegisterRequest);
+
     try {
-      for (var entries of formData) console.log(entries);
+      for (var entries of formData)
+         console.log(entries);
+
       await handlePost(formData);
 
       // 요청 성공 후 페이지 이동 또는 상태 업데이트
