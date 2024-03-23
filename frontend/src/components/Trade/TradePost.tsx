@@ -180,11 +180,14 @@ const TradePost = () => {
   const handleCheckClick = async () => {
     const formData = new FormData();
 
-    // selectedFiles는 File 타입의 배열입니다. 각 파일을 formData에 추가합니다.
-    // selectedFiles.forEach((file) => {
-    //   formData.append("file", file);
-    // });
+    const files = new FormData(); // FormData 객체로 초기화
 
+    // selectedFiles는 File 타입의 배열입니다. 각 파일을 files에 추가합니다.
+    selectedFiles.forEach((file) => {
+      // formData.append("file", file); // 'file'은 서버에서 파일을 받을 때 사용할 키입니다.
+      formData.append(file.name, file);
+    });
+   
     // 나머지 필요한 정보를 formData에 추가합니다.
     const exArticleRegisterRequest = JSON.stringify({
       exArticleTitle: title,
@@ -201,7 +204,7 @@ const TradePost = () => {
       await handlePost(formData);
 
       // 요청 성공 후 페이지 이동 또는 상태 업데이트
-      navigate("/trade");
+      // navigate("/trade");
     } catch (error) {
       // 오류 처리
       console.error("업로드 실패:", error);
