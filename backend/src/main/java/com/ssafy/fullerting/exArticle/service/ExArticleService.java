@@ -86,15 +86,15 @@ public class ExArticleService {
 
 
 
-//    public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
-        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
+    public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
+//        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
 
         CustomUser customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 //        log.info("ussssss"+customUser.getEmail());
         log.info("ussssss" + email1);
 
-//        S3ManyFilesResponse response =
-//                amazonS3Service.uploadFiles(files);
+        S3ManyFilesResponse response =
+                amazonS3Service.uploadFiles(files);
 
         Optional<PackDiary> packDiary = null;
 
@@ -124,14 +124,14 @@ public class ExArticleService {
 
         ExArticle article2 = null;
 
-//        List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
-//            Image image = new Image();
-//            image.setImg_store_url(stringStringEntry.getValue());
-//            image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
-//                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
-//            imageRepository.save(image);
-//            return image;
-//        }).collect(Collectors.toList());
+        List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
+            Image image = new Image();
+            image.setImg_store_url(stringStringEntry.getValue());
+            image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
+                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
+            imageRepository.save(image);
+            return image;
+        }).collect(Collectors.toList());
 
 //        exArticle1.setImage(images);
         ExArticle article = exArticleRepository.save(exArticle1);
