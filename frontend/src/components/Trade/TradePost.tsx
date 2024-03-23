@@ -180,39 +180,39 @@ const TradePost = () => {
   const handleCheckClick = async () => {
     const formData = new FormData();
 
-
     // const exArticleRegisterImageRequest = {
     //   selectedFiles: selectedFiles // 정의한 변수를 객체에 할당
     // };
 
     // selectedFiles는 File 타입의 배열입니다. 각 파일을 files에 추가합니다.
-    const Files = selectedFiles;
-
-    Files.forEach((file, index) => {
-      formData.append(`files`, file); // 각 파일을 FormData에 추가
-    });
 
     // Files.forEach((file, index) => {
-    //   formData.append(`files[${index}]`, file); // 각 파일을 FormData에 추가
+    //   formData.append(`files`, file); // 각 파일을 FormData에 추가
     // });
 
-    // formData.append("files", Files); // 'file'은 서버에서 파일을 받을 때 사용할 키입니다.
+    selectedFiles.forEach((file, index) => {
+      formData.append("files", file); // 'file'은 서버에서 파일을 받을 때 사용할 키입니다.
+    });
 
+ 
     // 나머지 필요한 정보를 formData에 추가합니다.
     const exArticleRegisterRequest = JSON.stringify({
       exArticleTitle: title,
       exArticleContent: content,
       ex_article_location: place,
       exArticleType: tradeType,
-      packdiaryid: "5",
+      packdiaryid: diary,
       deal_cur_price: cash,
     });
 
-    formData.append("exArticleRegisterRequest", exArticleRegisterRequest);
+    // formData.append("exArticleRegisterRequest", exArticleRegisterRequest);
+    formData.append(
+      "exArticleRegisterRequest", 
+      new Blob([exArticleRegisterRequest], { type: "application/json" })
+    );
 
     try {
-      for (var entries of formData)
-         console.log(entries);
+      for (var entries of formData) console.log(entries);
 
       await handlePost(formData);
 

@@ -113,7 +113,7 @@ export const usePost = () => {
   return useMutation({
     mutationFn: async (formData: FormData) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      
+
       if (!accessToken) {
         throw new Error("로그인이 필요합니다.");
       }
@@ -125,7 +125,7 @@ export const usePost = () => {
       const response = await api.post("/exchanges", formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          // 'Content-Type': 'multipart/form-data'는 FormData를 사용할 때 자동으로 설정됩니다.
+          'Content-Type': 'multipart/form-data' 
         },
       });
 
