@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.exArticle.controller;
 
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleDoneRequest;
+import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterImageRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
@@ -36,9 +37,9 @@ public class ExArticleController {
     @PostMapping("")
     @Operation(summary = "작물 거래 게시물 등록 ", description = "작물등록진행")
     public ResponseEntity<MessageUtils> register(
-            @RequestPart List<MultipartFile> files,
-                                                 @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
-                                                 @AuthenticationPrincipal String email) {
+            @RequestParam("files") List<MultipartFile> files  ,
+            @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
+            @AuthenticationPrincipal String email) {
 
         Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, files);
 //        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email);
