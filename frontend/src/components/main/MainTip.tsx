@@ -27,14 +27,11 @@ const LogoContent = styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 1.125rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 `;
 const LogoText = styled.div`
   color: var(--sub0, #a0d8b3);
   font-family: "GamtanRoad Dotum TTF";
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-style: normal;
   font-weight: 800;
   line-height: 1.125rem;
@@ -52,7 +49,6 @@ const ExchangeBox = styled.div`
 `;
 
 const ExchangeContainer = styled.div`
-  margin-top: 0.8rem;
   display: flex;
   gap: 0.6875rem;
   margin-bottom: 1rem;
