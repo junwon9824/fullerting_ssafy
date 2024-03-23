@@ -37,7 +37,7 @@ public class ExArticleController {
     @PostMapping("")
     @Operation(summary = "작물 거래 게시물 등록 ", description = "작물등록진행")
     public ResponseEntity<MessageUtils> register(
-//            @RequestPart("files") List<MultipartFile> files  ,
+            @RequestPart("files") List<MultipartFile> files  ,
             @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
             @AuthenticationPrincipal String email) {
 
