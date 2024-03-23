@@ -1,5 +1,9 @@
 package com.ssafy.fullerting.record.diary.service;
 
+import com.ssafy.fullerting.global.s3.model.entity.response.S3ManyFilesResponse;
+import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
+import com.ssafy.fullerting.image.model.entity.Image;
+import com.ssafy.fullerting.image.repository.ImageRepository;
 import com.ssafy.fullerting.record.diary.exception.DiaryException;
 import com.ssafy.fullerting.record.diary.model.dto.request.CreateDiaryRequest;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetAllDiaryResponse;
@@ -16,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -33,6 +38,8 @@ import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode
 public class DiaryServiceImpl implements DiaryService{
     private final PackDiaryRepository packDiaryRepository;
     private final DiaryRepository diaryRepository;
+    private final AmazonS3Service amazonS3Service;
+    private final ImageRepository imageRepository;
 
     @Override
     public List<GetAllDiaryResponse> getAllDiary(Long packDiaryId) {
@@ -64,10 +71,10 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public void createDiary(Long packDiaryId, CreateDiaryRequest createDiaryRequest) {
+    public void createDiary(Long packDiaryId, List<MultipartFile> images, CreateDiaryRequest createDiaryRequest) {
         PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
         try {
-            diaryRepository.save(Diary.builder()
+            Diary diary = diaryRepository.save(Diary.builder()
                     .packDiary(packDiary)
                     .behavior(String.valueOf(DiaryBehavior.다이어리))
                     .title(createDiaryRequest.getDiaryTitle())
@@ -76,6 +83,18 @@ public class DiaryServiceImpl implements DiaryService{
                     .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                     .build()
             );
+
+            //S3에 이미지 업로드
+            S3ManyFilesResponse response = amazonS3Service.uploadFiles(images);
+            //이미지 DB 저장
+            response.getUrls().entrySet().stream().map(stringStringEntry -> {
+                Image image = imageRepository.save(Image.builder()
+                        .img_store_url(stringStringEntry.getValue())
+                        .diary(diary)
+                        .build());
+                return image;
+            }).collect(Collectors.toList());
+
         } catch(Exception e){
             throw new DiaryException(NOT_EXISTS_DIARY);
         }

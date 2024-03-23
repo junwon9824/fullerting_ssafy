@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/diaries")
@@ -42,8 +45,8 @@ public class DiaryController {
      * @return
      */
     @PostMapping("/{pack_diary_id}")
-    public ResponseEntity<MessageUtils> createDiary(@PathVariable("pack_diary_id") Long packDiaryId, @RequestBody CreateDiaryRequest createDiaryRequest){
-        diaryService.createDiary(packDiaryId, createDiaryRequest);
+    public ResponseEntity<MessageUtils> createDiary(@PathVariable("pack_diary_id") Long packDiaryId, @RequestPart("images") List<MultipartFile> images, @RequestPart(value = "createDiaryRequest") CreateDiaryRequest createDiaryRequest){
+        diaryService.createDiary(packDiaryId, images, createDiaryRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 }
