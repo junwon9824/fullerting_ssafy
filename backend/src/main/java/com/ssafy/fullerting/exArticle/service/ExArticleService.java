@@ -8,6 +8,7 @@ import com.ssafy.fullerting.deal.service.DealService;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleDoneRequest;
+import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterImageRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
@@ -68,7 +69,6 @@ public class ExArticleService {
         ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
 
-
         S3ManyFilesResponse response =
                 amazonS3Service.uploadFiles(files);
 
@@ -85,13 +85,14 @@ public class ExArticleService {
     }
 
 
-
     public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
 //        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
 
         CustomUser customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 //        log.info("ussssss"+customUser.getEmail());
         log.info("ussssss" + email1);
+
+//        List<MultipartFile> files = exArticleRegisterImageRequest.getMultipartFiles();
 
         S3ManyFilesResponse response =
                 amazonS3Service.uploadFiles(files);
