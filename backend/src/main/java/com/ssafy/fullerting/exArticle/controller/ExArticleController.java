@@ -41,8 +41,8 @@ public class ExArticleController {
             @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
             @AuthenticationPrincipal String email) {
 
-//        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, files);
-        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email);
+        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, files);
+//        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email);
 
         log.info("[register article ]: {}", exArticleRegisterRequest.toString());
 
