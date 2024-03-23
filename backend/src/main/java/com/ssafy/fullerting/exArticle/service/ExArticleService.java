@@ -63,13 +63,38 @@ public class ExArticleService {
     private final ImageRepository imageRepository;
 
 
-    public void register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
+    public void registeriamges(List<MultipartFile> files, Long ex_article_id) {
+
+        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
+
+
+        S3ManyFilesResponse response =
+                amazonS3Service.uploadFiles(files);
+
+        List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
+            Image image = new Image();
+            image.setImg_store_url(stringStringEntry.getValue());
+            image.setExArticle(exArticleRepository.findById(article.getId()).
+                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
+            imageRepository.save(image);
+            return image;
+        }).collect(Collectors.toList());
+
+//        article.setImage(file);
+    }
+
+
+
+//    public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
+        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
 
         CustomUser customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 //        log.info("ussssss"+customUser.getEmail());
         log.info("ussssss" + email1);
-        S3ManyFilesResponse response =
-                amazonS3Service.uploadFiles(files);
+
+//        S3ManyFilesResponse response =
+//                amazonS3Service.uploadFiles(files);
 
         Optional<PackDiary> packDiary = null;
 
@@ -97,15 +122,16 @@ public class ExArticleService {
 //        exArticleRepository.saveAndFlush(exArticle);
         ExArticle exArticle1 = exArticleRepository.save(exArticle);
 
+        ExArticle article2 = null;
 
-        List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
-            Image image = new Image();
-            image.setImg_store_url(stringStringEntry.getValue());
-            image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
-                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
-            imageRepository.save(image);
-            return image;
-        }).collect(Collectors.toList());
+//        List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
+//            Image image = new Image();
+//            image.setImg_store_url(stringStringEntry.getValue());
+//            image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
+//                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
+//            imageRepository.save(image);
+//            return image;
+//        }).collect(Collectors.toList());
 
 //        exArticle1.setImage(images);
         ExArticle article = exArticleRepository.save(exArticle1);
@@ -122,7 +148,8 @@ public class ExArticleService {
             dealRepository.save(deal);
 
             article.setdeal(deal);
-            exArticleRepository.save(article);
+            article2 = exArticleRepository.save(article);
+
             System.out.println("exarttttt22222      " + article.getDeal());
         } else {
             //sharing,generaltransaction
@@ -143,11 +170,12 @@ public class ExArticleService {
             transRepository.save(trans);
 
             article.setTrans(trans);
-            exArticleRepository.save(article);
+            article2 = exArticleRepository.save(article);
 
         }
-
         log.info("iiiiiii" + article.getImage());
+
+        return article2.getId();
     }
 
     public List<ExArticleAllResponse> allArticle() {
@@ -288,4 +316,5 @@ public class ExArticleService {
         exArticleRepository.delete(article);
 
     }
+
 }
