@@ -2,6 +2,7 @@ package com.ssafy.fullerting.record.diary.service;
 
 import com.ssafy.fullerting.global.s3.model.entity.response.S3ManyFilesResponse;
 import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
+import com.ssafy.fullerting.image.model.dto.response.ImageResponse;
 import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.image.repository.ImageRepository;
 import com.ssafy.fullerting.record.diary.exception.DiaryException;
@@ -53,13 +54,24 @@ public class DiaryServiceImpl implements DiaryService{
                     GetAllDiaryResponse response = new GetAllDiaryResponse();
                     response.setDiarySelectedAt(entry.getKey());
                     List<GetSelectedAtDiaryResponse> selectedAtDiaryResponseList = entry.getValue().stream()
-                            .map(GetSelectedAtDiaryResponse::toResponse)
+                            .map(diary -> {
+                                GetSelectedAtDiaryResponse selectedAtDiaryResponse = GetSelectedAtDiaryResponse.toResponse(diary);
+                                List<ImageResponse> imageResponseList = getImageResponses(diary.getId()); //이미지 가져오기
+                                selectedAtDiaryResponse.setImageResponseList(imageResponseList);
+                                return selectedAtDiaryResponse;
+                            })
                             .collect(Collectors.toList());
                     response.setGetSelectedAtDiaryResponse(selectedAtDiaryResponseList);
                     return response;
                 })
                 .sorted(Comparator.comparing(GetAllDiaryResponse::getDiarySelectedAt).reversed()) //날짜 최신순 정렬
                 .collect(Collectors.toList());
+    }
+
+    private List<ImageResponse> getImageResponses(Long diaryId) {
+        List<Image> imageList = imageRepository.findAllByDiaryId(diaryId); // diaryId에 해당하는 이미지 목록 조회
+
+        return imageList.stream().map(Image::toResponse).collect(Collectors.toList());
     }
 
     @Override
