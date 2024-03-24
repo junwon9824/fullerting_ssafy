@@ -77,8 +77,8 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public GetDetailDiaryResponse getDetailDiary(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(()->new DiaryException(NOT_EXISTS_DIARY));
-        GetDetailDiaryResponse getDetailDiaryResponse = GetDetailDiaryResponse.toResponse(diary);
-
+        GetDetailDiaryResponse getDetailDiaryResponse = GetDetailDiaryResponse.toResponse(diary)
+                .toBuilder().imageResponseList(getImageResponses(diaryId)).build();
         return getDetailDiaryResponse;
     }
 
