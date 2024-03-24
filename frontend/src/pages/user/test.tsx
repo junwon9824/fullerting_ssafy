@@ -60,7 +60,6 @@ function TestPage() {
       // );
 
       console.log(response.data.data_body);
-      // const messages
       setMessages(response.data.data_body);
     } catch (error) {
       console.error("채팅 내역 로드 실패", error);
@@ -74,7 +73,7 @@ function TestPage() {
       // const baseURL = "https://j10c102.p.ssafy.io/api/v1";
 
       // brokerURL: `ws://localhost:8080/ws`, // Server WebSocket URL
-      brokerURL: `wss://j10c102.p.ssafy.io/websocket`, // Server WebSocket URL
+      brokerURL: `wss://j10c102.p.ssafy.io/api/ws`, // Server WebSocket URL
 
       reconnectDelay: 5000, // 연결 끊겼을 때, 재연결시도까지 지연시간(ms)
       onConnect: () => {
