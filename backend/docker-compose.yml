@@ -65,6 +65,17 @@ services:
 #    environment:
 #      - USE_PROFILE=dev
 #      - SPRING_PROFILES_ACTIVE=prod
+  websocket:
+    container_name: websocket
+    image: junwon1131/s10c102-websocket:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    networks:
+      - jenkins-network
 
 networks:
   jenkins-network:
