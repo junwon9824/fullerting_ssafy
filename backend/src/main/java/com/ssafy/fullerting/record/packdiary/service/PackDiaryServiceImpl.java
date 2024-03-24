@@ -9,6 +9,7 @@ import com.ssafy.fullerting.crop.type.repository.CropTypeRepository;
 import com.ssafy.fullerting.record.packdiary.exception.PackDiaryException;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.CreatePackDiaryRequest;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.GetCropStepRequest;
+import com.ssafy.fullerting.record.packdiary.model.dto.request.UpdatePackDiaryRequest;
 import com.ssafy.fullerting.record.packdiary.model.dto.response.GetAllPackDiaryResponse;
 import com.ssafy.fullerting.record.packdiary.model.dto.response.GetCropStepResponse;
 import com.ssafy.fullerting.record.packdiary.model.dto.response.GetDetailPackDiaryResponse;
@@ -55,6 +56,20 @@ public class PackDiaryServiceImpl implements PackDiaryService {
                     .build()
             );
         } catch (Exception e) {
+            throw new PackDiaryException(TRANSACTION_FAIL);
+        }
+    }
+
+    @Override
+    public void updatePackDiary(Long packDiaryId, UpdatePackDiaryRequest updatePackDiaryRequest) {
+        PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
+
+        try {
+            packDiaryRepository.save(packDiary.toBuilder()
+                    .title(updatePackDiaryRequest.getPackDiaryTitle())
+                    .culStartAt(updatePackDiaryRequest.getPackDiaryCulStartAt())
+                    .build());
+        } catch(Exception e){
             throw new PackDiaryException(TRANSACTION_FAIL);
         }
     }
