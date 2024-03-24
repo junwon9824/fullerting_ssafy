@@ -42,11 +42,23 @@ public class PackDiaryController {
      * @param updatePackDiaryRequest
      * @return
      */
-    @PostMapping("/{pack_diary_id}")
+    @PatchMapping("/{pack_diary_id}")
     public ResponseEntity<MessageUtils> updatePackDiary(@PathVariable("pack_diary_id") Long packDiaryId, @RequestBody UpdatePackDiaryRequest updatePackDiaryRequest){
         packDiaryService.updatePackDiary(packDiaryId, updatePackDiaryRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
+
+    /**
+     * 작물일지 삭제
+     * @param packDiaryId
+     * @return
+     */
+    @DeleteMapping("/{pack_diary_id}")
+    public ResponseEntity<MessageUtils> deletePackDiary(@PathVariable("pack_diary_id") Long packDiaryId){
+        packDiaryService.deletePackDiary(packDiaryId);
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
 
     /**
      * 작물일지 전체조회

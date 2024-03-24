@@ -13,6 +13,7 @@ import java.util.List;
 public interface PackDiaryService {
     void createPackDiary(CustomUser user, CreatePackDiaryRequest createPackDiaryRequest);
     void updatePackDiary(Long packDiaryId, UpdatePackDiaryRequest updatePackDiaryRequest);
+    void deletePackDiary(Long packDiaryId);
     List<GetAllPackDiaryResponse> getAllPackDiary();
     GetDetailPackDiaryResponse getDetailPackDiary(Long packDiaryId);
     void endCropCultivation(Long packDiaryId);

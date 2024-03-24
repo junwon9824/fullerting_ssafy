@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @Entity
 //@ToString
 @Table(name = "ex_article")
