@@ -3,6 +3,7 @@ def component = [
     'back': true,
     'nginx': true,
     'ai': true,
+    'websocket': true,
 
 ]
 
