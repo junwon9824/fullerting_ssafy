@@ -74,7 +74,7 @@ function TestPage() {
       // const baseURL = "https://j10c102.p.ssafy.io/api/v1";
 
       // brokerURL: `ws://localhost:8080/ws`, // Server WebSocket URL
-      brokerURL: `wss://j10c102.p.ssafy.io/api/ws`, // Server WebSocket URL
+      brokerURL: `wss://j10c102.p.ssafy.io/websocket`, // Server WebSocket URL
 
       reconnectDelay: 5000, // 연결 끊겼을 때, 재연결시도까지 지연시간(ms)
       onConnect: () => {
