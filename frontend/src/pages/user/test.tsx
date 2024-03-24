@@ -42,8 +42,19 @@ function TestPage() {
       // const response = await api.get(
       //     `/exchanges/${chattingRoomId}/suggestion`
       // );
+      const accessToken = sessionStorage.getItem('accessToken');
+      if (!accessToken) {
+        throw new Error('Access token is not available.');
+      }
+      // const response = await api.get(`/badges`, {
+      //   headers: { Authorization: `Bearer ${accessToken}` },
+      // });
+
       const response = await axios.get(
-        `http://localhost:8080/v1/exchanges/${chattingRoomId}/suggestion`
+        `http://localhost:8080/v1/exchanges/${chattingRoomId}/suggestion`,{
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+
       );
 
       console.log(response.data);
