@@ -7,6 +7,7 @@ import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.image.repository.ImageRepository;
 import com.ssafy.fullerting.record.diary.exception.DiaryException;
 import com.ssafy.fullerting.record.diary.model.dto.request.CreateDiaryRequest;
+import com.ssafy.fullerting.record.diary.model.dto.request.WateringCropsRequest;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetAllDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetDetailDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetSelectedAtDiaryResponse;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.NOT_EXISTS_DIARY;
+import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.TRANSACTION_FAIL;
 import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode.NOT_EXISTS_PACK_DIARY;
 
 @RequiredArgsConstructor
@@ -108,7 +110,22 @@ public class DiaryServiceImpl implements DiaryService{
             }).collect(Collectors.toList());
 
         } catch(Exception e){
-            throw new DiaryException(NOT_EXISTS_DIARY);
+            throw new DiaryException(TRANSACTION_FAIL);
+        }
+    }
+
+    @Override
+    public void wateringCrops(Long packDiaryId, WateringCropsRequest wateringCropsRequest) {
+        PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
+        try {
+            diaryRepository.save(Diary.builder()
+                    .packDiary(packDiary)
+                    .behavior(String.valueOf(DiaryBehavior.물주기))
+                    .selectedAt(wateringCropsRequest.getDiarySelectedAt())
+                    .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+                    .build());
+        } catch (Exception e){
+            throw new PackDiaryException(NOT_EXISTS_PACK_DIARY);
         }
     }
 }

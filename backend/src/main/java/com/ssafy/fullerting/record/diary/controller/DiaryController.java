@@ -2,6 +2,7 @@ package com.ssafy.fullerting.record.diary.controller;
 
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.record.diary.model.dto.request.CreateDiaryRequest;
+import com.ssafy.fullerting.record.diary.model.dto.request.WateringCropsRequest;
 import com.ssafy.fullerting.record.diary.service.DiaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,4 +50,17 @@ public class DiaryController {
         diaryService.createDiary(packDiaryId, images, createDiaryRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
+
+    /**
+     * 작물일기 물주기
+     * @param packDiaryId
+     * @param wateringCropsRequest
+     * @return
+     */
+    @PostMapping("/{pack_diary_id}/water")
+    public ResponseEntity<MessageUtils> wateringCrops(@PathVariable("pack_diary_id") Long packDiaryId, @RequestBody WateringCropsRequest wateringCropsRequest){
+        diaryService.wateringCrops(packDiaryId, wateringCropsRequest);
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
 }

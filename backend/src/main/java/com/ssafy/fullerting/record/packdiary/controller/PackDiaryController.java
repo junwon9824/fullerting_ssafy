@@ -4,6 +4,7 @@ import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.record.packdiary.SerializableMultipartFile;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.CreatePackDiaryRequest;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.GetCropStepRequest;
+import com.ssafy.fullerting.record.packdiary.model.dto.request.UpdatePackDiaryRequest;
 import com.ssafy.fullerting.record.packdiary.service.PackDiaryService;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.service.UserService;
@@ -32,6 +33,18 @@ public class PackDiaryController {
     public ResponseEntity<MessageUtils> createPackDiary(@RequestBody CreatePackDiaryRequest createPackDiaryRequest){
         UserResponse userResponse = userService.getUserInfo();
         packDiaryService.createPackDiary(userResponse.toEntity(userResponse), createPackDiaryRequest);
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
+    /**
+     * 작물일지 수정
+     * @param packDiaryId
+     * @param updatePackDiaryRequest
+     * @return
+     */
+    @PostMapping("/{pack_diary_id}")
+    public ResponseEntity<MessageUtils> updatePackDiary(@PathVariable("pack_diary_id") Long packDiaryId, @RequestBody UpdatePackDiaryRequest updatePackDiaryRequest){
+        packDiaryService.updatePackDiary(packDiaryId, updatePackDiaryRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 

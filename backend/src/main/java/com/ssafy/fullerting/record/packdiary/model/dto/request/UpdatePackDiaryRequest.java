@@ -1,4 +1,4 @@
-package com.ssafy.fullerting.record.diary.model.dto.request;
+package com.ssafy.fullerting.record.packdiary.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @Getter
-public class WateringCropsRequest {
-    private LocalDate diarySelectedAt;
+public class UpdatePackDiaryRequest {
+    private String packDiaryTitle;
+    private LocalDate packDiaryCulStartAt;
 }
