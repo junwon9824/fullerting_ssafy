@@ -39,13 +39,14 @@ function TestPage() {
             const response = await axios.get(
                 `http://localhost:8080/exchanges/${chattingRoomId}/suggestion`
             );
-
             console.log(response.data)
             // const messages
             setMessages(response.data);
-        } catch (error) {
+        }
+         catch (error) {
             console.error("채팅 내역 로드 실패", error);
         }
+
     };
 
     useEffect(() => {
@@ -61,6 +62,7 @@ function TestPage() {
                 });
             },
         });
+
         client.activate();  // STOMP 클라이언트 활성화
         setStompClient(client); // STOMP 클라이언트 상태 업데이트
         return () => {
