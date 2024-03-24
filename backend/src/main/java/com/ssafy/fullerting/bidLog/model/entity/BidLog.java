@@ -46,6 +46,7 @@ public class BidLog {
                 .user_id(bidLog.user_id)
                 .localDateTime(bidLog.localDateTime)
 //                .deal(bidLog.deal)
+                .exarticleid(bidLog.deal.getExArticle().getId())
                 .id(bidLog.id)
                 .build();
     }

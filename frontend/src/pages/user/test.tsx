@@ -18,12 +18,11 @@ interface MessageReq {
 }
 
 interface MessageRes {
-  id: string;
-  messageType: boolean;
-  content: string;
+  id: string; //bidlogid
   createdTime: string;
-  senderId: number;
+  user_id: number;
   chattingRoomId: number;
+  bid_log_price:number;
 }
 
 function TestPage() {
@@ -33,6 +32,7 @@ function TestPage() {
 
   const [stompClient, setStompClient] = useState<Client | null>(null); // STOMP 클라이언트 상태 관리
   const [messages, setMessages] = useState<MessageRes[]>([]); // 채팅 메시지 목록 상태 관리
+
   const [writer, setWriter] = useState<string>(""); // 메시지 작성자 이름 상태 관리
   const [newMessage, setNewMessage] = useState<string>(""); // 새 메시지 입력 상태 관리
 
@@ -57,9 +57,9 @@ function TestPage() {
 
       );
 
-      console.log(response.data);
+      console.log(response.data.data_body);
       // const messages
-      setMessages(response.data);
+      setMessages(response.data.data_body);
     } catch (error) {
       console.error("채팅 내역 로드 실패", error);
     }

@@ -17,5 +17,6 @@ public class BidLogResponse {
     private LocalDateTime localDateTime;
 
     private int bid_log_price;
+    private Long exarticleid;
 
 }
