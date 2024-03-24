@@ -15,5 +15,6 @@ public interface DiaryService {
     GetDetailDiaryResponse getDetailDiary(Long diaryId);
     void createDiary(Long packDiaryId, List<MultipartFile> images, CreateDiaryRequest createDiaryRequest);
     void updateDiary(Long diaryId, List<MultipartFile> images, UpdateDiaryRequest updateDiaryRequest);
+    void deleteDiary(Long diaryId);
     void wateringCrops(Long packDiaryId, WateringCropsRequest wateringCropsRequest);
 }

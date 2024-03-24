@@ -148,6 +148,24 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
+    public void deleteDiary(Long diaryId) {
+       diaryRepository.findById(diaryId).orElseThrow(()->new DiaryException(NOT_EXISTS_DIARY));
+        try {
+            //이미지 삭제
+            List<Image> imageList = imageRepository.findAllByDiaryId(diaryId);
+            for (Image image : imageList) {
+                amazonS3Service.deleteFile(image.getImg_store_url());
+            }
+            imageRepository.deleteAll(imageList);
+
+            //작물일기 삭제
+            diaryRepository.deleteById(diaryId);
+        } catch (Exception e){
+            throw new DiaryException(TRANSACTION_FAIL);
+        }
+    }
+
+    @Override
     public void wateringCrops(Long packDiaryId, WateringCropsRequest wateringCropsRequest) {
         PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
         try {
