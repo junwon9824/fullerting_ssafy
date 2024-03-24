@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
-@Table(name="crop_step")
+@Table(name = "crop_step")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
@@ -19,7 +19,7 @@ public class Step { //작물단계
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="crop_type_id")
+    @JoinColumn(name = "crop_type_id")
     private Crop crop; //작물
 
     @Column(name = "crop_step_growth")
