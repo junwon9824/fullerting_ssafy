@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Getter
 public class GetDetailPackDiaryResponse {
     private Long packDiaryId;

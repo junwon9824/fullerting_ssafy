@@ -3,6 +3,7 @@ package com.ssafy.fullerting.record.packdiary.controller;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.record.packdiary.SerializableMultipartFile;
 import com.ssafy.fullerting.record.packdiary.model.dto.request.CreatePackDiaryRequest;
+import com.ssafy.fullerting.record.packdiary.model.dto.request.GetCropStepRequest;
 import com.ssafy.fullerting.record.packdiary.service.PackDiaryService;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.service.UserService;
@@ -65,14 +66,14 @@ public class PackDiaryController {
     }
 
     /**
-     * 작물 생육단계 파악
+     * 작물 생육단계 갱신
      * @param packDiaryId
-     * @param imageFile
+     * @param getCropStepRequest
      * @return
      */
     @PostMapping("/{pack_diary_id}/crop-step")
-    public ResponseEntity<MessageUtils> getCropStep(@PathVariable("pack_diary_id") Long packDiaryId, @RequestPart("cropImage") MultipartFile imageFile){
-        return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getCropStep(packDiaryId, imageFile)));
+    public ResponseEntity<MessageUtils> getCropStep(@PathVariable("pack_diary_id") Long packDiaryId, @RequestBody GetCropStepRequest getCropStepRequest){
+        return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getCropStep(packDiaryId, getCropStepRequest)));
     }
 
 }
