@@ -2,6 +2,7 @@ package com.ssafy.fullerting.record.diary.controller;
 
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.record.diary.model.dto.request.CreateDiaryRequest;
+import com.ssafy.fullerting.record.diary.model.dto.request.UpdateDiaryRequest;
 import com.ssafy.fullerting.record.diary.model.dto.request.WateringCropsRequest;
 import com.ssafy.fullerting.record.diary.service.DiaryService;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,12 @@ public class DiaryController {
     @PostMapping("/{pack_diary_id}")
     public ResponseEntity<MessageUtils> createDiary(@PathVariable("pack_diary_id") Long packDiaryId, @RequestPart("images") List<MultipartFile> images, @RequestPart(value = "createDiaryRequest") CreateDiaryRequest createDiaryRequest){
         diaryService.createDiary(packDiaryId, images, createDiaryRequest);
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
+
+    @PatchMapping("/{diary_id}")
+    public ResponseEntity<MessageUtils> updateDiary(@PathVariable("diary_id") Long diaryId, @RequestPart("images") List<MultipartFile> images, @RequestPart(value = "updateDiaryRequest") UpdateDiaryRequest updateDiaryRequest){
+        diaryService.updateDiary(diaryId, images, updateDiaryRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 

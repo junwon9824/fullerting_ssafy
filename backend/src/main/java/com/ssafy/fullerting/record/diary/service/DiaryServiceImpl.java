@@ -7,6 +7,7 @@ import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.image.repository.ImageRepository;
 import com.ssafy.fullerting.record.diary.exception.DiaryException;
 import com.ssafy.fullerting.record.diary.model.dto.request.CreateDiaryRequest;
+import com.ssafy.fullerting.record.diary.model.dto.request.UpdateDiaryRequest;
 import com.ssafy.fullerting.record.diary.model.dto.request.WateringCropsRequest;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetAllDiaryResponse;
 import com.ssafy.fullerting.record.diary.model.dto.response.GetDetailDiaryResponse;
@@ -110,6 +111,38 @@ public class DiaryServiceImpl implements DiaryService{
             }).collect(Collectors.toList());
 
         } catch(Exception e){
+            throw new DiaryException(TRANSACTION_FAIL);
+        }
+    }
+
+    @Override
+    public void updateDiary(Long diaryId, List<MultipartFile> images, UpdateDiaryRequest updateDiaryRequest) {
+        Diary diary = diaryRepository.findById(diaryId).orElseThrow(()->new DiaryException(NOT_EXISTS_DIARY));
+        try {
+            //이미지 삭제
+            List<Image> imageList = imageRepository.findAllByDiaryId(diaryId);
+            for(Image image : imageList){
+                amazonS3Service.deleteFile(image.getImg_store_url());
+            }
+            imageRepository.deleteAll(imageList);
+
+            //이미지 업로드
+            S3ManyFilesResponse response = amazonS3Service.uploadFiles(images);
+            //이미지 DB 저장
+            response.getUrls().entrySet().stream().map(stringStringEntry -> {
+                Image image = imageRepository.save(Image.builder()
+                        .img_store_url(stringStringEntry.getValue())
+                        .diary(diary)
+                        .build());
+                return image;
+            }).collect(Collectors.toList());
+
+            //작물일기 수정
+            diaryRepository.save(diary.toBuilder()
+                    .title(updateDiaryRequest.getDiaryTitle())
+                    .content(updateDiaryRequest.getDiaryContent())
+                    .build());
+        } catch (Exception e){
             throw new DiaryException(TRANSACTION_FAIL);
         }
     }
