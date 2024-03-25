@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { Line } from "../../components/common/Line";
 import LoginForm from "../../components/user/LoginForm";
-
+import Social from "../../assets/svg/web_light_rd_na.svg";
+import { useNavigate } from "react-router-dom";
+import { SocialGoogle } from "../../apis/Social";
 const MainBox = styled.main`
   display: flex;
   justify-content: center;
@@ -42,6 +44,30 @@ const SvgBox = styled.div`
 `;
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
+  const googleLogin = () => {
+    try {
+      SocialGoogle();
+      navigate("/");
+    } catch (error) {
+      console.error("로그인 실패:", error);
+    }
+  };
+
+  // const { isLoading, data } = useQuery({
+  //   queryKey: ["SocialGoogle"],
+  //   queryFn: SocialGoogle,
+  // });
+
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
+
+  // if (data) {
+  //   console.log("페이지 들어옴", data);
+  //   return;
+  // }
   return (
     <MainBox>
       <Logo>풀러팅</Logo>
@@ -49,6 +75,7 @@ const LoginPage = () => {
       <Line />
       <SocialLoginBox>
         <Description>카카오로 풀러팅 간편하게 시작하기</Description>
+        <img src={Social} onClick={googleLogin} alt="" />
         <SvgBox>카카오</SvgBox>
       </SocialLoginBox>
     </MainBox>
