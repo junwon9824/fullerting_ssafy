@@ -4,7 +4,7 @@ import pullleft from "/src/assets/svg/pullleft.svg";
 const MainBox = styled.div`
   justify-content: center;
   flex-direction: column;
-  height: 11.5rem;
+  height: 12.4rem;
   padding: 1%.5rem 0;
 `;
 const LogoAndTextContainer = styled.div`
@@ -15,9 +15,9 @@ const LogoAndTextContainer = styled.div`
 const Text = styled.div`
   color: #2b5f50;
   font-family: "GamtanRoad Dotum TTF";
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1.125rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  line-height: 2.3rem;
 `;
 
 const Character = styled.button`
