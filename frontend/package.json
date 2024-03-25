@@ -28,6 +28,7 @@
     "swiper": "^11.0.7",
     "uuid": "^9.0.1",
     "vite-svg-loader": "^5.1.0",
+    "vue": "^3.4.21",
     "yarn": "^1.22.22"
   },
   "devDependencies": {
@@ -45,5 +46,6 @@
     "typescript": "^5.2.2",
     "vite": "^5.1.6",
     "vite-plugin-svgr": "^4.2.0"
-  }
+  },
+  "license": "MIT"
 }

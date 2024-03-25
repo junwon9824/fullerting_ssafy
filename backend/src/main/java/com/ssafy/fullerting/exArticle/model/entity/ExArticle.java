@@ -132,6 +132,7 @@ public class ExArticle {
 //                        favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
 //                                .builder().islike(false).isLikeCnt(0).build()
 //                )
+                .time(article.created_at)
                 .build();
 
 

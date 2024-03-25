@@ -113,3 +113,17 @@ export const updateHarvest = async (packDiaryId: string) => {
     throw error;
   }
 };
+
+export const deleteCrop = async (packDiaryId: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.delete(`/pack-diaries/${packDiaryId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error userLogin: ", error);
+    throw error;
+  }
+};

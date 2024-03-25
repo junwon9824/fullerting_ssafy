@@ -30,6 +30,7 @@ public class ExArticleDetailResponse {
     private UserResponse userResponse;
     private TransResponse transResponse;
 
+
     
 
 //    public ExArticle toEntity(ExArticleResponse exArticleResponse) {
