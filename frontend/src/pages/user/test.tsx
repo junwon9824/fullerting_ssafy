@@ -77,6 +77,7 @@ function TestPage() {
 
   const sendMessage = async () => {
     if (stompClient && stompClient.connected && newMessage.trim() !== "") {
+        
       try {
         const messageReq = {
           dealCurPrice: newMessage,
