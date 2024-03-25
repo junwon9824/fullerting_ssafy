@@ -24,6 +24,7 @@ import Community from "../pages/community/Community";
 import CreateCommunity from "../pages/community/CreateCommunity";
 import CommunityDetail from "../pages/community/CommunityDetail";
 import TradeGeneralDetailPage from "../pages/trade/TradeGeneralDetail";
+import CropUpdatePage from "../pages/diary/CropUpdatePage";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
@@ -36,6 +37,7 @@ const diaryRoutes = [
   { path: "/diary/:packDiaryId/create", element: <DiaryCreatePage /> },
   { path: "/diary/:packDiaryId/water", element: <DiaryWaterPage /> },
   { path: "/diary/create", element: <CropCreatePage /> },
+  { path: "/diary/:packDiaryId/update", element: <CropUpdatePage /> },
 ];
 
 const tradeRoutes = [
