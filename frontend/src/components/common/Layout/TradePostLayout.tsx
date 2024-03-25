@@ -12,6 +12,7 @@ const MainBox = styled.main`
   width: 100%;
   padding-top: 3.125rem;
   padding-bottom: 6rem;
+  overflow-y: scroll;
 `;
 
 const InnerBox = styled.div`

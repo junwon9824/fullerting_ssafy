@@ -46,9 +46,9 @@ public class SecurityConfig {
                 .oauth2Login(customizer ->
                         customizer
 //                                .failureHandler(authFailureHandler)
-                                .successHandler(oAuthSuccessHandler)
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint.userService(customOAuth2Service))
+                                .successHandler(oAuthSuccessHandler)
                 )
 
                 // 인가 경로 설정
