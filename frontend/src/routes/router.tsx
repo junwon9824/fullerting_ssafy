@@ -24,10 +24,12 @@ import CommunityLayout from "../pages/community/CommunityLayout";
 import Community from "../pages/community/Community";
 import CreateCommunity from "../pages/community/CreateCommunity";
 import CommunityDetail from "../pages/community/CommunityDetail";
+import AuthCallbackPage from "../pages/user/AuthCallbackPage";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/join", element: <JoinPage /> },
+  { path: "/auth/callback", element: <AuthCallbackPage /> },
 ];
 
 const diaryRoutes = [
