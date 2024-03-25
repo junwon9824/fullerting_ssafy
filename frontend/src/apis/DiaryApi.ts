@@ -80,6 +80,26 @@ export const createCrop = async (cropData: CropFormType) => {
   }
 };
 
+export const createWater = async (waterData: DiaryFormType) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+
+    const response = await api.post(
+      `/diaries/${waterData.packDiaryId}/water`,
+      {
+        diarySelectedAt: waterData.diarySelectedAt,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error createWater: ", error);
+    throw error;
+  }
+};
+
 export const updateCrop = async (cropForm: CropFormType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -96,7 +116,7 @@ export const updateCrop = async (cropForm: CropFormType) => {
     );
     return response.data.data_body;
   } catch (error) {
-    console.error("Error userLogin: ", error);
+    console.error("Error updateCrop: ", error);
     throw error;
   }
 };
@@ -109,7 +129,7 @@ export const updateHarvest = async (packDiaryId: string) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error userLogin: ", error);
+    console.error("Error updateHarvest: ", error);
     throw error;
   }
 };
@@ -123,7 +143,7 @@ export const deleteCrop = async (packDiaryId: string) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.error("Error userLogin: ", error);
+    console.error("Error deleteCrop: ", error);
     throw error;
   }
 };

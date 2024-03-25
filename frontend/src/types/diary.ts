@@ -24,6 +24,11 @@ interface CropFormType {
   packDiaryCulStartAt: string;
 }
 
+interface DiaryFormType {
+  packDiaryId: string;
+  diarySelectedAt: string;
+}
+
 interface ImageType {
   id: number;
   img_store_url: string;
