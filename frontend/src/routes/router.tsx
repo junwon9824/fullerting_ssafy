@@ -17,7 +17,6 @@ import TradePostPage from "../pages/trade/TradePostPage";
 import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
 import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
 import CropCreatePage from "../pages/diary/CropCreatePage";
-import TradeProposeDetail from "../pages/trade/TradeProposeDetail";
 import TestPage from "../pages/user/test";
 import CommunityLayout from "../pages/community/CommunityLayout";
 import Community from "../pages/community/Community";
@@ -27,6 +26,8 @@ import TradeGeneralDetailPage from "../pages/trade/TradeGeneralDetail";
 import CropUpdatePage from "../pages/diary/CropUpdatePage";
 import TradeProposeDetailPage from "../pages/trade/TradeProposeDetail";
 import TradeSellerPage from "../pages/trade/TradeSeller";
+import AuthCallbackPage from "../pages/user/AuthCallbackPage";
+
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
