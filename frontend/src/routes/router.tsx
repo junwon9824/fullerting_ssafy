@@ -31,6 +31,7 @@ const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/join", element: <JoinPage /> },
+  { path: "/auth/callback", element: <AuthCallbackPage /> },
 ];
 
 const diaryRoutes = [
