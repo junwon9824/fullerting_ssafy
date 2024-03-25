@@ -1,14 +1,10 @@
 import styled from "styled-components";
-import Arrow from "/src/assets/svg/backarrow.svg";
 import Cart from "/src/assets/svg/cart.svg";
 import Chat from "/src/assets/svg/chat.svg";
 import Diary from "/src/assets/svg/diary.svg";
 import Home from "/src/assets/svg/home.svg";
 import Mypage from "/src/assets/svg/mypage.svg";
-import Modify from "/src/assets/svg/modify.svg";
-import Delete from "/src/assets/svg/delete.svg";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 interface NavItem {
   Icon: string;
@@ -51,6 +47,7 @@ interface TopBarType {
   showEdit?: boolean;
   showBack?: boolean;
   showTitle?: boolean;
+  deleteFunc?: any;
 }
 
 const TopBox = styled.header`
@@ -101,6 +98,7 @@ const TopBar = ({
   showEdit = false,
   showBack = true,
   showTitle = true,
+  deleteFunc,
 }: TopBarType) => {
   const navigate = useNavigate();
 
@@ -112,7 +110,12 @@ const TopBar = ({
     navigate("update");
   };
 
-  const onClickDelete = () => {};
+  const onClickDelete = () => {
+    const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
+    if (isConfirmed) {
+      deleteFunc();
+    }
+  };
 
   return (
     <TopBox>
