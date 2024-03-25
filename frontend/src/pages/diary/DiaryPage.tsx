@@ -191,7 +191,7 @@ const DiaryPage = () => {
             </TopBox>
             <MenuBar />
           </FixedContainer>
-          <MiddleBox style={{ marginTop: "16rem" }}>
+          <MiddleBox style={{ marginTop: "16.4rem" }}>
             {menu === "작물꿀팁" ? (
               <CropTips />
             ) : (
