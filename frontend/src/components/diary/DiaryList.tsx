@@ -56,13 +56,23 @@ const ContentBox = styled.div`
 `;
 
 const ImageBox = styled.div`
+  display: flex;
   width: 100%;
-  height: 10rem;
+  height: 9rem;
+  overflow: auto;
+  gap: 0.5rem;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
 `;
 
 const ImageItem = styled.img`
-  width: 100%;
+  width: 9rem;
   height: 100%;
+  border-radius: 0.8rem;
 `;
 
 const InfoBox = styled.div`
@@ -133,10 +143,10 @@ const DiaryCard = ({ diary }: { diary: DiaryEntry }) => {
       <ContentBox>
         {diary.imageResponseList.length > 0 && (
           <ImageBox>
-            {/* {diary.imageResponseList.map((image, index) => (
+            {diary.imageResponseList.map((image, index) => (
               <ImageItem key={index} src={image.img_store_url} alt="" />
-            ))} */}
-            <ImageItem src={diary.imageResponseList[0].img_store_url} alt="" />
+            ))}
+            {/* <ImageItem src={diary.imageResponseList[0].img_store_url} alt="" /> */}
           </ImageBox>
         )}
         <InfoBox>
