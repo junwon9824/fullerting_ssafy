@@ -108,7 +108,9 @@ const TopBar = ({
     navigate(-1);
   };
 
-  const onClickEdit = () => {};
+  const onClickEdit = () => {
+    navigate("update");
+  };
 
   const onClickDelete = () => {};
 
