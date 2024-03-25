@@ -26,6 +26,7 @@ public class ExArticleResponse {
     private List<ImageResponse> imageResponses; //
     private int price;
     private LocalDateTime time;
+    private String content;
 //    private  FavoriteResponse favoriteResponse;
 
 //    public ExArticle toEntity(ExArticleResponse exArticleResponse) {

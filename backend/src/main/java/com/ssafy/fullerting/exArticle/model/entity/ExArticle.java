@@ -133,6 +133,7 @@ public class ExArticle {
 //                                .builder().islike(false).isLikeCnt(0).build()
 //                )
                 .time(article.created_at)
+                .content(article.getContent())
                 .build();
 
 
