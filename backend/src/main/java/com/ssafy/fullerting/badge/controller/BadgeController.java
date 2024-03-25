@@ -1,6 +1,5 @@
 package com.ssafy.fullerting.badge.controller;
 
-import com.ssafy.fullerting.badge.service.BadgeService;
 import com.ssafy.fullerting.badge.service.MyBadgeService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import io.swagger.v3.oas.annotations.Operation;
