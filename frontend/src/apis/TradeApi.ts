@@ -54,10 +54,7 @@ export const getTradeList = async (accessToken: string) => {
     throw e;
   }
 };
-export const getTradeGeneralDetail = async (
-  accessToken: string,
-  postId: number
-) => {
+export const getTradeDetail = async (accessToken: string, postId: number) => {
   try {
     const response = await api.get(`/exchanges/${postId}/detail`, {
       headers: { Authorization: `Bearer ${accessToken}` },

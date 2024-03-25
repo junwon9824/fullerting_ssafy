@@ -1,13 +1,7 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-  createContext,
-} from "react";
-import { Client, IMessage } from "@stomp/stompjs"; // STOMP 프로토콜을 사용하기 위한 라이브러리를 가져옵니다.
-import axios from "axios"; // HTTP 클라이언트 라이브러리를 가져옵니다.
-import { Link, useParams } from "react-router-dom"; // 라우터 관련 기능을 사용하기 위한 라이브러리를 가져옵니다.
+import React, { useEffect, useState } from "react";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import axios from "axios";
 import { api } from "../../apis/Base";
 
 interface MessageReq {
@@ -23,41 +17,23 @@ interface MessageRes {
 }
 
 function TestPage() {
-  // const {chatId} = useParams();
+  const chattingRoomId = 91;
 
-  const chattingRoomId = 91; // 현재 게시물 (exarticleid 를 채팅룸 id 로 한다.)
-
-  const [stompClient, setStompClient] = useState<Client | null>(null); // STOMP 클라이언트 상태 관리
-  const [messages, setMessages] = useState<MessageRes[]>([]); // 채팅 메시지 목록 상태 관리
-
-  const [newMessage, setNewMessage] = useState<string>(""); // 새 메시지 입력 상태 관리
+  const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
+  const [messages, setMessages] = useState<MessageRes[]>([]);
+  const [newMessage, setNewMessage] = useState<string>("");
 
   const loadMessages = async () => {
-    //기존 디비에 저장된 제안 목록 불러오기
     try {
-      // const response = await api.get(
-      //     `/exchanges/${chattingRoomId}/suggestion`
-      // );
       const accessToken = sessionStorage.getItem("accessToken");
       if (!accessToken) {
         throw new Error("Access token is not available.");
       }
-      // const response = await api.get(`/badges`, {
-      //   headers: { Authorization: `Bearer ${accessToken}` },
-      // });
 
-      const response = await api.get(
-        `/exchanges/${chattingRoomId}/suggestion`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      //  const response = await axios.get(
-      //   `http://localhost:8080/v1/exchanges/${chattingRoomId}/suggestion`,
-      //   {
-      //     headers: { Authorization: `Bearer ${accessToken}` },
-      //   }
-      // );
+
+      const response = await api.get(`/exchanges/${chattingRoomId}/suggestion`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
 
       console.log(response.data.data_body);
       setMessages(response.data.data_body);
@@ -69,43 +45,52 @@ function TestPage() {
   useEffect(() => {
     loadMessages();
 
-    const client = new Client({
-      // const baseURL = "https://j10c102.p.ssafy.io/api/v1";
+    // const socket = new SockJS("/websocket");
+    // const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS("https://j10c102.p.ssafy.io/api/ws");
 
-      // brokerURL: `ws://localhost:8080/ws`, // Server WebSocket URL
-      brokerURL: `wss://j10c102.p.ssafy.io/websocket/ws`, // Server WebSocket URL
+    // const socket = new WebSocket("ws://localhost:8080/ws");
+    const client = Stomp.over(socket);
 
-      reconnectDelay: 5000, // 연결 끊겼을 때, 재연결시도까지 지연시간(ms)
-      onConnect: () => {
-        console.log("WebSocket 연결됨"); // 이 위치가 서버와의 연결이 성공적으로 이루어졌음을 보장
+    console.log(socket);
+
+    client.connect(
+      {},
+      () => {
+        console.log("WebSocket 연결됨");
         client.subscribe(
           `/sub/chattings/${chattingRoomId}/messages`,
-          (message: IMessage) => {
-            const msg: MessageRes = JSON.parse(message.body); // 메시지를 JSON형태로 파싱
-            setMessages((prevMessages) => [...prevMessages, msg]); // 기존 메시지 목록에 새 메시지 추가
+          (message) => {
+            const msg: MessageRes = JSON.parse(message.body);
+            setMessages((prevMessages) => [...prevMessages, msg]);
           }
         );
       },
-    });
+      (error) => {
+        console.error("WebSocket 연결 실패", error);
+      }
+    );
 
-    client.activate(); // STOMP 클라이언트 활성화
-    setStompClient(client); // STOMP 클라이언트 상태 업데이트
+    setStompClient(client);
+
     return () => {
-      client.deactivate(); // 컴포넌트 언마운트 시, STOMP 클라이언트 비활성화
+      if (client.connected) {
+        client.disconnect(() => {
+          console.log("Disconnected from WebSocket server");
+        });
+      }
     };
-  }, [chattingRoomId]); // chatId가 변경될 때마다 useEffect 실행
+  }, [chattingRoomId]);
 
   const sendMessage = async () => {
-    if (newMessage.trim() !== "") {
+
+
+    if (stompClient && newMessage.trim() !== "") {
+
       try {
         const messageReq = {
           dealCurPrice: newMessage,
         };
-
-        // await axios.post(
-        //   `http://localhost:8080/v1/exchanges/${chattingRoomId}/deal_bid`,
-        //   messageReq
-        // ); //입찰 제안하기
 
         const accessToken = sessionStorage.getItem("accessToken");
         if (!accessToken) {
@@ -120,21 +105,8 @@ function TestPage() {
           }
         );
 
-        
-      // 서버로 메시지 발행
-      stompClient!.send(
-        `/pub/chattings/${chattingRoomId}/messages`, // 서버에서 메시지를 받을 endpoint
-        {}, // 헤더는 비워둠
-        JSON.stringify(messageReq) // 메시지 내용을 JSON 문자열로 변환
-      );
-
-
-        // await api.post(
-        //   `http://localhost:8080/v1/exchanges/${chattingRoomId}/deal_bid`,
-        //   messageReq
-        // ); //입찰 제안하기
-
-        setNewMessage(""); // 메시지 전송 후 입력 필드 초기화
+        stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(messageReq));
+        setNewMessage("");
       } catch (error) {
         console.error("메시지 전송 실패", error);
       }
@@ -147,8 +119,7 @@ function TestPage() {
         <ul>
           {messages.map((msg) => (
             <li key={msg.id}>
-              입찰희망자 아이디 {msg.user_id}: 입찰 제안 가격{" "}
-              {msg.bid_log_price} 제안 날짜 ({msg.localDateTime})
+              입찰희망자 아이디 {msg.user_id}: 입찰 제안 가격 {msg.bid_log_price} 제안 날짜 ({msg.localDateTime})
               <hr />
             </li>
           ))}
@@ -159,19 +130,16 @@ function TestPage() {
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           style={{
-            width: "100%", // 너비를 100%로 설정하여 부모 요소에 꽉 차도록 함
-            padding: "10px", // 안쪽 여백을 설정하여 입력 필드의 텍스트가 잘 보이도록 함
-            fontSize: "16px", // 글꼴 크기를 조정하여 텍스트가 잘 보이도록 함
-            border: "1px solid #ccc", // 테두리를 설정하여 입력 필드가 화면에서 잘 구분되도록 함
-            borderRadius: "5px", // 테두리의 모서리를 둥글게 만듦
-            boxSizing: "border-box", // 테두리와 안쪽 여백이 요소의 크기에 영향을 주지 않도록 함
-            outline: "none", // 포커스 효과를 제거하여 입력 필드가 클릭되었을 때 시각적으로 잘 보이도록 함
+            width: "100%",
+            padding: "10px",
+            fontSize: "16px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            boxSizing: "border-box",
+            outline: "none",
           }}
         />
-        <button onClick={sendMessage}>
-          {/* <PaperPlaneTilt size={32} /> Add icon import or component */}
-          전송
-        </button>
+        <button onClick={sendMessage}>전송</button>
       </div>
     </div>
   );
