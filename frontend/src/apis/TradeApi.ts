@@ -41,9 +41,13 @@ export const useLike = () => {
         // accessToken이 없는 경우, 오류를 반환하거나 다른 처리를 할 수 있습니다.
         throw new Error("No access token available");
       }
-      return await api.post(`/exchanges/${postId}/like`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      return await api.post(
+        `/exchanges/${postId}/like`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
     },
     onSuccess: (res) => {
       console.log(res);
