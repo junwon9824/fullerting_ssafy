@@ -44,7 +44,7 @@ function TestPage() {
   useEffect(() => {
     loadMessages();
 
-    const socket = new SockJS("wss://j10c102.p.ssafy.io/websocket");
+    const socket = new SockJS("https://j10c102.p.ssafy.io/websocket/ws");
     const client = Stomp.over(socket);
 
     client.connect(
@@ -77,7 +77,7 @@ function TestPage() {
 
   const sendMessage = async () => {
     if (stompClient && stompClient.connected && newMessage.trim() !== "") {
-
+        
       try {
         const messageReq = {
           dealCurPrice: newMessage,

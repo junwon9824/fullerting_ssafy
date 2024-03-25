@@ -100,6 +100,7 @@ public class CustomUser implements UserDetails{
                 .rank(this.rank)
                 .location(this.location)
                 .authProvider(this.authProvider)
+
                 .build();
     }
 
