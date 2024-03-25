@@ -30,7 +30,7 @@ function TestPage() {
         throw new Error("Access token is not available.");
       }
 
-      
+
       const response = await api.get(`/exchanges/${chattingRoomId}/suggestion`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -76,7 +76,7 @@ function TestPage() {
     return () => {
       if (client.connected) {
         client.disconnect(() => {
-            console.log("Disconnected from WebSocket server");
+          console.log("Disconnected from WebSocket server");
         });
       }
     };
@@ -85,8 +85,8 @@ function TestPage() {
   const sendMessage = async () => {
 
 
-    if (stompClient   && newMessage.trim() !== "") {
-        
+    if (stompClient && newMessage.trim() !== "") {
+
       try {
         const messageReq = {
           dealCurPrice: newMessage,
