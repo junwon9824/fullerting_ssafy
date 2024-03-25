@@ -73,7 +73,7 @@ function TestPage() {
       // const baseURL = "https://j10c102.p.ssafy.io/api/v1";
 
       // brokerURL: `ws://localhost:8080/ws`, // Server WebSocket URL
-      brokerURL: `wss://j10c102.p.ssafy.io/ws`, // Server WebSocket URL
+      brokerURL: `wss://j10c102.p.ssafy.io/websocket`, // Server WebSocket URL
 
       reconnectDelay: 5000, // 연결 끊겼을 때, 재연결시도까지 지연시간(ms)
       onConnect: () => {
@@ -87,6 +87,7 @@ function TestPage() {
         );
       },
     });
+
     client.activate(); // STOMP 클라이언트 활성화
     setStompClient(client); // STOMP 클라이언트 상태 업데이트
     return () => {
@@ -118,6 +119,15 @@ function TestPage() {
             headers: { Authorization: `Bearer ${accessToken}` },
           }
         );
+
+        
+      // 서버로 메시지 발행
+      stompClient!.send(
+        `/pub/chattings/${chattingRoomId}/messages`, // 서버에서 메시지를 받을 endpoint
+        {}, // 헤더는 비워둠
+        JSON.stringify(messageReq) // 메시지 내용을 JSON 문자열로 변환
+      );
+
 
         // await api.post(
         //   `http://localhost:8080/v1/exchanges/${chattingRoomId}/deal_bid`,
