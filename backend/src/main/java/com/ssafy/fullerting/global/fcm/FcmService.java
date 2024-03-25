@@ -6,6 +6,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 
 @Slf4j
@@ -38,28 +38,41 @@ public class FcmService {
         try {
             ClassPathResource resource = new ClassPathResource(serviceAccountFilePath);
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(resource.getInputStream())).build();
+                    .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
+                    .setProjectId(projectId)
+                    .build();
             //입력한 정보를 이용하여 initialze 해준다.
-            FirebaseApp.initializeApp(options);
-            log.info("FCM Admin SDK Load Success : {}", resource);
+            FirebaseApp firebaseApp = FirebaseApp.initializeApp(options);
+            log.info("FCM Admin SDK Load Success : {}", firebaseApp.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    public void sendNotification(String registrationToken, String title, String body) {
-        Message message = Message.builder()
-                .putData("title", title)
-                .putData("body", body)
-                .setToken(registrationToken)
-                .build();
+    // 해당 지정된 topic에 fcm를 보내는 메서드
+    public void sendMessageByTopic(String title, String body) throws IOException, FirebaseMessagingException {
+        FirebaseMessaging.getInstance().send(Message.builder()
+                .setNotification(Notification.builder()
+                        .setTitle(title)
+                        .setBody(body)
+                        .build())
+                .setTopic(topicName)
+                .build());
 
-        try {
-            String response = FirebaseMessaging.getInstance().send(message);
-        } catch (FirebaseMessagingException e) {
-            log.info("FCM 메시지 전송 실패 : {} ", e.getMessage());
-        }
     }
+
+    // 받은 token을 이용하여 fcm를 보내는 메서드
+    public void sendMessageByToken(String title, String body,String token) throws FirebaseMessagingException{
+        FirebaseMessaging.getInstance().send(Message.builder()
+                .setNotification(Notification.builder()
+                        .setTitle(title)
+                        .setBody(body)
+                        .build())
+                .setToken(token)
+                .build());
+    }
+
+
 
 }

@@ -17,14 +17,16 @@ import TradePostPage from "../pages/trade/TradePostPage";
 import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
 import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
 import CropCreatePage from "../pages/diary/CropCreatePage";
-import TradeGeneralDetail from "../pages/trade/TradeGeneralDetail";
 import TradeProposeDetail from "../pages/trade/TradeProposeDetail";
 import TestPage from "../pages/user/test";
 import CommunityLayout from "../pages/community/CommunityLayout";
 import Community from "../pages/community/Community";
 import CreateCommunity from "../pages/community/CreateCommunity";
 import CommunityDetail from "../pages/community/CommunityDetail";
-import AuthCallbackPage from "../pages/user/AuthCallbackPage";
+import TradeGeneralDetailPage from "../pages/trade/TradeGeneralDetail";
+import CropUpdatePage from "../pages/diary/CropUpdatePage";
+import TradeProposeDetailPage from "../pages/trade/TradeProposeDetail";
+import TradeSellerPage from "../pages/trade/TradeSeller";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
@@ -38,13 +40,15 @@ const diaryRoutes = [
   { path: "/diary/:packDiaryId/create", element: <DiaryCreatePage /> },
   { path: "/diary/:packDiaryId/water", element: <DiaryWaterPage /> },
   { path: "/diary/create", element: <CropCreatePage /> },
+  { path: "/diary/:packDiaryId/update", element: <CropUpdatePage /> },
 ];
 
 const tradeRoutes = [
   { path: "/trade", element: <TradePage /> },
   { path: "/trade/post", element: <TradePostPage /> },
-  { path: "/trade/generaldetail", element: <TradeGeneralDetail /> },
-  { path: "/trade/proposedetail", element: <TradeProposeDetail /> },
+  { path: "/trade/:postId/generaldetail", element: <TradeGeneralDetailPage /> },
+  { path: "/trade/:postId/proposedetail", element: <TradeProposeDetailPage /> },
+  { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
   { path: "/trade/test", element: <TestPage /> },
 ];
 

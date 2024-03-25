@@ -7,11 +7,11 @@ interface StyledInputType {
   type: string;
   id: string;
   name: string;
-  placeholder: string;
+  placeholder?: string;
   value?: string;
   min?: string;
   max?: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
 }
 

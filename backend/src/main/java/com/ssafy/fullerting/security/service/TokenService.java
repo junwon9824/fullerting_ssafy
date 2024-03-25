@@ -39,7 +39,6 @@ public class TokenService {
         String refreshToken;
         Long userId = null;
         String email = null;
-//        Object principal = authentication.getPrincipal();
 
         // 인증 방식에 따라 이메일 추출
         if (authentication instanceof CustomAuthenticationToken) {
@@ -61,15 +60,6 @@ public class TokenService {
         }
         // 사용자권한 추출
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-
-//        if (authentication instanceof CustomAuthenticationToken) {
-//            // 인증 객체에 유저 아이디를 담아서 보내는 경우, 인증 객체에서 바로 뽑아서 토큰 생성
-//            CustomAuthenticationToken customAuth = (CustomAuthenticationToken) authentication;
-//            email = (String) customAuth.getPrincipal();
-//            userId = customAuth.getUserId();
-//        } else if (authentication.getPrincipal() instanceof OAuth2User) {
-//            OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-//            email = oAuth2User.getAttribute("email")
 
         accessToken = jwtUtils.issueAccessToken(email, userId, authorities);
         refreshToken = jwtUtils.issueRefreshToken(email, userId, authorities);

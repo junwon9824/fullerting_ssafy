@@ -12,8 +12,9 @@ export const getCropList = async (accessToken: string) => {
   }
 };
 
-export const getCropData = async (accessToken: string, packDiaryId: string) => {
+export const getCropData = async (packDiaryId: string) => {
   try {
+    const accessToken = sessionStorage.getItem("accessToken");
     const response = await api.get(`/pack-diaries/${packDiaryId}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
@@ -65,11 +66,7 @@ export const getTipList = async (cropTypeId: number) => {
   }
 };
 
-export const createCrop = async (cropData: {
-  cropTypeId: number;
-  packDiaryTitle: string;
-  packDiaryCulStartAt: string;
-}) => {
+export const createCrop = async (cropData: CropFormType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
 
@@ -83,6 +80,47 @@ export const createCrop = async (cropData: {
   }
 };
 
+export const createWater = async (waterData: DiaryFormType) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+
+    const response = await api.post(
+      `/diaries/${waterData.packDiaryId}/water`,
+      {
+        diarySelectedAt: waterData.diarySelectedAt,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error createWater: ", error);
+    throw error;
+  }
+};
+
+export const updateCrop = async (cropForm: CropFormType) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.patch(
+      `/pack-diaries/${cropForm.packDiaryId}`,
+      {
+        cropTypeId: cropForm.cropTypeId,
+        packDiaryTitle: cropForm.packDiaryTitle,
+        packDiaryCulStartAt: cropForm.packDiaryCulStartAt,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error updateCrop: ", error);
+    throw error;
+  }
+};
+
 export const updateHarvest = async (packDiaryId: string) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -91,7 +129,21 @@ export const updateHarvest = async (packDiaryId: string) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error userLogin: ", error);
+    console.error("Error updateHarvest: ", error);
+    throw error;
+  }
+};
+
+export const deleteCrop = async (packDiaryId: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.delete(`/pack-diaries/${packDiaryId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleteCrop: ", error);
     throw error;
   }
 };

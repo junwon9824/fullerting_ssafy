@@ -46,9 +46,9 @@ public class SecurityConfig {
                 .oauth2Login(customizer ->
                         customizer
 //                                .failureHandler(authFailureHandler)
-                                .successHandler(oAuthSuccessHandler)
                                 .userInfoEndpoint(userInfoEndpoint ->
                                         userInfoEndpoint.userService(customOAuth2Service))
+                                .successHandler(oAuthSuccessHandler)
                 )
 
                 // 인가 경로 설정
@@ -78,8 +78,6 @@ public class SecurityConfig {
                 // JWT 필터
                 .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(exceptionHandlerFilter, JwtValidationFilter.class);
-
-
 
         return http.build();
     }

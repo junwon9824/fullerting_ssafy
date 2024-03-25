@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.global.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.*;
 import org.springframework.web.socket.WebSocketHandler;
@@ -12,6 +13,7 @@ import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
 
 @Configuration
 @EnableWebSocketMessageBroker
+@Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
@@ -23,8 +25,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws") // WebSocket 엔드포인트 설정 // ex )
-                .setAllowedOriginPatterns("*");
-//                .withSockJS(); // SockJS 지원
+                .setAllowedOriginPatterns("*")
+                .withSockJS(); // SockJS 지원
     }
 
 
@@ -38,6 +40,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
                         // CORS 설정
                         session.getHandshakeHeaders().add("Access-Control-Allow-Origin", "*");
+                        log.info("afterConnectionEstablished");
                         super.afterConnectionEstablished(session);
                     }
                 };

@@ -88,6 +88,10 @@ public class ExArticleService {
     public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
 //        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
 
+        if(exArticleRegisterRequest.getExArticleType().equals(null)){
+            throw new ExArticleException(ExArticleErrorCode.NOT_EXISTS);
+        }
+
         CustomUser customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 //        log.info("ussssss"+customUser.getEmail());
         log.info("ussssss" + email1);
@@ -303,6 +307,7 @@ public class ExArticleService {
 
         for (Image image1 : image) {
             imageRepository.delete(image1);
+            amazonS3Service.deleteFile(image1.getImg_store_url()); //s3
         }
 
         if (article.getType().equals(ExArticleType.DEAL)) {
@@ -318,4 +323,36 @@ public class ExArticleService {
 
     }
 
+    public void convert_like(Long ex_article_id) {
+
+        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() ->
+                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
+
+        UserResponse userResponse = userService.getUserInfo();
+        Long userid = userResponse.getId();
+        Long articleid = article.getId();
+
+        Optional<Favorite> favorite1 = favoriteRepository.findByUserIdAndExArticleId(userid, articleid);
+
+        if (favorite1.isPresent()) { //내가 이미 좋아요를 한경우 삭제를 해야한다.
+
+            article.deletefavorite(favorite1.orElse(null));
+
+            favoriteRepository.delete(favorite1.orElse(null));
+
+            return;
+        }
+        // 좋아요를 안한경우
+
+        Favorite favorite = new Favorite();
+        favorite.setExArticle(article);
+        favorite.setUser(userResponse.toEntity(userResponse));
+
+
+        article.addfavorite(favorite);
+
+        favoriteRepository.save(favorite);
+
+    }
 }

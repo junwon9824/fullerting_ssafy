@@ -5,7 +5,6 @@ const LayoutMainBox = styled.main`
   align-items: center;
   flex-direction: column;
   height: 100%;
-  width: 100%;
   padding-top: 3.125rem;
   padding-bottom: 6rem;
 `;
@@ -18,6 +17,7 @@ const LayoutInnerBox = styled.div`
   align-items: center;
   gap: 1.5rem;
   padding: 1.12rem 0;
+  overflow-y: scroll;
 `;
 
 export { LayoutMainBox, LayoutInnerBox };

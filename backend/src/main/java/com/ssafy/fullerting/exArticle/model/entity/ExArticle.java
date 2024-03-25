@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @Entity
 //@ToString
 @Table(name = "ex_article")
@@ -132,6 +132,8 @@ public class ExArticle {
 //                        favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
 //                                .builder().islike(false).isLikeCnt(0).build()
 //                )
+                .time(article.created_at)
+                .content(article.getContent())
                 .build();
 
 

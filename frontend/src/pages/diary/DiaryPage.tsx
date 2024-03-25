@@ -13,7 +13,12 @@ import { useAtom } from "jotai";
 import { cropAtom, menuAtom } from "../../stores/diary";
 import CropTips from "../../components/diary/CropTips";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getCropData, getDiaryList, updateHarvest } from "../../apis/DiaryApi";
+import {
+  deleteCrop,
+  getCropData,
+  getDiaryList,
+  updateHarvest,
+} from "../../apis/DiaryApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -107,18 +112,13 @@ const DiaryPage = () => {
     setMenu("다이어리");
   }, []);
 
-  const accessToken = sessionStorage.getItem("accessToken");
-
   const {
     data: cropData,
     isSuccess,
     refetch: refetchCropData,
   } = useQuery({
     queryKey: ["cropData"],
-    queryFn:
-      packDiaryId && accessToken
-        ? () => getCropData(accessToken, packDiaryId)
-        : undefined,
+    queryFn: packDiaryId ? () => getCropData(packDiaryId) : undefined,
   });
 
   const { data: diaryList } = useQuery({
@@ -130,7 +130,7 @@ const DiaryPage = () => {
     setCrop(cropData);
   }
 
-  const { mutate } = useMutation({
+  const { mutate: updateMutate } = useMutation({
     mutationFn: updateHarvest,
     onSuccess: () => {
       refetchCropData();
@@ -140,8 +140,24 @@ const DiaryPage = () => {
     },
   });
 
+  const { mutate: deleteMutate } = useMutation({
+    mutationFn: deleteCrop,
+    onSuccess: () => {
+      navigate("/diary");
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   const handleHarvestClick = () => {
-    if (packDiaryId) mutate(packDiaryId);
+    if (!packDiaryId) return;
+    updateMutate(packDiaryId);
+  };
+
+  const handleDeleteCrop = () => {
+    if (!packDiaryId) return;
+    deleteMutate(packDiaryId);
   };
 
   const handleButtonClick = () => {
@@ -150,7 +166,7 @@ const DiaryPage = () => {
 
   return (
     <>
-      <TopBar title="작물일기" showEdit={true} />
+      <TopBar title="작물일기" showEdit={true} deleteFunc={handleDeleteCrop} />
       <LayoutMainBox>
         <LayoutInnerBox>
           <FixedContainer>
@@ -175,7 +191,7 @@ const DiaryPage = () => {
             </TopBox>
             <MenuBar />
           </FixedContainer>
-          <MiddleBox style={{ marginTop: "16rem" }}>
+          <MiddleBox style={{ marginTop: "16.4rem" }}>
             {menu === "작물꿀팁" ? (
               <CropTips />
             ) : (

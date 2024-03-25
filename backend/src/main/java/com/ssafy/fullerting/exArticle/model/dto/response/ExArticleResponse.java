@@ -8,6 +8,7 @@ import com.ssafy.fullerting.image.model.dto.response.ImageResponse;
 import com.ssafy.fullerting.image.model.entity.Image;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,8 @@ public class ExArticleResponse {
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
     private List<ImageResponse> imageResponses; //
     private int price;
+    private LocalDateTime time;
+    private String content;
 //    private  FavoriteResponse favoriteResponse;
 
 //    public ExArticle toEntity(ExArticleResponse exArticleResponse) {

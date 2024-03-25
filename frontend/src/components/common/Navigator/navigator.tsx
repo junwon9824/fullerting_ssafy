@@ -1,14 +1,10 @@
 import styled from "styled-components";
-import Arrow from "/src/assets/svg/backarrow.svg";
 import Cart from "/src/assets/svg/cart.svg";
 import Chat from "/src/assets/svg/chat.svg";
 import Diary from "/src/assets/svg/diary.svg";
 import Home from "/src/assets/svg/home.svg";
 import Mypage from "/src/assets/svg/mypage.svg";
-import Modify from "/src/assets/svg/modify.svg";
-import Delete from "/src/assets/svg/delete.svg";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 interface NavItem {
   Icon: string;
@@ -51,8 +47,16 @@ interface TopBarType {
   showEdit?: boolean;
   showBack?: boolean;
   showTitle?: boolean;
+  deleteFunc?: any;
 }
-
+// interface TopBarType {
+//   title: string;
+//   showEdit?: boolean;
+//   showBack?: boolean;
+//   showTitle?: boolean;
+//   onEdit?: () => void;
+//   onDelete?: () => void;
+// }
 const TopBox = styled.header`
   display: inline-flex;
   padding: 0rem 1.3125rem;
@@ -101,16 +105,28 @@ const TopBar = ({
   showEdit = false,
   showBack = true,
   showTitle = true,
-}: TopBarType) => {
+  deleteFunc,
+}: // onEdit,
+// onDelete,
+TopBarType) => {
   const navigate = useNavigate();
 
   const onClickBack = () => {
     navigate(-1);
   };
 
-  const onClickEdit = () => {};
+  const onClickEdit = () => {
+    console.log("수정버튼이 클릭됐어여!!");
+    navigate("update");
+  };
 
-  const onClickDelete = () => {};
+  const onClickDelete = () => {
+    const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
+    console.log("삭제 버튼이 클릭됐어요!!");
+    if (isConfirmed) {
+      deleteFunc();
+    }
+  };
 
   return (
     <TopBox>

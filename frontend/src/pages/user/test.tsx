@@ -1,54 +1,42 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-  createContext,
-} from "react";
-import { Client, IMessage } from "@stomp/stompjs"; // STOMP 프로토콜을 사용하기 위한 라이브러리를 가져옵니다.
-import axios from "axios"; // HTTP 클라이언트 라이브러리를 가져옵니다.
-import { Link, useParams } from "react-router-dom"; // 라우터 관련 기능을 사용하기 위한 라이브러리를 가져옵니다.
+import React, { useEffect, useState } from "react";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import axios from "axios";
 import { api } from "../../apis/Base";
 
 interface MessageReq {
-  messageType: boolean;
-  content: string;
-  senderId: number;
-  chattingRoomId: number;
+  dealCurPrice: number;
 }
 
 interface MessageRes {
-  id: string;
-  messageType: boolean;
-  content: string;
-  createdTime: string;
-  senderId: number;
+  id: string; //bidlogid
+  localDateTime: string;
+  user_id: number;
   chattingRoomId: number;
+  bid_log_price: number;
 }
 
 function TestPage() {
-  // const {chatId} = useParams();
+  const chattingRoomId = 91;
 
-  const chattingRoomId = 91; // 현재 게시물 (exarticleid 를 채팅룸 id 로 한다.)
-
-  const [stompClient, setStompClient] = useState<Client | null>(null); // STOMP 클라이언트 상태 관리
-  const [messages, setMessages] = useState<MessageRes[]>([]); // 채팅 메시지 목록 상태 관리
-  const [writer, setWriter] = useState<string>(""); // 메시지 작성자 이름 상태 관리
-  const [newMessage, setNewMessage] = useState<string>(""); // 새 메시지 입력 상태 관리
+  const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
+  const [messages, setMessages] = useState<MessageRes[]>([]);
+  const [newMessage, setNewMessage] = useState<string>("");
 
   const loadMessages = async () => {
-    //기존 디비에 저장된 제안 목록 불러오기
     try {
-      // const response = await api.get(
-      //     `/exchanges/${chattingRoomId}/suggestion`
-      // );
-      const response = await axios.get(
-        `http://localhost:8080/v1/exchanges/${chattingRoomId}/suggestion`
-      );
+      const accessToken = sessionStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token is not available.");
+      }
 
-      console.log(response.data);
-      // const messages
-      setMessages(response.data);
+
+      const response = await api.get(`/exchanges/${chattingRoomId}/suggestion`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      console.log(response.data.data_body);
+      setMessages(response.data.data_body);
     } catch (error) {
       console.error("채팅 내역 로드 실패", error);
     }
@@ -57,43 +45,68 @@ function TestPage() {
   useEffect(() => {
     loadMessages();
 
-    const client = new Client({
-      brokerURL: `ws://localhost:8080/ws`, // Server WebSocket URL
-      reconnectDelay: 5000, // 연결 끊겼을 때, 재연결시도까지 지연시간(ms)
-      onConnect: () => {
-        console.log("WebSocket 연결됨"); // 이 위치가 서버와의 연결이 성공적으로 이루어졌음을 보장
+    // const socket = new SockJS("/websocket");
+    // const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS("https://j10c102.p.ssafy.io/websocket/ws");
+
+    // const socket = new WebSocket("ws://localhost:8080/ws");
+    const client = Stomp.over(socket);
+
+    console.log(socket);
+
+    client.connect(
+      {},
+      () => {
+        console.log("WebSocket 연결됨");
         client.subscribe(
           `/sub/chattings/${chattingRoomId}/messages`,
-          (message: IMessage) => {
-            const msg: MessageRes = JSON.parse(message.body); // 메시지를 JSON형태로 파싱
-            setMessages((prevMessages) => [...prevMessages, msg]); // 기존 메시지 목록에 새 메시지 추가
+          (message) => {
+            const msg: MessageRes = JSON.parse(message.body);
+            setMessages((prevMessages) => [...prevMessages, msg]);
           }
         );
       },
-    });
-    client.activate(); // STOMP 클라이언트 활성화
-    setStompClient(client); // STOMP 클라이언트 상태 업데이트
+      (error) => {
+        console.error("WebSocket 연결 실패", error);
+      }
+    );
+
+    setStompClient(client);
+
     return () => {
-      client.deactivate(); // 컴포넌트 언마운트 시, STOMP 클라이언트 비활성화
+      if (client.connected) {
+        client.disconnect(() => {
+          console.log("Disconnected from WebSocket server");
+        });
+      }
     };
-  }, [chattingRoomId]); // chatId가 변경될 때마다 useEffect 실행
+  }, [chattingRoomId]);
 
   const sendMessage = async () => {
-    if (newMessage.trim() !== "") {
+
+
+    if (stompClient && newMessage.trim() !== "") {
+
       try {
         const messageReq = {
-          messageType: false, // 메시지 타입 설정, 필요에 따라 조정 가능
-          content: newMessage,
-          senderId: 1, // 실제 애플리케이션에서는 사용자 인증 정보로부터 가져온 실제 사용자 ID를 사용해야 합니다.
-          chattingRoomId: chattingRoomId,
+          dealCurPrice: newMessage,
         };
 
-        await axios.post(
-          `http://localhost:8080/v1/exchanges/${chattingRoomId}/deal_bid`,
-          messageReq
-        ); //입찰 제안하기
+        const accessToken = sessionStorage.getItem("accessToken");
+        if (!accessToken) {
+          throw new Error("Access token is not available.");
+        }
 
-        setNewMessage(""); // 메시지 전송 후 입력 필드 초기화
+        const response = await api.post(
+          `/exchanges/${chattingRoomId}/deal_bid`,
+          messageReq,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+
+        stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(messageReq));
+        setNewMessage("");
       } catch (error) {
         console.error("메시지 전송 실패", error);
       }
@@ -106,7 +119,7 @@ function TestPage() {
         <ul>
           {messages.map((msg) => (
             <li key={msg.id}>
-              {msg.senderId}: {msg.content} ({msg.createdTime})
+              입찰희망자 아이디 {msg.user_id}: 입찰 제안 가격 {msg.bid_log_price} 제안 날짜 ({msg.localDateTime})
               <hr />
             </li>
           ))}
@@ -116,12 +129,17 @@ function TestPage() {
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            fontSize: "16px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            boxSizing: "border-box",
+            outline: "none",
+          }}
         />
-
-        <button onClick={sendMessage}>
-          {/* <PaperPlaneTilt size={32} /> Add icon import or component */}
-          전송
-        </button>
+        <button onClick={sendMessage}>전송</button>
       </div>
     </div>
   );
