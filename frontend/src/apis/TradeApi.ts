@@ -33,7 +33,7 @@ export const useLike = () => {
   // useMutation 훅은 여기에서 동기적으로 호출됩니다.
 
   return useMutation({
-    mutationFn: (postId: number) => {
+    mutationFn: async (postId: number) => {
       // 여기서 accessToken을 검색하고, 요청에 포함합니다.
       const accessToken = sessionStorage.getItem("accessToken");
       console.log("토큰이에요", accessToken);
@@ -41,7 +41,7 @@ export const useLike = () => {
         // accessToken이 없는 경우, 오류를 반환하거나 다른 처리를 할 수 있습니다.
         throw new Error("No access token available");
       }
-      return api.post(`/exchanges/${postId}/like`, {
+      return await api.post(`/exchanges/${postId}/like`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
     },
@@ -49,7 +49,7 @@ export const useLike = () => {
       console.log(res);
     },
     onError: (error) => {
-      console.log(error);
+      console.log("에러났어요", error);
     },
   });
 };
@@ -125,7 +125,7 @@ export const usePost = () => {
       const response = await api.post("/exchanges", formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'multipart/form-data' 
+          "Content-Type": "multipart/form-data",
         },
       });
 
