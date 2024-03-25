@@ -26,6 +26,7 @@ import CommunityDetail from "../pages/community/CommunityDetail";
 import TradeGeneralDetailPage from "../pages/trade/TradeGeneralDetail";
 import CropUpdatePage from "../pages/diary/CropUpdatePage";
 import TradeProposeDetailPage from "../pages/trade/TradeProposeDetail";
+import TradeSellerPage from "../pages/trade/TradeSeller";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
@@ -46,6 +47,7 @@ const tradeRoutes = [
   { path: "/trade/post", element: <TradePostPage /> },
   { path: "/trade/:postId/generaldetail", element: <TradeGeneralDetailPage /> },
   { path: "/trade/:postId/proposedetail", element: <TradeProposeDetailPage /> },
+  { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
   { path: "/trade/test", element: <TestPage /> },
 ];
 
