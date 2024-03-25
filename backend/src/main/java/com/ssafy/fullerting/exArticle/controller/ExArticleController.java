@@ -81,6 +81,18 @@ public class ExArticleController {
     }
 
 
+    @PostMapping("/{ex_article_id}/convert_like")
+    @Operation(summary = "작물거래 좋아요 등록/삭제  ", description = "작물거래 좋아요 등록")
+    public ResponseEntity<MessageUtils> convert_like(@PathVariable Long ex_article_id) {
+        exArticleService.convert_like(ex_article_id);
+
+        log.info("[like article]: {}", ex_article_id);
+
+        return ResponseEntity.ok().body(MessageUtils.success());
+
+    }
+
+
     @PostMapping("/{ex_article_id}/like")
     @Operation(summary = "작물거래 좋아요 등록  ", description = "작물거래 좋아요 등록")
     public ResponseEntity<MessageUtils> like(@PathVariable Long ex_article_id) {
