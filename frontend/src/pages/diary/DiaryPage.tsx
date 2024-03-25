@@ -115,10 +115,7 @@ const DiaryPage = () => {
     refetch: refetchCropData,
   } = useQuery({
     queryKey: ["cropData"],
-    queryFn:
-      packDiaryId && accessToken
-        ? () => getCropData(accessToken, packDiaryId)
-        : undefined,
+    queryFn: packDiaryId ? () => getCropData(packDiaryId) : undefined,
   });
 
   const { data: diaryList } = useQuery({
