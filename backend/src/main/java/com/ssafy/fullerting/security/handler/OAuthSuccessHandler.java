@@ -46,15 +46,15 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             } catch (IOException e) {
                 log.error("Response write error", e);
             }
-//            authService.login(new LoginRequest(user.getEmail(), null));
         }, () -> {
             try {
                 // OAuth2 인증으로 얻은 사용자 정보를 바탕으로 CustomUser 객체 생성
-                log.info("Customer 임시 객체 생성 : {}", customUser.toString());
                 customUser.setPassword("DummyPasswordeoar!@3");
                 userService.registOauthUser(customUser);
+                log.info("OAuth 유저 회원가입 성공 : {}", customUser.toString());
+
                 response.getWriter().write(objectMapper.writeValueAsString(
-                        MessageUtils.success("회원가입 성공")));
+                        MessageUtils.success(tokenService.issueToken(authentication))));
 
             } catch (IOException e) {
                 log.error("Response write error", e);
