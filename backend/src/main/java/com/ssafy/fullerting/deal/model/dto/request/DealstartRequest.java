@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DealstartRequest {
 
-    private Long id;
+//    private Long id;
     private int deal_cur_price;
-    private String content;
-    private Long senderid;
+//    private String content;
+//    private Long senderid;
 
 }
