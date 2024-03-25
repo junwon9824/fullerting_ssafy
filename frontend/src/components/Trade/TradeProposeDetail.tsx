@@ -142,7 +142,7 @@ const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
 const TradeGeneralDetail = () => {
   const navigate = useNavigate();
   const BtnClick = () => {
-    navigate("/trade/chat");
+    navigate("/trade/");
   };
   const [like, setLike] = useState<boolean>(false);
   const handleLike = () => {
@@ -245,7 +245,7 @@ const TradeGeneralDetail = () => {
             </ExplainText>
           </TitleBox>
         </LayoutInnerBox>
-        <BottomButton text="채팅하기" onClick={BtnClick} />
+        <BottomButton text="제안하기" onClick={BtnClick} />
       </LayoutMainBox>
     </>
   );

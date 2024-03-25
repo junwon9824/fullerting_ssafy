@@ -20,7 +20,13 @@ import SwiperCore, { Navigation, Pagination } from "swiper/modules";
 interface ImageResponse {
   img_store_url: string;
 }
-
+interface Icon {
+  width?: number;
+  height: number;
+  backgroundColor: string;
+  color: string;
+  text?: string;
+}
 const ImgBox = styled.img`
   width: 100%;
   height: 15.5625rem;
@@ -85,10 +91,13 @@ const TitleBox = styled.div`
   flex-direction: column;
   gap: 0.8rem;
 `;
-const Price = styled.text`
-  color: #000;
+const Price = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   font-size: 1.25rem;
   font-weight: bold;
+  gap: 0.4rem;
 `;
 const DiaryBox = styled.div`
   width: 100%;
@@ -118,8 +127,19 @@ const Thumbnail = styled.img`
   width: 1.875rem;
   height: 1.875rem;
 `;
+const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
+  width: ${(props) => `${props.width}rem`};
+  height: ${(props) => `${props.height}rem`};
+  border-radius: 0.3125rem;
+  background: ${(props) => props.backgroundColor};
+  color: ${(props) => props.color};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.5625rem; /* 텍스트 크기 */
+`;
 
-const TradeGeneralDetail = () => {
+const TradeSellerDetail = () => {
   const navigate = useNavigate();
   const BtnClick = () => {
     navigate("/trade/chat");
@@ -188,42 +208,10 @@ const TradeGeneralDetail = () => {
             </Profile>
             <Date>{formatDateAndTime(data?.exArticleResponse.time)}</Date>
           </InfoBox>
-          <TitleBox>
-            <Title>
-              {data?.exArticleResponse.exArticleTitle}
-              <img
-                src={data?.favoriteResponse.islike === true ? Like : NotLike}
-                alt="like"
-                onClick={() => {
-                  handleLikeClick(data?.exArticleResponse.exArticleId);
-                }}
-              />
-            </Title>
-            <Price>{data?.transResponse.price}원</Price>
-            <DiaryBox>
-              <img src={Tree} alt="tree" />
-              <NavigateText
-                onClick={() => {
-                  postId ? handleDiary(Number(DiaryId)) : null;
-                }}
-              >
-                작물일지 이동하기
-              </NavigateText>
-            </DiaryBox>
-            <ExplainText>
-              심우석의 머리를 브로콜리에 비유하는 것은 그의 독특하고 특이한 헤어
-              스타일을 묘사하기 위한 창의적인 방법입니다. 이 비유는 특히 그의
-              머리카락이 풍성하고 볼륨감이 많으며, 위로 솟아 오른 모양이 마치
-              브로콜리의 녹색 송이와 유사하다는 점에서 온 것일 수 있습니다.
-              브로콜리의 작은 꽃송이들이 모여 있는 모양은, 심우석의 머리카락이
-              여러 방향으로 풍성하게 서 있는 것과 비슷하다고 할 수 있습니다.
-            </ExplainText>
-          </TitleBox>
         </LayoutInnerBox>
-        <BottomButton text="채팅하기" onClick={BtnClick} />
       </LayoutMainBox>
     </>
   );
 };
 
-export default TradeGeneralDetail;
+export default TradeSellerDetail;
