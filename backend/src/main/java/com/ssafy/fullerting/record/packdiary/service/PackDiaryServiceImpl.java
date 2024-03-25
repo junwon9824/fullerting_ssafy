@@ -179,7 +179,6 @@ public class PackDiaryServiceImpl implements PackDiaryService {
 
                 //마지막 단계일 경우 뱃지 생성
                 if(getCropStepRequest.getCropStepGrowth() == cropStepRepository.findMaxStepByCropId(packDiary.getCrop().getId())){
-
                     return GetCropStepResponse.builder()
                             .cropTypeName(packDiary.getCrop().getName())
                             .cropStepGrowth(packDiary.getGrowthStep())
