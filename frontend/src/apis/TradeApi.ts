@@ -1,7 +1,33 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "./Base";
 import { imageFilesAtom } from "../stores/trade";
 import { atom } from "jotai";
+interface DataItem {
+  exArticleResponse: ExArticleResponse;
+  packDiaryResponse: PackDiaryResponse | null; // JSON 예제에는 객체가 있지만, 여기서는 null일 수도 있음을 표현
+  favoriteResponse: FavoriteResponse;
+}
+interface ImageResponse {
+  id: number;
+  img_store_url: string;
+}
+
+interface ExArticleResponse {
+  exLocation: string;
+  exArticleId: number;
+  exArticleTitle: string;
+  exArticleType: string;
+  imageResponses: ImageResponse[];
+  price: number;
+}
+
+interface PackDiaryResponse {
+  packDiaryId: number;
+}
+interface FavoriteResponse {
+  islike: boolean;
+  isLikeCnt: number;
+}
 interface LikeData {
   success_code: number;
   result_code: string;
@@ -31,9 +57,9 @@ export const getTradeList = async (accessToken: string) => {
 
 export const useLike = () => {
   // useMutation 훅은 여기에서 동기적으로 호출됩니다.
-
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (postId: number) => {
+    mutationFn: async (postId: number) => {
       // 여기서 accessToken을 검색하고, 요청에 포함합니다.
       const accessToken = sessionStorage.getItem("accessToken");
       console.log("토큰이에요", accessToken);
@@ -41,15 +67,40 @@ export const useLike = () => {
         // accessToken이 없는 경우, 오류를 반환하거나 다른 처리를 할 수 있습니다.
         throw new Error("No access token available");
       }
-      return api.post(`/exchanges/${postId}/like`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
+      return await api.post(
+        `/exchanges/${postId}/like`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+    },
+    onSuccess: (data, variables) => {
+      // data: 좋아요 요청에 대한 응답 데이터
+      // variables: 좋아요를 누른 게시글의 ID (여기서는 postId)
+
+      // `tradeList` 쿼리의 캐시된 데이터를 업데이트합니다.
+      queryClient.setQueryData<DataItem[]>(["tradeList"], (oldQueryData) => {
+        return oldQueryData?.map((item) => {
+          if (item.exArticleResponse.exArticleId === variables) {
+            return {
+              ...item,
+              favoriteResponse: {
+                ...item.favoriteResponse,
+                islike: !item.favoriteResponse.islike, // 좋아요 상태를 토글합니다.
+                isLikeCnt: item.favoriteResponse.islike
+                  ? item.favoriteResponse.isLikeCnt - 1
+                  : item.favoriteResponse.isLikeCnt + 1, // 좋아요 개수를 업데이트합니다.
+              },
+            };
+          } else {
+            return item;
+          }
+        });
       });
     },
-    onSuccess: (res) => {
-      console.log(res);
-    },
     onError: (error) => {
-      console.log(error);
+      console.log("에러났어요", error);
     },
   });
 };
@@ -125,7 +176,7 @@ export const usePost = () => {
       const response = await api.post("/exchanges", formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'multipart/form-data' 
+          "Content-Type": "multipart/form-data",
         },
       });
 

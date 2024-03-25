@@ -5,7 +5,7 @@ import styled from "styled-components";
 const MainContainer = styled.div`
   justify-content: center;
   flex-direction: column;
-  height: 12.2rem;
+  height: 13.3rem;
   background-color: #a0d8b3;
   padding: 0.5rem 0.8rem;
 `;
@@ -13,7 +13,7 @@ const TextBox = styled.div`
   border-radius: 0.78125rem;
   background: var(--sub1, #e5f9db);
   font-size: 0.75rem;
-  width: 12rem;
+  width: 11rem;
   height: 1.2rem;
   display: flex;
   flex-direction: row;
@@ -21,7 +21,7 @@ const TextBox = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  margin: 0.3rem 0 0 0;
+  margin: 0.7rem 0 0 0;
 `;
 
 const TextContent = styled.div`
@@ -41,6 +41,7 @@ const Content = styled.div`
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
+  padding: 0 0rem;
 `;
 const MainText = styled.div`
   color: #fffefe;
@@ -57,9 +58,9 @@ const DiaryBox = styled.button`
   justify-content: space-between;
   align-items: center;
   text-align: center;
-  margin: 0.7rem 0;
-  width: 20rem;
-  height: 6.3rem;
+  margin: 0.9rem 0 1rem 0.7rem;
+  width: 19.5rem;
+  height: 6.7rem;
   border-radius: 0.9375rem;
   background: rgba(255, 255, 255, 0.26);
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -83,6 +84,7 @@ const CropImage = styled.img`
   border: 2px solid var(--point, #3d0c11);
   opacity: 0.9;
   background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+  margin-right: 1rem;
 `;
 
 const DiaryText = styled.span`
