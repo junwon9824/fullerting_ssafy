@@ -88,6 +88,10 @@ public class ExArticleService {
     public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
 //        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
 
+        if(exArticleRegisterRequest.getExArticleType().equals(null)){
+            throw new ExArticleException(ExArticleErrorCode.NOT_EXISTS);
+        }
+
         CustomUser customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 //        log.info("ussssss"+customUser.getEmail());
         log.info("ussssss" + email1);
