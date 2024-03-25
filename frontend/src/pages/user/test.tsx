@@ -30,6 +30,7 @@ function TestPage() {
         throw new Error("Access token is not available.");
       }
 
+
       const response = await api.get(`/exchanges/${chattingRoomId}/suggestion`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
@@ -44,8 +45,14 @@ function TestPage() {
   useEffect(() => {
     loadMessages();
 
-    const socket = new SockJS("wss://j10c102.p.ssafy.io/websocket");
+    // const socket = new SockJS("/websocket");
+    // const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS("https://j10c102.p.ssafy.io/websocket/ws");
+
+    // const socket = new WebSocket("ws://localhost:8080/ws");
     const client = Stomp.over(socket);
+
+    console.log(socket);
 
     client.connect(
       {},
@@ -69,14 +76,16 @@ function TestPage() {
     return () => {
       if (client.connected) {
         client.disconnect(() => {
-            console.log("Disconnected from WebSocket server");
+          console.log("Disconnected from WebSocket server");
         });
       }
     };
   }, [chattingRoomId]);
 
   const sendMessage = async () => {
-    if (stompClient && stompClient.connected && newMessage.trim() !== "") {
+
+
+    if (stompClient && newMessage.trim() !== "") {
 
       try {
         const messageReq = {
