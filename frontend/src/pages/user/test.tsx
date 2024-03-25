@@ -44,7 +44,7 @@ function TestPage() {
   useEffect(() => {
     loadMessages();
 
-    const socket = new SockJS("https://j10c102.p.ssafy.io/websocket/ws");
+    const socket = new SockJS("/websocket");
     const client = Stomp.over(socket);
 
     client.connect(
