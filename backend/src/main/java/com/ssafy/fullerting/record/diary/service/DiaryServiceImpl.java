@@ -86,7 +86,7 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public void createDiary(Long packDiaryId, List<MultipartFile> images, CreateDiaryRequest createDiaryRequest) {
+    public void createDiary(Long packDiaryId, CreateDiaryRequest createDiaryRequest) {
         PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
         try {
             Diary diary = diaryRepository.save(Diary.builder()
@@ -100,7 +100,7 @@ public class DiaryServiceImpl implements DiaryService{
             );
 
             //S3에 이미지 업로드
-            S3ManyFilesResponse response = amazonS3Service.uploadFiles(images);
+            S3ManyFilesResponse response = amazonS3Service.uploadFiles(createDiaryRequest.getImages());
             //이미지 DB 저장
             response.getUrls().entrySet().stream().map(stringStringEntry -> {
                 Image image = imageRepository.save(Image.builder()
