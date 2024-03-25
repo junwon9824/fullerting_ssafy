@@ -1,11 +1,8 @@
 import styled from "styled-components";
-import { TopBar } from "../../components/common/Navigator/navigator";
+import { TopBar } from "../common/Navigator/navigator";
 import Coli from "/src/assets/images/브로콜리.png";
-import {
-  LayoutInnerBox,
-  LayoutMainBox,
-} from "../../components/common/Layout/Box";
-import { BottomButton } from "../../components/common/Button/LargeButton";
+import { LayoutInnerBox, LayoutMainBox } from "../common/Layout/Box";
+import { BottomButton } from "../common/Button/LargeButton";
 import { useNavigate } from "react-router-dom";
 import SvgProfile from "/src/assets/images/김진명프로필사진.png";
 import Sprout from "/src/assets/svg/classes.svg";
@@ -14,7 +11,7 @@ import Like from "/src/assets/svg/like.svg";
 import { useState } from "react";
 import Tree from "/src/assets/svg/diarytree.svg";
 import { useQuery } from "@tanstack/react-query";
-import { getTradeGeneralDetail, useLike } from "../../apis/TradeApi";
+import { getTradeDetail, useLike } from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -131,25 +128,34 @@ const TradeGeneralDetail = () => {
   const handleLike = () => {
     setLike(!like);
   };
-  const handleDiary = () => {
-    navigate("/diary/detail");
-  };
+
   const { mutate: handleLikeClick } = useLike();
   const { postId } = useParams<{ postId?: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
-    queryKey: ["tradeGeneralDetail", postNumber],
+    queryKey: ["tradeDetail", postNumber],
     queryFn: accessToken
-      ? () => getTradeGeneralDetail(accessToken, postNumber)
+      ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
-  console.log(
-    "데이터에요",
-    data?.imageResponses.map(
-      (text: ImageResponse, index: number) => text.img_store_url
-    )
-  );
+  const DiaryId = data?.packDiaryResponse.packDiaryId;
+  const handleDiary = (DiaryId: number) => {
+    navigate(`/diary/${DiaryId}`);
+    console.log("나 눌리고 있어!!!", 111);
+  };
+  const formatDateAndTime = (dateString: string) => {
+    if (!dateString) return "";
+    const [date, time] = dateString.split("T");
+    const [hours, minutes, seconds] = time.split(":");
+    return `${date} ${hours}:${minutes}:${seconds}`;
+  };
+  // console.log(
+  //   "데이터에요",
+  //   data?.imageResponses.map(
+  //     (text: ImageResponse, index: number) => text.img_store_url
+  //   )
+  // );
   return (
     <>
       <TopBar title="작물거래" showBack={true} showEdit={true} />
@@ -180,7 +186,7 @@ const TradeGeneralDetail = () => {
                 </ClassesText>
               </Name>
             </Profile>
-            <Date>2024-03-06 14:40</Date>
+            <Date>{formatDateAndTime(data?.exArticleResponse.time)}</Date>
           </InfoBox>
           <TitleBox>
             <Title>
@@ -193,10 +199,14 @@ const TradeGeneralDetail = () => {
                 }}
               />
             </Title>
-            <Price>800원</Price>
+            <Price>{data?.exArticleResponse.price}원</Price>
             <DiaryBox>
               <img src={Tree} alt="tree" />
-              <NavigateText onClick={handleDiary}>
+              <NavigateText
+                onClick={() => {
+                  postId ? handleDiary(Number(DiaryId)) : null;
+                }}
+              >
                 작물일지 이동하기
               </NavigateText>
             </DiaryBox>
