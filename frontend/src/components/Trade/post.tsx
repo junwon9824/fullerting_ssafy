@@ -65,10 +65,11 @@ const ImgBox = styled.div`
 `;
 const ContentBox = styled.div`
   width: 100%;
-  /* height: auto; */
-  margin-bottom: 1.38rem;
+  height: auto;
+  flex-grow: 1;
+  /* margin-bottom: 1.38rem; */
   flex-wrap: wrap;
-  overflow-y: hidden;
+  overflow-y: auto;
   display: flex;
   justify-content: space-between;
   position: relative;
@@ -182,68 +183,69 @@ const Post = () => {
     queryKey: ["tradeList"],
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
-  console.log(data);
+  const [isLiked, setIsLiked] = useState(data?.favoriteResponse.islike);
   const { mutate: handleLikeClick } = useLike();
+
   const handleGeneralClick = (index: number) => {
     navigate(`/trade/${index}/generaldetail`);
   };
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/tradedetail`);
   };
-  console.log(data);
   return (
-    <ContentBox>
-      {data?.map((item: DataItem, index: number) => (
-        <PostBox
-          onClick={() => {
-            item.exArticleResponse.exArticleType === "DEAL"
-              ? handleTradeClick(item.exArticleResponse.exArticleId)
-              : handleGeneralClick(item.exArticleResponse.exArticleId);
-          }}
-        >
-          <ImgBox key={index}>
-            <StyledImg
-              src={item.exArticleResponse.imageResponses[0].img_store_url}
-              alt="img"
-            ></StyledImg>
-            <LikeBox
-              onClick={() =>
-                handleLikeClick(item.exArticleResponse.exArticleId)
-              }
-            >
-              <img
-                src={item.favoriteResponse.islike ? Like : NonLike}
-                alt="like button"
-              />
-            </LikeBox>
-          </ImgBox>
-          <Town>
-            <img src={Location} alt="location" />
-            {item.exArticleResponse.exLocation}
-          </Town>
-          <Title>{item.exArticleResponse.exArticleTitle}</Title>
-          <State gap={0.44} fontSize={1}>
-            {item.exArticleResponse.price === 0 ? (
-              <StateIcon
-                width={1.5}
-                height={0.9375}
-                backgroundColor="#A0D8B3"
-                color="#ffffff"
+    <>
+      <ContentBox>
+        {data?.map((item: DataItem, index: number) => (
+          <PostBox
+            onClick={() => {
+              item.exArticleResponse.exArticleType === "DEAL"
+                ? handleTradeClick(item.exArticleResponse.exArticleId)
+                : handleGeneralClick(item.exArticleResponse.exArticleId);
+            }}
+          >
+            <ImgBox key={index}>
+              <StyledImg
+                src={item.exArticleResponse.imageResponses[0].img_store_url}
+                alt="img"
+              ></StyledImg>
+              <LikeBox
+                onClick={() =>
+                  handleLikeClick(item.exArticleResponse.exArticleId)
+                }
               >
-                나눔
-              </StateIcon>
-            ) : (
-              <StateIcon
-                width={1.5}
-                height={0.9375}
-                backgroundColor="#A0D8B3"
-                color="#ffffff"
-              >
-                현재
-              </StateIcon>
-            )}
-            {item.exArticleResponse.price}원
-            {/* <StateIcon
+                <img
+                  src={item.favoriteResponse.islike ? Like : NonLike}
+                  alt="like button"
+                />
+              </LikeBox>
+            </ImgBox>
+            <Town>
+              <img src={Location} alt="location" />
+              {item.exArticleResponse.exLocation}
+            </Town>
+            <Title>{item.exArticleResponse.exArticleTitle}</Title>
+            <State gap={0.44} fontSize={1}>
+              {item.exArticleResponse.price === 0 ? (
+                <StateIcon
+                  width={1.5}
+                  height={0.9375}
+                  backgroundColor="#A0D8B3"
+                  color="#ffffff"
+                >
+                  나눔
+                </StateIcon>
+              ) : (
+                <StateIcon
+                  width={1.5}
+                  height={0.9375}
+                  backgroundColor="#A0D8B3"
+                  color="#ffffff"
+                >
+                  현재
+                </StateIcon>
+              )}
+              {item.exArticleResponse.price}원
+              {/* <StateIcon
               width={1.5}
               height={0.9375}
               backgroundColor="#A0D8B3"
@@ -252,55 +254,55 @@ const Post = () => {
               현재
             </StateIcon>
             300원 */}
-          </State>
+            </State>
 
-          <State
-            // gap={3.75}
-            fontSize={0.5625}
-            color="#BEBEBE"
-            justifyContent="space-between"
-          >
-            <HeartBox>
-              <img
-                src={GrayHeart}
-                alt="gray"
-                style={{ marginRight: "0.19rem" }}
-              />
-              {item.favoriteResponse.isLikeCnt}
-            </HeartBox>
-            <ExplainBox>
-              <StateIcon
-                width={1.5}
-                height={0.9375}
-                backgroundColor="#F4F4F4"
-                color="#8c8c8c"
-              >
-                {item.exArticleResponse.exArticleType === "DEAL"
-                  ? "제안"
-                  : item.exArticleResponse.exArticleType === "SHARING"
-                  ? "나눔"
-                  : item.exArticleResponse.exArticleType ===
-                    "GENERAL_TRANSACTION"
-                  ? "거래"
-                  : "error"}
-              </StateIcon>
-              {item.packDiaryResponse ? (
+            <State
+              // gap={3.75}
+              fontSize={0.5625}
+              color="#BEBEBE"
+              justifyContent="space-between"
+            >
+              <HeartBox>
+                <img
+                  src={GrayHeart}
+                  alt="gray"
+                  style={{ marginRight: "0.19rem" }}
+                />
+                {item.favoriteResponse.isLikeCnt}
+              </HeartBox>
+              <ExplainBox>
                 <StateIcon
-                  width={2.5625}
+                  width={1.5}
                   height={0.9375}
-                  backgroundColor="#A0D8B3"
+                  backgroundColor="#F4F4F4"
                   color="#8c8c8c"
                 >
-                  작물일지
+                  {item.exArticleResponse.exArticleType === "DEAL"
+                    ? "제안"
+                    : item.exArticleResponse.exArticleType === "SHARING"
+                    ? "나눔"
+                    : item.exArticleResponse.exArticleType ===
+                      "GENERAL_TRANSACTION"
+                    ? "거래"
+                    : "error"}
                 </StateIcon>
-              ) : null}
-            </ExplainBox>
-          </State>
-        </PostBox>
-      ))}
-
+                {item.packDiaryResponse ? (
+                  <StateIcon
+                    width={2.5625}
+                    height={0.9375}
+                    backgroundColor="#A0D8B3"
+                    color="#8c8c8c"
+                  >
+                    작물일지
+                  </StateIcon>
+                ) : null}
+              </ExplainBox>
+            </State>
+          </PostBox>
+        ))}
+      </ContentBox>
       <WriteBox src={Write} onClick={handelWriteClick} />
-    </ContentBox>
+    </>
   );
 };
 
