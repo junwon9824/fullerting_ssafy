@@ -177,13 +177,13 @@ const Post = () => {
     handleLikeClick(75);
     console.log("데이터임", data);
   };
-
+  console.log(1);
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
     queryKey: ["tradeList"],
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
-  const [isLiked, setIsLiked] = useState(data?.favoriteResponse.islike);
+  // const [isLiked, setIsLiked] = useState(data?.favoriteResponse.islike);
   const { mutate: handleLikeClick } = useLike();
 
   const handleGeneralClick = (index: number) => {
