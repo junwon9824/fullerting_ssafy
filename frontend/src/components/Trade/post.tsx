@@ -8,14 +8,7 @@ import { useEffect, useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
 import { getTradeList, useLike } from "../../apis/TradeApi";
-import {
-  QueryClient,
-  QueryKey,
-  queryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 interface ClickLike {
   onClick: () => void;
 }
@@ -189,19 +182,29 @@ const Post = () => {
     queryKey: ["tradeList"],
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
+  console.log(data);
   const { mutate: handleLikeClick } = useLike();
-  // const handleLikeClick = (index: number) => {
-  //   console.log("버튼버튼", 1);
-  // };
+  const handleGeneralClick = (index: number) => {
+    navigate(`/trade/${index}/generaldetail`);
+  };
+  const handleTradeClick = (index: number) => {
+    navigate(`/trade/${index}/tradedetail`);
+  };
   console.log(data);
   return (
     <ContentBox>
       {data?.map((item: DataItem, index: number) => (
-        <PostBox>
+        <PostBox
+          onClick={() => {
+            item.exArticleResponse.exArticleType === "DEAL"
+              ? handleTradeClick(item.exArticleResponse.exArticleId)
+              : handleGeneralClick(item.exArticleResponse.exArticleId);
+          }}
+        >
           <ImgBox key={index}>
             <StyledImg
               src={item.exArticleResponse.imageResponses[0].img_store_url}
-              alt="tomato"
+              alt="img"
             ></StyledImg>
             <LikeBox
               onClick={() =>

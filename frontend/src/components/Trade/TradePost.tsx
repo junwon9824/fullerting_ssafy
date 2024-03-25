@@ -155,7 +155,7 @@ const TradePost = () => {
     { title: "나눔", value: "SHARING" },
   ];
 
-  const [selectedFiles] = useAtom(imageFilesAtom);
+  const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   const { mutate: handlePost } = usePost();
   const navigate = useNavigate();
 
@@ -186,7 +186,8 @@ const TradePost = () => {
       for (var entries of formData) console.log(entries);
 
       await handlePost(formData);
-
+      setSelectedFiles([]);
+      navigate("/trade");
       // 요청 성공 후 페이지 이동 또는 상태 업데이트
       // navigate("/trade");
     } catch (error) {
