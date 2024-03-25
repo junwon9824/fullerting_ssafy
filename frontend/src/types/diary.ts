@@ -17,6 +17,13 @@ interface CropTypeType {
   cropTypeName: string;
 }
 
+interface CropFormType {
+  packDiaryId?: string;
+  cropTypeId?: number;
+  packDiaryTitle: string;
+  packDiaryCulStartAt: string;
+}
+
 interface DiaryEntry {
   diaryId: number;
   diaryBehavior: "다이어리" | "물주기";

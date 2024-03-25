@@ -80,6 +80,27 @@ export const createCrop = async (cropData: CropFormType) => {
   }
 };
 
+export const updateCrop = async (cropForm: CropFormType) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.patch(
+      `/pack-diaries/${cropForm.packDiaryId}`,
+      {
+        cropTypeId: cropForm.cropTypeId,
+        packDiaryTitle: cropForm.packDiaryTitle,
+        packDiaryCulStartAt: cropForm.packDiaryCulStartAt,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error userLogin: ", error);
+    throw error;
+  }
+};
+
 export const updateHarvest = async (packDiaryId: string) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
