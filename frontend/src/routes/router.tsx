@@ -30,7 +30,6 @@ const authRoutes = [
   { path: "/join", element: <JoinPage /> },
 ];
 
-// 다이어리 관련 경로
 const diaryRoutes = [
   { path: "/diary", element: <CropPage /> },
   { path: "/diary/:packDiaryId", element: <DiaryPage /> },
@@ -39,7 +38,6 @@ const diaryRoutes = [
   { path: "/diary/create", element: <CropCreatePage /> },
 ];
 
-// 거래 관련 경로
 const tradeRoutes = [
   { path: "/trade", element: <TradePage /> },
   { path: "/trade/post", element: <TradePostPage /> },

@@ -27,7 +27,7 @@ const DiaryWaterPage = () => {
       <TopBar title="물주기" />
       <LayoutMainBox>
         <LayoutInnerBox>
-          <CropProfile crop={crop} />
+          {crop && <CropProfile crop={crop} />}
           <StyledInput
             label="날짜 선택하기"
             type="date"

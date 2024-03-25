@@ -1,11 +1,11 @@
 import Search from "../../components/common/Input/Search";
 import useInput from "../../hooks/useInput";
-import Post from "../../components/Trade/post";
 import {
   LayoutMainBox,
   LayoutInnerBox,
 } from "../../components/common/Layout/Box";
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
+import Propose from "../../components/mypage/proposepost/Propose";
 
 const ProposePost = () => {
   const [search, setSearch] = useInput("");
@@ -21,7 +21,7 @@ const ProposePost = () => {
             placeholder="내용 또는 작성자를 입력해주세요"
             onChange={setSearch}
           />
-          <Post />
+          <Propose />
         </LayoutInnerBox>
       </LayoutMainBox>
       <NavBar />

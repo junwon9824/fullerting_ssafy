@@ -4,6 +4,7 @@ import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.image.model.dto.response.ImageResponse;
+import com.ssafy.fullerting.record.diary.model.entity.Diary;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,18 +27,13 @@ public class Image {
     @Column(name = "img_store_id")
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "article_id")
-//    private Article article;
-//
-//
-//    @ManyToOne
-//    @JoinColumn(name = "article_id")
-//    private Diary diary;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ex_article_id")
     private ExArticle exArticle;
+
+    @ManyToOne
+    @JoinColumn(name = "diary_id")
+    private Diary diary;
 
     private String img_store_url;
 

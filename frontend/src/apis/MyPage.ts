@@ -54,6 +54,23 @@ export const getExchanges = async () => {
   }
 };
 
+export const getPropose = async () => {
+  try {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      throw new Error('Access token is not available.');
+    }
+
+    const response = await api.get(`/exchanges/mybidarticles`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.log("거래 완료 API요청 실패", error);
+    throw error;
+  }
+};
+
 
 export const logoutUser = async () => {
   try {

@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.exArticle.controller;
 
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleDoneRequest;
+import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterImageRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
@@ -35,16 +36,30 @@ public class ExArticleController {
 
     @PostMapping("")
     @Operation(summary = "작물 거래 게시물 등록 ", description = "작물등록진행")
-    public ResponseEntity<MessageUtils> register(@RequestPart(value = "file") List<MultipartFile> file,
-                                                 @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
-                                                 @AuthenticationPrincipal String email) {
+    public ResponseEntity<MessageUtils> register(
+            @RequestPart("files") List<MultipartFile> files  ,
+            @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
+            @AuthenticationPrincipal String email) {
 
-        exArticleService.register(exArticleRegisterRequest, email, file);
+        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, files);
+//        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email);
+
         log.info("[register article ]: {}", exArticleRegisterRequest.toString());
 
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success(exarticleid));
     }
 
+
+    @PostMapping("/{ex_article_id}/images")
+    @Operation(summary = "작물 거래 게시물 이미지 등록 ", description = "작물 거래 게시물 이미지 등록")
+    public ResponseEntity<MessageUtils> registeriamges(@RequestPart(value = "file") List<MultipartFile> file, @PathVariable Long ex_article_id
+    ) {
+        exArticleService.registeriamges(file, ex_article_id);
+//        log.info("[register article ]: {}", );
+
+        return ResponseEntity.ok().body(MessageUtils.success());
+
+    }
 
     @GetMapping("/all")
     @Operation(summary = "작물거래 전체 조회 ", description = "작물거래 전체 조회")

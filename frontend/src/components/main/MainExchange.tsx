@@ -4,7 +4,7 @@ import pullleft from "/src/assets/svg/pullleft.svg";
 const MainBox = styled.div`
   justify-content: center;
   flex-direction: column;
-  height: 13rem;
+  height: 11.5rem;
   padding: 1%.5rem 0;
 `;
 const LogoAndTextContainer = styled.div`
@@ -23,7 +23,6 @@ const Text = styled.div`
 const Character = styled.button`
   display: flex;
   align-items: center;
-  padding-top: 0.5rem;
   margin-right: 0.5rem;
 `;
 
@@ -38,7 +37,7 @@ const LogoContent = styled.div`
 const LogoText = styled.div`
   color: var(--sub0, #a0d8b3);
   font-family: "GamtanRoad Dotum TTF";
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-style: normal;
   font-weight: 800;
   line-height: 1.125rem;
@@ -48,14 +47,13 @@ const LogoText = styled.div`
 const ExchangeBox = styled.div`
   display: flex;
   padding: 0.4375rem 0.5rem;
-  height: 6.5rem;
+  height: 6rem;
   width: 18rem;
   border-radius: 0rem 0.9375rem 0.9375rem 0.9375rem;
   border: 1.5px solid var(--sub0, #a0d8b3);
 `;
 
 const ExchangeContainer = styled.div`
-  margin-top: 0.8rem;
   display: flex;
   gap: 1.0625rem;
 `;
