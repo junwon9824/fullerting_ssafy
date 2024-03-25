@@ -17,6 +17,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import SwiperCore, { Navigation, Pagination } from "swiper/modules";
+import { userCheck } from "../../apis/UserApi";
+import TradePostLayout from "../common/Layout/TradePostLayout";
 interface ImageResponse {
   img_store_url: string;
 }
@@ -139,7 +141,17 @@ const TradeGeneralDetail = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
-  const DiaryId = data?.packDiaryResponse.packDiaryId;
+  const {
+    isLoading: isLoadingUserDetail,
+    data: userData,
+    error: userDetailError,
+  } = useQuery({
+    queryKey: ["userDetail"],
+    queryFn: accessToken ? () => userCheck(accessToken) : undefined,
+  });
+  const userId = userData?.id;
+
+  const DiaryId = data?.packDiaryResponse?.packDiaryId;
   const handleDiary = (DiaryId: number) => {
     navigate(`/diary/${DiaryId}`);
     console.log("나 눌리고 있어!!!", 111);
@@ -204,7 +216,7 @@ const TradeGeneralDetail = () => {
               <img src={Tree} alt="tree" />
               <NavigateText
                 onClick={() => {
-                  postId ? handleDiary(Number(DiaryId)) : null;
+                  DiaryId ? handleDiary(Number(DiaryId)) : null;
                 }}
               >
                 작물일지 이동하기

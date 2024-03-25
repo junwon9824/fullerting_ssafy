@@ -31,3 +31,14 @@ export const userJoin = async (joinData: JoinType) => {
     throw error;
   }
 };
+export const userCheck = async (accessToken: string) => {
+  try {
+    const response = await api.get("users/info", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("user가 안불러와져요!!", e);
+    throw e;
+  }
+};
