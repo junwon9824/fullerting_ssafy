@@ -34,18 +34,12 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         CustomUser customUser = CustomUser.of(oAuth2User);
         log.info("Oauth 사용자 정보 확인 : {}", oAuth2User.toString());
 
-        response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(HttpServletResponse.SC_OK);
+//        response.setContentType("application/json;charset=UTF-8");
+//        response.setStatus(HttpServletResponse.SC_OK);
 
 //        // DB에 유저 있는지 조회
         userRepository.findByEmail(oAuth2User.getName()).ifPresentOrElse(user -> {
-            try {
-                response.getWriter().write(objectMapper.writeValueAsString(
-                        MessageUtils.success(tokenService.issueToken(authentication))));
-
-            } catch (IOException e) {
-                log.error("Response write error", e);
-            }
+            writeResponse(response, MessageUtils.success(tokenService.issueToken(authentication)));
         }, () -> {
             try {
                 // OAuth2 인증으로 얻은 사용자 정보를 바탕으로 CustomUser 객체 생성
@@ -53,12 +47,21 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 userService.registOauthUser(customUser);
                 log.info("OAuth 유저 회원가입 성공 : {}", customUser.toString());
 
-                response.getWriter().write(objectMapper.writeValueAsString(
-                        MessageUtils.success(tokenService.issueToken(authentication))));
-
-            } catch (IOException e) {
-                log.error("Response write error", e);
+                writeResponse(response, MessageUtils.success(tokenService.issueToken(authentication)));
+            } catch (Exception e) {
+                log.error("OAuth 유저 등록 오류", e);
             }
         });
+    }
+
+    private void writeResponse(HttpServletResponse response, Object tokenResponse) {
+        try {
+            String json = objectMapper.writeValueAsString(tokenResponse);
+            response.setContentType("application/json;charset=UTF-8");
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().write(json);
+        } catch (IOException e) {
+            log.error("Response write error", e);
+        }
     }
 }
