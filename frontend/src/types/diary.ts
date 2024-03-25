@@ -24,12 +24,18 @@ interface CropFormType {
   packDiaryCulStartAt: string;
 }
 
+interface ImageType {
+  id: number;
+  img_store_url: string;
+}
+
 interface DiaryEntry {
   diaryId: number;
   diaryBehavior: "다이어리" | "물주기";
   diaryTitle: string | null;
   diaryContent: string | null;
   diaryCreatedAt: string;
+  imageResponseList: ImageType[];
 }
 
 interface DiaryType {

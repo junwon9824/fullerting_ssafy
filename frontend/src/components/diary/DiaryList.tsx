@@ -58,7 +58,11 @@ const ContentBox = styled.div`
 const ImageBox = styled.div`
   width: 100%;
   height: 10rem;
-  background-color: #41acac;
+`;
+
+const ImageItem = styled.img`
+  width: 100%;
+  height: 100%;
 `;
 
 const InfoBox = styled.div`
@@ -123,12 +127,18 @@ const SDateCalCardBox = styled.div`
 `;
 
 const DiaryCard = ({ diary }: { diary: DiaryEntry }) => {
+  // console.log(diary.imageResponseList);
   return (
     <BorderBox>
       <ContentBox>
-        <ImageBox>
-          <img src="" alt="" />
-        </ImageBox>
+        {diary.imageResponseList.length > 0 && (
+          <ImageBox>
+            {/* {diary.imageResponseList.map((image, index) => (
+              <ImageItem key={index} src={image.img_store_url} alt="" />
+            ))} */}
+            <ImageItem src={diary.imageResponseList[0].img_store_url} alt="" />
+          </ImageBox>
+        )}
         <InfoBox>
           <Title>
             <p>{diary.diaryTitle}</p>
@@ -198,35 +208,31 @@ const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
   };
 
   return (
-    <>
-      <div>calendar</div>
-
-      <DiaryBox>
-        {diaries.length === 0 ? (
-          <div>다이어리를 작성해 주세요</div>
-        ) : (
-          diaries.map((item, index) => (
-            <SDateCalCardBox>
-              <SpecialDate>{isSpecialDate(item.diarySelectedAt)}</SpecialDate>
-              <CalCardBox key={index}>
-                <Calender date={item.diarySelectedAt} />
-                <DiaryCardBox>
-                  {item.getSelectedAtDiaryResponse.map((diary, idx) => (
-                    <div key={idx}>
-                      {diary.diaryBehavior === "다이어리" ? (
-                        <DiaryCard diary={diary} />
-                      ) : (
-                        <WaterCard />
-                      )}
-                    </div>
-                  ))}
-                </DiaryCardBox>
-              </CalCardBox>
-            </SDateCalCardBox>
-          ))
-        )}
-      </DiaryBox>
-    </>
+    <DiaryBox>
+      {diaries.length === 0 ? (
+        <div>다이어리를 작성해 주세요</div>
+      ) : (
+        diaries.map((item, index) => (
+          <SDateCalCardBox>
+            <SpecialDate>{isSpecialDate(item.diarySelectedAt)}</SpecialDate>
+            <CalCardBox key={index}>
+              <Calender date={item.diarySelectedAt} />
+              <DiaryCardBox>
+                {item.getSelectedAtDiaryResponse.map((diary, idx) => (
+                  <div key={idx}>
+                    {diary.diaryBehavior === "다이어리" ? (
+                      <DiaryCard diary={diary} />
+                    ) : (
+                      <WaterCard />
+                    )}
+                  </div>
+                ))}
+              </DiaryCardBox>
+            </CalCardBox>
+          </SDateCalCardBox>
+        ))
+      )}
+    </DiaryBox>
   );
 };
 
