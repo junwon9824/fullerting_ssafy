@@ -1,4 +1,4 @@
-import TradeGeneralDetail from "../../components/Trade/TradeDetailG";
+import TradeGeneralDetail from "../../components/Trade/TradeDetailGeneral";
 
 const TradeGeneralDetailPage = () => {
   return <TradeGeneralDetail />;

@@ -177,7 +177,6 @@ const Post = () => {
     handleLikeClick(75);
     console.log("데이터임", data);
   };
-  console.log(1);
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
     queryKey: ["tradeList"],
@@ -190,7 +189,7 @@ const Post = () => {
     navigate(`/trade/${index}/generaldetail`);
   };
   const handleTradeClick = (index: number) => {
-    navigate(`/trade/${index}/tradedetail`);
+    navigate(`/trade/${index}/proposedetail`);
   };
   return (
     <>
@@ -208,7 +207,7 @@ const Post = () => {
                 src={item.exArticleResponse.imageResponses[0].img_store_url}
                 alt="img"
               ></StyledImg>
-              <LikeBox
+              {/* <LikeBox
                 onClick={() =>
                   handleLikeClick(item.exArticleResponse.exArticleId)
                 }
@@ -217,7 +216,7 @@ const Post = () => {
                   src={item.favoriteResponse.islike ? Like : NonLike}
                   alt="like button"
                 />
-              </LikeBox>
+              </LikeBox> */}
             </ImgBox>
             <Town>
               <img src={Location} alt="location" />
