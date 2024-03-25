@@ -1,21 +1,14 @@
 import styled from "styled-components";
 import Tomato from "/src/assets/images/토마토.png";
 import Location from "/src/assets/svg/location.svg";
-import Like from "/src/assets/svg/notlike.svg";
+import NonLike from "/src/assets/svg/notlike.svg";
 import GrayHeart from "/src/assets/svg/grayheart.svg";
-import RedLike from "/src/assets/svg/like.svg";
+import Like from "/src/assets/svg/like.svg";
 import { useEffect, useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
 import { getTradeList, useLike } from "../../apis/TradeApi";
-import {
-  QueryClient,
-  QueryKey,
-  queryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 interface ClickLike {
   onClick: () => void;
 }
@@ -66,11 +59,9 @@ const ImgBox = styled.div`
   border-radius: 0.9375rem;
   top: 0;
   left: 0;
-  /* z-index: 2; */
+  /* z-index: 1; */
   position: relative;
   overflow: hidden;
-
-  cursor: pointer;
 `;
 const ContentBox = styled.div`
   width: 100%;
@@ -91,7 +82,8 @@ const LikeBox = styled.div<ClickLike>`
   position: absolute;
   bottom: 0.38rem;
   right: 0.38rem;
-  /* z-index: 3; */
+  z-index: 3;
+  cursor: pointer;
 `;
 
 const StyledImg = styled.img`
@@ -190,23 +182,40 @@ const Post = () => {
     queryKey: ["tradeList"],
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
+  console.log(data);
   const { mutate: handleLikeClick } = useLike();
+  const handleGeneralClick = (index: number) => {
+    navigate(`/trade/${index}/generaldetail`);
+  };
+  const handleTradeClick = (index: number) => {
+    navigate(`/trade/${index}/tradedetail`);
+  };
   console.log(data);
   return (
     <ContentBox>
       {data?.map((item: DataItem, index: number) => (
-        <PostBox>
+        <PostBox
+          onClick={() => {
+            item.exArticleResponse.exArticleType === "DEAL"
+              ? handleTradeClick(item.exArticleResponse.exArticleId)
+              : handleGeneralClick(item.exArticleResponse.exArticleId);
+          }}
+        >
           <ImgBox key={index}>
             <StyledImg
               src={item.exArticleResponse.imageResponses[0].img_store_url}
-              alt="tomato"
-            />
-            {/* <LikeBox onClick={() => handleLikeClick(index)}>
+              alt="img"
+            ></StyledImg>
+            <LikeBox
+              onClick={() =>
+                handleLikeClick(item.exArticleResponse.exArticleId)
+              }
+            >
               <img
-                src={item.favoriteResponse.islike ? RedLike : Like}
+                src={item.favoriteResponse.islike ? Like : NonLike}
                 alt="like button"
               />
-            </LikeBox> */}
+            </LikeBox>
           </ImgBox>
           <Town>
             <img src={Location} alt="location" />
