@@ -303,6 +303,7 @@ public class ExArticleService {
 
         for (Image image1 : image) {
             imageRepository.delete(image1);
+            amazonS3Service.deleteFile(image1.getImg_store_url()); //s3
         }
 
         if (article.getType().equals(ExArticleType.DEAL)) {
