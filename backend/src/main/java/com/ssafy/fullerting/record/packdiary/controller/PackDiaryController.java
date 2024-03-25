@@ -97,7 +97,8 @@ public class PackDiaryController {
      * @return
      */
     @PostMapping("/{pack_diary_id}/crop-step")
-    public ResponseEntity<MessageUtils> getCropStep(@PathVariable("pack_diary_id") Long packDiaryId, @RequestBody GetCropStepRequest getCropStepRequest){
+    public ResponseEntity<MessageUtils> getCropStep(@PathVariable("pack_diary_id") Long packDiaryId,
+                                                    @RequestBody GetCropStepRequest getCropStepRequest){
         return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.getCropStep(packDiaryId, getCropStepRequest)));
     }
 

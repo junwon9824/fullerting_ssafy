@@ -20,4 +20,7 @@ public class Badge {
     @Column(name = "badge_img", nullable = false, length = 255)
     private String img;
 
+    @Column(name = "badge_trigger", length = 30)
+    private String trigger;
+
 }

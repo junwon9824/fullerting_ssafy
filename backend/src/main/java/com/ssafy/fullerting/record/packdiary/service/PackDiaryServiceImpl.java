@@ -130,7 +130,7 @@ public class PackDiaryServiceImpl implements PackDiaryService {
     }
 
     @Override
-    public GetDetailPackDiaryResponse getDetailPackDiary(Long packDiaryId) {
+    public GetDetailPackDiaryResponse getDetailPackDiary(Long packDiaryId) throws RuntimeException {
         PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
         GetDetailPackDiaryResponse getDetailPackDiaryResponse = GetDetailPackDiaryResponse.toResponse(packDiary);
         //작물 재배일
@@ -179,7 +179,13 @@ public class PackDiaryServiceImpl implements PackDiaryService {
 
                 //마지막 단계일 경우 뱃지 생성
                 if(getCropStepRequest.getCropStepGrowth() == cropStepRepository.findMaxStepByCropId(packDiary.getCrop().getId())){
-//                badgeService.createBadge(packDiary.getCrop());
+
+                    return GetCropStepResponse.builder()
+                            .cropTypeName(packDiary.getCrop().getName())
+                            .cropStepGrowth(packDiary.getGrowthStep())
+                            .cropRenewal(true)
+                            .myBadgeResponse(badgeService.earnBadge(packDiary))
+                            .build();
                 }
 
                 return GetCropStepResponse.builder()
@@ -187,9 +193,9 @@ public class PackDiaryServiceImpl implements PackDiaryService {
                         .cropStepGrowth(packDiary.getGrowthStep())
                         .cropRenewal(true)
                         .build();
-
             } catch (Exception e){
                 throw new PackDiaryException(TRANSACTION_FAIL);
+
             }
         }
         //단계가 갱신되지 않은 경우
