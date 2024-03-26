@@ -67,15 +67,17 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private void addTokenToCookies(HttpServletResponse response, IssuedToken issuedToken, boolean httpOnly) {
         // 액세스 토큰을 쿠키에 저장
         Cookie accessTokenCookie = new Cookie("accessToken", issuedToken.getAccessToken());
+        accessTokenCookie.setDomain("j10c102.p.ssafy.io");
         accessTokenCookie.setPath("/");
-        accessTokenCookie.setSecure(true); // HTTPS를 사용하는 경우에만 쿠키를 전송
+        accessTokenCookie.setSecure(true);
         accessTokenCookie.setHttpOnly(httpOnly);
         accessTokenCookie.setMaxAge(1 * 24 * 60 * 60);
 
         // 리프레시 토큰을 쿠키에 저장
         Cookie refreshTokenCookie = new Cookie("refreshToken", issuedToken.getRefreshToken());
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setSecure(true); // HTTPS를 사용하는 경우에만 쿠키를 전송
+        accessTokenCookie.setDomain("j10c102.p.ssafy.io");
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setSecure(true);
         refreshTokenCookie.setHttpOnly(httpOnly);
         refreshTokenCookie.setMaxAge(1 * 24 * 60 * 60);
 
