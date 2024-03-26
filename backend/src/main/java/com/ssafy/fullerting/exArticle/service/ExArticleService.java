@@ -143,7 +143,7 @@ public class ExArticleService {
 
         if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.DEAL)) {
             Deal deal = Deal.builder()
-                    .dealCurPrice(exArticleRegisterRequest.getDeal_cur_price())
+                    .dealCurPrice(exArticleRegisterRequest.getDealCurPrice())
                     .build();
 
             deal.setexarticle(article);
@@ -161,7 +161,7 @@ public class ExArticleService {
             int price = 0;
 
             if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.GENERAL_TRANSACTION)) {
-                price = exArticleRegisterRequest.getDeal_cur_price();
+                price = exArticleRegisterRequest.getDealCurPrice();
             }
 
             Trans trans = Trans.builder()

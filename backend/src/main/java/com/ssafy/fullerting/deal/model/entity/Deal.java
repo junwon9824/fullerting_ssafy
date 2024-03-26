@@ -27,7 +27,7 @@ public class Deal {
     @JoinColumn(name = "ex_article_id", nullable = false)
     private ExArticle exArticle;
 
-    @Column(name = "deal_cur_price", nullable = false)
+    @Column(name = "dealCurPrice", nullable = false)
     private int dealCurPrice;
 
     public void setexarticle(ExArticle exArticle){
