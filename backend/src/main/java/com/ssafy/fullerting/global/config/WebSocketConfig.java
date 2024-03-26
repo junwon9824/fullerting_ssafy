@@ -29,8 +29,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         log.info("registerStompEndpointss");
 
         registry.addEndpoint("/ws") // WebSocket 엔드포인트 설정 // ex )
-                .setAllowedOriginPatterns("*")
-                .addInterceptors(new HttpSessionHandshakeInterceptor());
+                .setAllowedOriginPatterns("*");
+//                .addInterceptors(new HttpSessionHandshakeInterceptor());
 //                .withSockJS(); // SockJS 지원
     }
 
