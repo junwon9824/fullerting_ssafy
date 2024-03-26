@@ -17,7 +17,7 @@ interface MessageRes {
 }
 
 function TestPage() {
-  const chattingRoomId = 91;
+  const chattingRoomId = 135;
 
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [messages, setMessages] = useState<MessageRes[]>([]);
