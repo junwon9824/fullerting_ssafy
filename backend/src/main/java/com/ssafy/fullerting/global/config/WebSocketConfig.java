@@ -10,6 +10,7 @@ import org.springframework.web.socket.config.annotation.*;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.handler.WebSocketHandlerDecorator;
 import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -28,27 +29,28 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         log.info("registerStompEndpointss");
 
         registry.addEndpoint("/ws") // WebSocket 엔드포인트 설정 // ex )
-                .setAllowedOriginPatterns("*");
+                .setAllowedOriginPatterns("*")
+                .addInterceptors(new HttpSessionHandshakeInterceptor());
 //                .withSockJS(); // SockJS 지원
     }
 
 
-    @Override
-    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.addDecoratorFactory(new WebSocketHandlerDecoratorFactory() {
-            @Override
-            public WebSocketHandler decorate(WebSocketHandler handler) {
-                return new WebSocketHandlerDecorator(handler) {
-                    @Override
-                    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-                        // CORS 설정
-                        session.getHandshakeHeaders().add("Access-Control-Allow-Origin", "*");
-                        log.info("afterConnectionEstablished");
-                        super.afterConnectionEstablished(session);
-                    }
-                };
-            }
-        });
-    }
+//    @Override
+//    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+//        registration.addDecoratorFactory(new WebSocketHandlerDecoratorFactory() {
+//            @Override
+//            public WebSocketHandler decorate(WebSocketHandler handler) {
+//                return new WebSocketHandlerDecorator(handler) {
+//                    @Override
+//                    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+//                        // CORS 설정
+//                        session.getHandshakeHeaders().add("Access-Control-Allow-Origin", "*");
+//                        log.info("afterConnectionEstablished");
+//                        super.afterConnectionEstablished(session);
+//                    }
+//                };
+//            }
+//        });
+//    }
 
 }
