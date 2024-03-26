@@ -1,5 +1,7 @@
 package com.ssafy.fullerting.deal.controller;
 
+import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
+import com.ssafy.fullerting.bidLog.service.BidService;
 import com.ssafy.fullerting.deal.model.dto.request.DealEndRequest;
 import com.ssafy.fullerting.deal.model.dto.request.DealstartRequest;
 import com.ssafy.fullerting.deal.model.entity.Deal;
@@ -24,11 +26,21 @@ public class MessageController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final UserService userService;
+    private final BidService bidService;
 
     @MessageMapping("/chattings/{chattingRoomId}/messages")
     public void chat(@DestinationVariable Long chattingRoomId, DealstartRequest dealstartRequest) {
-        messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest.getDealCurPrice());
-        log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(),   chattingRoomId);
+
+        bidService.dealbid(chattingRoomId, BidProposeRequest.builder()
+                .dealCurPrice(dealstartRequest.getDealCurPrice())
+                .userId(dealstartRequest.getUserId())
+                .build());
+
+
+        messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest);
+
+
+        log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(), chattingRoomId);
 
     }
 

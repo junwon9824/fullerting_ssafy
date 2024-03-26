@@ -48,7 +48,7 @@ public class DealService {
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
 
-        List<BidLog> bidLogs = bidRepository.findAllByUser_id(customUser.getId());
+        List<BidLog> bidLogs = bidRepository.findAllByuserId(customUser.getId());
 
         List<ExArticleResponse> exArticleResponses = bidLogs.stream().map(bidLog -> {
                     ExArticle article = bidLog.getDeal().getExArticle();

@@ -27,14 +27,14 @@ public class BidLog {
     private Deal deal;
 
     @Column(name = "user_id", nullable = false)
-    private Long user_id;
+    private Long userId;
 
     @Column(name = "bid_log_time", nullable = false)
     private LocalDateTime localDateTime;
 
 
     @Column(name = "bid_log_price", nullable = false)
-    private int bid_log_price;
+    private int bidLogPrice;
 
     public void setDeal(Deal deal) {
         this.deal = deal;
@@ -42,8 +42,8 @@ public class BidLog {
 
     public BidLogResponse tobidLogResponse(BidLog bidLog) {
         return BidLogResponse.builder()
-                .bid_log_price(bidLog.bid_log_price)
-                .user_id(bidLog.user_id)
+                .bidLogPrice(bidLog.bidLogPrice)
+                .userId(bidLog.userId)
                 .localDateTime(bidLog.localDateTime)
 //                .deal(bidLog.deal)
                 .exarticleid(bidLog.deal.getExArticle().getId())
