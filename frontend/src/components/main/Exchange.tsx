@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 interface ScrollExchangeProps {
   currentIndex: number;
   data: any[];
+  onClick: (index: number) => void;
 }
 
 const ExchangeItemContainer = styled.div`
@@ -49,7 +50,7 @@ const Location = styled.span`
   font-family: "GamtanRoad Dotum TTF";
   font-size: 1rem;
   color: #000;
-  gap: 8px; // Add space between the icon and text
+  gap: 8px;
 `;
 
 const LocationImage = styled.div`
@@ -61,6 +62,7 @@ const LocationImage = styled.div`
 const ScrollExchange: React.FC<ScrollExchangeProps> = ({
   currentIndex,
   data,
+  onClick,
 }) => {
   const currentItem = data[currentIndex];
   const image =
@@ -69,7 +71,7 @@ const ScrollExchange: React.FC<ScrollExchangeProps> = ({
   const price = currentItem?.exArticleResponse?.price;
   const location = currentItem?.exArticleResponse?.exLocation;
   return (
-    <ExchangeItemContainer>
+    <ExchangeItemContainer onClick={() => onClick(currentIndex)}>
       <ExchangeItemImage src={image} alt="Exchange Item" />
       <ExchangeItemInfo>
         <Location>{location}</Location>

@@ -137,8 +137,9 @@ const Maintop = () => {
   if (!cropList) {
     return <div>작물을 등록해주세요</div>;
   }
-  const goToDiary = () => {
-    navigate("/diary");
+
+  const goToDiary = (index: number) => {
+    navigate(`/diary/${index}`);
   };
 
   const goToLogin = () => {
