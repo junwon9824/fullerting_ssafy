@@ -159,11 +159,7 @@ const TradeSellerDetail = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
-  const DiaryId = data?.packDiaryResponse.packDiaryId;
-  const handleDiary = (DiaryId: number) => {
-    navigate(`/diary/${DiaryId}`);
-    console.log("나 눌리고 있어!!!", 111);
-  };
+
   const formatDateAndTime = (dateString: string) => {
     if (!dateString) return "";
     const [date, time] = dateString.split("T");
