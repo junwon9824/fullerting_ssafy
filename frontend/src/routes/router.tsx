@@ -50,6 +50,7 @@ const tradeRoutes = [
   { path: "/trade/:postId/generaldetail", element: <TradeGeneralDetailPage /> },
   { path: "/trade/:postId/proposedetail", element: <TradeProposeDetailPage /> },
   { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
+  { path: "/trade/:postId/buyer", element: <TradeBuyerPage /> },
   { path: "/trade/test", element: <TestPage /> },
 ];
 
