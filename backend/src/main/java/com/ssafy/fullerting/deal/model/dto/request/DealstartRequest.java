@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class DealstartRequest {
 
 //    private Long id;
-    private int deal_cur_price;
+    private int dealCurPrice;
 //    private String content;
 //    private Long senderid;
 

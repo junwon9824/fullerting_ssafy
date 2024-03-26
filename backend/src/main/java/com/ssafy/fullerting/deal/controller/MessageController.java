@@ -27,8 +27,8 @@ public class MessageController {
 
     @MessageMapping("/chattings/{chattingRoomId}/messages")
     public void chat(@DestinationVariable Long chattingRoomId, DealstartRequest dealstartRequest) {
-        messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest.getDeal_cur_price());
-        log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDeal_cur_price(),   chattingRoomId);
+        messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest.getDealCurPrice());
+        log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(),   chattingRoomId);
 
     }
 

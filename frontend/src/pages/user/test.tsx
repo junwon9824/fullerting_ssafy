@@ -25,27 +25,28 @@ function TestPage() {
         throw new Error("Access token is not available.");
       }
 
-
       const response = await api.get(`/exchanges/${chattingRoomId}/suggestion`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       console.log(response.data.data_body);
       setMessages(response.data.data_body);
+
     } catch (error) {
       console.error("채팅 내역 로드 실패", error);
     }
   };
 
   useEffect(() => {
-    // loadMessages();
+    loadMessages();
 
     // const socket = new SockJS("/ws");
     // const socket = new SockJS("http://localhost:8080/ws");
     // const socket = new WebSocket(import.meta.env.__WEBSOCKET_URL__);
 
-    // const socket = new WebSocket("ws://localhost:8080/ws");
-    const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+    const socket = new WebSocket("ws://localhost:8080/ws");
+
+    // const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
     
     const client = Stomp.over(socket);
 
@@ -55,13 +56,16 @@ function TestPage() {
       {},
       () => {
         console.log("WebSocket 연결됨");
+     
         client.subscribe(
-          `/sub/chattings/${chattingRoomId}/messages`,
+          `/sub/chattings/${chattingRoomId}`,
           (message) => {
+            console.log('message arrived')
             const msg: MessageRes = JSON.parse(message.body);
             setMessages((prevMessages) => [...prevMessages, msg]);
           }
         );
+
       },
       (error) => {
         console.error("WebSocket 연결 실패", error);
@@ -105,6 +109,7 @@ function TestPage() {
 
         stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(messageReq));
         setNewMessage("");
+
       } catch (error) {
         console.error("메시지 전송 실패", error);
       }
