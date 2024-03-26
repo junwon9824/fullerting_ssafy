@@ -32,7 +32,7 @@ public class Favorite {
     private ExArticle exArticle;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private CustomUser user;
 
     public FavoriteResponse toResponse(CustomUser user) { // 이거 수정 ..

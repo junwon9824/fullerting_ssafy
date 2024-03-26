@@ -2,6 +2,7 @@ package com.ssafy.fullerting.bidLog.controller;
 
 import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
 import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
+import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.service.BidService;
 import com.ssafy.fullerting.deal.service.DealService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
@@ -55,11 +56,12 @@ public class bidLogController {
     @Operation(summary = "입찰 제안하기 ", description = "특정 게시물의 입찰 제안 하기")
     public ResponseEntity<MessageUtils> dealbid(@RequestBody BidProposeRequest bidProposeRequest, @PathVariable Long ex_article_id) {
 
-        bidService.dealbid(ex_article_id,bidProposeRequest);
+        BidLog bidLog = bidService.dealbid(ex_article_id, bidProposeRequest);
+        BidLogResponse bidLogResponse = bidLog.tobidLogResponse(bidLog);
 
         log.info("[dealbid  ]: {}");
 
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success(bidLogResponse));
     }
 
 }

@@ -25,7 +25,7 @@ public class PackDiary { //작물일지
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private CustomUser user;
 
     @OneToOne

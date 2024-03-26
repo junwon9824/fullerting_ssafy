@@ -10,6 +10,6 @@ public interface BidRepository extends JpaRepository<BidLog,Long > {
 
     List<BidLog> findAllByDealId(Long bidid);
 
-    @Query("select b  from BidLog b where b.user_id= :userid")
-    List<BidLog> findAllByUser_id(Long userid);
+    @Query("select b  from BidLog b where b.userId= :userid")
+    List<BidLog> findAllByuserId(Long userid);
 }

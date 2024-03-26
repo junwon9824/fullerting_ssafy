@@ -30,7 +30,7 @@ public class Chat {
     @JoinColumn(name = "user_id")
     private CustomUser customUser; //보내는 사람
 
-    @Column(name = "to_user_id")
+    @Column(name = "to_userId")
     @NotNull
     private int toUserId; //받는 사람
 

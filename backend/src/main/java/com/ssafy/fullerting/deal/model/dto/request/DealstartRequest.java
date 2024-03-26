@@ -6,15 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class DealstartRequest {
 
-//    private Long id;
+    private Long id;
     private int dealCurPrice;
-//    private String content;
-//    private Long senderid;
+    private LocalDateTime localDateTime;
+    private Long userId;
+    private Long chattingRoomId;
+    private int bidLogPrice;
 
 }

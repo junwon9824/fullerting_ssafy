@@ -1,14 +1,14 @@
-import    { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Stomp from "stompjs";
 import { api } from "../../apis/Base";
 
- 
+
 interface MessageRes {
   id: string; //bidlogid
   localDateTime: string;
-  user_id: number;
+  userId: number;
   chattingRoomId: number;
-  bid_log_price: number;
+  bidLogPrice: number;
 }
 
 function TestPage() {
@@ -17,6 +17,7 @@ function TestPage() {
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [messages, setMessages] = useState<MessageRes[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
+  const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
 
   const loadMessages = async () => {
     try {
@@ -37,6 +38,7 @@ function TestPage() {
     }
   };
 
+
   useEffect(() => {
     loadMessages();
 
@@ -47,7 +49,7 @@ function TestPage() {
     const socket = new WebSocket("ws://localhost:8080/ws");
 
     // const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
-    
+
     const client = Stomp.over(socket);
 
     console.log(socket);
@@ -56,16 +58,28 @@ function TestPage() {
       {},
       () => {
         console.log("WebSocket 연결됨");
-     
+
+        // 백엔드로부터 메시지를 받는 부분
+        // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
         client.subscribe(
           `/sub/chattings/${chattingRoomId}`,
           (message) => {
-            console.log('message arrived')
             const msg: MessageRes = JSON.parse(message.body);
-            setMessages((prevMessages) => [...prevMessages, msg]);
+            console.log('message arrived' + msg)
+            const lastMessageId = msg.id;
+
+            setMessages((prevMessages) => [...prevMessages,
+            { ...msg, id: String(lastMessageId), userId: msg.userId, bidLogPrice: msg.bidLogPrice, localDateTime: msg.localDateTime },
+            ]);
+            // id: string; //bidlogid
+            // localDateTime: string;
+            // user_id: number;
+            // chattingRoomId: number;
+            // bid_log_price: number;
+            // setMessages((prevMessages) => [...prevMessages, msg]);
           }
         );
-
+        setMessageSubscribed(true); // 한 번만 실행되도록 플래그 설정
       },
       (error) => {
         console.error("WebSocket 연결 실패", error);
@@ -83,14 +97,15 @@ function TestPage() {
     };
   }, [chattingRoomId]);
 
-  const sendMessage = async () => {
 
+  const sendMessage = async () => {
 
     if (stompClient && newMessage.trim() !== "") {
 
       try {
-        const messageReq = {
+        const messageReq = { 
           dealCurPrice: newMessage,
+          userId: ,
         };
 
         const accessToken = sessionStorage.getItem("accessToken");
@@ -98,7 +113,7 @@ function TestPage() {
           throw new Error("Access token is not available.");
         }
 
-         await api.post(
+        const res = await api.post(
           `/exchanges/${chattingRoomId}/deal_bid`,
           messageReq,
           {
@@ -106,8 +121,24 @@ function TestPage() {
           }
 
         );
+        // private Long id;
 
-        stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(messageReq));
+        // private Long userId;
+        // private LocalDateTime localDateTime;
+
+        // private int bidLogPrice;
+        // private Long exarticleid;
+        const DealstartRequest = {
+
+          id: res.data.id,
+          dealCurPrice: res.data.dealCurPrice,
+          localDateTime: res.data.localDateTime,
+          userId: res.data.userId,
+          chattingRoomId: chattingRoomId,
+          bidLogPrice: messageReq.dealCurPrice,
+        }
+
+        stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
         setNewMessage("");
 
       } catch (error) {
@@ -122,7 +153,7 @@ function TestPage() {
         <ul>
           {messages.map((msg) => (
             <li key={msg.id}>
-              입찰희망자 아이디 {msg.user_id}: 입찰 제안 가격 {msg.bid_log_price} 제안 날짜 ({msg.localDateTime})
+              messageid  {msg.id}입찰희망자 아이디 {msg.userId}: 입찰 제안 가격 {msg.bidLogPrice} 제안 날짜 ({msg.localDateTime})
               <hr />
             </li>
           ))}
