@@ -38,21 +38,19 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         // DB에 유저 있는지 조회
         userRepository.findByEmail(oAuth2User.getName()).ifPresentOrElse(user -> {
-            writeResponse(response, MessageUtils.success(tokenService.issueToken(authentication)));
-            try {
-                response.sendRedirect("https://j10c102.p.ssafy.io/auth/callback");
-            } catch (IOException e) {
-                log.error("리디렉션 중 오류 발생", e);
-                // 에러 처리 로직
-            }
+            addTokenToCookies(response, tokenService.issueToken(authentication),false);
+        try {
+            response.sendRedirect("https://j10c102.p.ssafy.io/auth/callback");
+        } catch (IOException e) {
+            log.error("리디렉션 중 오류 발생", e);
+            // 에러 처리 로직
+        }
         }, () -> {
             try {
                 // OAuth2 인증으로 얻은 사용자 정보를 바탕으로 CustomUser 객체 생성
                 customUser.setPassword("DummyPasswordeoar!@3");
                 userService.registOauthUser(customUser);
-
-                IssuedToken issuedToken = tokenService.issueToken(authentication);
-                writeResponse(response, MessageUtils.success(tokenService.issueToken(authentication)));
+                addTokenToCookies(response, tokenService.issueToken(authentication),false);
                 try {
                     response.sendRedirect("https://j10c102.p.ssafy.io/auth/callback");
                 } catch (IOException e) {
@@ -66,20 +64,21 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     }
 
     // 쿠키로 만들 때 사용
-    private void setTokenCookies(HttpServletResponse response, IssuedToken issuedToken) {
-        // 액세스 토큰 쿠키
+    private void addTokenToCookies(HttpServletResponse response, IssuedToken issuedToken, boolean httpOnly) {
+        // 액세스 토큰을 쿠키에 저장
         Cookie accessTokenCookie = new Cookie("accessToken", issuedToken.getAccessToken());
         accessTokenCookie.setPath("/");
         accessTokenCookie.setSecure(true); // HTTPS를 사용하는 경우에만 쿠키를 전송
-        accessTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 쿠키 유효 기간 설정 (예: 7일)
+        accessTokenCookie.setHttpOnly(httpOnly);
+        accessTokenCookie.setMaxAge(1 * 24 * 60 * 60);
 
-        // 리프레시 토큰 쿠키
+        // 리프레시 토큰을 쿠키에 저장
         Cookie refreshTokenCookie = new Cookie("refreshToken", issuedToken.getRefreshToken());
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setSecure(true); // HTTPS를 사용하는 경우에만 쿠키를 전송
-        refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 쿠키 유효 기간 설정 (예: 14일)
+        refreshTokenCookie.setHttpOnly(httpOnly);
+        refreshTokenCookie.setMaxAge(1 * 24 * 60 * 60);
 
-        // HttpOnly 플래그 제거하여 쿠키 추가
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
     }
