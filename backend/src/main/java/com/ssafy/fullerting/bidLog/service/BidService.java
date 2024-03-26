@@ -14,6 +14,7 @@ import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
+import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
@@ -59,6 +60,10 @@ public class BidService {
     public List<BidLogResponse> selectbid(Long ex_article_id) {
         ExArticle exArticle = exArticleRepository.findById(ex_article_id).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
+        if(!exArticle.getType().equals(ExArticleType.DEAL)){
+            throw new BidException(BidErrorCode.NOT_DEAL);
+        }
 
         List<BidLog> bidLog = bidRepository.findAllByDealId(exArticle.getDeal().getId());
 
