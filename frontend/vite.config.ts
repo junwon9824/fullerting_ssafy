@@ -4,11 +4,7 @@ import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
   plugins: [react(),svgr()],
-  
-  define: {
-    __WEBSOCKET_URL__: JSON.stringify(process.env.WEBSOCKET_URL || 'wss://j10c102.p.ssafy.io/websocket/ws'),
-  },
-
+   
   
   server: {
     // Proxy 설정
