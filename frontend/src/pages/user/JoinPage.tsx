@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 const JoinPage = () => {
   const [name, setName] = useInput("");
   const [email, setEmail] = useInput("");
-  const [authCode, setAuthCode] = useInput("");
+  // const [authCode, setAuthCode] = useInput("");
   const [password, setPassword] = useInput("");
   const [verifyPassword, setVerifyPassword] = useInput("");
   const [isEmailVerify, setIsEmailVerify] = useState<boolean>(false);
