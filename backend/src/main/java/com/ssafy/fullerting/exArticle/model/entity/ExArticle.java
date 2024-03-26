@@ -125,7 +125,7 @@ public class ExArticle {
                 .exArticleTitle(article.getTitle())
                 .exArticleType(article.getType())
                 .exLocation(article.getLocation())
-                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDeal_cur_price() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
+                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDealCurPrice() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
                 .imageResponses(article.getImage().stream().map(Image::toResponse)
                         .collect(Collectors.toList()))
 //                .favoriteResponse(

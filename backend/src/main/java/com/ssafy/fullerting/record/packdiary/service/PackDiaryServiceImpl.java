@@ -98,7 +98,7 @@ public class PackDiaryServiceImpl implements PackDiaryService {
                 List<Image> imageList = imageRepository.findAllByDiaryId(diary.getId());
                 //S3에서 이미지 삭제
                 for(Image image : imageList){
-                    amazonS3Service.deleteFile(image.getImg_store_url());
+                    amazonS3Service.deleteFile(image.getImgStoreUrl());
                 }
                 imageRepository.deleteAll(imageList);
             }

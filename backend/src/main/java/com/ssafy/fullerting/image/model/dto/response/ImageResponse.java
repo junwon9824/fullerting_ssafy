@@ -18,12 +18,12 @@ public class ImageResponse {
 
 //    private ExArticle exArticle;
 
-    private String img_store_url;
+    private String imgStoreUrl;
 
     public Image toEntity(ImageResponse imageResponse){
         return Image.builder()
                 .id(imageResponse.getId())
-                .img_store_url(imageResponse.getImg_store_url())
+                .imgStoreUrl(imageResponse.getImgStoreUrl())
 //                .exArticle(imageResponse.getExArticle())
                 .build();
     }

@@ -35,12 +35,12 @@ public class Image {
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
-    private String img_store_url;
+    private String imgStoreUrl;
 
     public static ImageResponse toResponse(Image image)
     {
         return ImageResponse.builder()
-                .img_store_url(image.getImg_store_url())
+                .imgStoreUrl(image.getImgStoreUrl())
                 .id(image.getId())
                 .build();
     }
