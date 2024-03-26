@@ -5,7 +5,10 @@ import svgr from 'vite-plugin-svgr';
 export default defineConfig({
   plugins: [react(),svgr()],
    
-  
+  define: {
+    __WEBSOCKET_URL__: JSON.stringify('wss://j10c102.p.ssafy.io/websocket'),
+  },
+
   server: {
     // Proxy 설정
     proxy: {

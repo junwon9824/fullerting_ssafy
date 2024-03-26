@@ -3,7 +3,7 @@
 interface ImportMetaEnv {
   readonly VITE_CUSTOM_ENV_VARIABLE: string;
   readonly VITE_SERVER_URL: string;
-  __WEBSOCKET_URL__: string;
+  readonly __WEBSOCKET_URL__: string;
 
 }
 
