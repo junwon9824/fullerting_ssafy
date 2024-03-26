@@ -27,6 +27,7 @@ import CropUpdatePage from "../pages/diary/CropUpdatePage";
 import TradeProposeDetailPage from "../pages/trade/TradeProposeDetail";
 import TradeSellerPage from "../pages/trade/TradeSeller";
 import AuthCallbackPage from "../pages/user/AuthCallbackPage";
+import TradeBuyerPage from "../pages/trade/TradeBuyerPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
