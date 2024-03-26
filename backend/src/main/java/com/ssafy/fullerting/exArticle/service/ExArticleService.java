@@ -74,7 +74,7 @@ public class ExArticleService {
 
         List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
             Image image = new Image();
-            image.setImg_store_url(stringStringEntry.getValue());
+            image.setImgStoreUrl(stringStringEntry.getValue());
             image.setExArticle(exArticleRepository.findById(article.getId()).
                     orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
             imageRepository.save(image);
@@ -131,7 +131,7 @@ public class ExArticleService {
 
         List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
             Image image = new Image();
-            image.setImg_store_url(stringStringEntry.getValue());
+            image.setImgStoreUrl(stringStringEntry.getValue());
             image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
                     orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
             imageRepository.save(image);
@@ -143,7 +143,7 @@ public class ExArticleService {
 
         if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.DEAL)) {
             Deal deal = Deal.builder()
-                    .deal_cur_price(exArticleRegisterRequest.getDeal_cur_price())
+                    .dealCurPrice(exArticleRegisterRequest.getDeal_cur_price())
                     .build();
 
             deal.setexarticle(article);
@@ -307,7 +307,7 @@ public class ExArticleService {
 
         for (Image image1 : image) {
             imageRepository.delete(image1);
-            amazonS3Service.deleteFile(image1.getImg_store_url()); //s3
+            amazonS3Service.deleteFile(image1.getImgStoreUrl()); //s3
         }
 
         if (article.getType().equals(ExArticleType.DEAL)) {
