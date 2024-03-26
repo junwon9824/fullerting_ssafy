@@ -27,7 +27,7 @@ interface Icon {
 }
 interface ImageResponse {
   id: number;
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 
 interface ExArticleResponse {
@@ -204,7 +204,7 @@ const Post = () => {
           >
             <ImgBox key={index}>
               <StyledImg
-                src={item.exArticleResponse.imageResponses[0].img_store_url}
+                src={item.exArticleResponse.imageResponses[0].imgStoreUrl}
                 alt="img"
               ></StyledImg>
               {/* <LikeBox
