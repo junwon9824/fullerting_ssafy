@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getExchanges } from "../../../apis/MyPage";
 interface ImageResponse {
   id: number;
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 
 interface DataItem {
@@ -28,7 +28,7 @@ interface Icon {
 }
 interface ImageResponse {
   id: number;
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 
 interface ExArticleResponse {
@@ -147,7 +147,7 @@ const MyTrade = () => {
         <PostBox key={index}>
           <ImgBox>
             <StyledImg
-              src={item.imageResponses[0]?.img_store_url}
+              src={item.imageResponses[0]?.imgStoreUrl}
               alt="image"
             />
           </ImgBox>

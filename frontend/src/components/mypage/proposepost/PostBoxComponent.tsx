@@ -5,7 +5,7 @@ import StateIconComponent from "./StateIconComponent";
 import ExplainBoxComponent from "./ExplainBoxComponent";
 interface ImageResponse {
   id: number;
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 interface DataItem {
   imageResponses: ImageResponse[];
@@ -62,7 +62,7 @@ const Title = styled.div`
 const PostBoxComponent: React.FC<{ item: DataItem }> = ({ item }) => (
   <PostBox>
     <ImgBox>
-      <StyledImg src={item.imageResponses[0].img_store_url} alt="tomato" />
+      <StyledImg src={item.imageResponses[0].imgStoreUrl} alt="tomato" />
     </ImgBox>
     <Town>
       <div>

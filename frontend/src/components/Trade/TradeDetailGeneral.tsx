@@ -20,7 +20,7 @@ import SwiperCore, { Navigation, Pagination } from "swiper/modules";
 import { userCheck } from "../../apis/UserApi";
 import TradePostLayout from "../common/Layout/TradePostLayout";
 interface ImageResponse {
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 
 const ImgBox = styled.img`
@@ -165,7 +165,7 @@ const TradeGeneralDetail = () => {
   // console.log(
   //   "데이터에요",
   //   data?.imageResponses.map(
-  //     (text: ImageResponse, index: number) => text.img_store_url
+  //     (text: ImageResponse, index: number) => text.imgStoreUrl
   //   )
   // );
   return (
@@ -181,7 +181,7 @@ const TradeGeneralDetail = () => {
           >
             {data?.imageResponses.map((image: ImageResponse, index: number) => (
               <SwiperSlide key={index}>
-                <ImgBox src={image.img_store_url} alt={"img"} />
+                <ImgBox src={image.imgStoreUrl} alt={"img"} />
               </SwiperSlide>
             ))}
           </Swiper>

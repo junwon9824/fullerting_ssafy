@@ -64,7 +64,7 @@ const ScrollExchange: React.FC<ScrollExchangeProps> = ({
 }) => {
   const currentItem = data[currentIndex];
   const image =
-    currentItem?.exArticleResponse?.imageResponses?.[0]?.img_store_url;
+    currentItem?.exArticleResponse?.imageResponses?.[0]?.imgStoreUrl;
   const title = currentItem?.exArticleResponse?.exArticleTitle;
   const price = currentItem?.exArticleResponse?.price;
   const location = currentItem?.exArticleResponse?.exLocation;
