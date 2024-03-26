@@ -155,17 +155,19 @@ public class ExArticleService {
             Deal deal = Deal.builder()
                     .dealCurPrice(exArticleRegisterRequest.getDealCurPrice())
                     .build();
+            System.out.println("exartt      " + deal);
 
             deal.setexarticle(article);
 
-            System.out.println("exarttttt   " + exArticle.toString());
 
-            dealRepository.save(deal);
+            Deal deal1 = dealRepository.save(deal);
 
-            article.setdeal(deal);
+            article.setdeal(deal1);
+            System.out.println("article.setdeal(deal1);   " +  article.getDeal().getDealCurPrice());
+
             article2 = exArticleRepository.save(article);
 
-            System.out.println("exarttttt22222      " + article.getDeal());
+            System.out.println("exarttttt22222      " + article2.getDeal());
         } else {
             //sharing,generaltransaction
             int price = 0;
@@ -182,9 +184,9 @@ public class ExArticleService {
 
             System.out.println("exarttttt   " + exArticle.toString());
 
-            transRepository.save(trans);
+            Trans trans1 = transRepository.save(trans);
 
-            article.setTrans(trans);
+            article.setTrans(trans1);
             article2 = exArticleRepository.save(article);
 
         }
