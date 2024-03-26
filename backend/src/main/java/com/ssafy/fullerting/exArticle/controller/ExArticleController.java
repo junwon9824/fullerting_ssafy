@@ -1,12 +1,13 @@
 package com.ssafy.fullerting.exArticle.controller;
 
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleDoneRequest;
-import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterImageRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
+import com.ssafy.fullerting.exArticle.model.dto.request.UpdateArticleRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleKeywordResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
+import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.service.ExArticleService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 
@@ -37,7 +38,7 @@ public class ExArticleController {
     @PostMapping("")
     @Operation(summary = "작물 거래 게시물 등록 ", description = "작물등록진행")
     public ResponseEntity<MessageUtils> register(
-            @RequestPart("files") List<MultipartFile> files  ,
+            @RequestPart("files") List<MultipartFile> files,
             @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
             @AuthenticationPrincipal String email) {
 
@@ -164,4 +165,26 @@ public class ExArticleController {
         return ResponseEntity.ok().body(MessageUtils.success());
 
     }
+
+
+    @PatchMapping("/{ex_article_id}/modify")
+    @Operation(summary = "나의 작물 거래 게시물 수정 ", description = "나의 작물 거래 게시물 수정 ")
+    public ResponseEntity<MessageUtils> modifyarticle(@PathVariable Long ex_article_id,
+                                                      @RequestPart("images") List<MultipartFile> images,
+                                                      @RequestPart(value = "updateArticleRequest") UpdateArticleRequest updateArticleRequest) {
+
+        log.info("[modifyarticle  ]: {}");
+        UserResponse userResponse = userService.getUserInfo();
+
+        CustomUser customUser = userResponse.toEntity(userResponse);
+
+        ExArticle article = exArticleService.modifyarticle(ex_article_id,images,updateArticleRequest,customUser);
+
+        ExArticleResponse articleResponse = article.toResponse(article, customUser);
+
+        return ResponseEntity.ok().body(MessageUtils.success(articleResponse));
+
+    }
+
+
 }
