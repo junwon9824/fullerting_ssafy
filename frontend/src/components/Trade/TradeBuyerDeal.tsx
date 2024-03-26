@@ -237,12 +237,7 @@ const TradeBuyerDetail = () => {
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
-  // console.log(
-  //   "데이터에요",
-  //   data?.imageResponses.map(
-  //     (text: ImageResponse, index: number) => text.img_store_url
-  //   )
-  // );
+
   return (
     <AppContainer>
       <TopBar title="작물거래" showBack={true} showEdit={true} />
