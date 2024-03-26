@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from "react";
-import SockJS from "sockjs-client";
+import    { useEffect, useState } from "react";
 import Stomp from "stompjs";
-import axios from "axios";
 import { api } from "../../apis/Base";
 
-interface MessageReq {
-  dealCurPrice: number;
-}
-
+ 
 interface MessageRes {
   id: string; //bidlogid
   localDateTime: string;
@@ -98,7 +93,7 @@ function TestPage() {
           throw new Error("Access token is not available.");
         }
 
-        const response = await api.post(
+         await api.post(
           `/exchanges/${chattingRoomId}/deal_bid`,
           messageReq,
           {
