@@ -45,7 +45,7 @@ function TestPage() {
     // const socket = new WebSocket(import.meta.env.__WEBSOCKET_URL__);
 
     // const socket = new WebSocket("ws://localhost:8080/ws");
-    const socket = new WebSocket("wss://j10c102.p.ssafy.io/websocket/ws");
+    const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
     
     const client = Stomp.over(socket);
 
@@ -55,13 +55,13 @@ function TestPage() {
       {},
       () => {
         console.log("WebSocket 연결됨");
-        // client.subscribe(
-        //   `/sub/chattings/${chattingRoomId}/messages`,
-        //   (message) => {
-        //     const msg: MessageRes = JSON.parse(message.body);
-        //     setMessages((prevMessages) => [...prevMessages, msg]);
-        //   }
-        // );
+        client.subscribe(
+          `/sub/chattings/${chattingRoomId}/messages`,
+          (message) => {
+            const msg: MessageRes = JSON.parse(message.body);
+            setMessages((prevMessages) => [...prevMessages, msg]);
+          }
+        );
       },
       (error) => {
         console.error("WebSocket 연결 실패", error);
@@ -100,6 +100,7 @@ function TestPage() {
           {
             headers: { Authorization: `Bearer ${accessToken}` },
           }
+
         );
 
         stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(messageReq));
