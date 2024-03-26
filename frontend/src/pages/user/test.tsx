@@ -105,7 +105,7 @@ function TestPage() {
       try {
         const messageReq = { 
           dealCurPrice: newMessage,
-          userId: ,
+          // userId: , /////수정필요!!!!!!!!!!!!!!!!!1
         };
 
         const accessToken = sessionStorage.getItem("accessToken");
