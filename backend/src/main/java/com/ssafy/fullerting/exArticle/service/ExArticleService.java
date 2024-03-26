@@ -435,19 +435,51 @@ public class ExArticleService {
             });
 
             if (updateArticleRequest.getExArticleType().equals(ExArticleType.SHARING)) {
+                Deal deal1 = dealRepository.findById(article.getDeal().getId()).
+                        orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
+
+                dealRepository.delete(deal1);
                 article.setdeal(null);
-                article.setTrans(Trans.builder()
+
+                Trans trans = Trans.builder()
                         .exArticle(article)
                         .trans_sell_price(0)
-                        .build());
+                        .build();
+
+                transRepository.save(trans);
+                article.setTrans(trans);
             }
+
             if (updateArticleRequest.getExArticleType().equals(ExArticleType.GENERAL_TRANSACTION)) {
+                Deal deal1 = dealRepository.findById(article.getDeal().getId()).
+                        orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
+
+                dealRepository.delete(deal1);
                 article.setdeal(null);
-                article.setTrans(Trans.builder()
+
+                Trans trans = Trans.builder()
                         .exArticle(article)
                         .trans_sell_price(updateArticleRequest.getPrice())
-                        .build());
+                        .build();
+
+                transRepository.save(trans);
+                article.setTrans(trans);
             }
+
+//            Trans trans1 = transRepository.findById(article.getTrans().getId()).orElseThrow(() ->
+//                    new TransException(TransErrorCode.NOT_EXISTS));
+//
+//            transRepository.delete(trans1);
+//
+//            article.setTrans(null);
+//
+//            Deal deal = Deal.builder()
+//                    .exArticle(article)
+//                    .dealCurPrice(updateArticleRequest.getPrice())
+//                    .build();
+//            dealRepository.save(deal);
+//
+//            article.setdeal(deal);
         }
 
         if (article.getTrans() != null) {
@@ -459,18 +491,28 @@ public class ExArticleService {
             });
 
             if (updateArticleRequest.getExArticleType().equals(ExArticleType.DEAL)) {
+
+                Trans trans1 = transRepository.findById(article.getTrans().getId()).orElseThrow(() ->
+                        new TransException(TransErrorCode.NOT_EXISTS));
+
+                transRepository.delete(trans1);
+
                 article.setTrans(null);
-                article.setdeal(Deal.builder()
+
+                Deal deal = Deal.builder()
                         .exArticle(article)
                         .dealCurPrice(updateArticleRequest.getPrice())
-                        .build());
+                        .build();
+                dealRepository.save(deal);
+
+                article.setdeal(deal);
             }
         }
 
 
-        ExArticle exArticle = exArticleRepository.save(article);
+        ExArticle modifiedexArticle = exArticleRepository.save(article);
 
-        return exArticle;
+        return modifiedexArticle;
 
     }
 
