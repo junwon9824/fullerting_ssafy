@@ -9,7 +9,7 @@ interface DataItem {
 }
 interface ImageResponse {
   id: number;
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 
 interface ExArticleResponse {
@@ -40,7 +40,7 @@ interface PostData {
   ex_article_location: string;
   exArticleType: string;
   packdiaryid: string;
-  deal_cur_price: string;
+  dealCurPrice: string;
 }
 
 export const getTradeList = async (accessToken: string) => {

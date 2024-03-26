@@ -26,7 +26,7 @@ public class CustomUser implements UserDetails{
     // DB 필드
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "userId", nullable = false)
     private Long id;
 
     @Column(name = "user_email", nullable = false, length = 50)

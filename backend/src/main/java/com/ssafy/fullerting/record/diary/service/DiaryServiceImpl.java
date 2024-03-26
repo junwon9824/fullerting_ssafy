@@ -104,7 +104,7 @@ public class DiaryServiceImpl implements DiaryService{
             //이미지 DB 저장
             response.getUrls().entrySet().stream().map(stringStringEntry -> {
                 Image image = imageRepository.save(Image.builder()
-                        .img_store_url(stringStringEntry.getValue())
+                        .imgStoreUrl(stringStringEntry.getValue())
                         .diary(diary)
                         .build());
                 return image;
@@ -122,7 +122,7 @@ public class DiaryServiceImpl implements DiaryService{
             //이미지 삭제
             List<Image> imageList = imageRepository.findAllByDiaryId(diaryId);
             for(Image image : imageList){
-                amazonS3Service.deleteFile(image.getImg_store_url());
+                amazonS3Service.deleteFile(image.getImgStoreUrl());
             }
             imageRepository.deleteAll(imageList);
 
@@ -131,7 +131,7 @@ public class DiaryServiceImpl implements DiaryService{
             //이미지 DB 저장
             response.getUrls().entrySet().stream().map(stringStringEntry -> {
                 Image image = imageRepository.save(Image.builder()
-                        .img_store_url(stringStringEntry.getValue())
+                        .imgStoreUrl(stringStringEntry.getValue())
                         .diary(diary)
                         .build());
                 return image;
@@ -154,7 +154,7 @@ public class DiaryServiceImpl implements DiaryService{
             //이미지 삭제
             List<Image> imageList = imageRepository.findAllByDiaryId(diaryId);
             for (Image image : imageList) {
-                amazonS3Service.deleteFile(image.getImg_store_url());
+                amazonS3Service.deleteFile(image.getImgStoreUrl());
             }
             imageRepository.deleteAll(imageList);
 

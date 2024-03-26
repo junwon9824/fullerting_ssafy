@@ -144,9 +144,9 @@ const DiaryCard = ({ diary }: { diary: DiaryEntry }) => {
         {diary.imageResponseList.length > 0 && (
           <ImageBox>
             {diary.imageResponseList.map((image, index) => (
-              <ImageItem key={index} src={image.img_store_url} alt="" />
+              <ImageItem key={index} src={image.imgStoreUrl} alt="" />
             ))}
-            {/* <ImageItem src={diary.imageResponseList[0].img_store_url} alt="" /> */}
+            {/* <ImageItem src={diary.imageResponseList[0].imgStoreUrl} alt="" /> */}
           </ImageBox>
         )}
         <InfoBox>

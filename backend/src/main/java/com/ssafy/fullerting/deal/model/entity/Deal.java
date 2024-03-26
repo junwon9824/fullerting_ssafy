@@ -28,7 +28,7 @@ public class Deal {
     private ExArticle exArticle;
 
     @Column(name = "deal_cur_price", nullable = false)
-    private int deal_cur_price;
+    private int dealCurPrice;
 
     public void setexarticle(ExArticle exArticle){
         this.exArticle=exArticle;

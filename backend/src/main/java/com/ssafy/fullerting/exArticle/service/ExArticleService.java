@@ -74,7 +74,7 @@ public class ExArticleService {
 
         List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
             Image image = new Image();
-            image.setImg_store_url(stringStringEntry.getValue());
+            image.setImgStoreUrl(stringStringEntry.getValue());
             image.setExArticle(exArticleRepository.findById(article.getId()).
                     orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
             imageRepository.save(image);
@@ -87,6 +87,10 @@ public class ExArticleService {
 
     public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
 //        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
+
+        if(exArticleRegisterRequest.getExArticleType().equals(null)){
+            throw new ExArticleException(ExArticleErrorCode.NOT_EXISTS);
+        }
 
         CustomUser customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 //        log.info("ussssss"+customUser.getEmail());
@@ -127,7 +131,7 @@ public class ExArticleService {
 
         List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
             Image image = new Image();
-            image.setImg_store_url(stringStringEntry.getValue());
+            image.setImgStoreUrl(stringStringEntry.getValue());
             image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
                     orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
             imageRepository.save(image);
@@ -139,7 +143,7 @@ public class ExArticleService {
 
         if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.DEAL)) {
             Deal deal = Deal.builder()
-                    .deal_cur_price(exArticleRegisterRequest.getDeal_cur_price())
+                    .dealCurPrice(exArticleRegisterRequest.getDealCurPrice())
                     .build();
 
             deal.setexarticle(article);
@@ -157,7 +161,7 @@ public class ExArticleService {
             int price = 0;
 
             if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.GENERAL_TRANSACTION)) {
-                price = exArticleRegisterRequest.getDeal_cur_price();
+                price = exArticleRegisterRequest.getDealCurPrice();
             }
 
             Trans trans = Trans.builder()
@@ -303,7 +307,7 @@ public class ExArticleService {
 
         for (Image image1 : image) {
             imageRepository.delete(image1);
-            amazonS3Service.deleteFile(image1.getImg_store_url()); //s3
+            amazonS3Service.deleteFile(image1.getImgStoreUrl()); //s3
         }
 
         if (article.getType().equals(ExArticleType.DEAL)) {

@@ -14,9 +14,13 @@ import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
+import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
+import com.ssafy.fullerting.user.exception.UserErrorCode;
+import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
@@ -32,6 +36,7 @@ public class BidService {
     private final BidRepository bidRepository;
     private final DealRepository dealRepository;
     private final ExArticleRepository exArticleRepository;
+    private final UserRepository userRepository;
 
     private final UserService userService;
 
@@ -48,9 +53,9 @@ public class BidService {
                 () -> new DealException(DealErrorCode.NOT_EXISTS));
 
         BidLog bidLog = bidRepository.save(BidLog.builder()
-                .bid_log_price(bidProposeRequest.getDealCurPrice())
+                .bidLogPrice(bidProposeRequest.getDealCurPrice())
                 .localDateTime(time)
-                .user_id(user.getId())
+                .userId(user.getId())
                 .deal(deal)
                 .build());
 
@@ -59,6 +64,10 @@ public class BidService {
     public List<BidLogResponse> selectbid(Long ex_article_id) {
         ExArticle exArticle = exArticleRepository.findById(ex_article_id).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
+        if (!exArticle.getType().equals(ExArticleType.DEAL)) {
+            throw new BidException(BidErrorCode.NOT_DEAL);
+        }
 
         List<BidLog> bidLog = bidRepository.findAllByDealId(exArticle.getDeal().getId());
 
@@ -71,10 +80,12 @@ public class BidService {
 
     }
 
-    public void dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
+    public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
 
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
+
+//        CustomUser customUser = userRepository.findById(bidProposeRequest.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
         ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
                 ExArticleErrorCode.NOT_EXISTS));
@@ -86,13 +97,13 @@ public class BidService {
         Deal deal = dealRepository.findById(exArticle.getDeal().getId()).orElseThrow(() ->
                 new DealException(DealErrorCode.NOT_EXISTS));
 
-        bidRepository.save(BidLog.builder()
-                .bid_log_price(bidProposeRequest.getDealCurPrice())
+        BidLog bidLog = bidRepository.save(BidLog.builder()
+                .bidLogPrice(bidProposeRequest.getDealCurPrice())
                 .deal(deal)
-                .user_id(customUser.getId())
+                .userId(customUser.getId())
                 .localDateTime(LocalDateTime.now())
                 .build());
 
-
+        return bidLog;
     }
 }

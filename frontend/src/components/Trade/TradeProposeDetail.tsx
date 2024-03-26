@@ -18,7 +18,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import SwiperCore, { Navigation, Pagination } from "swiper/modules";
 interface ImageResponse {
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 interface Icon {
   width?: number;
@@ -184,7 +184,7 @@ const TradeGeneralDetail = () => {
           >
             {data?.imageResponses.map((image: ImageResponse, index: number) => (
               <SwiperSlide key={index}>
-                <ImgBox src={image.img_store_url} alt={"img"} />
+                <ImgBox src={image.imgStoreUrl} alt={"img"} />
               </SwiperSlide>
             ))}
           </Swiper>

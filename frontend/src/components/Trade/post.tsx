@@ -1,10 +1,7 @@
 import styled from "styled-components";
-import Tomato from "/src/assets/images/토마토.png";
-import Location from "/src/assets/svg/location.svg";
-import NonLike from "/src/assets/svg/notlike.svg";
-import GrayHeart from "/src/assets/svg/grayheart.svg";
-import Like from "/src/assets/svg/like.svg";
-import { useEffect, useState } from "react";
+ import Location from "/src/assets/svg/location.svg";
+ import GrayHeart from "/src/assets/svg/grayheart.svg";
+ import {   useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
 import { getTradeList, useLike } from "../../apis/TradeApi";
@@ -27,7 +24,7 @@ interface Icon {
 }
 interface ImageResponse {
   id: number;
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 
 interface ExArticleResponse {
@@ -49,10 +46,10 @@ interface DataItem {
   packDiaryResponse: null | number; // 여기서는 예시로 null을 지정했지만, 필요에 따라 다른 타입을 지정할 수 있습니다.
   favoriteResponse: FavoriteResponse;
 }
-interface ToggleLikeParams {
-  accessToken: string;
-  postId: number;
-}
+// interface ToggleLikeParams {
+//   accessToken: string;
+//   postId: number;
+// }
 const ImgBox = styled.div`
   width: 9rem;
   height: 9rem;
@@ -204,7 +201,7 @@ const Post = () => {
           >
             <ImgBox key={index}>
               <StyledImg
-                src={item.exArticleResponse.imageResponses[0].img_store_url}
+                src={item.exArticleResponse.imageResponses[0].imgStoreUrl}
                 alt="img"
               ></StyledImg>
               {/* <LikeBox

@@ -1,6 +1,5 @@
 package com.ssafy.fullerting.bidLog.model.dto.response;
 
-import com.ssafy.fullerting.deal.model.entity.Deal;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,12 +10,10 @@ import java.time.LocalDateTime;
 public class BidLogResponse {
     private Long id;
 
-
-    private Long user_id;
-
+    private Long userId;
     private LocalDateTime localDateTime;
 
-    private int bid_log_price;
+    private int bidLogPrice;
     private Long exarticleid;
 
 }

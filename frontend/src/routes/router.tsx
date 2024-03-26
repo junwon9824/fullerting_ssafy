@@ -26,11 +26,13 @@ import TradeGeneralDetailPage from "../pages/trade/TradeGeneralDetail";
 import CropUpdatePage from "../pages/diary/CropUpdatePage";
 import TradeProposeDetailPage from "../pages/trade/TradeProposeDetail";
 import TradeSellerPage from "../pages/trade/TradeSeller";
-import TradeBuyerPage from "../pages/trade/TradeBuyerPage";
+import AuthCallbackPage from "../pages/user/AuthCallbackPage";
+
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/join", element: <JoinPage /> },
+  { path: "/auth/callback", element: <AuthCallbackPage /> },
 ];
 
 const diaryRoutes = [
