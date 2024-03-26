@@ -10,6 +10,7 @@ import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleDoneRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterImageRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
+import com.ssafy.fullerting.exArticle.model.dto.request.UpdateArticleRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleKeywordResponse;
@@ -26,6 +27,11 @@ import com.ssafy.fullerting.global.s3.model.entity.response.S3ManyFilesResponse;
 import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
 import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.image.repository.ImageRepository;
+import com.ssafy.fullerting.record.diary.exception.DiaryException;
+import com.ssafy.fullerting.record.diary.model.dto.request.UpdateDiaryRequest;
+import com.ssafy.fullerting.record.diary.model.entity.Diary;
+import com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode;
+import com.ssafy.fullerting.record.packdiary.exception.PackDiaryException;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
 import com.ssafy.fullerting.trans.exception.TransErrorCode;
@@ -44,9 +50,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.NOT_EXISTS_DIARY;
+import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.TRANSACTION_FAIL;
 
 @Service
 @RequiredArgsConstructor
@@ -88,7 +98,7 @@ public class ExArticleService {
     public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
 //        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
 
-        if(exArticleRegisterRequest.getExArticleType().equals(null)){
+        if (exArticleRegisterRequest.getExArticleType().equals(null)) {
             throw new ExArticleException(ExArticleErrorCode.NOT_EXISTS);
         }
 
@@ -145,17 +155,19 @@ public class ExArticleService {
             Deal deal = Deal.builder()
                     .dealCurPrice(exArticleRegisterRequest.getDealCurPrice())
                     .build();
+            System.out.println("exartt      " + deal);
 
             deal.setexarticle(article);
 
-            System.out.println("exarttttt   " + exArticle.toString());
 
-            dealRepository.save(deal);
+            Deal deal1 = dealRepository.save(deal);
 
-            article.setdeal(deal);
+            article.setdeal(deal1);
+            System.out.println("article.setdeal(deal1);   " +  article.getDeal().getDealCurPrice());
+
             article2 = exArticleRepository.save(article);
 
-            System.out.println("exarttttt22222      " + article.getDeal());
+            System.out.println("exarttttt22222      " + article2.getDeal());
         } else {
             //sharing,generaltransaction
             int price = 0;
@@ -172,9 +184,9 @@ public class ExArticleService {
 
             System.out.println("exarttttt   " + exArticle.toString());
 
-            transRepository.save(trans);
+            Trans trans1 = transRepository.save(trans);
 
-            article.setTrans(trans);
+            article.setTrans(trans1);
             article2 = exArticleRepository.save(article);
 
         }
@@ -355,4 +367,156 @@ public class ExArticleService {
         favoriteRepository.save(favorite);
 
     }
+
+    public ExArticle modifyarticle(Long exArticleId, List<MultipartFile> images,
+                                   UpdateArticleRequest updateArticleRequest, CustomUser customUser) {
+        ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException
+                (ExArticleErrorCode.NOT_EXISTS));
+
+
+        if (customUser.getId() != article.getUser().getId()) {
+            throw new ExArticleException(ExArticleErrorCode.NOT_MINE);
+        }
+
+        //이미지 삭제
+        List<Image> imageList = imageRepository.findAllByExArticleId(exArticleId);
+        for (Image image : imageList) {
+            amazonS3Service.deleteFile(image.getImgStoreUrl());
+        }
+        imageRepository.deleteAll(imageList);
+
+        List<Image> images1 = new ArrayList<>();
+
+        //이미지 업로드
+        S3ManyFilesResponse response = amazonS3Service.uploadFiles(images);
+        //이미지 DB 저장
+        response.getUrls().entrySet().stream().map(stringStringEntry -> {
+            Image image = imageRepository.save(Image.builder()
+                    .imgStoreUrl(stringStringEntry.getValue())
+                    .exArticle(article)
+                    .build());
+            images1.add(image);
+            return image;
+        }).collect(Collectors.toList());
+
+        article.setImage(images1);
+
+//
+//        article.setImage(images.stream().map(multipartFile -> {
+//            return Image.builder()
+//                    .exArticle(article)
+//                    .imgStoreUrl()
+//                    .build();
+//        }).collect(Collectors.toList()));
+
+        if (updateArticleRequest.getExArticleContent() != null) {
+            article.setContent(updateArticleRequest.getExArticleContent());
+        }
+
+        if (updateArticleRequest.getExArticleTitle() != null) {
+            article.setTitle(updateArticleRequest.getExArticleTitle());
+        }
+        if (updateArticleRequest.getEx_article_location() != null) {
+
+            article.setLocation(updateArticleRequest.getEx_article_location());
+        }
+        if (updateArticleRequest.getPackdiaryid() != null) {
+
+            article.setPackDiary(packDiaryRepository.findById(updateArticleRequest.getPackdiaryid()).orElseThrow(() ->
+                    new PackDiaryException(PackDiaryErrorCode.NOT_EXISTS_PACK_DIARY)));
+        }
+
+        if (article.getDeal() != null) {
+
+            Deal deal = article.getDeal();
+            Optional<Integer> price = Optional.ofNullable(updateArticleRequest.getPrice());
+            price.ifPresent(price1 -> {
+                deal.setDealCurPrice(updateArticleRequest.getPrice());
+                article.setdeal(deal);
+
+            });
+
+            if (updateArticleRequest.getExArticleType().equals(ExArticleType.SHARING)) {
+                Deal deal1 = dealRepository.findById(article.getDeal().getId()).
+                        orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
+
+                dealRepository.delete(deal1);
+                article.setdeal(null);
+
+                Trans trans = Trans.builder()
+                        .exArticle(article)
+                        .trans_sell_price(0)
+                        .build();
+
+                transRepository.save(trans);
+                article.setTrans(trans);
+            }
+
+            if (updateArticleRequest.getExArticleType().equals(ExArticleType.GENERAL_TRANSACTION)) {
+                Deal deal1 = dealRepository.findById(article.getDeal().getId()).
+                        orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
+
+                dealRepository.delete(deal1);
+                article.setdeal(null);
+
+                Trans trans = Trans.builder()
+                        .exArticle(article)
+                        .trans_sell_price(updateArticleRequest.getPrice())
+                        .build();
+
+                transRepository.save(trans);
+                article.setTrans(trans);
+            }
+
+//            Trans trans1 = transRepository.findById(article.getTrans().getId()).orElseThrow(() ->
+//                    new TransException(TransErrorCode.NOT_EXISTS));
+//
+//            transRepository.delete(trans1);
+//
+//            article.setTrans(null);
+//
+//            Deal deal = Deal.builder()
+//                    .exArticle(article)
+//                    .dealCurPrice(updateArticleRequest.getPrice())
+//                    .build();
+//            dealRepository.save(deal);
+//
+//            article.setdeal(deal);
+        }
+
+        if (article.getTrans() != null) {
+            Trans trans = article.getTrans();
+            Optional<Integer> priceOptional = Optional.ofNullable(updateArticleRequest.getPrice());
+            priceOptional.ifPresent(price -> {
+                trans.setTrans_sell_price(price);
+                article.setTrans(trans);
+            });
+
+            if (updateArticleRequest.getExArticleType().equals(ExArticleType.DEAL)) {
+
+                Trans trans1 = transRepository.findById(article.getTrans().getId()).orElseThrow(() ->
+                        new TransException(TransErrorCode.NOT_EXISTS));
+
+                transRepository.delete(trans1);
+
+                article.setTrans(null);
+
+                Deal deal = Deal.builder()
+                        .exArticle(article)
+                        .dealCurPrice(updateArticleRequest.getPrice())
+                        .build();
+                dealRepository.save(deal);
+
+                article.setdeal(deal);
+            }
+        }
+
+
+        ExArticle modifiedexArticle = exArticleRepository.save(article);
+
+        return modifiedexArticle;
+
+    }
+
+
 }
