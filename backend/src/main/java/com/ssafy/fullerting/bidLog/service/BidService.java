@@ -82,10 +82,10 @@ public class BidService {
 
     public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
 
-//        UserResponse userResponse = userService.getUserInfo();
-//        CustomUser customUser = userResponse.toEntity(userResponse);
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = userResponse.toEntity(userResponse);
 
-        CustomUser customUser = userRepository.findById(bidProposeRequest.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+//        CustomUser customUser = userRepository.findById(bidProposeRequest.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
         ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
                 ExArticleErrorCode.NOT_EXISTS));
