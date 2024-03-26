@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getTradeDetail, useLike } from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import Send from "../../assets/images/보내기.png";
+// import Send from "../../assets/images/보내기.png";
 import "swiper/css";
 import "swiper/css/navigation";
 
@@ -312,7 +312,7 @@ const TradeBuyerDetail = () => {
           </DealBox>
           <DealChatBox>
             <DealInput placeholder="최고가보다 높게 제안해주세요" />
-            <SendButton src={Send} alt="send" />
+            {/* <SendButton src={Send} alt="send" /> */}
           </DealChatBox>
         </LayoutInnerBox>
       </LayoutMainBox>
