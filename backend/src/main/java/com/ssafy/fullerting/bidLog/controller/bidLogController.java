@@ -58,7 +58,10 @@ public class bidLogController {
     public ResponseEntity<MessageUtils> dealbid(@RequestBody BidProposeRequest bidProposeRequest, @PathVariable Long ex_article_id) {
 
         BidLog bidLog = bidService.dealbid(ex_article_id, bidProposeRequest);
-        BidLogResponse bidLogResponse = bidLog.tobidLogResponse(bidLog);
+        UserResponse userResponse=userService.getUserInfo();
+        CustomUser customUser=userResponse.toEntity(userResponse);
+
+        BidLogResponse bidLogResponse = bidLog.tobidLogResponse(bidLog,customUser);
 
         log.info("[dealbid  ]: {}");
 
@@ -71,11 +74,10 @@ public class bidLogController {
     public ResponseEntity<MessageUtils> choosetbid(@RequestBody BidSelectRequest bidSelectRequest, @PathVariable Long ex_article_id) {
 
         BidLog bidLog = bidService.choosetbid(ex_article_id, bidSelectRequest);
-        BidLogResponse bidLogResponse = bidLog.tobidLogResponse(bidLog);
 
         log.info("[choosetbid  ]: {}");
 
-        return ResponseEntity.ok().body(MessageUtils.success(bidLogResponse));
+        return ResponseEntity.ok().body(MessageUtils.success(bidLog.getId()));
     }
 
 }
