@@ -10,8 +10,8 @@ import NotLike from "/src/assets/svg/notlike.svg";
 import Like from "/src/assets/svg/like.svg";
 import { useState } from "react";
 import Tree from "/src/assets/svg/diarytree.svg";
-import { useQuery } from "@tanstack/react-query";
-import { getTradeDetail, useLike } from "../../apis/TradeApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deletePost, getTradeDetail, useLike } from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -177,7 +177,16 @@ const TradeGeneralDetail = () => {
       },
     });
   };
-
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      navigate(-1);
+      //   navigate(`/crop/${packDiaryId}`);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
   return (
     <>
       <TradeTopBar
@@ -185,6 +194,9 @@ const TradeGeneralDetail = () => {
         showBack={true}
         showEdit={true}
         onEdit={handleEdit}
+        onDelete={() => {
+          deleteMutation(data?.exArticleResponse.exArticleId);
+        }}
       />
       <LayoutMainBox>
         <SwiperContainer>
