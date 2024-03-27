@@ -370,7 +370,7 @@ public class ExArticleService {
     }
 
     public ExArticle modifyarticle(Long exArticleId,
-                                   UpdateArticleRequest updateArticleRequest, CustomUser customUser) {
+                                   UpdateArticleRequest updateArticleRequest, CustomUser customUser,List<MultipartFile> files) {
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException
                 (ExArticleErrorCode.NOT_EXISTS));
 
@@ -419,11 +419,11 @@ public class ExArticleService {
 //                    .build());
 //        });
 
-        if ( !updateArticleRequest.getImages().get(0).isEmpty()) {
+        if ( !files.get(0).isEmpty()) {
 
-            log.info("size 가 0보다 크다" + updateArticleRequest.getImages().get(0));
+            log.info("size 가 0보다 크다" +  files.get(0));
             //이미지 업로드
-            S3ManyFilesResponse response = amazonS3Service.uploadFiles(updateArticleRequest.getImages());
+            S3ManyFilesResponse response = amazonS3Service.uploadFiles(files);
             //이미지 DB 저장
             response.getUrls().
                     entrySet().

@@ -22,7 +22,7 @@ public class UpdateArticleRequest {
 
     private String ex_article_location;
     private int price;
-    private List<MultipartFile> images;
+
     @Builder.Default
     private Long packdiaryid = null; // packdiary id
     private List<Long> unmodifiedimageid;
