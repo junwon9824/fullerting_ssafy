@@ -156,6 +156,7 @@ const TradePost = () => {
   ];
 
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
+  // console.log("타입을 알려주세요", typeof selectedFiles);
   const { mutate: handlePost } = usePost();
   const navigate = useNavigate();
 
