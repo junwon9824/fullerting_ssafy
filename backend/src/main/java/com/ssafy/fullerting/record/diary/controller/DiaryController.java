@@ -55,13 +55,12 @@ public class DiaryController {
     /**
      * 작물일기 수정
      * @param diaryId
-     * @param images
      * @param updateDiaryRequest
      * @return
      */
     @PatchMapping("/{diary_id}")
-    public ResponseEntity<MessageUtils> updateDiary(@PathVariable("diary_id") Long diaryId, @RequestPart("images") List<MultipartFile> images, @RequestPart(value = "updateDiaryRequest") UpdateDiaryRequest updateDiaryRequest){
-        diaryService.updateDiary(diaryId, images, updateDiaryRequest);
+    public ResponseEntity<MessageUtils> updateDiary(@PathVariable("diary_id") Long diaryId, @ModelAttribute UpdateDiaryRequest updateDiaryRequest){
+        diaryService.updateDiary(diaryId, updateDiaryRequest);
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
