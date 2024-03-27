@@ -32,7 +32,6 @@ function TestPage() {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      console.log(response.data.data_body);
       setMessages(response.data.data_body);
 
     } catch (error) {
@@ -43,25 +42,13 @@ function TestPage() {
 
   useEffect(() => {
     loadMessages();
-
-    // const socket = new SockJS("/ws");
-    // const socket = new SockJS("http://localhost:8080/ws");
-    // const socket = new WebSocket(import.meta.env.__WEBSOCKET_URL__);
-
- 
-
     
     const accessToken = sessionStorage.getItem("accessToken");
     if (!accessToken) {
       throw new Error("Access token is not available.");
     }
-    // const response = await api.get(`/exchanges/all`, {
-    //   headers: { Authorization: `Bearer ${accessToken}` },
-    // });
-
 
     //  const socket = new WebSocket("ws://localhost:8080/ws");
-
     const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
 
     const client = Stomp.over(socket);
@@ -78,27 +65,15 @@ function TestPage() {
         // 백엔드로부터 메시지를 받는 부분
         // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
         client.subscribe(
-          `/sub/chattings/${chattingRoomId}`,
+          `/sub/bidding/${chattingRoomId}`,
           (message) => {
-            console.log(message.body)
             const msg: MessageRes = JSON.parse(message.body);
- 
-
-            console.log('message arrived' + msg.userId)
-            console.log('message arrived' + msg.bidLogPrice)
-
             const lastMessageId = msg.id;
 
             setMessages((prevMessages) => [...prevMessages,
             { ...msg, id: String(lastMessageId), userId: msg.userId, bidLogPrice: msg.bidLogPrice, localDateTime: msg.localDateTime },
             ]);
 
-            // id: string; //bidlogid
-            // localDateTime: string;
-            // user_id: number;
-            // chattingRoomId: number;
-            // bid_log_price: number;
-            // setMessages((prevMessages) => [...prevMessages, msg]);
           }
         );
         setMessageSubscribed(true); // 한 번만 실행되도록 플래그 설정
@@ -127,7 +102,6 @@ function TestPage() {
       try {
         const messageReq = {
           dealCurPrice: newMessage,
-          // userId: , /////수정필요!!!!!!!!!!!!!!!!!1
         };
 
         const accessToken = sessionStorage.getItem("accessToken");
@@ -143,14 +117,7 @@ function TestPage() {
           }
 
         );
-        // private Long id;
 
-        // private Long userId;
-        // private LocalDateTime localDateTime;
-
-        // private int bidLogPrice;
-        // private Long exarticleid;
-        console.log( res.data.data_body)
         const   DealstartRequest = {
 
           id: res.data.data_body.id,
@@ -161,9 +128,9 @@ function TestPage() {
           bidLogPrice: messageReq.dealCurPrice,
 
         }
-        console.log(DealstartRequest.userId)
 
-        stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
+
+        stompClient.send(`/pub/bidding/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
         setNewMessage("");
 
       } catch (error) {

@@ -139,7 +139,7 @@ const Maintop = () => {
   }
 
   const goToDiary = () => {
-    navigate(`/diary`);
+    navigate(`/crop`);
   };
 
   const goToLogin = () => {
