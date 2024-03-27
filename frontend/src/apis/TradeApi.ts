@@ -28,20 +28,6 @@ interface FavoriteResponse {
   islike: boolean;
   isLikeCnt: number;
 }
-interface LikeData {
-  success_code: number;
-  result_code: string;
-  result_message: string;
-}
-interface PostData {
-  exArticleTitle: string;
-  exArticleContent: string;
-  imgFiles: File[];
-  ex_article_location: string;
-  exArticleType: string;
-  packdiaryid: string;
-  dealCurPrice: string;
-}
 
 export const getTradeList = async (accessToken: string) => {
   try {
@@ -150,6 +136,40 @@ export const usePost = () => {
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ["tradeList"] });
       console.log("업로드 성공:", res);
+    },
+    onError: (error) => {
+      console.error("업로드 에러:", error);
+    },
+  });
+};
+
+export const useUpdateArticle = () => {
+  return useMutation({
+    mutationFn: async ({
+      postId,
+      formData,
+    }: {
+      postId: number;
+      formData: FormData;
+    }) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("로그인이 필요합니다.");
+      }
+      console.log("저는 폼데이터입니다", formData);
+
+      const response = await api.patch(`exchanges/${postId}/modify`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data;
+    },
+    onSuccess: () => {
+      // 캐시된 쿼리 데이터 갱신 등 후속 처리
+      console.log("success");
     },
     onError: (error) => {
       console.error("업로드 에러:", error);
