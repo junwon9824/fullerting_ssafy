@@ -145,7 +145,7 @@ const TradeModify = () => {
     location.state?.exArticleType || ""
   );
   console.log(location?.state);
-  const test: number[] = [];
+  let test: Array<number> = [];
   const [diary, setSelectedDiaryId] = useAtom(selectedDiaryIdAtom);
   const [modal, setModal] = useState<boolean>(false);
   const handleCashClick = () => {
@@ -189,16 +189,12 @@ const TradeModify = () => {
     }
   };
 
-  // 사진 삭제 처리
-  const handleDeleteImage = (index: number) => {
-    setImageFiles((prev) => prev.filter((_, i) => i !== index));
-  };
   const tradeOptions = [
     { title: "제안", value: "DEAL" },
     { title: "일반 거래", value: "GENERAL_TRANSACTION" },
     { title: "나눔", value: "SHARING" },
   ];
-  console.log("저는 로케이션", location.state);
+  // console.log("저는 로케이션", location.state);
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   const { mutate: handlePost } = usePost();
   const navigate = useNavigate();
@@ -208,7 +204,7 @@ const TradeModify = () => {
     const formData = new FormData();
 
     imageArray.forEach((file: ImageInfo) => {
-      formData.append("files", file.imgStoreUrl);
+      formData.append("images", file.imgStoreUrl);
     });
     const updateInfo = {
       exArticleTitle: title,
@@ -217,7 +213,7 @@ const TradeModify = () => {
       exArticleType: tradeType,
       packdiaryid: showDiary,
       dealCurPrice: cash,
-      unmodifiedimageid: test,
+      unmodifiedimageid: [],
       // 이곳에 수정할 다른 필드 정보를 추가합니다.
     };
     formData.append(

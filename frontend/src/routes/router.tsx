@@ -33,6 +33,7 @@ import TradeDealDetailPage from "../pages/trade/TradeDealDetailPage";
 import AlarmLayout from "../pages/alarm/AlarmLayout";
 import Alarm from "../pages/alarm/Alarm";
 import RecognizePage from "../pages/diary/RecognizePage";
+import TradeModifyPage from "../pages/trade/TradeModifyPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -61,6 +62,7 @@ const tradeRoutes = [
   { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
   { path: "/trade/:postId/buyer", element: <TradeBuyerPage /> },
   { path: "/trade/:postId/Chat", element: <TradeChatPage /> },
+  { path: "/trade/:postId/modify", element: <TradeModifyPage /> },
   { path: "/trade/test", element: <TestPage /> },
 ];
 
