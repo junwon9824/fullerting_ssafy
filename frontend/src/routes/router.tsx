@@ -34,6 +34,7 @@ import AlarmLayout from "../pages/alarm/AlarmLayout";
 import Alarm from "../pages/alarm/Alarm";
 import RecognizePage from "../pages/diary/RecognizePage";
 import TradeModifyPage from "../pages/trade/TradeModifyPage";
+import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -51,7 +52,7 @@ const diaryRoutes = [
   { path: "/diary/:diaryId", element: <DiaryDetailPage /> },
   { path: "/diary/create", element: <DiaryCreatePage /> },
   { path: "/diary/water", element: <DiaryWaterPage /> },
-  // { path: "/diary/:diaryId/update", element: <DiaryUpdatePage /> },
+  { path: "/diary/:diaryId/update", element: <DiaryUpdatePage /> },
 ];
 
 const tradeRoutes = [
