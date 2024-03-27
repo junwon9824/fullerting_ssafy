@@ -232,7 +232,12 @@ const TradeDetailDeal = () => {
             </ExplainText>
           </TitleBox>
         </LayoutInnerBox>
-        <BottomButton text="가격 제안하기" onClick={BtnClick} />
+        <BottomButton
+          text="가격 제안하기"
+          onClick={() => {
+            postNumber;
+          }}
+        />
       </LayoutMainBox>
     </>
   );
