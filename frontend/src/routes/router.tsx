@@ -29,6 +29,7 @@ import TradeSellerPage from "../pages/trade/TradeSeller";
 import AuthCallbackPage from "../pages/user/AuthCallbackPage";
 import TradeBuyerPage from "../pages/trade/TradeBuyerPage";
 import TradeChatPage from "../pages/trade/TradeChatPage";
+import TradeDealDetailPage from "../pages/trade/TradeDealDetailPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -50,7 +51,7 @@ const tradeRoutes = [
   { path: "/trade", element: <TradePage /> },
   { path: "/trade/post", element: <TradePostPage /> },
   { path: "/trade/:postId/generaldetail", element: <TradeGeneralDetailPage /> },
-  { path: "/trade/:postId/proposedetail", element: <TradeProposeDetailPage /> },
+  { path: "/trade/:postId/DealDetail", element: <TradeDealDetailPage /> },
   { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
   { path: "/trade/:postId/buyer", element: <TradeBuyerPage /> },
   { path: "/trade/:postId/Chat", element: <TradeChatPage /> },
