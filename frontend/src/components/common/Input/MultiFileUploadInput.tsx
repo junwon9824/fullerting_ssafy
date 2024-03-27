@@ -84,24 +84,50 @@ const CounterText = styled.div`
 const MultiFileUploadInput: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
+  useEffect(() => {
+    const urls = selectedFiles.map((file) =>
+      typeof file === "string" ? file : URL.createObjectURL(file)
+    );
+    setPreviewURLs(urls);
+  }, [selectedFiles]);
+  // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const files = e.target.files ? Array.from(e.target.files) : [];
+  //   setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+  //   const newPreviewURLs = files.map((file) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     return new Promise<string>((resolve) => {
+  //       reader.onload = () => resolve(reader.result as string);
+  //     });
+  //   });
 
-    const newPreviewURLs = files.map((file) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      return new Promise<string>((resolve) => {
-        reader.onload = () => resolve(reader.result as string);
+  //   Promise.all(newPreviewURLs).then((urls) => {
+  //     setPreviewURLs((prevURLs) => [...prevURLs, ...urls]);
+  //   });
+  // };
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const newFiles = Array.from(event.target.files);
+      const updatedFiles = [...selectedFiles];
+
+      newFiles.forEach((newFile) => {
+        // 기존 파일 목록에 동일한 파일이 없는 경우에만 추가
+        if (
+          !updatedFiles.some(
+            (file) =>
+              typeof file !== "string" &&
+              file.name === newFile.name &&
+              file.size === newFile.size
+          )
+        ) {
+          updatedFiles.push(newFile);
+        }
       });
-    });
 
-    Promise.all(newPreviewURLs).then((urls) => {
-      setPreviewURLs((prevURLs) => [...prevURLs, ...urls]);
-    });
+      setSelectedFiles(updatedFiles);
+    }
   };
-
   const handleDeleteImage = (index: number) => {
     const newSelectedFiles = selectedFiles.filter((_, i) => i !== index);
     const newPreviewURLs = previewURLs.filter((_, i) => i !== index);
