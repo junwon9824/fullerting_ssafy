@@ -48,7 +48,6 @@ interface TopBarType {
   showBack?: boolean;
   showTitle?: boolean;
   deleteFunc?: any;
-  onEdit?: () => void;
 }
 // interface TopBarType {
 //   title: string;
@@ -107,7 +106,6 @@ const TopBar = ({
   showBack = true,
   showTitle = true,
   deleteFunc,
-  onEdit,
 }: // onEdit,
 // onDelete,
 TopBarType) => {
@@ -150,9 +148,9 @@ TopBarType) => {
           </BackSvgBox>
         )}
         <TitleBox>{showTitle && title}</TitleBox>
-        {showEdit && onEdit && (
+        {showEdit && (
           <EditBox>
-            <EditButton onClick={onEdit}>
+            <EditButton onClick={onClickEdit}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
