@@ -17,9 +17,9 @@ const RecognizePage = () => {
 
   const { mutate } = useMutation({
     mutationFn: calculateStep,
-    onSuccess: () => {
+    onSuccess: (res) => {
+      alert(`${res.crop_type} ${res.grade}단계 입니다`);
       navigate(-1);
-      setSelectedFiles([]);
     },
     onError: (error) => {
       console.log(error);
@@ -28,6 +28,7 @@ const RecognizePage = () => {
 
   const handleConfirmClick = () => {
     mutate(selectedFiles[0]);
+    setSelectedFiles([]);
   };
 
   return (
