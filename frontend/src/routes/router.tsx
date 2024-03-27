@@ -32,7 +32,7 @@ import DiaryDetailPage from "../pages/diary/DiaryDetailPage";
 import TradeDealDetailPage from "../pages/trade/TradeDealDetailPage";
 import AlarmLayout from "../pages/alarm/AlarmLayout";
 import Alarm from "../pages/alarm/Alarm";
-
+import TradeModify from "../components/Trade/TradeModify";
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
