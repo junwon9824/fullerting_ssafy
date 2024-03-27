@@ -144,6 +144,7 @@ export const usePost = () => {
 };
 
 export const useUpdateArticle = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({
       postId,
@@ -169,6 +170,7 @@ export const useUpdateArticle = () => {
     },
     onSuccess: () => {
       // 캐시된 쿼리 데이터 갱신 등 후속 처리
+      queryClient.invalidateQueries({ queryKey: ["tradeDetail"] });
       console.log("success");
     },
     onError: (error) => {
