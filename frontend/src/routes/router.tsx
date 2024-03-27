@@ -90,7 +90,7 @@ const communityRoutes = [
     children: [
       { index: true, element: <Community /> },
       { path: "createcommunity", element: <CreateCommunity /> },
-      { path: "communitydetail", element: <CommunityDetail /> },
+      { path: ":id", element: <CommunityDetail /> },
     ],
   },
 ];
