@@ -12,7 +12,7 @@ interface MessageRes {
 }
 
 function TestPage() {
-  const chattingRoomId = 138;
+  const chattingRoomId = 140;
 
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [messages, setMessages] = useState<MessageRes[]>([]);
@@ -66,7 +66,9 @@ function TestPage() {
     console.log(socket);
 
     client.connect(
-      {},
+      {
+        "Authorization": `Bearer ${accessToken}`
+      },
       () => {
         console.log("WebSocket 연결됨");
 

@@ -21,10 +21,6 @@ public class UserController {
 
     private final UserService userService;
 
-//    @PostMapping("/profile")
-//    public ResponseEntity<MessageUtils> profileUpload() {
-//
-//    }
 
     @PostMapping("/register")
     @Operation(summary = "유저 회원가입", description = "이메일, 비밀번호, 닉네임을 입력받아 회원가입을 진행한다")
@@ -44,7 +40,6 @@ public class UserController {
     @PostMapping("/profile")
     @Operation(summary = "유저 프로필 사진 업로드", description = "유저의 프로필 사진을 업로드한다")
     public ResponseEntity<MessageUtils> uploadProfileImg(MultipartFile multipartFile) {
-
 
         return ResponseEntity.ok().body(MessageUtils.success(userService.uploadThumbAndSaveDB(multipartFile)));
     }

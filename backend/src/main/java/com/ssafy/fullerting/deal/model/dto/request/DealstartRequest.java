@@ -17,7 +17,6 @@ public class DealstartRequest {
     private Long id;
     private int dealCurPrice;
     private LocalDateTime localDateTime;
-    private Long userId;
     private Long chattingRoomId;
     private int bidLogPrice;
 

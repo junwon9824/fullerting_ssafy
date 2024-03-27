@@ -64,8 +64,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
-                                "/ws" // 웹 소켓 엔드포인트
-
+                                "/ws"
 
                         ).permitAll().anyRequest().authenticated())
                 // 예외처리

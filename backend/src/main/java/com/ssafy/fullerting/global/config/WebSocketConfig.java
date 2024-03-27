@@ -1,21 +1,20 @@
 package com.ssafy.fullerting.global.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.*;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.messaging.simp.config.ChannelRegistration;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import org.springframework.web.socket.handler.WebSocketHandlerDecorator;
-import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
-import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSocketMessageBroker
 @Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    private final AuthChannelInterceptor authChannelInterceptor;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -30,27 +29,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         registry.addEndpoint("/ws") // WebSocket 엔드포인트 설정 // ex )
                 .setAllowedOriginPatterns("*");
-//                .addInterceptors(new HttpSessionHandshakeInterceptor());
-//                .withSockJS(); // SockJS 지원
     }
 
-
-//    @Override
-//    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-//        registration.addDecoratorFactory(new WebSocketHandlerDecoratorFactory() {
-//            @Override
-//            public WebSocketHandler decorate(WebSocketHandler handler) {
-//                return new WebSocketHandlerDecorator(handler) {
-//                    @Override
-//                    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-//                        // CORS 설정
-//                        session.getHandshakeHeaders().add("Access-Control-Allow-Origin", "*");
-//                        log.info("afterConnectionEstablished");
-//                        super.afterConnectionEstablished(session);
-//                    }
-//                };
-//            }
-//        });
-//    }
-
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(authChannelInterceptor);
+    }
 }
