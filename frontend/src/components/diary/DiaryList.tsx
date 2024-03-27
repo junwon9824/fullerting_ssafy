@@ -137,16 +137,7 @@ const SDateCalCardBox = styled.div`
   gap: 0.45rem;
 `;
 
-const ButtonBox = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: flex-end;
-  align-items: center;
-  font-size: 0.7rem;
-`;
-
 const DiaryCard = ({ diary }: { diary: DiaryEntry }) => {
-  // console.log(diary.imageResponseList);
   return (
     <BorderBox>
       <ContentBox>
@@ -155,7 +146,6 @@ const DiaryCard = ({ diary }: { diary: DiaryEntry }) => {
             {diary.imageResponseList.map((image, index) => (
               <ImageItem key={index} src={image.imgStoreUrl} alt="" />
             ))}
-            {/* <ImageItem src={diary.imageResponseList[0].imgStoreUrl} alt="" /> */}
           </ImageBox>
         )}
         <InfoBox>
