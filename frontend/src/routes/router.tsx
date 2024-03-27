@@ -24,7 +24,6 @@ import CreateCommunity from "../pages/community/CreateCommunity";
 import CommunityDetail from "../pages/community/CommunityDetail";
 import TradeGeneralDetailPage from "../pages/trade/TradeGeneralDetail";
 import CropUpdatePage from "../pages/diary/CropUpdatePage";
-import TradeProposeDetailPage from "../pages/trade/TradeProposeDetail";
 import TradeSellerPage from "../pages/trade/TradeSellerPage";
 import AuthCallbackPage from "../pages/user/AuthCallbackPage";
 import TradeBuyerPage from "../pages/trade/TradeBuyerPage";

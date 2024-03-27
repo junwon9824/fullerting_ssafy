@@ -148,10 +148,7 @@ const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
 `;
 const TradeDetailDeal = () => {
   const navigate = useNavigate();
-  const BtnClick = (postId: number) => {
-    navigate(`/trade/${postId}/buyer`);
-    console.log("저를 클릭했나요?");
-  };
+
   const [like, setLike] = useState<boolean>(false);
   const handleLike = () => {
     setLike(!like);
@@ -188,13 +185,16 @@ const TradeDetailDeal = () => {
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
-  console.log("전 데이터에용", data);
-  // console.log(
-  //   "데이터에요",
-  //   data?.imageResponses.map(
-  //     (text: ImageResponse, index: number) => text.imgStoreUrl
-  //   )
-  // );
+  console.log("나는야 데이터", data);
+  console.log("데이터 id", data?.userResponse.id, "유저 id", userData?.id);
+  const BtnClick = (postId: number) => {
+    if (data?.userResponse?.id === userData?.id) {
+      navigate(`/trade/${postId}/seller`);
+    } else {
+      navigate(`/trade/${postId}/buyer`);
+    }
+    console.log("저를 클릭했나요?");
+  };
   return (
     <>
       <TopBar title="작물거래" showBack={true} showEdit={true} />
