@@ -15,7 +15,7 @@ interface Props {
 
 interface ImageResponse {
   id: number;
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 interface Icon {
   width?: number;

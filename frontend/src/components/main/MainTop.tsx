@@ -137,9 +137,9 @@ const Maintop = () => {
   if (!cropList) {
     return <div>작물을 등록해주세요</div>;
   }
-  console.log("작물데이터", cropList);
+
   const goToDiary = () => {
-    navigate("/diary");
+    navigate(`/diary`);
   };
 
   const goToLogin = () => {

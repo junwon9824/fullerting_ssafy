@@ -13,7 +13,7 @@ interface DataItem {
 }
 interface ImageResponse {
   id: number;
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 const ContentBox = styled.div`
   width: 100%;

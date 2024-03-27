@@ -49,7 +49,14 @@ interface TopBarType {
   showTitle?: boolean;
   deleteFunc?: any;
 }
-
+// interface TopBarType {
+//   title: string;
+//   showEdit?: boolean;
+//   showBack?: boolean;
+//   showTitle?: boolean;
+//   onEdit?: () => void;
+//   onDelete?: () => void;
+// }
 const TopBox = styled.header`
   display: inline-flex;
   padding: 0rem 1.3125rem;
@@ -99,7 +106,9 @@ const TopBar = ({
   showBack = true,
   showTitle = true,
   deleteFunc,
-}: TopBarType) => {
+}: // onEdit,
+// onDelete,
+TopBarType) => {
   const navigate = useNavigate();
 
   const onClickBack = () => {
@@ -107,11 +116,13 @@ const TopBar = ({
   };
 
   const onClickEdit = () => {
+    console.log("수정버튼이 클릭됐어여!!");
     navigate("update");
   };
 
   const onClickDelete = () => {
     const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
+    console.log("삭제 버튼이 클릭됐어요!!");
     if (isConfirmed) {
       deleteFunc();
     }

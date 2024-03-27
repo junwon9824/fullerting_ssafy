@@ -13,7 +13,7 @@ import java.util.List;
 public interface DiaryService {
     List<GetAllDiaryResponse> getAllDiary(Long packDiaryId);
     GetDetailDiaryResponse getDetailDiary(Long diaryId);
-    void createDiary(Long packDiaryId, List<MultipartFile> images, CreateDiaryRequest createDiaryRequest);
+    void createDiary(Long packDiaryId, CreateDiaryRequest createDiaryRequest);
     void updateDiary(Long diaryId, List<MultipartFile> images, UpdateDiaryRequest updateDiaryRequest);
     void deleteDiary(Long diaryId);
     void wateringCrops(Long packDiaryId, WateringCropsRequest wateringCropsRequest);

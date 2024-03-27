@@ -120,12 +120,14 @@ public class ExArticle {
             favorite1 = article.getFavorite().get(0);
         }
 
+//        log.info("typetype"+article.getType()+" "+ article.trans.getTrans_sell_price());
+
         exArticleResponse = ExArticleResponse.builder()
                 .exArticleId(article.getId())
                 .exArticleTitle(article.getTitle())
                 .exArticleType(article.getType())
                 .exLocation(article.getLocation())
-                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDeal_cur_price() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
+                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDealCurPrice() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
                 .imageResponses(article.getImage().stream().map(Image::toResponse)
                         .collect(Collectors.toList()))
 //                .favoriteResponse(
@@ -133,6 +135,7 @@ public class ExArticle {
 //                                .builder().islike(false).isLikeCnt(0).build()
 //                )
                 .time(article.created_at)
+                .content(article.getContent())
                 .build();
 
 

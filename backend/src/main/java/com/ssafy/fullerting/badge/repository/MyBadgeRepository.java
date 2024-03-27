@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface MyBadgeRepository extends JpaRepository<MyBadge, Long> {
-//    List<MyBadge> findByCustomUser_Id(Long CustomUserId);
+//    List<MyBadge> findByCustomuserId(Long CustomUserId);
     List<MyBadge> findByCustomUserId(Long CustomUserId);
 
     Optional<MyBadge> findByCustomUserAndBadge(CustomUser user, Badge badge);

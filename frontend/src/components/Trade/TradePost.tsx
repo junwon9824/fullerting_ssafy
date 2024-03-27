@@ -173,7 +173,7 @@ const TradePost = () => {
       ex_article_location: place,
       exArticleType: tradeType,
       packdiaryid: diary,
-      deal_cur_price: cash,
+      dealCurPrice: cash,
     });
 
     // formData.append("exArticleRegisterRequest", exArticleRegisterRequest);

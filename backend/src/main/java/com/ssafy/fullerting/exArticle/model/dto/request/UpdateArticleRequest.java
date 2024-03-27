@@ -6,27 +6,23 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class ExArticleRegisterRequest {
+public class UpdateArticleRequest {
 
-    private Long id;
     private String exArticleTitle;
     private String exArticleContent;
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
 
     private String ex_article_location;
-    private int dealCurPrice;
+    private int price;
 
     @Builder.Default
     private Long packdiaryid = null; // packdiary id
-    private List<Favorite> favorite;
 
 }

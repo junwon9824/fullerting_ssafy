@@ -98,7 +98,7 @@ public class PackDiaryServiceImpl implements PackDiaryService {
                 List<Image> imageList = imageRepository.findAllByDiaryId(diary.getId());
                 //S3에서 이미지 삭제
                 for(Image image : imageList){
-                    amazonS3Service.deleteFile(image.getImg_store_url());
+                    amazonS3Service.deleteFile(image.getImgStoreUrl());
                 }
                 imageRepository.deleteAll(imageList);
             }
@@ -179,7 +179,6 @@ public class PackDiaryServiceImpl implements PackDiaryService {
 
                 //마지막 단계일 경우 뱃지 생성
                 if(getCropStepRequest.getCropStepGrowth() == cropStepRepository.findMaxStepByCropId(packDiary.getCrop().getId())){
-
                     return GetCropStepResponse.builder()
                             .cropTypeName(packDiary.getCrop().getName())
                             .cropStepGrowth(packDiary.getGrowthStep())

@@ -86,7 +86,7 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public void createDiary(Long packDiaryId, List<MultipartFile> images, CreateDiaryRequest createDiaryRequest) {
+    public void createDiary(Long packDiaryId, CreateDiaryRequest createDiaryRequest) {
         PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(()->new PackDiaryException(NOT_EXISTS_PACK_DIARY));
         try {
             Diary diary = diaryRepository.save(Diary.builder()
@@ -100,11 +100,11 @@ public class DiaryServiceImpl implements DiaryService{
             );
 
             //S3에 이미지 업로드
-            S3ManyFilesResponse response = amazonS3Service.uploadFiles(images);
+            S3ManyFilesResponse response = amazonS3Service.uploadFiles(createDiaryRequest.getImages());
             //이미지 DB 저장
             response.getUrls().entrySet().stream().map(stringStringEntry -> {
                 Image image = imageRepository.save(Image.builder()
-                        .img_store_url(stringStringEntry.getValue())
+                        .imgStoreUrl(stringStringEntry.getValue())
                         .diary(diary)
                         .build());
                 return image;
@@ -122,7 +122,7 @@ public class DiaryServiceImpl implements DiaryService{
             //이미지 삭제
             List<Image> imageList = imageRepository.findAllByDiaryId(diaryId);
             for(Image image : imageList){
-                amazonS3Service.deleteFile(image.getImg_store_url());
+                amazonS3Service.deleteFile(image.getImgStoreUrl());
             }
             imageRepository.deleteAll(imageList);
 
@@ -131,7 +131,7 @@ public class DiaryServiceImpl implements DiaryService{
             //이미지 DB 저장
             response.getUrls().entrySet().stream().map(stringStringEntry -> {
                 Image image = imageRepository.save(Image.builder()
-                        .img_store_url(stringStringEntry.getValue())
+                        .imgStoreUrl(stringStringEntry.getValue())
                         .diary(diary)
                         .build());
                 return image;
@@ -154,7 +154,7 @@ public class DiaryServiceImpl implements DiaryService{
             //이미지 삭제
             List<Image> imageList = imageRepository.findAllByDiaryId(diaryId);
             for (Image image : imageList) {
-                amazonS3Service.deleteFile(image.getImg_store_url());
+                amazonS3Service.deleteFile(image.getImgStoreUrl());
             }
             imageRepository.deleteAll(imageList);
 

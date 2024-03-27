@@ -34,7 +34,7 @@ interface DiaryFormType {
 
 interface ImageType {
   id: number;
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 
 interface DiaryEntry {
