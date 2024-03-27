@@ -99,35 +99,46 @@ public class DiaryServiceImpl implements DiaryService{
                     .build()
             );
 
-            //S3에 이미지 업로드
-            S3ManyFilesResponse response = amazonS3Service.uploadFiles(createDiaryRequest.getImages());
-            //이미지 DB 저장
-            response.getUrls().entrySet().stream().map(stringStringEntry -> {
-                Image image = imageRepository.save(Image.builder()
-                        .imgStoreUrl(stringStringEntry.getValue())
-                        .diary(diary)
-                        .build());
-                return image;
-            }).collect(Collectors.toList());
+            List<MultipartFile> multipartFileList = createDiaryRequest.getImages();
+            //이미지 비어있지 않은 경우
+            if(multipartFileList.get(0)!=null && !multipartFileList.get(0).isEmpty()){
+                //S3에 이미지 업로드
+                S3ManyFilesResponse response = amazonS3Service.uploadFiles(multipartFileList);
+                //이미지 DB 저장
+                response.getUrls().entrySet().stream().map(stringStringEntry -> {
+                    Image image = imageRepository.save(Image.builder()
+                            .imgStoreUrl(stringStringEntry.getValue())
+                            .diary(diary)
+                            .build());
+                    return image;
+                }).collect(Collectors.toList());
+            }
 
         } catch(Exception e){
+            e.printStackTrace();
             throw new DiaryException(TRANSACTION_FAIL);
         }
     }
 
     @Override
-    public void updateDiary(Long diaryId, List<MultipartFile> images, UpdateDiaryRequest updateDiaryRequest) {
+    public void updateDiary(Long diaryId, UpdateDiaryRequest updateDiaryRequest) {
         Diary diary = diaryRepository.findById(diaryId).orElseThrow(()->new DiaryException(NOT_EXISTS_DIARY));
-        try {
-            //이미지 삭제
-            List<Image> imageList = imageRepository.findAllByDiaryId(diaryId);
-            for(Image image : imageList){
-                amazonS3Service.deleteFile(image.getImgStoreUrl());
-            }
-            imageRepository.deleteAll(imageList);
 
+        List<Image> imageList = imageRepository.findAllByDiaryId(diaryId);
+        for(Image image : imageList){
+            //유지할 이미지가 아닌 경우
+            if(!updateDiaryRequest.getImages().contains(image.getId())) {
+                //이미지 삭제
+                amazonS3Service.deleteFile(image.getImgStoreUrl());
+                imageRepository.delete(image);
+            }
+        }
+
+        List<MultipartFile> multipartFileList = updateDiaryRequest.getNewImages();
+        //이미지 비어있지 않은 경우
+        if(!multipartFileList.get(0).isEmpty() && multipartFileList.get(0)!=null){
             //이미지 업로드
-            S3ManyFilesResponse response = amazonS3Service.uploadFiles(images);
+            S3ManyFilesResponse response = amazonS3Service.uploadFiles(multipartFileList);
             //이미지 DB 저장
             response.getUrls().entrySet().stream().map(stringStringEntry -> {
                 Image image = imageRepository.save(Image.builder()
@@ -136,15 +147,13 @@ public class DiaryServiceImpl implements DiaryService{
                         .build());
                 return image;
             }).collect(Collectors.toList());
-
-            //작물일기 수정
-            diaryRepository.save(diary.toBuilder()
-                    .title(updateDiaryRequest.getDiaryTitle())
-                    .content(updateDiaryRequest.getDiaryContent())
-                    .build());
-        } catch (Exception e){
-            throw new DiaryException(TRANSACTION_FAIL);
         }
+
+        //작물일기 수정
+        diaryRepository.save(diary.toBuilder()
+                .title(updateDiaryRequest.getDiaryTitle())
+                .content(updateDiaryRequest.getDiaryContent())
+                .build());
     }
 
     @Override
