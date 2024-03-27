@@ -354,7 +354,6 @@ public class ExArticleService {
             article.deletefavorite(favorite1.orElse(null));
 
             favoriteRepository.delete(favorite1.orElse(null));
-
             return;
         }
         // 좋아요를 안한경우
@@ -375,7 +374,6 @@ public class ExArticleService {
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException
                 (ExArticleErrorCode.NOT_EXISTS));
 
-
         if (customUser.getId() != article.getUser().getId()) {
             throw new ExArticleException(ExArticleErrorCode.NOT_MINE);
         }
@@ -386,19 +384,22 @@ public class ExArticleService {
         List<Image> unmodifiedimageList = new ArrayList<>();
         List<Image> delete_imageList = new ArrayList<>();
 
+        log.info("updateArticleRequest"+ updateArticleRequest.getUnmodifiedimageid() );
+
         updateArticleRequest.getUnmodifiedimageid().forEach(
                 aLong -> {
                     Image image = imageRepository.findById(aLong).orElseThrow(() -> new ImageException(ImageErrorCode.NOT_EXISTS));
                     unmodifiedimageList.add(image);
                 }
         );
+//        log.info("unmodifiedimageList"+ unmodifiedimageList.get(0).getId() );
 
         imageList.stream().forEach(image -> {
-
-                    if (!unmodifiedimageList.contains(imageList)) {
-
+                    if (!unmodifiedimageList.contains(image)) {
                         amazonS3Service.deleteFile(image.getImgStoreUrl());
                         delete_imageList.add(image);
+                        article.removeimage(image);
+                        log.info("deleeeeee"+ image.getId() );
 
                     }
 
@@ -414,25 +415,22 @@ public class ExArticleService {
         S3ManyFilesResponse response = amazonS3Service.uploadFiles(updateArticleRequest.getImages());
         //이미지 DB 저장
         response.getUrls().
-
                 entrySet().
-
                 stream().
-
                 map(stringStringEntry ->
-
                 {
                     Image image = imageRepository.save(Image.builder()
                             .imgStoreUrl(stringStringEntry.getValue())
                             .exArticle(article)
                             .build());
                     images1.add(image);
+                    article.addimage(image);
                     return image;
                 }).
 
                 collect(Collectors.toList());
 
-        article.setImage(images1);
+
 
 //
 //        article.setImage(images.stream().map(multipartFile -> {
@@ -546,6 +544,8 @@ public class ExArticleService {
 
 
         ExArticle modifiedexArticle = exArticleRepository.save(article);
+
+        log.info("modifff"+modifiedexArticle.getImage().get(0).getId());
 
         return modifiedexArticle;
 

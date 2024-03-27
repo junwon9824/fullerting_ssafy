@@ -107,6 +107,15 @@ public class ExArticle {
         this.favorite.remove(favorite); //favorite remove
     }
 
+    public void removeimage(Image image) {
+
+        if (this.getImage().contains(image)) {
+            this.image.remove(image);
+            image.setExArticle(null);
+        }
+
+    }
+
     public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
         log.info(" articlearticle" + article);
@@ -250,4 +259,8 @@ public class ExArticle {
         return exArticleDetailResponse;
     }
 
+    public void addimage(Image image) {
+        this.image.add(image);
+        image.setExArticle(this);
+    }
 }
