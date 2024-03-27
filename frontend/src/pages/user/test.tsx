@@ -60,9 +60,9 @@ function TestPage() {
     // });
 
 
-     const socket = new WebSocket("ws://localhost:8080/ws");
+    //  const socket = new WebSocket("ws://localhost:8080/ws");
 
-    // const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+    const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
 
     const client = Stomp.over(socket);
 
