@@ -18,7 +18,6 @@ const LayoutInnerBox = styled.div`
   align-items: center;
   gap: 1.5rem;
   padding: 1.12rem 0;
-  /* overflow-y: scroll; */
 `;
 
 export { LayoutMainBox, LayoutInnerBox };

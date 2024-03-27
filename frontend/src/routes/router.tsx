@@ -30,7 +30,8 @@ import TradeBuyerPage from "../pages/trade/TradeBuyerPage";
 import TradeChatPage from "../pages/trade/TradeChatPage";
 import DiaryDetailPage from "../pages/diary/DiaryDetailPage";
 import TradeDealDetailPage from "../pages/trade/TradeDealDetailPage";
-import TradeModify from "../components/Trade/TradeModify";
+import AlarmLayout from "../pages/alarm/AlarmLayout";
+import Alarm from "../pages/alarm/Alarm";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -90,12 +91,24 @@ const communityRoutes = [
   },
 ];
 
+const alarm = [
+  {
+    path: "/alarm",
+    element: <AlarmLayout />,
+    children: [
+      { index: true, element: <Alarm /> },
+      // { path: "allalarm", element: <AllAlarm /> },
+    ],
+  },
+];
+
 const routes = [
   ...authRoutes,
   ...diaryRoutes,
   ...tradeRoutes,
   ...mypageRoutes,
   ...communityRoutes,
+  ...alarm,
 ];
 
 const router = createBrowserRouter(routes);

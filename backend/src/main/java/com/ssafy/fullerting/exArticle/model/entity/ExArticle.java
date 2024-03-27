@@ -145,6 +145,7 @@ public class ExArticle {
 //                )
                 .time(article.created_at)
                 .content(article.getContent())
+                .userId(article.getUser().getId())
                 .build();
 
 

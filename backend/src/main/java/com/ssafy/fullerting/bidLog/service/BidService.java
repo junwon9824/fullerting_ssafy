@@ -9,7 +9,6 @@ import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.repository.BidRepository;
 import com.ssafy.fullerting.deal.exception.DealErrorCode;
 import com.ssafy.fullerting.deal.exception.DealException;
-import com.ssafy.fullerting.deal.model.dto.request.DealProposeRequest;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
@@ -24,7 +23,6 @@ import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -83,7 +81,8 @@ public class BidService {
 
     }
 
-    public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
+
+    public BidLog socketdealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
 
 //        UserResponse userResponse = userService.getUserInfo();
 //        CustomUser customUser = userResponse.toEntity(userResponse);
@@ -125,5 +124,35 @@ public class BidService {
 
 
         return bidLog;
+    }
+
+    public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
+
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = userResponse.toEntity(userResponse);
+
+//        CustomUser customUser = userRepository.findById(bidProposeRequest.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+
+        ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
+                ExArticleErrorCode.NOT_EXISTS));
+
+        exArticle.getDeal().setDealCurPrice(bidProposeRequest.getDealCurPrice());
+
+        if (exArticle.getDeal() == null) {
+            throw new BidException(BidErrorCode.NOT_DEAL);
+        }
+
+        Deal deal = dealRepository.findById(exArticle.getDeal().getId()).orElseThrow(() ->
+                new DealException(DealErrorCode.NOT_EXISTS));
+
+        BidLog bidLog = bidRepository.save(BidLog.builder()
+                .bidLogPrice(bidProposeRequest.getDealCurPrice())
+                .deal(deal)
+                .userId(customUser.getId())
+                .localDateTime(LocalDateTime.now())
+                .build());
+
+        return bidLog;
+
     }
 }

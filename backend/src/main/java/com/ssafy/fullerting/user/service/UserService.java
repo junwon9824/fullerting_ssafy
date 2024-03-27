@@ -4,6 +4,7 @@ import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
+import com.ssafy.fullerting.user.model.dto.request.UserTownRequest;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.model.entity.enums.UserRank;
@@ -95,5 +96,12 @@ public class UserService {
 
         CustomUser customUser = userRepository.findById(userid).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         return customUser.toResponse();
+    }
+
+    public void updatetown(UserTownRequest userTownRequest) {
+        CustomUser user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        user.setLocation(userTownRequest.getUserLocation());
+        userRepository.save(user);
+
     }
 }
