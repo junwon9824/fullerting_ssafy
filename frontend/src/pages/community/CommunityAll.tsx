@@ -3,6 +3,7 @@ import likeIcon from "../../assets/svg/like.svg";
 import commentIcon from "../../assets/svg/classes.svg";
 import { selectedTypeAtom } from "../../stores/community";
 import pullright from "../../assets/svg/pullright.svg";
+import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 
 const posts = [
@@ -18,7 +19,7 @@ const posts = [
     type: "자유게시판",
   },
   {
-    id: 1,
+    id: 2,
     title: "꿀팁공유이게 무슨 식물이야?",
     content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
     imageUrl: pullright,
@@ -29,7 +30,7 @@ const posts = [
     type: "꿀팁공유",
   },
   {
-    id: 1,
+    id: 3,
     title: "꿀팁공유이게 무슨 식물이야?",
     content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
     imageUrl: pullright,
@@ -40,7 +41,7 @@ const posts = [
     type: "꿀팁공유",
   },
   {
-    id: 1,
+    id: 4,
     title: "꿀팁공유이게 무슨 식물이야?",
     content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
     imageUrl: pullright,
@@ -54,8 +55,7 @@ const posts = [
 
 const CommunityItem = styled.div`
   background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
   margin: 0.5rem;
   display: flex;
   flex-direction: column;
@@ -145,13 +145,17 @@ const NameTime = styled.div``;
 const ContentTitle = styled.div``;
 const CommunityAll = () => {
   const [selectedType] = useAtom(selectedTypeAtom);
+  const navigate = useNavigate();
 
+  const handlePostClick = (id) => {
+    navigate(`/community/${id}`);
+  };
   return (
     <div>
       {posts
         .filter((post) => post.type === selectedType)
         .map((post) => (
-          <CommunityItem key={post.id}>
+          <CommunityItem key={post.id} onClick={() => handlePostClick(post.id)}>
             <PostHeader>
               <ContentImage>
                 <ContentTitle>
