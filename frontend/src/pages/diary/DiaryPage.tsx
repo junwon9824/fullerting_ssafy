@@ -6,7 +6,6 @@ import {
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
 import CropProfile from "../../components/diary/CropProfile";
 import Button from "../../components/common/Button/primaryButton";
-import RecognizeButton from "../../components/diary/RecognizeButton";
 import DiaryList from "../../components/diary/DiaryList";
 import MenuBar from "../../components/diary/MenuBar";
 import { useAtom } from "jotai";
@@ -174,7 +173,19 @@ const DiaryPage = () => {
             <TopBox>
               {cropData && <CropProfile crop={cropData} />}
               <ButtonBox>
-                <RecognizeButton />
+                <Button
+                  onClick={() => {
+                    navigate(`ai`);
+                  }}
+                  width={9.5}
+                  height={2.4}
+                  borderRadius={1.28125}
+                  backgroundColor="#A0D8B3"
+                  color="white"
+                  fontSize="0.9"
+                  fontWeight="bold"
+                  text="작물 인식하기"
+                />
                 <Button
                   onClick={handleHarvestClick}
                   width={9.5}
