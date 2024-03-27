@@ -10,12 +10,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import Send from "/src/assets/images/send.png";
 import "swiper/css";
 import "swiper/css/navigation";
-
-import StyledInput from "../common/Input/StyledInput";
 import useInput from "../../hooks/useInput";
-import { userCheck, userIndividualCheck } from "../../apis/UserApi";
+
 interface ImageResponse {
-  img_store_url: string;
+  imgStoreUrl: string;
 }
 interface SituationResponse {
   border: string;
