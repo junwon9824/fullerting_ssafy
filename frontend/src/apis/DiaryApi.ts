@@ -38,6 +38,19 @@ export const getDiaryList = async (packDiaryId: string) => {
   }
 };
 
+export const getDiaryData = async (diaryId: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.get(`/diaries/${diaryId}/detail`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error getDiaryData:", error);
+    throw error;
+  }
+};
+
 export const getCropType = async () => {
   const accessToken = sessionStorage.getItem("accessToken");
 
