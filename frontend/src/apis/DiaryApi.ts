@@ -196,6 +196,38 @@ export const updateHarvest = async (packDiaryId: string) => {
   }
 };
 
+export const updateDiary = async (diaryData: DiaryFormType) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const formData = new FormData();
+    formData.append("diarySelectedAt", diaryData.diarySelectedAt);
+    formData.append("diaryTitle", diaryData.diaryTitle);
+    formData.append("diaryContent", diaryData.diaryContent);
+    diaryData.images.forEach((image) => {
+      formData.append(`newImages`, image);
+    });
+    diaryData.originImages.forEach((imageId) => {
+      formData.append(`images`, imageId);
+    });
+
+    const response = await api.patch(
+      `/diaries/${diaryData.diaryId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    console.log(response.data);
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error updateDiary: ", error);
+    throw error;
+  }
+};
+
 export const deleteCrop = async (packDiaryId: string) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
