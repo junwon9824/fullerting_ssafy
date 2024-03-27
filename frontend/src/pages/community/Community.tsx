@@ -7,6 +7,8 @@ import RadioButton from "../../components/common/Button/radioButton";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
 import CommunityAll from "./CommunityAll";
+import { selectedTypeAtom } from "../../stores/community";
+import { useAtom } from "jotai";
 
 const LayoutInnerBox = styled.div`
   display: flex;
@@ -28,12 +30,15 @@ const WriteBox = styled.img`
 
 const Community = () => {
   const [search, setSearch] = useInput("");
+  const [selectedType, setSelectedType] = useAtom(selectedTypeAtom);
   const navigate = useNavigate();
+
   const handleRadioButtonChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log(event.target.value);
+    setSelectedType(event.target.value);
   };
+
   const handelWriteClick = () => {
     navigate("createcommunity");
   };
