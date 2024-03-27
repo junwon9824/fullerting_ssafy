@@ -141,6 +141,27 @@ export const createWater = async (waterData: DiaryFormType) => {
   }
 };
 
+export const changeStep = async (cropData: {
+  packDiaryId: string;
+  cropStepGrowth: number;
+}) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+
+    const response = await api.post(
+      `/pack-diaries/${cropData.packDiaryId}/crop-step`,
+      { cropStepGrowth: cropData.cropStepGrowth },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error changeStep: ", error);
+    throw error;
+  }
+};
+
 export const updateCrop = async (cropForm: CropFormType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
