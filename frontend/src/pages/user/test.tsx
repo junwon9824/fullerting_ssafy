@@ -61,7 +61,6 @@ function TestPage() {
 
 
     //  const socket = new WebSocket("ws://localhost:8080/ws");
-
     const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
 
     const client = Stomp.over(socket);
@@ -78,7 +77,7 @@ function TestPage() {
         // 백엔드로부터 메시지를 받는 부분
         // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
         client.subscribe(
-          `/sub/chattings/${chattingRoomId}`,
+          `/sub/bidding/${chattingRoomId}`,
           (message) => {
             console.log(message.body)
             const msg: MessageRes = JSON.parse(message.body);
@@ -163,7 +162,8 @@ function TestPage() {
         }
         console.log(DealstartRequest.userId)
 
-        stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
+
+        stompClient.send(`/pub/bidding/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
         setNewMessage("");
 
       } catch (error) {
