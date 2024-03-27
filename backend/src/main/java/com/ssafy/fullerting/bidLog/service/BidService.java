@@ -83,11 +83,11 @@ public class BidService {
 
     }
 
-    public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
+
+    public BidLog socketdealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
 
 //        UserResponse userResponse = userService.getUserInfo();
 //        CustomUser customUser = userResponse.toEntity(userResponse);
-
 //        CustomUser customUser = userRepository.findById(bidProposeRequest.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
         ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
@@ -103,8 +103,7 @@ public class BidService {
         BidLog bidLog = bidRepository.save(BidLog.builder()
                 .bidLogPrice(bidProposeRequest.getDealCurPrice())
                 .deal(deal)
-//                .userId(customUser.getId())
-                .userId(9L)
+                .userId(bidProposeRequest.getUserId())
                 .localDateTime(LocalDateTime.now())
                 .build());
 
@@ -125,6 +124,33 @@ public class BidService {
         article.setDone(true);
         exArticleRepository.save(article);
 
+
+        return bidLog;
+    }
+
+    public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
+
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = userResponse.toEntity(userResponse);
+
+//        CustomUser customUser = userRepository.findById(bidProposeRequest.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+
+        ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
+                ExArticleErrorCode.NOT_EXISTS));
+
+        if (exArticle.getDeal() == null) {
+            throw new BidException(BidErrorCode.NOT_DEAL);
+        }
+
+        Deal deal = dealRepository.findById(exArticle.getDeal().getId()).orElseThrow(() ->
+                new DealException(DealErrorCode.NOT_EXISTS));
+
+        BidLog bidLog = bidRepository.save(BidLog.builder()
+                .bidLogPrice(bidProposeRequest.getDealCurPrice())
+                .deal(deal)
+                .userId(customUser.getId())
+                .localDateTime(LocalDateTime.now())
+                .build());
 
         return bidLog;
     }

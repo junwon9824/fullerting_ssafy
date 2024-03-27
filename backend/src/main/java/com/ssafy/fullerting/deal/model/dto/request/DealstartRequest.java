@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 public class DealstartRequest {
 
     private Long id;
+    private Long userId;
     private int dealCurPrice;
     private LocalDateTime localDateTime;
-    private Long userId;
     private Long chattingRoomId;
     private int bidLogPrice;
 

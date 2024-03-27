@@ -60,16 +60,18 @@ function TestPage() {
     // });
 
 
-     const socket = new WebSocket("ws://localhost:8080/ws");
+    //  const socket = new WebSocket("ws://localhost:8080/ws");
 
-    // const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+    const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
 
     const client = Stomp.over(socket);
 
     console.log(socket);
 
     client.connect(
-      {},
+      {
+        "Authorization": `Bearer ${accessToken}`
+      },
       () => {
         console.log("WebSocket 연결됨");
 
@@ -78,10 +80,13 @@ function TestPage() {
         client.subscribe(
           `/sub/chattings/${chattingRoomId}`,
           (message) => {
+            console.log(message.body)
             const msg: MessageRes = JSON.parse(message.body);
  
 
             console.log('message arrived' + msg.userId)
+            console.log('message arrived' + msg.bidLogPrice)
+
             const lastMessageId = msg.id;
 
             setMessages((prevMessages) => [...prevMessages,
@@ -146,7 +151,7 @@ function TestPage() {
         // private int bidLogPrice;
         // private Long exarticleid;
         console.log( res.data.data_body)
-        const DealstartRequest = {
+        const   DealstartRequest = {
 
           id: res.data.data_body.id,
           dealCurPrice: res.data.data_body.dealCurPrice,
@@ -156,6 +161,7 @@ function TestPage() {
           bidLogPrice: messageReq.dealCurPrice,
 
         }
+        console.log(DealstartRequest.userId)
 
         stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
         setNewMessage("");

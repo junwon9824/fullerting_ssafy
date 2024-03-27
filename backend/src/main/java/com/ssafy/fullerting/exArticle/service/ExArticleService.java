@@ -410,9 +410,18 @@ public class ExArticleService {
         imageRepository.deleteAll(delete_imageList);
 
         List<Image> images1 = new ArrayList<>();
+        List<Image> newimages = new ArrayList<>();
 
-        if (updateArticleRequest.getImages() .size()>0 ) {
 
+//        updateArticleRequest.getImages().forEach(file -> {
+//            newimages.add(Image.builder()
+//                    .imgStoreUrl()
+//                    .build());
+//        });
+
+        if ( !updateArticleRequest.getImages().get(0).isEmpty()) {
+
+            log.info("size 가 0보다 크다" + updateArticleRequest.getImages().get(0));
             //이미지 업로드
             S3ManyFilesResponse response = amazonS3Service.uploadFiles(updateArticleRequest.getImages());
             //이미지 DB 저장
@@ -547,7 +556,7 @@ public class ExArticleService {
 
         ExArticle modifiedexArticle = exArticleRepository.save(article);
 
-        log.info("modifff" + modifiedexArticle.getImage().get(0).getId());
+//        log.info("modifff" + modifiedexArticle.getImage().get(0).getId());
 
         return modifiedexArticle;
 

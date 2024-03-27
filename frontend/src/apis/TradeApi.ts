@@ -64,6 +64,16 @@ export const getTradeDetail = async (accessToken: string, postId: number) => {
     console.log("에러났어요", e);
   }
 };
+export const getDealList = async (accessToken: string, postId: number) => {
+  try {
+    const response = await api.get(`/exchanges/${postId}/suggestion`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("에러났어요", e);
+  }
+};
 export const useLike = () => {
   // useMutation 훅은 여기에서 동기적으로 호출됩니다.
   const queryClient = useQueryClient();

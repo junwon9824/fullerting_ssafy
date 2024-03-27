@@ -42,3 +42,17 @@ export const userCheck = async (accessToken: string) => {
     throw e;
   }
 };
+export const userIndividualCheck = async (
+  accessToken: string,
+  userId: number
+) => {
+  try {
+    const response = await api.get(`users/info/${userId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("user가 안불러와져요!!", e);
+    throw e;
+  }
+};
