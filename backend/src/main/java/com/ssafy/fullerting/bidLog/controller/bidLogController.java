@@ -68,7 +68,6 @@ public class bidLogController {
         return ResponseEntity.ok().body(MessageUtils.success(bidLogResponse));
     }
 
-
     @PostMapping("/{ex_article_id}/select")
     @Operation(summary = "입찰 선택하기 ", description = "특정 게시물의 입찰 선택하기 ")
     public ResponseEntity<MessageUtils> choosetbid(@RequestBody BidSelectRequest bidSelectRequest, @PathVariable Long ex_article_id) {
