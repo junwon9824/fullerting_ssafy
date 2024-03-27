@@ -192,6 +192,7 @@ const TradeTopBar = ({
   showBack = true,
   showTitle = true,
   onEdit,
+  onDelete,
 }: // onDelete
 // onEdit,
 // onDelete,
@@ -251,7 +252,7 @@ TradeTopBarType) => {
                 />
               </svg>
             </EditButton>
-            <DeleteButton onClick={onClickDelete}>
+            <DeleteButton onClick={onDelete}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

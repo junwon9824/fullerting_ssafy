@@ -178,3 +178,16 @@ export const useUpdateArticle = () => {
     },
   });
 };
+export const deletePost = async (postId: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.delete(`/exchanges/${postId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error delete: ", error);
+    throw error;
+  }
+};

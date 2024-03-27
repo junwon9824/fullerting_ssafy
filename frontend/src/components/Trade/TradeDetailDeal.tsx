@@ -10,8 +10,8 @@ import NotLike from "/src/assets/svg/notlike.svg";
 import Like from "/src/assets/svg/like.svg";
 import { useState } from "react";
 import Tree from "/src/assets/svg/diarytree.svg";
-import { useQuery } from "@tanstack/react-query";
-import { getTradeDetail, useLike } from "../../apis/TradeApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deletePost, getTradeDetail, useLike } from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -155,7 +155,7 @@ const TradeDetailDeal = () => {
   };
 
   const { mutate: handleLikeClick } = useLike();
-  const { postId } = useParams<{ postId?: string }>();
+  const { postId } = useParams<{ postId: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
@@ -164,6 +164,7 @@ const TradeDetailDeal = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
+
   const {
     isLoading: isLoadingUserDetail,
     data: userData,
@@ -185,7 +186,7 @@ const TradeDetailDeal = () => {
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
-  console.log("나는야 데이터", data);
+
   console.log("데이터 id", data?.userResponse.id, "유저 id", userData?.id);
   const BtnClick = (postId: number) => {
     if (data?.userResponse?.id === userData?.id) {
@@ -195,7 +196,7 @@ const TradeDetailDeal = () => {
     }
     // console.log("저를 클릭했나요?");
   };
-  console.log("저는 데이터입니다.", data);
+
   const handleEdit = () => {
     console.log("저 클릭됐어요");
     navigate(`/trade/${postId}/modify`, {
@@ -211,6 +212,16 @@ const TradeDetailDeal = () => {
       },
     });
   };
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      navigate(-1);
+      //   navigate(`/crop/${packDiaryId}`);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
   return (
     <>
       <TradeTopBar
@@ -218,6 +229,9 @@ const TradeDetailDeal = () => {
         showBack={true}
         showEdit={true}
         onEdit={handleEdit}
+        onDelete={() => {
+          deleteMutation(data?.exArticleResponse.exArticleId);
+        }}
       />
       <LayoutMainBox>
         <SwiperContainer>
