@@ -63,7 +63,7 @@ const tradeRoutes = [
   { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
   { path: "/trade/:postId/buyer", element: <TradeBuyerPage /> },
   { path: "/trade/:postId/Chat", element: <TradeChatPage /> },
-  { path: "/trade/:postId/modify", element: <TradeModifyPage /> },
+  { path: "/trade/:postId/update", element: <TradeModifyPage /> },
   { path: "/trade/test", element: <TestPage /> },
 ];
 
