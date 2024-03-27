@@ -22,7 +22,13 @@ import TradePostLayout from "../common/Layout/TradePostLayout";
 interface ImageResponse {
   imgStoreUrl: string;
 }
-
+interface Icon {
+  width?: number;
+  height: number;
+  backgroundColor: string;
+  color: string;
+  text?: string;
+}
 const ImgBox = styled.img`
   width: 100%;
   height: 15.5625rem;
@@ -120,11 +126,31 @@ const Thumbnail = styled.img`
   width: 1.875rem;
   height: 1.875rem;
 `;
+const PriceBox = styled.div`
+  width: auto;
+  height: 1.375rem;
 
+  gap: 0.37rem;
+  display: flex;
+  font-size: 1.25rem;
+  font-weight: bold;
+`;
+const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
+  width: ${(props) => `${props.width}rem`};
+  height: ${(props) => `${props.height}rem`};
+  border-radius: 0.3125rem;
+  background: ${(props) => props.backgroundColor};
+  color: ${(props) => props.color};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.5625rem; /* 텍스트 크기 */
+`;
 const TradeDetailDeal = () => {
   const navigate = useNavigate();
   const BtnClick = (postId: number) => {
-    navigate(`trade/${postId}/buyer`);
+    navigate(`/trade/${postId}/buyer`);
+    console.log("저를 클릭했나요?");
   };
   const [like, setLike] = useState<boolean>(false);
   const handleLike = () => {
@@ -162,6 +188,7 @@ const TradeDetailDeal = () => {
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
+  console.log("전 데이터에용", data);
   // console.log(
   //   "데이터에요",
   //   data?.imageResponses.map(
@@ -189,7 +216,7 @@ const TradeDetailDeal = () => {
         <LayoutInnerBox>
           <InfoBox>
             <Profile>
-              <Thumbnail src={data?.userResponse.thumbnail} alt="profile" />
+              <Thumbnail src={data?.userResponse?.thumbnail} alt="profile" />
               <Name>
                 <NameText>{data?.userResponse.nickname}</NameText>
                 <ClassesText>
@@ -211,7 +238,18 @@ const TradeDetailDeal = () => {
                 }}
               />
             </Title>
-            <Price>{data?.transResponse.price}원</Price>
+            <PriceBox>
+              <StateIcon
+                width={1.5}
+                height={0.9375}
+                backgroundColor="#A0D8B3"
+                color="#ffffff"
+              >
+                현재
+              </StateIcon>
+              <Price>{data?.dealResponse?.price}원</Price>
+            </PriceBox>
+
             <DiaryBox>
               <img src={Tree} alt="tree" />
               <NavigateText
@@ -234,9 +272,7 @@ const TradeDetailDeal = () => {
         </LayoutInnerBox>
         <BottomButton
           text="가격 제안하기"
-          onClick={() => {
-            postNumber;
-          }}
+          onClick={() => BtnClick(postNumber)}
         />
       </LayoutMainBox>
     </>

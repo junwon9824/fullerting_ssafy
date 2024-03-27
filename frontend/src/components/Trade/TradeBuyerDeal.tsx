@@ -4,7 +4,7 @@ import Coli from "/src/assets/images/브로콜리.png";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getTradeDetail, useLike } from "../../apis/TradeApi";
+import { getDealList, getTradeDetail, useLike } from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Send from "/src/assets/images/send.png";
@@ -13,6 +13,7 @@ import "swiper/css/navigation";
 
 import StyledInput from "../common/Input/StyledInput";
 import useInput from "../../hooks/useInput";
+import { userCheck, userIndividualCheck } from "../../apis/UserApi";
 interface ImageResponse {
   img_store_url: string;
 }
@@ -26,6 +27,14 @@ interface Icon {
   backgroundColor: string;
   color: string;
   text?: string;
+}
+interface Deal {
+  bidLogPrice: number;
+  exarticleid: number;
+  id: number;
+  localDateTime: string;
+  thumbnail: string;
+  nickname: string;
 }
 const AppContainer = styled.div`
   display: flex;
@@ -134,6 +143,8 @@ const LayoutMainBox = styled.main`
   padding-top: 3.125rem;
   padding-bottom: 6rem;
   gap: 1rem;
+  height: 100vh;
+  overflow: hidden;
 `;
 
 const LayoutInnerBox = styled.div`
@@ -164,7 +175,7 @@ const SituationGroup = styled.div`
 `;
 const DealBox = styled.div`
   width: 100%;
-  height: 9.8rem;
+  height: 8rem;
   overflow-y: scroll;
   flex-direction: column;
   gap: 1rem;
@@ -213,6 +224,17 @@ const DealInput = styled.input`
   border-radius: 1rem;
   border: 1px solid var(--gray2, #c8c8c8);
   font-size: 0.875rem;
+  &:focus {
+    border: 1px solid var(--gray2, #c8c8c8);
+  }
+`;
+const DealListBox = styled.div`
+  width: 100%;
+  height: 8rem;
+  display: flex;
+  overflow-y: scroll;
+  justify-content: space-around;
+  flex-direction: column;
 `;
 const SendButton = styled.img`
   width: 2.1875rem;
@@ -220,10 +242,16 @@ const SendButton = styled.img`
 `;
 const DealChatBox = styled.div`
   display: flex;
+  position: fixed;
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  /* padding-left: 2rem;
+  padding-right: 0.5rem; */
+  gap: 1rem;
+  bottom: 2rem;
 `;
+
 const TradeBuyerDetail = () => {
   const navigate = useNavigate();
   const [dealCash, setDealCash] = useInput("");
@@ -242,7 +270,19 @@ const TradeBuyerDetail = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
-  console.log(data);
+
+  const {
+    isLoading: dealListLoading,
+    data: dealListData,
+    error: ealListError,
+  } = useQuery({
+    queryKey: ["dealDetail", postNumber],
+    queryFn: accessToken
+      ? () => getDealList(accessToken, postNumber)
+      : undefined,
+  });
+
+  console.log("난데이터얌", dealListData);
   const formatDateAndTime = (dateString: string) => {
     if (!dateString) return "";
     const [date, time] = dateString.split("T");
@@ -306,34 +346,22 @@ const TradeBuyerDetail = () => {
             </SituationGroup>
           </SituationBox>
           <DealBox>
-            <DealList>
-              <ProfileBox>
-                <PhotoBox src={Coli} alt="coli" />
-                고두심우석
-              </ProfileBox>
-              <CostBox>300원</CostBox>
-            </DealList>
-            <DealList>
-              <ProfileBox>
-                <PhotoBox src={Coli} alt="coli" />
-                고두심우석
-              </ProfileBox>
-              <CostBox>300원</CostBox>
-            </DealList>
-            <DealList>
-              <ProfileBox>
-                <PhotoBox src={Coli} alt="coli" />
-                고두심우석
-              </ProfileBox>
-              <CostBox>300원</CostBox>
-            </DealList>
+            {dealListData?.map((item: Deal, index: number) => (
+              <DealList>
+                <ProfileBox>
+                  <PhotoBox src={item?.thumbnail} alt="thumbnail" />
+                  {item?.nickname}
+                </ProfileBox>
+                <CostBox>{item?.bidLogPrice}원</CostBox>
+              </DealList>
+            ))}
           </DealBox>
-          <DealChatBox>
-            <DealInput placeholder="최고가보다 높게 제안해주세요" />
-            <SendButton src={Send} alt="send" />
-          </DealChatBox>
         </LayoutInnerBox>
       </LayoutMainBox>
+      <DealChatBox>
+        <DealInput placeholder="최고가보다 높게 제안해주세요" />
+        <SendButton src={Send} alt="send" />
+      </DealChatBox>
       {/* </AppContainer> */}
     </>
   );
