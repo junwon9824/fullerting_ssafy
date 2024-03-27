@@ -6,6 +6,7 @@ import Search from "../../components/common/Input/Search";
 import RadioButton from "../../components/common/Button/radioButton";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
+import CommunityAll from "./CommunityAll";
 
 const LayoutInnerBox = styled.div`
   display: flex;
@@ -72,6 +73,7 @@ const Community = () => {
             />
           </Button>
           <WriteBox src={Write} onClick={handelWriteClick} />
+          <CommunityAll />
         </LayoutInnerBox>
       </LayoutMainBox>
       <NavBar />
