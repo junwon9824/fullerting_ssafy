@@ -69,7 +69,9 @@ function TestPage() {
     console.log(socket);
 
     client.connect(
-      {},
+      {
+        "Authorization": `Bearer ${accessToken}`
+      },
       () => {
         console.log("WebSocket 연결됨");
 

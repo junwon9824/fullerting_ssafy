@@ -51,19 +51,6 @@ public class JwtValidationFilter extends OncePerRequestFilter {
             return;
         }
 
-//        //토큰이 없는경우
-//        if(!StringUtils.hasText(authorizationHeader)){
-//            doFilter(request, response, filterChain);
-//            return;
-//        }
-//        //Bear로 시작하지 않는 경우
-//        if(!authorizationHeader.startsWith(BEARER_PREFIX)){
-//            doFilter(request, response, filterChain);
-//            return;
-//        }
-        //jwt추출
-//        String accessToken = authorizationHeader.split(" ")[1];
-
         //엑세스 토큰 검증
         Jws<Claims> claimsJws = jwtUtils.validateAccessToken(accessToken);
 
@@ -86,31 +73,6 @@ public class JwtValidationFilter extends OncePerRequestFilter {
             log.info("jwt 토큰 검증 : {}", SecurityContextHolder.getContext().toString());
         }
 
-//        boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
-//
-//        if(claimsJws != null && authenticated){
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            CustomAuthenticationToken auth = (CustomAuthenticationToken) authentication;
-//
-//            // 현재 인증 사용자랑 토큰 principal이랑 같은지 확인
-//            if (claimsJws.getBody().getSubject().equals(auth.getPrincipal())) {
-//                log.info("인증 객체와 토큰 동일 확인 : {}", claimsJws.getBody().getSubject());
-//
-//                // 같으면 새로 인증객체 생성(동기화)
-//                CustomAuthenticationToken customAuthenticationToken =
-//                        new CustomAuthenticationToken(auth.getPrincipal(),
-//                                auth.getUserId(),
-//                                null,
-//                                auth.getAuthorities()
-//                        ); // principal,userid,password,authorities 가 들어감
-//                SecurityContextHolder.getContext().setAuthentication(customAuthenticationToken);
-//            } else {
-//                log.info("인증 객체 : {} 와 토큰 정보 : {} 불일치 -> 새로 로그인 필요" , auth.getPrincipal() , claimsJws.getBody().getSubject());
-//            }
-
-//            CustomUser customUser = userRepository.findById(claimsJws.getBody().get("userId", Long.class))
-//                    .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-//        }
 
         filterChain.doFilter(request, response);
     }
