@@ -162,10 +162,30 @@ const TradeGeneralDetail = () => {
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
+  const handleEdit = () => {
+    console.log("저 클릭됐어요");
+    navigate(`/trade/${postId}/modify`, {
+      state: {
+        exArticleTitle: data?.exArticleResponse?.exArticleTitle,
+        exArticleContent: data?.exArticleResponse?.content,
+        exArticleType: data?.exArticleResponse?.exArticleType,
+        ex_article_location: data?.exArticleResponse?.exLocation,
+        packdiaryid: data?.packDiaryResponse?.packDiaryId.toString(),
+        deal_cur_price: data?.dealResponse?.price.toString(),
+        imageResponse: data?.imageResponses,
+        postId: data?.exArticleResponse.exArticleId,
+      },
+    });
+  };
 
   return (
     <>
-      <TradeTopBar title="작물거래" showBack={true} showEdit={true} />
+      <TradeTopBar
+        title="작물거래"
+        showBack={true}
+        showEdit={true}
+        onEdit={handleEdit}
+      />
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper

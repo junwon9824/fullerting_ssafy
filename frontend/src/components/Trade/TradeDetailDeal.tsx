@@ -197,6 +197,7 @@ const TradeDetailDeal = () => {
   };
   console.log("저는 데이터입니다.", data);
   const handleEdit = () => {
+    console.log("저 클릭됐어요");
     navigate(`/trade/${postId}/modify`, {
       state: {
         exArticleTitle: data?.exArticleResponse?.exArticleTitle,
