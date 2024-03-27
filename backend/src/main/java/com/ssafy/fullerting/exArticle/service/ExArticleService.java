@@ -368,7 +368,7 @@ public class ExArticleService {
 
     }
 
-    public ExArticle modifyarticle(Long exArticleId, List<MultipartFile> images,
+    public ExArticle modifyarticle(Long exArticleId,
                                    UpdateArticleRequest updateArticleRequest, CustomUser customUser) {
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException
                 (ExArticleErrorCode.NOT_EXISTS));
@@ -383,12 +383,13 @@ public class ExArticleService {
         for (Image image : imageList) {
             amazonS3Service.deleteFile(image.getImgStoreUrl());
         }
+
         imageRepository.deleteAll(imageList);
 
         List<Image> images1 = new ArrayList<>();
 
         //이미지 업로드
-        S3ManyFilesResponse response = amazonS3Service.uploadFiles(images);
+        S3ManyFilesResponse response = amazonS3Service.uploadFiles(updateArticleRequest.getImages());
         //이미지 DB 저장
         response.getUrls().entrySet().stream().map(stringStringEntry -> {
             Image image = imageRepository.save(Image.builder()

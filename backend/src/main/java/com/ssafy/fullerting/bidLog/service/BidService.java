@@ -82,8 +82,8 @@ public class BidService {
 
     public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
 
-        UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+//        UserResponse userResponse = userService.getUserInfo();
+//        CustomUser customUser = userResponse.toEntity(userResponse);
 
 //        CustomUser customUser = userRepository.findById(bidProposeRequest.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
@@ -100,7 +100,8 @@ public class BidService {
         BidLog bidLog = bidRepository.save(BidLog.builder()
                 .bidLogPrice(bidProposeRequest.getDealCurPrice())
                 .deal(deal)
-                .userId(customUser.getId())
+//                .userId(customUser.getId())
+                .userId(9L)
                 .localDateTime(LocalDateTime.now())
                 .build());
 

@@ -2,6 +2,7 @@ package com.ssafy.fullerting.deal.model.entity;
 
 import com.ssafy.fullerting.deal.model.dto.response.DealResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
+import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,13 +31,16 @@ public class Deal {
     @Column(name = "deal_cur_price", nullable = false)
     private int dealCurPrice;
 
-    public void setexarticle(ExArticle exArticle){
-        this.exArticle=exArticle;
+    public void setexarticle(ExArticle exArticle) {
+        this.exArticle = exArticle;
     }
 
-    public DealResponse toResponse(CustomUser customUser){
+    public DealResponse toResponse(CustomUser customUser) {
         return DealResponse.builder()
-                .exArticleResponse(this.exArticle.toResponse(this.exArticle,customUser))
-                .build();
+//                .exArticleResponse(this.exArticle.toResponse(this.exArticle,customUser))
+                .price(this.getDealCurPrice()).id(this.getId()).
+//   .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDealCurPrice() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
+
+        build();
     }
 }
