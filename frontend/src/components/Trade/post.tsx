@@ -40,11 +40,21 @@ interface FavoriteResponse {
   islike: boolean;
   isLikeCnt: number;
 }
+interface TransResponse {
+  id?: number;
+  price?: number;
+}
+interface DealResponse {
+  id?: number;
+  price?: number;
+}
 
 interface DataItem {
   exArticleResponse: ExArticleResponse;
   packDiaryResponse: null | number; // 여기서는 예시로 null을 지정했지만, 필요에 따라 다른 타입을 지정할 수 있습니다.
   favoriteResponse: FavoriteResponse;
+  transResponse: TransResponse;
+  dealResponse: DealResponse;
 }
 // interface ToggleLikeParams {
 //   accessToken: string;
@@ -179,8 +189,7 @@ const Post = () => {
     queryKey: ["tradeList"],
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
-  // console.log("전 데이터 입니다", data);
-  // const [isLiked, setIsLiked] = useState(data?.favoriteResponse.islike);
+
   const { mutate: handleLikeClick } = useLike();
 
   const handleGeneralClick = (index: number) => {
@@ -189,6 +198,7 @@ const Post = () => {
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
+  console.log("데이터 입니다", data);
   return (
     <>
       <ContentBox>
@@ -222,26 +232,32 @@ const Post = () => {
             </Town>
             <Title>{item.exArticleResponse.exArticleTitle}</Title>
             <State gap={0.44} fontSize={1}>
-              {item.exArticleResponse.price === 0 ? (
-                <StateIcon
-                  width={1.5}
-                  height={0.9375}
-                  backgroundColor="#A0D8B3"
-                  color="#ffffff"
-                >
-                  나눔
-                </StateIcon>
+              {item.transResponse ? (
+                <>
+                  <StateIcon
+                    width={1.5}
+                    height={0.9375}
+                    backgroundColor="#A0D8B3"
+                    color="#ffffff"
+                  >
+                    가격
+                  </StateIcon>
+                  {item.transResponse.price}원
+                </>
               ) : (
-                <StateIcon
-                  width={1.5}
-                  height={0.9375}
-                  backgroundColor="#A0D8B3"
-                  color="#ffffff"
-                >
-                  현재
-                </StateIcon>
+                <>
+                  <StateIcon
+                    width={1.5}
+                    height={0.9375}
+                    backgroundColor="#A0D8B3"
+                    color="#ffffff"
+                  >
+                    현재
+                  </StateIcon>
+                  {item.dealResponse.price}원
+                </>
               )}
-              {item.exArticleResponse.price}원
+
               {/* <StateIcon
               width={1.5}
               height={0.9375}
