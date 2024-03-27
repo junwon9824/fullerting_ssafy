@@ -83,22 +83,27 @@ export const createCrop = async (cropData: CropFormType) => {
 export const createDiary = async (diaryData: DiaryFormType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
+    const formData = new FormData();
+    formData.append("diarySelectedAt", diaryData.diarySelectedAt);
+    formData.append("diaryTitle", diaryData.diaryTitle);
+    formData.append("diaryContent", diaryData.diaryContent);
+    diaryData.images.forEach((image) => {
+      formData.append(`images`, image);
+    });
 
     const response = await api.post(
       `/diaries/${diaryData.packDiaryId}`,
+      formData,
       {
-        diarySelectedAt: diaryData.diarySelectedAt,
-        images: diaryData.images,
-        diaryTitle: diaryData.diaryTitle,
-        diaryContent: diaryData.diaryContent,
-      },
-      {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data",
+        },
       }
     );
     return response.data.data_body;
   } catch (error) {
-    console.error("Error createWater: ", error);
+    console.error("Error createDiary: ", error);
     throw error;
   }
 };

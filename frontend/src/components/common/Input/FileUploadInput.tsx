@@ -1,5 +1,7 @@
+import { useAtom } from "jotai";
 import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
+import { fileAtom } from "../../../stores/diary";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -70,7 +72,8 @@ const DeleteImageButton = styled.div`
 `;
 
 const FileUploadInput: React.FC = () => {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  // const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedFiles, setSelectedFiles] = useAtom(fileAtom);
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
