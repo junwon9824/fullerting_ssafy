@@ -73,7 +73,9 @@ public class BidService {
         List<BidLog> bidLog = bidRepository.findAllByDealId(exArticle.getDeal().getId());
 
         List<BidLogResponse> bidLogResponses = bidLog.stream().map(bidLog1 -> {
-                    return bidLog1.tobidLogResponse(bidLog1);
+                    CustomUser user = userRepository.
+                            findById(bidLog1.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+                    return bidLog1.toBidLogsuggestionResponse(bidLog1, user);
                 })
                 .collect(Collectors.toList());
 
