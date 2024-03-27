@@ -9,7 +9,6 @@ import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.repository.BidRepository;
 import com.ssafy.fullerting.deal.exception.DealErrorCode;
 import com.ssafy.fullerting.deal.exception.DealException;
-import com.ssafy.fullerting.deal.model.dto.request.DealProposeRequest;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
@@ -24,7 +23,6 @@ import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
