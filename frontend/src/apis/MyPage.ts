@@ -1,4 +1,32 @@
+import { useMutation } from "@tanstack/react-query";
 import { api } from "./Base";
+
+export const useChange = () => {
+  return useMutation({
+    mutationFn: async (imageFile: File) => {
+      const formData = new FormData();
+      formData.append('multipartFile', imageFile);
+
+      const accessToken = sessionStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("No access token available");
+      }
+      
+      return await api.post('/users/profile', formData, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+    },
+    
+    onSuccess: (data) => {
+      console.log("업로드 성공!", data);
+    },
+    onError: (error) => {
+      console.log("에러났어요", error);
+    },
+  });
+};
+
+
 
 
 export const fetchBadges = async () => {

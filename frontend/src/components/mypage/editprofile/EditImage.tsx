@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import ProfileImage from "/src/assets/svg/profileimage.svg";
+import { getUsersInfo, useChange } from "../../../apis/MyPage";
+import { useQuery } from "@tanstack/react-query";
 
 interface ProfileImageProps {
   image: string;
 }
+
 const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
@@ -20,6 +22,7 @@ const ProfileImageContainer = styled.div<ProfileImageProps>`
   border-radius: 50%;
   overflow: hidden;
   background-image: url(${(props) => props.image});
+  background-color: gray;
   background-size: cover;
   background-position: center;
   cursor: pointer;
@@ -30,29 +33,32 @@ const HiddenFileInput = styled.input`
 `;
 
 const EditImage: React.FC = () => {
-  const [profileImage, setProfileImage] = useState<string>(
-    localStorage.getItem("profileImage") || ProfileImage
-  );
+  const [profileImage, setProfileImage] = useState<string>("");
 
-  useEffect(() => {
-    localStorage.setItem("profileImage", profileImage);
-  }, [profileImage]);
+  const { mutate: ChangeImg } = useChange();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        setProfileImage(e.target?.result as string);
+        const newDataUrl = e.target?.result;
+        setProfileImage(newDataUrl as string);
+        ChangeImg(file);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const { data: Img } = useQuery({
+    queryKey: ["profileImg"],
+    queryFn: getUsersInfo,
+  });
+
   return (
     <ProfileContainer>
       <ProfileImageContainer
-        image={profileImage}
+        image={profileImage || Img?.data.data_body.thumbnail}
         onClick={() => document.getElementById("fileInput")?.click()}
       >
         <HiddenFileInput
