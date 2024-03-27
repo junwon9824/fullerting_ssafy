@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TopBar } from "../common/Navigator/navigator";
+import { TopBar, TradeTopBar } from "../common/Navigator/navigator";
 import Coli from "/src/assets/images/브로콜리.png";
 import { LayoutInnerBox, LayoutMainBox } from "../common/Layout/Box";
 import { BottomButton } from "../common/Button/LargeButton";
@@ -162,15 +162,10 @@ const TradeGeneralDetail = () => {
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
-  // console.log(
-  //   "데이터에요",
-  //   data?.imageResponses.map(
-  //     (text: ImageResponse, index: number) => text.imgStoreUrl
-  //   )
-  // );
+
   return (
     <>
-      <TopBar title="작물거래" showBack={true} showEdit={true} />
+      <TradeTopBar title="작물거래" showBack={true} showEdit={true} />
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper
