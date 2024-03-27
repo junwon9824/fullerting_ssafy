@@ -39,12 +39,13 @@ const authRoutes = [
 ];
 
 const diaryRoutes = [
-  { path: "/diary", element: <CropPage /> },
-  { path: "/diary/:packDiaryId", element: <DiaryPage /> },
-  { path: "/diary/:packDiaryId/create", element: <DiaryCreatePage /> },
-  { path: "/diary/:packDiaryId/water", element: <DiaryWaterPage /> },
-  { path: "/diary/create", element: <CropCreatePage /> },
-  { path: "/diary/:packDiaryId/update", element: <CropUpdatePage /> },
+  { path: "/crop", element: <CropPage /> },
+  { path: "/crop/create", element: <CropCreatePage /> },
+  { path: "/crop/:packDiaryId/update", element: <CropUpdatePage /> },
+  { path: "/crop/:packDiaryId", element: <DiaryPage /> },
+  { path: "/diary/create", element: <DiaryCreatePage /> },
+  { path: "/diary/water", element: <DiaryWaterPage /> },
+  // { path: "/diary/:diaryId/update", element: <DiaryUpdatePage /> },
 ];
 
 const tradeRoutes = [
