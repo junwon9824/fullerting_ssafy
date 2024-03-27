@@ -138,6 +138,8 @@ public class BidService {
         ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
                 ExArticleErrorCode.NOT_EXISTS));
 
+        exArticle.getDeal().setDealCurPrice(bidProposeRequest.getDealCurPrice());
+
         if (exArticle.getDeal() == null) {
             throw new BidException(BidErrorCode.NOT_DEAL);
         }
@@ -153,5 +155,6 @@ public class BidService {
                 .build());
 
         return bidLog;
+
     }
 }
