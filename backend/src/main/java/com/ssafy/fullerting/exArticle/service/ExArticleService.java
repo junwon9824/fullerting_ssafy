@@ -25,6 +25,8 @@ import com.ssafy.fullerting.favorite.repository.favoriteRepository;
 
 import com.ssafy.fullerting.global.s3.model.entity.response.S3ManyFilesResponse;
 import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
+import com.ssafy.fullerting.image.exception.ImageErrorCode;
+import com.ssafy.fullerting.image.exception.ImageException;
 import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.image.repository.ImageRepository;
 import com.ssafy.fullerting.record.diary.exception.DiaryException;
@@ -163,7 +165,7 @@ public class ExArticleService {
             Deal deal1 = dealRepository.save(deal);
 
             article.setdeal(deal1);
-            System.out.println("article.setdeal(deal1);   " +  article.getDeal().getDealCurPrice());
+            System.out.println("article.setdeal(deal1);   " + article.getDeal().getDealCurPrice());
 
             article2 = exArticleRepository.save(article);
 
@@ -379,26 +381,56 @@ public class ExArticleService {
         }
 
         //이미지 삭제
-        List<Image> imageList = imageRepository.findAllByExArticleId(exArticleId);
-        for (Image image : imageList) {
-            amazonS3Service.deleteFile(image.getImgStoreUrl());
-        }
+        List<Image> imageList = imageRepository.findAllByExArticleId(exArticleId); //현재 게시물의 모든 이미지들.
 
-        imageRepository.deleteAll(imageList);
+        List<Image> unmodifiedimageList = new ArrayList<>();
+        List<Image> delete_imageList = new ArrayList<>();
+
+        updateArticleRequest.getUnmodifiedimageid().forEach(
+                aLong -> {
+                    Image image = imageRepository.findById(aLong).orElseThrow(() -> new ImageException(ImageErrorCode.NOT_EXISTS));
+                    unmodifiedimageList.add(image);
+                }
+        );
+
+        imageList.stream().forEach(image -> {
+
+                    if (!unmodifiedimageList.contains(imageList)) {
+
+                        amazonS3Service.deleteFile(image.getImgStoreUrl());
+                        delete_imageList.add(image);
+
+                    }
+
+
+                }
+        );
+
+        imageRepository.deleteAll(delete_imageList);
 
         List<Image> images1 = new ArrayList<>();
 
         //이미지 업로드
         S3ManyFilesResponse response = amazonS3Service.uploadFiles(updateArticleRequest.getImages());
         //이미지 DB 저장
-        response.getUrls().entrySet().stream().map(stringStringEntry -> {
-            Image image = imageRepository.save(Image.builder()
-                    .imgStoreUrl(stringStringEntry.getValue())
-                    .exArticle(article)
-                    .build());
-            images1.add(image);
-            return image;
-        }).collect(Collectors.toList());
+        response.getUrls().
+
+                entrySet().
+
+                stream().
+
+                map(stringStringEntry ->
+
+                {
+                    Image image = imageRepository.save(Image.builder()
+                            .imgStoreUrl(stringStringEntry.getValue())
+                            .exArticle(article)
+                            .build());
+                    images1.add(image);
+                    return image;
+                }).
+
+                collect(Collectors.toList());
 
         article.setImage(images1);
 

@@ -91,4 +91,9 @@ public class UserService {
     }
 
 
+    public UserResponse getUserInfobyid(Long userid) {
+
+        CustomUser customUser = userRepository.findById(userid).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        return customUser.toResponse();
+    }
 }

@@ -25,5 +25,5 @@ public class UpdateArticleRequest {
     private List<MultipartFile> images;
     @Builder.Default
     private Long packdiaryid = null; // packdiary id
-
+    private List<Long> unmodifiedimageid;
 }
