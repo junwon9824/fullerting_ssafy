@@ -26,7 +26,7 @@ const TopBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 0.5rem;
+  gap: 0.2rem;
 `;
 
 const MiddleBox = styled.div`
@@ -97,8 +97,7 @@ const FixedContainer = styled.div`
   z-index: 3;
 
   width: 19.875rem;
-  gap: 1.5rem;
-  padding: 1.12rem 0;
+  gap: 1.3rem;
 `;
 
 const DiaryPage = () => {
@@ -177,13 +176,13 @@ const DiaryPage = () => {
                 <Button
                   onClick={handleHarvestClick}
                   width={9.5}
-                  height={2.5625}
+                  height={2.2}
                   borderRadius={1.28125}
                   backgroundColor={
                     cropData?.packDiaryCulEndAt !== null ? "#c8c8c8" : "#A0D8B3"
                   }
                   color="white"
-                  fontSize="1"
+                  fontSize="0.9"
                   fontWeight="bold"
                   text="수확하기"
                 />
@@ -191,7 +190,7 @@ const DiaryPage = () => {
             </TopBox>
             <MenuBar />
           </FixedContainer>
-          <MiddleBox style={{ marginTop: "16.4rem" }}>
+          <MiddleBox style={{ marginTop: "13.4rem" }}>
             {menu === "작물꿀팁" ? (
               <CropTips />
             ) : (
