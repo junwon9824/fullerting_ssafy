@@ -151,7 +151,7 @@ function TestPage() {
         // private int bidLogPrice;
         // private Long exarticleid;
         console.log( res.data.data_body)
-        const DealstartRequest = {
+        const   DealstartRequest = {
 
           id: res.data.data_body.id,
           dealCurPrice: res.data.data_body.dealCurPrice,
@@ -162,7 +162,7 @@ function TestPage() {
 
         }
         console.log(DealstartRequest.userId)
-        
+
         stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
         setNewMessage("");
 
