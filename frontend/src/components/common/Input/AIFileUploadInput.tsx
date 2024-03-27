@@ -8,7 +8,7 @@ const FileUploadBox = styled.div`
   align-items: center;
   justify-content: center;
   width: 19rem;
-  height: 38rem;
+  height: 36.5rem;
   border-radius: 1rem;
   border: 2px solid ${({ theme }) => theme.colors.gray1};
   background: ${({ theme }) => theme.colors.white};
@@ -31,7 +31,7 @@ const InputBox = styled.input`
 
 const PreviewImage = styled.img`
   width: 19rem;
-  height: 38rem;
+  height: 36.5rem;
   border-radius: 1rem;
   background: ${({ theme }) => theme.colors.white};
 `;
