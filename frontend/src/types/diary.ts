@@ -25,11 +25,11 @@ interface CropFormType {
 }
 
 interface DiaryFormType {
-  packDiaryId?: string;
+  packDiaryId: string;
   diarySelectedAt: string;
-  images: ImageType;
-  diaryTitle: string;
-  diaryContent: string;
+  images?: ImageType;
+  diaryTitle?: string;
+  diaryContent?: string;
 }
 
 interface ImageType {

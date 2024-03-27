@@ -15,7 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const DiaryWaterPage = () => {
   const [crop, setCrop] = useAtom(cropAtom);
-  const { packDiaryId } = useParams();
+  // const { packDiaryId } = useParams();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().slice(0, 10)
@@ -24,7 +24,7 @@ const DiaryWaterPage = () => {
   const { mutate } = useMutation({
     mutationFn: createWater,
     onSuccess: () => {
-      navigate(`/diary/${packDiaryId}`);
+      navigate(`/crop/${crop.packDiaryId}`);
     },
     onError: (error) => {
       console.log(error);
@@ -36,10 +36,10 @@ const DiaryWaterPage = () => {
   };
 
   const handleConfirmClick = () => {
-    if (!packDiaryId || !selectedDate) return;
+    // if (crop?.packDiaryId || !selectedDate) return;
 
     const waterData = {
-      packDiaryId: packDiaryId,
+      packDiaryId: crop.packDiaryId,
       diarySelectedAt: selectedDate,
     };
 
