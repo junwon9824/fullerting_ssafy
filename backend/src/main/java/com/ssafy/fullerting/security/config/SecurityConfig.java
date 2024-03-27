@@ -65,7 +65,6 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/ws" // 웹 소켓 엔드포인트
 
-
                         ).permitAll().anyRequest().authenticated())
                 // 예외처리
 //                .exceptionHandling(exceptionHandling ->
