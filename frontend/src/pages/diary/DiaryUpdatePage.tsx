@@ -44,6 +44,12 @@ const DeleteImageButton = styled.div`
   }
 `;
 
+const RegisterBox = styled.div`
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+`;
+
 const DiaryUpdatePage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -117,7 +123,6 @@ const DiaryUpdatePage = () => {
             <div>로딩중...</div>
           ) : (
             <>
-              {" "}
               {crop && <CropProfile crop={crop} />}
               <StyledInput
                 label="날짜 선택하기"
@@ -146,33 +151,36 @@ const DiaryUpdatePage = () => {
                 maxLength={300}
               />
               <FileUploadInput />
-              {images.map((image) => (
-                <div key={image.id} style={{ position: "relative" }}>
-                  <PreviewImage
-                    src={image.imgStoreUrl}
-                    alt={`Preview ${image.id}`}
-                  />
-                  <DeleteImageButton
-                    onClick={() => handleDeleteImage(image.id)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
+              <RegisterBox>
+                {" "}
+                {images.map((image) => (
+                  <div key={image.id} style={{ position: "relative" }}>
+                    <PreviewImage
+                      src={image.imgStoreUrl}
+                      alt={`Preview ${image.id}`}
+                    />
+                    <DeleteImageButton
+                      onClick={() => handleDeleteImage(image.id)}
                     >
-                      <path
-                        d="M3 3L21 21M21 3L3 21"
-                        stroke="white"
-                        strokeWidth="5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </DeleteImageButton>
-                </div>
-              ))}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M3 3L21 21M21 3L3 21"
+                          stroke="white"
+                          strokeWidth="5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </DeleteImageButton>
+                  </div>
+                ))}
+              </RegisterBox>
             </>
           )}
         </LayoutInnerBox>
