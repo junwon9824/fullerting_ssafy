@@ -48,8 +48,19 @@ function TestPage() {
     // const socket = new SockJS("http://localhost:8080/ws");
     // const socket = new WebSocket(import.meta.env.__WEBSOCKET_URL__);
 
-    // const socket = new WebSocket("ws://localhost:8080/ws",[accessToken]);
-    const socket = new WebSocket("ws://localhost:8080/ws");
+ 
+
+    
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (!accessToken) {
+      throw new Error("Access token is not available.");
+    }
+    // const response = await api.get(`/exchanges/all`, {
+    //   headers: { Authorization: `Bearer ${accessToken}` },
+    // });
+
+
+     const socket = new WebSocket("ws://localhost:8080/ws");
 
     // const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
 

@@ -120,6 +120,8 @@ public class ExArticle {
             favorite1 = article.getFavorite().get(0);
         }
 
+//        log.info("typetype"+article.getType()+" "+ article.trans.getTrans_sell_price());
+
         exArticleResponse = ExArticleResponse.builder()
                 .exArticleId(article.getId())
                 .exArticleTitle(article.getTitle())

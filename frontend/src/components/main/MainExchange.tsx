@@ -4,12 +4,8 @@ import ScrollExchange from "./Exchange";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { getExchange } from "../../apis/Main";
+import { useNavigate } from "react-router-dom";
 import arrow_forward_ios from "../../assets/svg/arrow_forward_ios.svg";
-
-interface ScrollExchangeProps {
-  currentIndex: number;
-  data: any[];
-}
 
 const MainBox = styled.div`
   justify-content: center;
@@ -91,10 +87,15 @@ const NextButton = styled.button`
 
 const MainExchange = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
   const { isLoading, error, data } = useQuery({
     queryKey: ["Exchange"],
     queryFn: getExchange,
   });
+
+  const handleItemClick = (index: number) => {
+    navigate(`/trade/${index}/generaldetail`);
+  };
 
   const handleNextClick = () => {
     if (data) {
@@ -103,7 +104,6 @@ const MainExchange = () => {
     }
   };
   console.log("여기", data);
-  // 로딩, 에러, 데이터 없음에 대한 처리
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (!data || !data || data.length === 0) return <div>거래 데이터 없음</div>;
@@ -121,7 +121,11 @@ const MainExchange = () => {
       </LogoAndTextContainer>
       <ExchangeContainer>
         <ExchangeBox>
-          <ScrollExchange currentIndex={currentIndex} data={data} />
+          <ScrollExchange
+            onClick={handleItemClick}
+            currentIndex={currentIndex}
+            data={data}
+          />
         </ExchangeBox>
         <NextBox>
           <NextButton onClick={handleNextClick} />
