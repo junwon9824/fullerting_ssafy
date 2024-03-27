@@ -9,14 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useInput from "../../hooks/useInput";
 import { getCropData, updateCrop } from "../../apis/DiaryApi";
-import styled from "styled-components";
 import StyledInput from "../../components/common/Input/StyledInput";
-
-const SelectBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-`;
 
 const CropUpdatePage = () => {
   const navigate = useNavigate();
