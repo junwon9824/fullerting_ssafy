@@ -17,16 +17,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import SwiperCore, { Navigation, Pagination } from "swiper/modules";
+import { userCheck } from "../../apis/UserApi";
+import TradePostLayout from "../common/Layout/TradePostLayout";
 interface ImageResponse {
   imgStoreUrl: string;
 }
-interface Icon {
-  width?: number;
-  height: number;
-  backgroundColor: string;
-  color: string;
-  text?: string;
-}
+
 const ImgBox = styled.img`
   width: 100%;
   height: 15.5625rem;
@@ -91,13 +87,10 @@ const TitleBox = styled.div`
   flex-direction: column;
   gap: 0.8rem;
 `;
-const Price = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+const Price = styled.text`
+  color: #000;
   font-size: 1.25rem;
   font-weight: bold;
-  gap: 0.4rem;
 `;
 const DiaryBox = styled.div`
   width: 100%;
@@ -127,22 +120,11 @@ const Thumbnail = styled.img`
   width: 1.875rem;
   height: 1.875rem;
 `;
-const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
-  width: ${(props) => `${props.width}rem`};
-  height: ${(props) => `${props.height}rem`};
-  border-radius: 0.3125rem;
-  background: ${(props) => props.backgroundColor};
-  color: ${(props) => props.color};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.5625rem; /* 텍스트 크기 */
-`;
 
-const TradeGeneralDetail = () => {
+const TradeDetailDeal = () => {
   const navigate = useNavigate();
-  const BtnClick = () => {
-    navigate("/trade/");
+  const BtnClick = (postId: number) => {
+    navigate(`trade/${postId}/buyer`);
   };
   const [like, setLike] = useState<boolean>(false);
   const handleLike = () => {
@@ -159,6 +141,16 @@ const TradeGeneralDetail = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
+  const {
+    isLoading: isLoadingUserDetail,
+    data: userData,
+    error: userDetailError,
+  } = useQuery({
+    queryKey: ["userDetail"],
+    queryFn: accessToken ? () => userCheck(accessToken) : undefined,
+  });
+  const userId = userData?.id;
+
   const DiaryId = data?.packDiaryResponse?.packDiaryId;
   const handleDiary = (DiaryId: number) => {
     navigate(`/diary/${DiaryId}`);
@@ -167,10 +159,15 @@ const TradeGeneralDetail = () => {
   const formatDateAndTime = (dateString: string) => {
     if (!dateString) return "";
     const [date, time] = dateString.split("T");
-    const [hours, minutes] = time.split(":");
-    return `${date} ${hours}:${minutes}`;
+    const [hours, minutes, seconds] = time.split(":");
+    return `${date} ${hours}:${minutes}:${seconds}`;
   };
-  console.log("저 데이터에요", data);
+  // console.log(
+  //   "데이터에요",
+  //   data?.imageResponses.map(
+  //     (text: ImageResponse, index: number) => text.imgStoreUrl
+  //   )
+  // );
   return (
     <>
       <TopBar title="작물거래" showBack={true} showEdit={true} />
@@ -214,22 +211,12 @@ const TradeGeneralDetail = () => {
                 }}
               />
             </Title>
-            <Price>
-              <StateIcon
-                width={1.5}
-                height={0.9375}
-                backgroundColor="#A0D8B3"
-                color="#ffffff"
-              >
-                현재
-              </StateIcon>
-              {data?.exArticleResponse.price}원
-            </Price>
+            <Price>{data?.transResponse.price}원</Price>
             <DiaryBox>
               <img src={Tree} alt="tree" />
               <NavigateText
                 onClick={() => {
-                  postId ? handleDiary(Number(DiaryId)) : null;
+                  DiaryId ? handleDiary(Number(DiaryId)) : null;
                 }}
               >
                 작물일지 이동하기
@@ -245,10 +232,15 @@ const TradeGeneralDetail = () => {
             </ExplainText>
           </TitleBox>
         </LayoutInnerBox>
-        <BottomButton text="제안하기" onClick={BtnClick} />
+        <BottomButton
+          text="가격 제안하기"
+          onClick={() => {
+            postNumber;
+          }}
+        />
       </LayoutMainBox>
     </>
   );
 };
 
-export default TradeGeneralDetail;
+export default TradeDetailDeal;

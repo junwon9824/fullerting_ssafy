@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @Getter
-public class BidLogResponse {
+public class BidLogChooseResponse {
     private Long id;
     private String nickname;
     private String thumbnail;

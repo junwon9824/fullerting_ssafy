@@ -80,6 +80,34 @@ export const createCrop = async (cropData: CropFormType) => {
   }
 };
 
+export const createDiary = async (diaryData: DiaryFormType) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const formData = new FormData();
+    formData.append("diarySelectedAt", diaryData.diarySelectedAt);
+    formData.append("diaryTitle", diaryData.diaryTitle);
+    formData.append("diaryContent", diaryData.diaryContent);
+    diaryData.images.forEach((image) => {
+      formData.append(`images`, image);
+    });
+
+    const response = await api.post(
+      `/diaries/${diaryData.packDiaryId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error createDiary: ", error);
+    throw error;
+  }
+};
+
 export const createWater = async (waterData: DiaryFormType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -144,6 +172,20 @@ export const deleteCrop = async (packDiaryId: string) => {
     return response.data;
   } catch (error) {
     console.error("Error deleteCrop: ", error);
+    throw error;
+  }
+};
+
+export const deleteDiary = async (diaryId: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.delete(`diaries/${diaryId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleteDiary: ", error);
     throw error;
   }
 };

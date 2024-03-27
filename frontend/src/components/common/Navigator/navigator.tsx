@@ -192,7 +192,7 @@ const navItems: NavItem[] = [
   { Icon: Home, path: "/" },
   { Icon: Cart, path: "/trade" },
   { Icon: Chat, path: "/chat" },
-  { Icon: Diary, path: "/diary" },
+  { Icon: Diary, path: "/crop" },
   { Icon: Mypage, path: "/mypage" },
 ];
 

@@ -28,6 +28,9 @@ import TradeProposeDetailPage from "../pages/trade/TradeProposeDetail";
 import TradeSellerPage from "../pages/trade/TradeSeller";
 import AuthCallbackPage from "../pages/user/AuthCallbackPage";
 import TradeBuyerPage from "../pages/trade/TradeBuyerPage";
+import TradeChatPage from "../pages/trade/TradeChatPage";
+import DiaryDetailPage from "../pages/diary/DiaryDetailPage";
+import TradeDealDetailPage from "../pages/trade/TradeDealDetailPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -37,21 +40,24 @@ const authRoutes = [
 ];
 
 const diaryRoutes = [
-  { path: "/diary", element: <CropPage /> },
-  { path: "/diary/:packDiaryId", element: <DiaryPage /> },
-  { path: "/diary/:packDiaryId/create", element: <DiaryCreatePage /> },
-  { path: "/diary/:packDiaryId/water", element: <DiaryWaterPage /> },
-  { path: "/diary/create", element: <CropCreatePage /> },
-  { path: "/diary/:packDiaryId/update", element: <CropUpdatePage /> },
+  { path: "/crop", element: <CropPage /> },
+  { path: "/crop/create", element: <CropCreatePage /> },
+  { path: "/crop/:packDiaryId/update", element: <CropUpdatePage /> },
+  { path: "/crop/:packDiaryId", element: <DiaryPage /> },
+  { path: "/diary/:diaryId", element: <DiaryDetailPage /> },
+  { path: "/diary/create", element: <DiaryCreatePage /> },
+  { path: "/diary/water", element: <DiaryWaterPage /> },
+  // { path: "/diary/:diaryId/update", element: <DiaryUpdatePage /> },
 ];
 
 const tradeRoutes = [
   { path: "/trade", element: <TradePage /> },
   { path: "/trade/post", element: <TradePostPage /> },
   { path: "/trade/:postId/generaldetail", element: <TradeGeneralDetailPage /> },
-  { path: "/trade/:postId/proposedetail", element: <TradeProposeDetailPage /> },
+  { path: "/trade/:postId/DealDetail", element: <TradeDealDetailPage /> },
   { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
   { path: "/trade/:postId/buyer", element: <TradeBuyerPage /> },
+  { path: "/trade/:postId/Chat", element: <TradeChatPage /> },
   { path: "/trade/test", element: <TestPage /> },
 ];
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
- import Location from "/src/assets/svg/location.svg";
- import GrayHeart from "/src/assets/svg/grayheart.svg";
- import {   useState } from "react";
+import Location from "/src/assets/svg/location.svg";
+import GrayHeart from "/src/assets/svg/grayheart.svg";
+import { useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
 import { getTradeList, useLike } from "../../apis/TradeApi";
@@ -186,15 +186,17 @@ const Post = () => {
     navigate(`/trade/${index}/generaldetail`);
   };
   const handleTradeClick = (index: number) => {
+    console.log("저 클릭됐어요");
     navigate(`/trade/${index}/proposedetail`);
   };
+  console.log("저 데이터에요", data);
   return (
     <>
       <ContentBox>
         {data?.map((item: DataItem, index: number) => (
           <PostBox
             onClick={() => {
-              item.exArticleResponse.exArticleType === "DEAL"
+              item.exArticleResponse.exArticleType == "DEAL"
                 ? handleTradeClick(item.exArticleResponse.exArticleId)
                 : handleGeneralClick(item.exArticleResponse.exArticleId);
             }}

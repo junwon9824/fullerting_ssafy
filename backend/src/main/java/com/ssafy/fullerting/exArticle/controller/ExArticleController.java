@@ -170,15 +170,14 @@ public class ExArticleController {
     @PatchMapping("/{ex_article_id}/modify")
     @Operation(summary = "나의 작물 거래 게시물 수정 ", description = "나의 작물 거래 게시물 수정 ")
     public ResponseEntity<MessageUtils> modifyarticle(@PathVariable Long ex_article_id,
-                                                      @RequestPart("images") List<MultipartFile> images,
-                                                      @RequestPart(value = "updateArticleRequest") UpdateArticleRequest updateArticleRequest) {
+                                                      @ModelAttribute UpdateArticleRequest updateArticleRequest) {
 
         log.info("[modifyarticle  ]: {}");
         UserResponse userResponse = userService.getUserInfo();
 
         CustomUser customUser = userResponse.toEntity(userResponse);
 
-        ExArticle article = exArticleService.modifyarticle(ex_article_id,images,updateArticleRequest,customUser);
+        ExArticle article = exArticleService.modifyarticle(ex_article_id, updateArticleRequest, customUser);
 
         ExArticleResponse articleResponse = article.toResponse(article, customUser);
 
