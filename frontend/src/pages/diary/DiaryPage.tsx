@@ -150,7 +150,9 @@ const DiaryPage = () => {
   });
 
   const handleHarvestClick = () => {
+    if (cropData.packDiaryCulEndAt !== null) return;
     if (!packDiaryId) return;
+
     updateMutate(packDiaryId);
   };
 
@@ -176,7 +178,7 @@ const DiaryPage = () => {
                 <Button
                   onClick={handleHarvestClick}
                   width={9.5}
-                  height={2.2}
+                  height={2.4}
                   borderRadius={1.28125}
                   backgroundColor={
                     cropData?.packDiaryCulEndAt !== null ? "#c8c8c8" : "#A0D8B3"
