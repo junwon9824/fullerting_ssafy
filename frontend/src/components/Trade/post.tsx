@@ -179,6 +179,7 @@ const Post = () => {
     queryKey: ["tradeList"],
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
+  // console.log("전 데이터 입니다", data);
   // const [isLiked, setIsLiked] = useState(data?.favoriteResponse.islike);
   const { mutate: handleLikeClick } = useLike();
 
@@ -186,10 +187,8 @@ const Post = () => {
     navigate(`/trade/${index}/generaldetail`);
   };
   const handleTradeClick = (index: number) => {
-    console.log("저 클릭됐어요");
-    navigate(`/trade/${index}/proposedetail`);
+    navigate(`/trade/${index}/DealDetail`);
   };
-  console.log("저 데이터에요", data);
   return (
     <>
       <ContentBox>
@@ -203,7 +202,7 @@ const Post = () => {
           >
             <ImgBox key={index}>
               <StyledImg
-                src={item.exArticleResponse.imageResponses[0].imgStoreUrl}
+                src={item?.exArticleResponse?.imageResponses[0]?.imgStoreUrl}
                 alt="img"
               ></StyledImg>
               {/* <LikeBox
