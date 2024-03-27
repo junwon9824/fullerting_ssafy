@@ -6,10 +6,6 @@ export const calculateStep = async (imageData: File) => {
     const formData = new FormData();
     formData.append("image", imageData);
 
-    for (const x of formData.entries()) {
-      console.log(x);
-    }
-
     const response = await axios.post(
       "https://j10c102.p.ssafy.io/ai/v1/calc",
       formData,
@@ -18,9 +14,7 @@ export const calculateStep = async (imageData: File) => {
       }
     );
 
-    console.log(response.data);
-
-    return response.data.data_body;
+    return response.data;
   } catch (error) {
     console.error("Error calculateStep: ", error);
     throw error;
