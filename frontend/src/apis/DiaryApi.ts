@@ -80,6 +80,29 @@ export const createCrop = async (cropData: CropFormType) => {
   }
 };
 
+export const createDiary = async (diaryData: DiaryFormType) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+
+    const response = await api.post(
+      `/diaries/${diaryData.packDiaryId}`,
+      {
+        diarySelectedAt: diaryData.diarySelectedAt,
+        images: diaryData.images,
+        diaryTitle: diaryData.diaryTitle,
+        diaryContent: diaryData.diaryContent,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error createWater: ", error);
+    throw error;
+  }
+};
+
 export const createWater = async (waterData: DiaryFormType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
