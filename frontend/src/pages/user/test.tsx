@@ -80,10 +80,13 @@ function TestPage() {
         client.subscribe(
           `/sub/chattings/${chattingRoomId}`,
           (message) => {
+            console.log(message.body)
             const msg: MessageRes = JSON.parse(message.body);
  
 
             console.log('message arrived' + msg.userId)
+            console.log('message arrived' + msg.bidLogPrice)
+
             const lastMessageId = msg.id;
 
             setMessages((prevMessages) => [...prevMessages,
@@ -158,7 +161,8 @@ function TestPage() {
           bidLogPrice: messageReq.dealCurPrice,
 
         }
-
+        console.log(DealstartRequest.userId)
+        
         stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
         setNewMessage("");
 
