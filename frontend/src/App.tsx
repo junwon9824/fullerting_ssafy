@@ -15,7 +15,7 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        {/* <ReactQueryDevtools /> */}
+        <ReactQueryDevtools />
         <Provider>
           <ThemeProvider theme={theme}>
             <GlobalStyle />
