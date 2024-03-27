@@ -31,14 +31,14 @@ public class Deal {
     @Column(name = "deal_cur_price", nullable = false)
     private int dealCurPrice;
 
-    public void setexarticle(ExArticle exArticle){
-        this.exArticle=exArticle;
+    public void setexarticle(ExArticle exArticle) {
+        this.exArticle = exArticle;
     }
 
-    public DealResponse toResponse(CustomUser customUser){
+    public DealResponse toResponse(CustomUser customUser) {
         return DealResponse.builder()
 //                .exArticleResponse(this.exArticle.toResponse(this.exArticle,customUser))
-                .price(this.getDealCurPrice()).
+                .price(this.getDealCurPrice()).id(this.getId()).
 //   .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDealCurPrice() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
 
         build();
