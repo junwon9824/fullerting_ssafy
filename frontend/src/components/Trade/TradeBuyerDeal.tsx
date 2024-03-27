@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { TopBar } from "../common/Navigator/navigator";
 import Coli from "/src/assets/images/브로콜리.png";
-import { LayoutMainBox } from "../common/Layout/Box";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -87,6 +86,7 @@ const Date = styled.div`
 const SwiperContainer = styled.div`
   width: 100%;
   height: 12.5rem;
+  /* display: flex; */
 `;
 const Thumbnail = styled.img`
   width: 1.875rem;
@@ -125,12 +125,24 @@ const Situation = styled.div<SituationResponse>`
   font-weight: bold;
   justify-content: center;
 `;
+const LayoutMainBox = styled.main`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 3.125rem;
+  padding-bottom: 6rem;
+  gap: 1rem;
+`;
+
 const LayoutInnerBox = styled.div`
   display: flex;
   width: 19.875rem;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  margin-top: 3rem;
   gap: 1.5rem;
   padding: 1.12rem 0;
 `;
@@ -230,7 +242,7 @@ const TradeBuyerDetail = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
-
+  console.log(data);
   const formatDateAndTime = (dateString: string) => {
     if (!dateString) return "";
     const [date, time] = dateString.split("T");
@@ -239,26 +251,25 @@ const TradeBuyerDetail = () => {
   };
 
   return (
-    <AppContainer>
+    // <AppContainer>
+    <>
       <TopBar title="작물거래" showBack={true} showEdit={true} />
       <LayoutMainBox>
+        <SwiperContainer>
+          <Swiper
+            slidesPerView={1}
+            pagination={true}
+            onSlideChange={() => console.log("slide change")}
+            onSwiper={(swiper) => console.log(swiper)}
+          >
+            {data?.imageResponses.map((image: ImageResponse, index: number) => (
+              <SwiperSlide key={index}>
+                <ImgBox src={image.imgStoreUrl} alt={"img"} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </SwiperContainer>
         <LayoutInnerBox>
-          <SwiperContainer>
-            <Swiper
-              slidesPerView={1}
-              pagination={true}
-              onSlideChange={() => console.log("slide change")}
-              onSwiper={(swiper) => console.log(swiper)}
-            >
-              {data?.imageResponses.map(
-                (image: ImageResponse, index: number) => (
-                  <SwiperSlide key={index}>
-                    <ImgBox src={image.img_store_url} alt={"img"} />
-                  </SwiperSlide>
-                )
-              )}
-            </Swiper>
-          </SwiperContainer>
           <InfoBox>
             <Profile>
               <Thumbnail src={data?.userResponse.thumbnail} alt="profile" />
@@ -309,6 +320,13 @@ const TradeBuyerDetail = () => {
               </ProfileBox>
               <CostBox>300원</CostBox>
             </DealList>
+            <DealList>
+              <ProfileBox>
+                <PhotoBox src={Coli} alt="coli" />
+                고두심우석
+              </ProfileBox>
+              <CostBox>300원</CostBox>
+            </DealList>
           </DealBox>
           <DealChatBox>
             <DealInput placeholder="최고가보다 높게 제안해주세요" />
@@ -316,7 +334,8 @@ const TradeBuyerDetail = () => {
           </DealChatBox>
         </LayoutInnerBox>
       </LayoutMainBox>
-    </AppContainer>
+      {/* </AppContainer> */}
+    </>
   );
 };
 
