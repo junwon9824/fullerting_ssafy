@@ -143,7 +143,7 @@ const DiaryPage = () => {
   const { mutate: deleteMutate } = useMutation({
     mutationFn: deleteCrop,
     onSuccess: () => {
-      navigate("/diary");
+      navigate("/crop");
     },
     onError: (err) => {
       console.log(err);
