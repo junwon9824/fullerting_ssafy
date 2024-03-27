@@ -7,5 +7,3 @@ const baseURL = "https://j10c102.p.ssafy.io/api/v1";
 export const api = axios.create({
   baseURL,
 });
-
- 

@@ -135,6 +135,7 @@ const TradeModify = () => {
   const [imageArray, setImageArray] = useState(
     location.state?.imageResponse || ""
   );
+  // console.log("타입을 알려주세요", typeof imageArray);
   const [showDiary, setShowDiary] = useState(
     location.state?.packdiaryid || null
   );
@@ -203,8 +204,8 @@ const TradeModify = () => {
     console.log("저 여기 왔어요", 111111);
     const formData = new FormData();
 
-    imageArray.forEach((file: ImageInfo) => {
-      formData.append("images", file.imgStoreUrl);
+    selectedFiles.forEach((file) => {
+      formData.append("images", file);
     });
     const updateInfo = {
       exArticleTitle: title,
@@ -342,7 +343,11 @@ const TradeModify = () => {
           <MultiFileUploadInput />
         </DiaryBox>
       </TradePostLayout>
-      <BottomButton onClick={handleCheckClick} text="등록하기" />
+      <BottomButton
+        onClick={handleCheckClick}
+        text="수정하기
+      "
+      />
     </>
   );
 };
