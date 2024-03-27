@@ -109,7 +109,7 @@ public class ExArticle {
 
     public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
-            log.info(" articlearticle"+article);
+        log.info(" articlearticle" + article);
         //        List<FavoriteResponse> favoriteResponses
 //                = article.favorite.stream().map(
 //                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
@@ -127,7 +127,7 @@ public class ExArticle {
                 .exArticleTitle(article.getTitle())
                 .exArticleType(article.getType())
                 .exLocation(article.getLocation())
-                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDealCurPrice() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
+//                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDealCurPrice() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
                 .imageResponses(article.getImage().stream().map(Image::toResponse)
                         .collect(Collectors.toList()))
 //                .favoriteResponse(
@@ -188,6 +188,8 @@ public class ExArticle {
 //                .exLocation(article.getLocation())
 //                .imageResponses(article.getImage().stream().map(Image::toResponse)
 //                        .collect(Collectors.toList()))
+                .dealResponse(article.deal == null ? null : article.deal.toResponse(customUser))
+                .transResponse(article.trans == null ? null : article.trans.toResponse(article.trans))
 
                 .favoriteResponse(
                         favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse

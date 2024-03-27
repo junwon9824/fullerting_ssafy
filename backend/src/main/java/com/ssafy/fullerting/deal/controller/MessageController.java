@@ -36,7 +36,6 @@ public class MessageController {
                 .userId(dealstartRequest.getUserId())
                 .build());
 
-
         messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest);
 
 

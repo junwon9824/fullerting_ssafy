@@ -12,12 +12,14 @@ interface MessageRes {
 }
 
 function TestPage() {
-  const chattingRoomId = 138;
+  const chattingRoomId = 140;
 
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [messages, setMessages] = useState<MessageRes[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
+
+  const accessToken = sessionStorage.getItem("accessToken") || ""; // accessToken이 null인 경우에는 빈 문자열로 대체
 
   const loadMessages = async () => {
     try {
@@ -46,6 +48,7 @@ function TestPage() {
     // const socket = new SockJS("http://localhost:8080/ws");
     // const socket = new WebSocket(import.meta.env.__WEBSOCKET_URL__);
 
+ 
 
     
     const accessToken = sessionStorage.getItem("accessToken");
@@ -57,7 +60,7 @@ function TestPage() {
     // });
 
 
-    const socket = new WebSocket("ws://localhost:8080/ws");
+     const socket = new WebSocket("ws://localhost:8080/ws");
 
     // const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
 
@@ -76,12 +79,15 @@ function TestPage() {
           `/sub/chattings/${chattingRoomId}`,
           (message) => {
             const msg: MessageRes = JSON.parse(message.body);
-            console.log('message arrived' + msg)
+ 
+
+            console.log('message arrived' + msg.userId)
             const lastMessageId = msg.id;
 
             setMessages((prevMessages) => [...prevMessages,
             { ...msg, id: String(lastMessageId), userId: msg.userId, bidLogPrice: msg.bidLogPrice, localDateTime: msg.localDateTime },
             ]);
+
             // id: string; //bidlogid
             // localDateTime: string;
             // user_id: number;
@@ -114,7 +120,7 @@ function TestPage() {
     if (stompClient && newMessage.trim() !== "") {
 
       try {
-        const messageReq = { 
+        const messageReq = {
           dealCurPrice: newMessage,
           // userId: , /////수정필요!!!!!!!!!!!!!!!!!1
         };
@@ -139,14 +145,16 @@ function TestPage() {
 
         // private int bidLogPrice;
         // private Long exarticleid;
+        console.log( res.data.data_body)
         const DealstartRequest = {
 
-          id: res.data.id,
-          dealCurPrice: res.data.dealCurPrice,
-          localDateTime: res.data.localDateTime,
-          userId: res.data.userId,
+          id: res.data.data_body.id,
+          dealCurPrice: res.data.data_body.dealCurPrice,
+          localDateTime: res.data.data_body.localDateTime,
+          userId: res.data.data_body.userId,
           chattingRoomId: chattingRoomId,
           bidLogPrice: messageReq.dealCurPrice,
+
         }
 
         stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
