@@ -175,3 +175,17 @@ export const deleteCrop = async (packDiaryId: string) => {
     throw error;
   }
 };
+
+export const deleteDiary = async (diaryId: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.delete(`diaries/${diaryId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleteDiary: ", error);
+    throw error;
+  }
+};

@@ -29,6 +29,7 @@ import TradeSellerPage from "../pages/trade/TradeSeller";
 import AuthCallbackPage from "../pages/user/AuthCallbackPage";
 import TradeBuyerPage from "../pages/trade/TradeBuyerPage";
 import TradeChatPage from "../pages/trade/TradeChatPage";
+import DiaryDetailPage from "../pages/diary/DiaryDetailPage";
 import TradeDealDetailPage from "../pages/trade/TradeDealDetailPage";
 
 const authRoutes = [
@@ -43,6 +44,7 @@ const diaryRoutes = [
   { path: "/crop/create", element: <CropCreatePage /> },
   { path: "/crop/:packDiaryId/update", element: <CropUpdatePage /> },
   { path: "/crop/:packDiaryId", element: <DiaryPage /> },
+  { path: "/diary/:diaryId", element: <DiaryDetailPage /> },
   { path: "/diary/create", element: <DiaryCreatePage /> },
   { path: "/diary/water", element: <DiaryWaterPage /> },
   // { path: "/diary/:diaryId/update", element: <DiaryUpdatePage /> },
