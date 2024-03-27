@@ -222,14 +222,14 @@ const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
       {diaries.length === 0 ? (
         <div>다이어리를 작성해 주세요</div>
       ) : (
-        diaries.map((item, index) => (
-          <SDateCalCardBox>
+        diaries.map((item) => (
+          <SDateCalCardBox key={item.diarySelectedAt}>
             <SpecialDate>{isSpecialDate(item.diarySelectedAt)}</SpecialDate>
-            <CalCardBox key={index}>
+            <CalCardBox>
               <Calender date={item.diarySelectedAt} />
               <DiaryCardBox>
-                {item.getSelectedAtDiaryResponse.map((diary, idx) => (
-                  <div key={idx}>
+                {item.getSelectedAtDiaryResponse.map((diary) => (
+                  <div key={diary.diaryId}>
                     {diary.diaryBehavior === "다이어리" ? (
                       <DiaryCard diary={diary} />
                     ) : (
