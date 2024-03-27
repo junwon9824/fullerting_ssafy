@@ -37,7 +37,7 @@ public class MessageController {
                             .build());
 
             dealstartRequest.setUserId(userId);
-
+//
             messagingTemplate.convertAndSend("/sub/bidding/" + chattingRoomId, dealstartRequest);
             log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(), chattingRoomId);
 
