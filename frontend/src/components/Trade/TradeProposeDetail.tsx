@@ -159,7 +159,7 @@ const TradeGeneralDetail = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
-  const DiaryId = data?.packDiaryResponse.packDiaryId;
+  const DiaryId = data?.packDiaryResponse?.packDiaryId;
   const handleDiary = (DiaryId: number) => {
     navigate(`/diary/${DiaryId}`);
     console.log("나 눌리고 있어!!!", 111);
