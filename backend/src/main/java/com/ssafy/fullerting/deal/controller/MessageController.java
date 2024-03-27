@@ -39,12 +39,12 @@ public class MessageController {
             // 여기에서 authentication.getUserId() 등을 통해 사용자 ID를 사용할 수 있음
             Long userId = authentication.getUserId();
             log.info("웹소켓에서 추출한 유저 id : {}", userId);
-            
-            bidService.dealbid(chattingRoomId,
+
+            bidService.socketdealbid(chattingRoomId,
                     BidProposeRequest.builder()
-                    .dealCurPrice(dealstartRequest.getDealCurPrice())
-                    .userId(userId)
-                    .build());
+                            .dealCurPrice(dealstartRequest.getDealCurPrice())
+                            .userId(userId)
+                            .build());
             messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest);
             log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(), chattingRoomId);
 

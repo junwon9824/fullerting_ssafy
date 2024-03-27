@@ -57,7 +57,8 @@ public class bidLogController {
     @Operation(summary = "입찰 제안하기 ", description = "특정 게시물의 입찰 제안 하기")
     public ResponseEntity<MessageUtils> dealbid(@RequestBody BidProposeRequest bidProposeRequest, @PathVariable Long ex_article_id) {
 
-        BidLog bidLog = bidService.dealbid(ex_article_id, bidProposeRequest);
+
+        BidLog bidLog = bidService.dealbid(ex_article_id, bidProposeRequest );
         UserResponse userResponse=userService.getUserInfo();
         CustomUser customUser=userResponse.toEntity(userResponse);
 
