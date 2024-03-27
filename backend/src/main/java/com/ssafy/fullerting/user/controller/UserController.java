@@ -2,6 +2,7 @@ package com.ssafy.fullerting.user.controller;
 
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
+import com.ssafy.fullerting.user.model.dto.request.UserTownRequest;
 import com.ssafy.fullerting.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,4 +52,10 @@ public class UserController {
         return ResponseEntity.ok().body(MessageUtils.success(userService.uploadThumbAndSaveDB(multipartFile)));
     }
 
+    @PatchMapping("/town")
+    @Operation(summary = "유저 동네정보 저장", description = "유저의 동네정보를 저장한다.")
+    public ResponseEntity<MessageUtils> updatetown(@RequestBody UserTownRequest userTownRequest) {
+        userService.updatetown(userTownRequest);
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
 }
