@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,8 +22,8 @@ public class UpdateArticleRequest {
 
     private String ex_article_location;
     private int price;
-
+    private List<MultipartFile> images;
     @Builder.Default
     private Long packdiaryid = null; // packdiary id
-
+    private List<Long> unmodifiedimageid;
 }

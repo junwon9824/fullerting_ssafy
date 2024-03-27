@@ -1,7 +1,7 @@
 import styled from "styled-components";
- import Location from "/src/assets/svg/location.svg";
- import GrayHeart from "/src/assets/svg/grayheart.svg";
- import {   useState } from "react";
+import Location from "/src/assets/svg/location.svg";
+import GrayHeart from "/src/assets/svg/grayheart.svg";
+import { useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
 import { getTradeList, useLike } from "../../apis/TradeApi";
@@ -179,6 +179,7 @@ const Post = () => {
     queryKey: ["tradeList"],
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
+  // console.log("전 데이터 입니다", data);
   // const [isLiked, setIsLiked] = useState(data?.favoriteResponse.islike);
   const { mutate: handleLikeClick } = useLike();
 
@@ -186,7 +187,7 @@ const Post = () => {
     navigate(`/trade/${index}/generaldetail`);
   };
   const handleTradeClick = (index: number) => {
-    navigate(`/trade/${index}/proposedetail`);
+    navigate(`/trade/${index}/DealDetail`);
   };
   return (
     <>
@@ -194,14 +195,14 @@ const Post = () => {
         {data?.map((item: DataItem, index: number) => (
           <PostBox
             onClick={() => {
-              item.exArticleResponse.exArticleType === "DEAL"
+              item.exArticleResponse.exArticleType == "DEAL"
                 ? handleTradeClick(item.exArticleResponse.exArticleId)
                 : handleGeneralClick(item.exArticleResponse.exArticleId);
             }}
           >
             <ImgBox key={index}>
               <StyledImg
-                src={item.exArticleResponse.imageResponses[0].imgStoreUrl}
+                src={item?.exArticleResponse?.imageResponses[0]?.imgStoreUrl}
                 alt="img"
               ></StyledImg>
               {/* <LikeBox

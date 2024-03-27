@@ -6,15 +6,20 @@ import {
 } from "../../components/common/Layout/Box";
 import { TopBar } from "../../components/common/Navigator/navigator";
 import CropProfile from "../../components/diary/CropProfile";
-import { cropAtom } from "../../stores/diary";
+import { cropAtom, fileAtom } from "../../stores/diary";
 import { useState } from "react";
 import { BottomButton } from "../../components/common/Button/LargeButton";
 import StyledTextArea from "../../components/common/Input/StyledTextArea";
 import useInput from "../../hooks/useInput";
 import FileUploadInput from "../../components/common/Input/FileUploadInput";
+import { createDiary } from "../../apis/DiaryApi";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 const DiaryCreatePage = () => {
+  const navigate = useNavigate();
   const [crop, setCrop] = useAtom(cropAtom);
+  const [selectedFiles, setSelectedFiles] = useAtom(fileAtom);
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().slice(0, 10)
   );
@@ -25,7 +30,28 @@ const DiaryCreatePage = () => {
     setSelectedDate(event.target.value);
   };
 
-  const handleConfirmClick = () => {};
+  const { mutate } = useMutation({
+    mutationFn: createDiary,
+    onSuccess: () => {
+      navigate(`/crop/${crop.packDiaryId}`);
+      setSelectedFiles([]);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const handleConfirmClick = () => {
+    const diaryData = {
+      packDiaryId: crop.packDiaryId,
+      diarySelectedAt: selectedDate,
+      images: selectedFiles,
+      diaryTitle: title,
+      diaryContent: content,
+    };
+
+    mutate(diaryData);
+  };
 
   return (
     <>

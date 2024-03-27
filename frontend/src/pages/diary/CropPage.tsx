@@ -37,7 +37,7 @@ const CropPage = () => {
   const navigate = useNavigate();
 
   const handlePlusButtonClick = () => {
-    navigate("/diary/create");
+    navigate("/crop/create");
   };
 
   return (

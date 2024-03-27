@@ -13,5 +13,5 @@ public class TransResponse {
 
     private int price;
 
-    private ExArticleResponse exArticleResponse;
+//    private ExArticleResponse exArticleResponse;
 }

@@ -21,12 +21,14 @@ public class ExArticleResponse {
 
     private String exLocation;
     private Long exArticleId;
+    private Long userId;
     private String exArticleTitle;
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
     private List<ImageResponse> imageResponses; //
-    private int price;
+//    private int price;
     private LocalDateTime time;
     private String content;
+
 //    private  FavoriteResponse favoriteResponse;
 
 //    public ExArticle toEntity(ExArticleResponse exArticleResponse) {

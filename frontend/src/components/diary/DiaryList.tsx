@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const DiaryBox = styled.div`
@@ -136,6 +137,14 @@ const SDateCalCardBox = styled.div`
   gap: 0.45rem;
 `;
 
+const ButtonBox = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 0.7rem;
+`;
+
 const DiaryCard = ({ diary }: { diary: DiaryEntry }) => {
   // console.log(diary.imageResponseList);
   return (
@@ -198,6 +207,7 @@ const Calender = (date: { date: string }) => {
 };
 
 const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
+  const navigate = useNavigate();
   const isSpecialDate = (dateString: string) => {
     const today = new Date();
     const date = new Date(dateString);
@@ -222,14 +232,20 @@ const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
       {diaries.length === 0 ? (
         <div>다이어리를 작성해 주세요</div>
       ) : (
-        diaries.map((item, index) => (
-          <SDateCalCardBox>
+        diaries.map((item) => (
+          <SDateCalCardBox key={item.diarySelectedAt}>
             <SpecialDate>{isSpecialDate(item.diarySelectedAt)}</SpecialDate>
-            <CalCardBox key={index}>
+            <CalCardBox>
               <Calender date={item.diarySelectedAt} />
               <DiaryCardBox>
-                {item.getSelectedAtDiaryResponse.map((diary, idx) => (
-                  <div key={idx}>
+                {item.getSelectedAtDiaryResponse.map((diary) => (
+                  <div
+                    key={diary.diaryId}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      navigate(`/diary/${diary.diaryId}`);
+                    }}
+                  >
                     {diary.diaryBehavior === "다이어리" ? (
                       <DiaryCard diary={diary} />
                     ) : (

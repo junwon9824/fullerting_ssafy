@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Builder
 public class BidProposeRequest {
     private int dealCurPrice;
-//    private LocalDateTime localDateTime;
     private Long userId ;
+//    private LocalDateTime localDateTime;
 //    private Long chattingRoomId;
 //    private int bidLogPrice;
 }

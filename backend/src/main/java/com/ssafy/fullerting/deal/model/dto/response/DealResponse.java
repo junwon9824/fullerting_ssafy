@@ -10,8 +10,8 @@ import lombok.*;
 public class DealResponse {
 
     private Long id;
-    
- 
-    private ExArticleResponse exArticleResponse;
+
+    private int price;
+//    private ExArticleResponse exArticleResponse;
     
 }

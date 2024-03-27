@@ -5,6 +5,7 @@ import com.ssafy.fullerting.bidLog.service.BidService;
 import com.ssafy.fullerting.deal.model.dto.request.DealEndRequest;
 import com.ssafy.fullerting.deal.model.dto.request.DealstartRequest;
 import com.ssafy.fullerting.deal.model.entity.Deal;
+import com.ssafy.fullerting.security.model.entity.CustomAuthenticationToken;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
@@ -29,19 +31,29 @@ public class MessageController {
     private final BidService bidService;
 
     @MessageMapping("/chattings/{chattingRoomId}/messages")
-    public void chat(@DestinationVariable Long chattingRoomId, DealstartRequest dealstartRequest) {
+    public void chat(@DestinationVariable Long chattingRoomId, SimpMessageHeaderAccessor headerAccessor, DealstartRequest dealstartRequest) {
+        // 세션 속성에서 CustomAuthenticationToken 조회
+        CustomAuthenticationToken authentication = (CustomAuthenticationToken) headerAccessor.getSessionAttributes().get("userAuthentication");
 
-        bidService.dealbid(chattingRoomId, BidProposeRequest.builder()
-                .dealCurPrice(dealstartRequest.getDealCurPrice())
-                .userId(dealstartRequest.getUserId())
-                .build());
+        if (authentication != null) {
+            // 여기에서 authentication.getUserId() 등을 통해 사용자 ID를 사용할 수 있음
+            Long userId = authentication.getUserId();
+            log.info("웹소켓에서 추출한 유저 id : {}", userId);
 
+            bidService.socketdealbid(chattingRoomId,
+                    BidProposeRequest.builder()
+                            .dealCurPrice(dealstartRequest.getDealCurPrice())
+                            .userId(userId)
+                            .build());
 
-        messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest);
+            dealstartRequest.setUserId(userId);
 
+            messagingTemplate.convertAndSend("/sub/chattings/" + chattingRoomId, dealstartRequest);
+            log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(), chattingRoomId);
 
-        log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(), chattingRoomId);
-
+        } else {
+            log.error("웹소켓 요청에 유저 정보없음");
+        }
     }
 
 //    @SubscribeMapping("/sub/chattings/{chattingRoomId}")

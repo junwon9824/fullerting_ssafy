@@ -57,7 +57,7 @@ public class TransService {
 
         transResponse = exArticleResponses.stream().map(exArticleResponse -> {
                     TransResponse transResponse1 = new TransResponse();
-                    transResponse1.setExArticleResponse(exArticleResponse);
+//                    transResponse1.setExArticleResponse(exArticleResponse);
 
                     Trans trans = transRepository.findByExArticleId(exArticleResponse.getExArticleId())
                             .orElseThrow(() -> new TransException(TransErrorCode.NOT_EXISTS));

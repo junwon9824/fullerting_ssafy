@@ -47,7 +47,7 @@ const CropUpdatePage = () => {
   const { mutate } = useMutation({
     mutationFn: updateCrop,
     onSuccess: () => {
-      navigate(`/diary/${packDiaryId}`);
+      navigate(`/crop/${packDiaryId}`);
     },
     onError: (error) => {
       console.log(error);

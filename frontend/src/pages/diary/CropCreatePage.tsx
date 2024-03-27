@@ -67,7 +67,7 @@ const CropCreatePage = () => {
   const { mutate } = useMutation({
     mutationFn: createCrop,
     onSuccess: () => {
-      navigate("/diary");
+      navigate("/crop");
     },
     onError: (error) => {
       console.log(error);

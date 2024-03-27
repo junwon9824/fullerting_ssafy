@@ -1,5 +1,7 @@
-import React, { ChangeEvent, useState } from "react";
+import { useAtom } from "jotai";
+import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
+import { fileAtom } from "../../../stores/diary";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -28,10 +30,9 @@ const FileUploadBox = styled.div`
 `;
 
 const RegisterBox = styled.div`
-  width: 4.2rem;
-  height: 4.2rem;
   display: flex;
   gap: 0.8rem;
+  flex-wrap: wrap;
 `;
 
 const FileUploadIcon = styled.svg`
@@ -71,33 +72,38 @@ const DeleteImageButton = styled.div`
 `;
 
 const FileUploadInput: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewURL, setPreviewURL] = useState<string | null>(null);
+  // const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedFiles, setSelectedFiles] = useAtom(fileAtom);
+  const [previewURLs, setPreviewURLs] = useState<string[]>([]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      const file = files[0];
-      setSelectedFile(file);
+      const newFiles = Array.from(files);
+      setSelectedFiles([...selectedFiles, ...newFiles]);
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        setPreviewURL(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      const newPreviewURLs = Array.from(files).map((file: File) =>
+        URL.createObjectURL(file)
+      );
+      setPreviewURLs([...previewURLs, ...newPreviewURLs]);
     }
   };
 
   const handleFileUpload = async () => {
-    if (!selectedFile) return;
+    if (!selectedFiles) return;
 
-    const formData = new FormData();
-    formData.append("file", selectedFile);
+    // const formData = new FormData();
+    // formData.append("file", selectedFiles);
   };
 
-  const handleDeleteImage = () => {
-    setSelectedFile(null);
-    setPreviewURL(null);
+  const handleDeleteImage = (index: number) => {
+    const updatedFiles = [...selectedFiles];
+    updatedFiles.splice(index, 1);
+    setSelectedFiles(updatedFiles);
+
+    const updatedPreviewURLs = [...previewURLs];
+    updatedPreviewURLs.splice(index, 1);
+    setPreviewURLs(updatedPreviewURLs);
   };
 
   return (
@@ -105,6 +111,7 @@ const FileUploadInput: React.FC = () => {
       <div>
         <LabelSpan>사진 등록</LabelSpan>
       </div>
+
       <RegisterBox>
         <label htmlFor="file">
           <FileUploadBox>
@@ -132,16 +139,21 @@ const FileUploadInput: React.FC = () => {
             </FileUploadIcon>
           </FileUploadBox>
         </label>
+
         <InputBox
           id="file"
           type="file"
           onChange={handleFileChange}
           onClick={handleFileUpload}
+          capture="environment"
+          accept="image/*"
+          multiple
         />
-        {previewURL && (
-          <div style={{ position: "relative" }}>
-            <PreviewImage src={previewURL} alt="Preview" />
-            <DeleteImageButton onClick={handleDeleteImage}>
+
+        {previewURLs.map((previewURL, index) => (
+          <div key={index} style={{ position: "relative" }}>
+            <PreviewImage src={previewURL} alt={`Preview ${index}`} />
+            <DeleteImageButton onClick={() => handleDeleteImage(index)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -159,7 +171,7 @@ const FileUploadInput: React.FC = () => {
               </svg>
             </DeleteImageButton>
           </div>
-        )}
+        ))}
       </RegisterBox>
     </FlexColumn>
   );

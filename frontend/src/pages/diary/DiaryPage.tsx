@@ -143,7 +143,7 @@ const DiaryPage = () => {
   const { mutate: deleteMutate } = useMutation({
     mutationFn: deleteCrop,
     onSuccess: () => {
-      navigate("/diary");
+      navigate("/crop");
     },
     onError: (err) => {
       console.log(err);
@@ -203,7 +203,7 @@ const DiaryPage = () => {
       <PlusButtonBox>
         {isVisible && (
           <AdditionalButtonsContainer>
-            <StyledPlusButton onClick={() => navigate(`water`)}>
+            <StyledPlusButton onClick={() => navigate(`/diary/water`)}>
               <SVGBox
                 xmlns="http://www.w3.org/2000/svg"
                 width="14"
@@ -217,7 +217,7 @@ const DiaryPage = () => {
                 />
               </SVGBox>
             </StyledPlusButton>
-            <StyledPlusButton onClick={() => navigate(`create`)}>
+            <StyledPlusButton onClick={() => navigate(`/diary/create`)}>
               <SVGBox
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
