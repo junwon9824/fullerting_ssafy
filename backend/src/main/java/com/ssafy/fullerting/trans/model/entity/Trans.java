@@ -45,7 +45,7 @@ public class Trans {
                 .build();
     }
 
-    public MyAllTransResponse toMyAllTransResponse(Trans trans, CustomUser customUser) {
+    public MyAllTransResponse toMyAllTransResponse(Trans trans  ) {
 //        log.info("aaaaaaaaaaaaa"+trans.getExArticle());
 
         return MyAllTransResponse.builder()

@@ -34,11 +34,21 @@ public class TransController {
     }
 
     @GetMapping("/category/trans")
-    @Operation(summary = "일반거래 조회하기 ", description = "일반거래 카테고리 조회하기 ")
+    @Operation(summary = "일반거래 조회하기 ", description = "나눔 조회하기 ")
+    public ResponseEntity<MessageUtils> selectAlltrans( ) {
+
+        log.info("[show share]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(transService.selectAlltrans()));
+
+    }
+
+
+    @GetMapping("/category/my/trans")
+    @Operation(summary = " 나의 일반거래 조회하기 ", description = "일반거래 카테고리 조회하기 ")
     public ResponseEntity<MessageUtils> selectTrans( ) {
 
         log.info("[selectFavorite  ]: {}");
-        return ResponseEntity.ok().body(MessageUtils.success(transService.selectTrans()));
+        return ResponseEntity.ok().body(MessageUtils.success(transService.selectmyallTrans()));
 
     }
 
