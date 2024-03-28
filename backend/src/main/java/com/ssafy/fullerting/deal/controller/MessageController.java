@@ -39,9 +39,9 @@ public class MessageController {
     @MessageMapping("/bidding/{exArticleId}/messages")
     public void bidBroker(@DestinationVariable Long exArticleId, SimpMessageHeaderAccessor headerAccessor, DealstartRequest dealstartRequest) {
         // 클라이언트가 보내야하는 정보(send)
-        // 거래글ID, 입찰자ID(세션에 포함), 입찰금액
+        // 입찰자ID(세션에 포함), 거래글ID, 입찰금액, 본인페이지 URL
         // 클라이언트가 받아야하는 정보
-        // 입찰로그ID, 거래글ID, 유저객체, 입찰자의 금액, 최고가격, 현재 입찰 참여자 수
+        // 입찰로그ID, 거래글ID, 유저객체, 입찰자의 금액, 최고가격, 현재 입찰 참여자 수,
 
         // 세션 속성에서 CustomAuthenticationToken 조회
         CustomAuthenticationToken authentication = (CustomAuthenticationToken) headerAccessor.getSessionAttributes().get("userAuthentication");
@@ -90,7 +90,7 @@ public class MessageController {
 
             // 입찰 알림
 //            CustomUser bidUser = userRepository.findById(bidUserId).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-//            eventAlarmService.notifyAuctionBidReceived(bidUser,);
+//            eventAlarmService.notifyAuctionBidReceived(bidUser, exArticle, redirectURL);
 
         } else {
             log.error("웹소켓 요청에 유저 정보없음");
