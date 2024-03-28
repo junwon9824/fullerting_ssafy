@@ -30,6 +30,11 @@ import TradeBuyerPage from "../pages/trade/TradeBuyerPage";
 import TradeChatPage from "../pages/trade/TradeChatPage";
 import DiaryDetailPage from "../pages/diary/DiaryDetailPage";
 import TradeDealDetailPage from "../pages/trade/TradeDealDetailPage";
+import AlarmLayout from "../pages/alarm/AlarmLayout";
+import Alarm from "../pages/alarm/Alarm";
+import RecognizePage from "../pages/diary/RecognizePage";
+import TradeModifyPage from "../pages/trade/TradeModifyPage";
+import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -43,10 +48,11 @@ const diaryRoutes = [
   { path: "/crop/create", element: <CropCreatePage /> },
   { path: "/crop/:packDiaryId/update", element: <CropUpdatePage /> },
   { path: "/crop/:packDiaryId", element: <DiaryPage /> },
+  { path: "/crop/:packDiaryId/ai", element: <RecognizePage /> },
   { path: "/diary/:diaryId", element: <DiaryDetailPage /> },
   { path: "/diary/create", element: <DiaryCreatePage /> },
   { path: "/diary/water", element: <DiaryWaterPage /> },
-  // { path: "/diary/:diaryId/update", element: <DiaryUpdatePage /> },
+  { path: "/diary/:diaryId/update", element: <DiaryUpdatePage /> },
 ];
 
 const tradeRoutes = [
@@ -57,6 +63,7 @@ const tradeRoutes = [
   { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
   { path: "/trade/:postId/buyer", element: <TradeBuyerPage /> },
   { path: "/trade/:postId/Chat", element: <TradeChatPage /> },
+  { path: "/trade/:postId/modify", element: <TradeModifyPage /> },
   { path: "/trade/test", element: <TestPage /> },
 ];
 
@@ -83,7 +90,18 @@ const communityRoutes = [
     children: [
       { index: true, element: <Community /> },
       { path: "createcommunity", element: <CreateCommunity /> },
-      { path: "communitydetail", element: <CommunityDetail /> },
+      { path: ":id", element: <CommunityDetail /> },
+    ],
+  },
+];
+
+const alarm = [
+  {
+    path: "/alarm",
+    element: <AlarmLayout />,
+    children: [
+      { index: true, element: <Alarm /> },
+      // { path: "allalarm", element: <AllAlarm /> },
     ],
   },
 ];
@@ -94,6 +112,7 @@ const routes = [
   ...tradeRoutes,
   ...mypageRoutes,
   ...communityRoutes,
+  ...alarm,
 ];
 
 const router = createBrowserRouter(routes);

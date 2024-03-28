@@ -6,8 +6,10 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteDiary, getDiaryData } from "../../apis/DiaryApi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { diaryAtom } from "../../stores/diary";
+import { useAtom } from "jotai";
 
 const Title = styled.div`
   font-size: 1.4rem;
@@ -49,8 +51,14 @@ const ImageItem = styled.img`
 
 const DiaryDetailPage = () => {
   const { diaryId } = useParams();
-  const [packDiaryId, setPackDiaryId] = useState("");
   const navigate = useNavigate();
+  const [diary, setDiary] = useAtom(diaryAtom);
+  const [packDiaryId, setPackDiaryId] = useState("");
+
+  useEffect(() => {
+    setDiary(diaryId);
+    console.log(diary);
+  }, [diaryId]);
 
   const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split("-");

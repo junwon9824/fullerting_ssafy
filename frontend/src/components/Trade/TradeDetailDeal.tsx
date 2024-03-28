@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TopBar } from "../common/Navigator/navigator";
+import { TopBar, TradeTopBar } from "../common/Navigator/navigator";
 import Coli from "/src/assets/images/브로콜리.png";
 import { LayoutInnerBox, LayoutMainBox } from "../common/Layout/Box";
 import { BottomButton } from "../common/Button/LargeButton";
@@ -10,8 +10,8 @@ import NotLike from "/src/assets/svg/notlike.svg";
 import Like from "/src/assets/svg/like.svg";
 import { useState } from "react";
 import Tree from "/src/assets/svg/diarytree.svg";
-import { useQuery } from "@tanstack/react-query";
-import { getTradeDetail, useLike } from "../../apis/TradeApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deletePost, getTradeDetail, useLike } from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -155,7 +155,7 @@ const TradeDetailDeal = () => {
   };
 
   const { mutate: handleLikeClick } = useLike();
-  const { postId } = useParams<{ postId?: string }>();
+  const { postId } = useParams<{ postId: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
@@ -164,6 +164,7 @@ const TradeDetailDeal = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
+
   const {
     isLoading: isLoadingUserDetail,
     data: userData,
@@ -185,19 +186,58 @@ const TradeDetailDeal = () => {
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
-  console.log("나는야 데이터", data);
-  console.log("데이터 id", data?.userResponse.id, "유저 id", userData?.id);
+
+  console.log(
+    "데이터 id",
+    data?.exArticleResponse?.userId,
+    "유저 id",
+    userData?.id
+  );
   const BtnClick = (postId: number) => {
-    if (data?.userResponse?.id === userData?.id) {
+    if (data?.exArticleResponse?.userId === userData?.id) {
       navigate(`/trade/${postId}/seller`);
     } else {
       navigate(`/trade/${postId}/buyer`);
     }
-    console.log("저를 클릭했나요?");
+    // console.log("저를 클릭했나요?");
   };
+
+  const handleEdit = () => {
+    console.log("저 클릭됐어요");
+    navigate(`/trade/${postId}/modify`, {
+      state: {
+        exArticleTitle: data?.exArticleResponse?.exArticleTitle,
+        exArticleContent: data?.exArticleResponse?.content,
+        exArticleType: data?.exArticleResponse?.exArticleType,
+        ex_article_location: data?.exArticleResponse?.exLocation,
+        packdiaryid: data?.packDiaryResponse?.packDiaryId.toString(),
+        deal_cur_price: data?.dealResponse?.price.toString(),
+        imageResponse: data?.imageResponses,
+        postId: data?.exArticleResponse.exArticleId,
+      },
+    });
+  };
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      navigate(-1);
+      //   navigate(`/crop/${packDiaryId}`);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
   return (
     <>
-      <TopBar title="작물거래" showBack={true} showEdit={true} />
+      <TradeTopBar
+        title="작물거래"
+        showBack={true}
+        showEdit={true}
+        onEdit={handleEdit}
+        onDelete={() => {
+          deleteMutation(data?.exArticleResponse.exArticleId);
+        }}
+      />
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper
@@ -260,14 +300,7 @@ const TradeDetailDeal = () => {
                 작물일지 이동하기
               </NavigateText>
             </DiaryBox>
-            <ExplainText>
-              심우석의 머리를 브로콜리에 비유하는 것은 그의 독특하고 특이한 헤어
-              스타일을 묘사하기 위한 창의적인 방법입니다. 이 비유는 특히 그의
-              머리카락이 풍성하고 볼륨감이 많으며, 위로 솟아 오른 모양이 마치
-              브로콜리의 녹색 송이와 유사하다는 점에서 온 것일 수 있습니다.
-              브로콜리의 작은 꽃송이들이 모여 있는 모양은, 심우석의 머리카락이
-              여러 방향으로 풍성하게 서 있는 것과 비슷하다고 할 수 있습니다.
-            </ExplainText>
+            <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>
         </LayoutInnerBox>
         <BottomButton

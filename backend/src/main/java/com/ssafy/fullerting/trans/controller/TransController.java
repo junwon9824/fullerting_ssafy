@@ -28,7 +28,6 @@ public class TransController {
     @Operation(summary = "나눔 조회하기 ", description = "나눔 조회하기 ")
     public ResponseEntity<MessageUtils> selectAllshare(@AuthenticationPrincipal String email) {
 
-
         log.info("[show share]: {}");
         return ResponseEntity.ok().body(MessageUtils.success(transService.selectAllshare()));
 

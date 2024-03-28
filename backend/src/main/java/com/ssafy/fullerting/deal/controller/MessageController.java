@@ -30,11 +30,11 @@ public class MessageController {
             Long userId = authentication.getUserId();
             log.info("웹소켓에서 추출한 유저 id : {}", userId);
 
-            bidService.socketdealbid(chattingRoomId,
-                    BidProposeRequest.builder()
-                            .dealCurPrice(dealstartRequest.getDealCurPrice())
-                            .userId(userId)
-                            .build());
+//            bidService.socketdealbid(chattingRoomId,
+//                    BidProposeRequest.builder()
+//                            .dealCurPrice(dealstartRequest.getDealCurPrice())
+//                            .userId(userId)
+//                            .build());
 
             dealstartRequest.setUserId(userId);
             messagingTemplate.convertAndSend("/sub/bidding/" + chattingRoomId, dealstartRequest);

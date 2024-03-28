@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "./Base";
 import { imageFilesAtom } from "../stores/trade";
 import { atom } from "jotai";
+import { useNavigate } from "react-router-dom";
 interface DataItem {
   exArticleResponse: ExArticleResponse;
   packDiaryResponse: PackDiaryResponse | null; // JSON 예제에는 객체가 있지만, 여기서는 null일 수도 있음을 표현
@@ -27,20 +28,6 @@ interface PackDiaryResponse {
 interface FavoriteResponse {
   islike: boolean;
   isLikeCnt: number;
-}
-interface LikeData {
-  success_code: number;
-  result_code: string;
-  result_message: string;
-}
-interface PostData {
-  exArticleTitle: string;
-  exArticleContent: string;
-  imgFiles: File[];
-  ex_article_location: string;
-  exArticleType: string;
-  packdiaryid: string;
-  dealCurPrice: string;
 }
 
 export const getTradeList = async (accessToken: string) => {
@@ -126,6 +113,7 @@ export const useLike = () => {
 
 export const usePost = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: async (formData: FormData) => {
       const accessToken = sessionStorage.getItem("accessToken");
@@ -149,10 +137,61 @@ export const usePost = () => {
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ["tradeList"] });
+      navigate("/trade");
       console.log("업로드 성공:", res);
+    },
+    onError: (error) => {
+      console.error("업로드 에러:", error);
+      alert("필수 항목을 모두 입력해주세요");
+    },
+  });
+};
+
+export const useUpdateArticle = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      postId,
+      formData,
+    }: {
+      postId: number;
+      formData: FormData;
+    }) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("로그인이 필요합니다.");
+      }
+      console.log("저는 폼데이터입니다", formData);
+
+      const response = await api.patch(`exchanges/${postId}/modify`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data;
+    },
+    onSuccess: () => {
+      // 캐시된 쿼리 데이터 갱신 등 후속 처리
+      queryClient.invalidateQueries({ queryKey: ["tradeDetail"] });
+      console.log("success");
     },
     onError: (error) => {
       console.error("업로드 에러:", error);
     },
   });
+};
+export const deletePost = async (postId: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.delete(`/exchanges/${postId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error delete: ", error);
+    throw error;
+  }
 };

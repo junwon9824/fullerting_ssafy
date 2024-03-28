@@ -19,11 +19,11 @@ const MenuBox = styled.button<MenuBoxType>`
   justify-content: center;
   text-align: center;
   flex-direction: column;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: bold;
   color: ${({ selected, theme }) =>
     selected ? theme.colors.black : theme.colors.gray0};
-  height: 1.8rem;
+  height: 1.3rem;
   width: 9.93rem;
 `;
 const FlexColumnBox = styled.div`

@@ -52,7 +52,6 @@ const Imagecontainer = styled.div`
 `;
 
 const AllBadgesPage = () => {
-  console.log("페이지 들어옴");
   const {
     data: badges,
     isLoading,
