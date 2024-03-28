@@ -137,7 +137,7 @@ function TestPage() {
         const DealstartRequest = {
           exArticleId: exArticleId,
           dealCurPrice: messageReq.dealCurPrice,
-          //  redirectURL: 우석아 여기다가 현재 페이지 URL 담아서 보내줘
+          redirectURL: window.location.href
         }
 
 
