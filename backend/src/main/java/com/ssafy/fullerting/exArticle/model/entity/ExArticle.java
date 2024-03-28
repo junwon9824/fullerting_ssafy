@@ -74,7 +74,7 @@ public class ExArticle {
     @Column(name = "ex_article_purchaser_id")
     private Long purchaserId;
 
-    @OneToOne(mappedBy = "exArticle",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "exArticle", cascade = CascadeType.ALL)
     private Deal deal;
 
 
@@ -84,7 +84,7 @@ public class ExArticle {
     @OneToMany(mappedBy = "exArticle", fetch = FetchType.LAZY)
     private List<Image> image;
 
-    @OneToMany(mappedBy = "exArticle")
+    @OneToMany(mappedBy = "exArticle", cascade = CascadeType.ALL)
     private List<Favorite> favorite = new ArrayList<>();
 
     public void setdeal(Deal deal) {

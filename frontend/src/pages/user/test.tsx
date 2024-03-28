@@ -4,15 +4,22 @@ import { api } from "../../apis/Base";
 
 
 interface MessageRes {
-  id: string; //bidlogid
-  localDateTime: string;
-  userId: number;
-  chattingRoomId: number;
-  bidLogPrice: number;
+
+
+  bidLogId: number; // 입찰제안 ID
+  exArticleId: number; // 가격제안 게시물 id
+  UserResponse: object; // 입찰자 ID, 썸네일, 닉네임
+  dealCurPrice: number; // 입찰자가 제안한 금액
+  maxPrice: number; // 현재 이 경매글의 최고가
+  bidderCount: number;
 }
 
 function TestPage() {
-  const chattingRoomId = 140;
+
+
+  const exArticleId = 140;
+
+
 
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [messages, setMessages] = useState<MessageRes[]>([]);
@@ -28,7 +35,7 @@ function TestPage() {
         throw new Error("Access token is not available.");
       }
 
-      const response = await api.get(`/exchanges/${chattingRoomId}/suggestion`, {
+      const response = await api.get(`/exchanges/${exArticleId}/suggestion`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
@@ -48,9 +55,6 @@ function TestPage() {
     // const socket = new SockJS("http://localhost:8080/ws");
     // const socket = new WebSocket(import.meta.env.__WEBSOCKET_URL__);
 
- 
-
-    
     const accessToken = sessionStorage.getItem("accessToken");
     if (!accessToken) {
       throw new Error("Access token is not available.");
@@ -78,25 +82,28 @@ function TestPage() {
         // 백엔드로부터 메시지를 받는 부분
         // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
         client.subscribe(
-          `/sub/chattings/${chattingRoomId}`,
+          `/sub/chattings/${exArticleId}`,
           (message) => {
+
+
             console.log(message.body)
             const msg: MessageRes = JSON.parse(message.body);
- 
 
-            console.log('message arrived' + msg.userId)
-            console.log('message arrived' + msg.bidLogPrice)
+            // console.log('message arrived' + msg.userId)
+            // console.log('message arrived' + msg.bidLogPrice)
+            console.log('message arrived' + msg.maxPrice)
 
-            const lastMessageId = msg.id;
+            const lastMessageId = msg.bidLogId;
+
 
             setMessages((prevMessages) => [...prevMessages,
-            { ...msg, id: String(lastMessageId), userId: msg.userId, bidLogPrice: msg.bidLogPrice, localDateTime: msg.localDateTime },
+            { ...msg, id: String(lastMessageId), userId: msg.UserResponse, dealCurPrice: msg.dealCurPrice },
             ]);
 
             // id: string; //bidlogid
             // localDateTime: string;
             // user_id: number;
-            // chattingRoomId: number;
+            // exArticleId: number;
             // bid_log_price: number;
             // setMessages((prevMessages) => [...prevMessages, msg]);
           }
@@ -117,7 +124,7 @@ function TestPage() {
         });
       }
     };
-  }, [chattingRoomId]);
+  }, [exArticleId]);
 
 
   const sendMessage = async () => {
@@ -125,6 +132,7 @@ function TestPage() {
     if (stompClient && newMessage.trim() !== "") {
 
       try {
+
         const messageReq = {
           dealCurPrice: newMessage,
           // userId: , /////수정필요!!!!!!!!!!!!!!!!!1
@@ -135,35 +143,32 @@ function TestPage() {
           throw new Error("Access token is not available.");
         }
 
-        const res = await api.post(
-          `/exchanges/${chattingRoomId}/deal_bid`,
-          messageReq,
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
+        // const res = await api.post(
+        //   `/exchanges/${exArticleId}/deal_bid`,
+        //   messageReq,
+        //   {
+        //     headers: { Authorization: `Bearer ${accessToken}` },
+        //   }
 
-        );
-        // private Long id;
+        // );
+        //  Long id;
 
-        // private Long userId;
-        // private LocalDateTime localDateTime;
+        //  Long userId;
+        //  LocalDateTime localDateTime;
 
-        // private int bidLogPrice;
-        // private Long exarticleid;
-        console.log( res.data.data_body)
-        const   DealstartRequest = {
+        //  int bidLogPrice;
+        //  Long exarticleid;
+        // console.log( res.data.data_body)
+        const DealstartRequest = {
 
-          id: res.data.data_body.id,
-          dealCurPrice: res.data.data_body.dealCurPrice,
-          localDateTime: res.data.data_body.localDateTime,
-          userId: res.data.data_body.userId,
-          chattingRoomId: chattingRoomId,
-          bidLogPrice: messageReq.dealCurPrice,
+
+          exArticleId: exArticleId,
+          dealCurPrice: messageReq.dealCurPrice,
 
         }
-        console.log(DealstartRequest.userId)
 
-        stompClient.send(`/pub/chattings/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
+
+        stompClient.send(`/pub/chattings/${exArticleId}/messages`, {}, JSON.stringify(DealstartRequest));
         setNewMessage("");
 
       } catch (error) {
@@ -177,8 +182,8 @@ function TestPage() {
       <div>
         <ul>
           {messages.map((msg) => (
-            <li key={msg.id}>
-              messageid  {msg.id}입찰희망자 아이디 {msg.userId}: 입찰 제안 가격 {msg.bidLogPrice} 제안 날짜 ({msg.localDateTime})
+            <li key={msg.bidLogId}>
+              messageid  {msg.bidLogId}입찰희망자 아이디 {msg.UserResponse.id}: 입찰 제안 가격 {msg.dealCurPrice}  
               <hr />
             </li>
           ))}

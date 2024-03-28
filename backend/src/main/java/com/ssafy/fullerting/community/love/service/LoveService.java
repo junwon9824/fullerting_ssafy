@@ -12,6 +12,7 @@ import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
@@ -29,18 +30,32 @@ public class LoveService {
         CustomUser customUser = userResponse.toEntity(userResponse);
         AtomicBoolean islike = new AtomicBoolean(false);
 
-        article.getLoves().forEach(
-                love -> {
-                    if (love.getCustomUser().getId() == customUser.getId()) {
-                        loveRepository.delete(love);
-                        article.setLove(article.getLove() - 1);
-                        article.removelove(love);
-                        islike.set(true);
-                    }
-                }
-        );
+        Iterator<Love> iterator = article.getLoves().iterator();
+        while (iterator.hasNext()) {
+            Love love = iterator.next();
+            if (love.getCustomUser().getId() == customUser.getId()) {
+                iterator.remove();
+                loveRepository.delete(love);
+                article.setLove(article.getLove() - 1);
+                article.removelove(love);
+                islike.set(true);
+            }
+        }
 
-        if (islike.get() == false) {
+
+//        article.getLoves().forEach(
+//                love -> {
+//                    if (love.getCustomUser().getId() == customUser.getId()) {
+//                        loveRepository.delete(love);
+//                        article.setLove(article.getLove() - 1);
+//                        article.removelove(love);
+//                        islike.set(true);
+//                    }
+//                }
+//        );
+
+
+        if (!islike.get()) {
 
             Love love = Love.builder()
                     .article(article)

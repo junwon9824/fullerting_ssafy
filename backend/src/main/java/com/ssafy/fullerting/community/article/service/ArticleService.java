@@ -7,11 +7,13 @@ import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse
 import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import com.ssafy.fullerting.community.article.repository.ArticleRepository;
+import com.ssafy.fullerting.community.love.repository.LoveRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class ArticleService {
     private final ArticleRepository articleRepository;
     private final UserService userService;
+    private final LoveRepository loveRepository;
 
     public void registarticle(RegistArticleRequest registArticleRequest) {
 
@@ -64,7 +67,15 @@ public class ArticleService {
     public ArticleResponse findarticlebyid(Long articleId) {
         Article article = articleRepository.findById(articleId).orElseThrow(() ->
                 new ArticleException(ArticleErrorCode.NOT_EXISTS));
-        return article.toResponse();
+
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = userResponse.toEntity(userResponse);
+        boolean mylove = false;
+
+        if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+            mylove = true;
+        }
+        return article.toResponse(mylove);
 
     }
 
@@ -84,8 +95,18 @@ public class ArticleService {
     }
 
     public List<ArticleResponse> findAllArticle() {
+
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = userResponse.toEntity(userResponse);
+
+
         return articleRepository.findAll().stream().map(article -> {
-                    ArticleResponse articleResponse = article.toResponse();
+                    boolean mylove = false;
+                    if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                        mylove = true;
+                    }
+
+                    ArticleResponse articleResponse = article.toResponse(mylove);
                     return articleResponse;
                 })
                 .collect(Collectors.toList());
@@ -95,27 +116,48 @@ public class ArticleService {
     public List<ArticleResponse> findAllArticlebyCategory(String keyword) {
 
 
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = userResponse.toEntity(userResponse);
+
+
         if (keyword.equals("FREE_BOARD")) {
             return articleRepository.findAllByType((ArticleType.FREE_BOARD)).stream().map(article -> {
-                        ArticleResponse articleResponse = article.toResponse();
+
+                        boolean mylove = false;
+                        if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                            mylove = true;
+                        }
+                        ArticleResponse articleResponse = article.toResponse(mylove);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
         } else if (keyword.equals("INTRODUCE")) {
             return articleRepository.findAllByType((ArticleType.INTRODUCE)).stream().map(article -> {
-                        ArticleResponse articleResponse = article.toResponse();
+                        boolean mylove = false;
+                        if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                            mylove = true;
+                        }
+                        ArticleResponse articleResponse = article.toResponse(mylove);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
         } else if (keyword.equals("COOK")) {
             return articleRepository.findAllByType((ArticleType.COOK)).stream().map(article -> {
-                        ArticleResponse articleResponse = article.toResponse();
+                        boolean mylove = false;
+                        if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                            mylove = true;
+                        }
+                        ArticleResponse articleResponse = article.toResponse(mylove);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
         } else {
             return articleRepository.findAllByType((ArticleType.SHARE_TIPS)).stream().map(article -> {
-                        ArticleResponse articleResponse = article.toResponse();
+                        boolean mylove = false;
+                        if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                            mylove = true;
+                        }
+                        ArticleResponse articleResponse = article.toResponse(mylove);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -126,10 +168,17 @@ public class ArticleService {
 
     public List<ArticleResponse> search(String keyword) {
 
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = userResponse.toEntity(userResponse);
+
         return articleRepository.
                 findAllByContentandtitle(keyword)
                 .stream().map(article -> {
-                    ArticleResponse articleResponse = article.toResponse();
+                    boolean mylove = false;
+                    if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                        mylove = true;
+                    }
+                    ArticleResponse articleResponse = article.toResponse(mylove);
                     return articleResponse;
                 })
                 .collect(Collectors.toList());

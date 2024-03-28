@@ -3,6 +3,7 @@ package com.ssafy.fullerting.community.article.model.entity;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import com.ssafy.fullerting.community.love.model.entity.Love;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -59,13 +60,15 @@ public class Article {
         loves.remove(love);
     }
 
-    public ArticleResponse toResponse() {
+    public ArticleResponse toResponse(boolean mylove) {
+
         return ArticleResponse.builder()
                 .title(this.title)
                 .id(this.id)
                 .content(this.content)
                 .type(this.type)
                 .love(this.getLoves().size())
+                .mylove(mylove)
                 .build();
     }
 
