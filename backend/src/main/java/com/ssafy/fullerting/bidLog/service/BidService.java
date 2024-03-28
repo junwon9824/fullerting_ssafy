@@ -22,11 +22,13 @@ import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,19 +83,14 @@ public class BidService {
 
     }
 
-
-    public BidLog socketdealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
-
-//        UserResponse userResponse = userService.getUserInfo();
-//        CustomUser customUser = userResponse.toEntity(userResponse);
-//        CustomUser customUser = userRepository.findById(bidProposeRequest.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-
-        ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
-                ExArticleErrorCode.NOT_EXISTS));
-
+    // 웹소켓 전용
+    // 입찰 제안을 DB에 저장한다 -> 입찰기록을 만든다
+    public BidLog socketdealbid(ExArticle exArticle, BidProposeRequest bidProposeRequest) {
+        exArticle.getDeal().setDealCurPrice(bidProposeRequest.getDealCurPrice());
         if (exArticle.getDeal() == null) {
             throw new BidException(BidErrorCode.NOT_DEAL);
         }
+
 
         Deal deal = dealRepository.findById(exArticle.getDeal().getId()).orElseThrow(() ->
                 new DealException(DealErrorCode.NOT_EXISTS));
@@ -107,31 +104,10 @@ public class BidService {
 
         return bidLog;
     }
-
-    public BidLog choosetbid(Long exArticleId, BidSelectRequest bidSelectRequest) {
-
-        UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
-
-        ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() ->
-                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-
-        BidLog bidLog = bidRepository.findById(bidSelectRequest.getBidid()).orElseThrow(() ->
-                new BidException(BidErrorCode.NOT_EXISTS));
-
-        article.setDone(true);
-        exArticleRepository.save(article);
-
-
-        return bidLog;
-    }
-
     public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
 
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
-
-//        CustomUser customUser = userRepository.findById(bidProposeRequest.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
         ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
                 ExArticleErrorCode.NOT_EXISTS));
@@ -153,6 +129,33 @@ public class BidService {
                 .build());
 
         return bidLog;
+    }
 
+    public BidLog choosetbid(Long exArticleId, BidSelectRequest bidSelectRequest) {
+
+        UserResponse userResponse = userService.getUserInfo();
+        CustomUser customUser = userResponse.toEntity(userResponse);
+
+        ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() ->
+                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
+        BidLog bidLog = bidRepository.findById(bidSelectRequest.getBidid()).orElseThrow(() ->
+                new BidException(BidErrorCode.NOT_EXISTS));
+
+        article.setDone(true);
+        exArticleRepository.save(article);
+
+        return bidLog;
+    }
+
+
+
+    public int getBidderCount(ExArticle exArticle) {
+        return bidRepository.countDistinctUserIdsByExArticleId(exArticle.getId());
+    }
+
+    public int getMaxBidPrice(ExArticle exArticle) {
+        Optional<Integer> maxBidPriceOptional = bidRepository.findMaxBidPriceByExArticleId(exArticle.getId());
+        return maxBidPriceOptional.orElse(0);
     }
 }
