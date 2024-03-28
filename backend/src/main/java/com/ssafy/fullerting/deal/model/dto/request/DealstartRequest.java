@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class DealstartRequest {
     private Long exArticleId; // 가격제안 게시물 id
     private int dealCurPrice; // 입찰자가 제안한 금액
+    private String redirectURL; // 판매자(글작성자)가 보는 입찰페이지 URL
 }
