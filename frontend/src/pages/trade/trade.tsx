@@ -10,7 +10,7 @@ import {
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
 import useInput from "../../hooks/useInput";
 // import Tomato from "/src/assets/images/토마토.png";
-import Post from "../../components/Trade/post";
+// import Post from "../../components/Trade/post";
 import { useAtom } from "jotai";
 import { selectedCategory } from "../../stores/trade";
 import TradeMainCategory from "../../components/Trade/TradeMainCategory";
