@@ -46,11 +46,14 @@ const SelectContainer = styled.div`
   display: flex;
   flex-direction: row;
 `;
-const TitleText = styled.div`
+const TitleText = styled.span`
   width: auto;
   font-size: 0.875rem; // 제목의 글씨 크기 조정
   color: #8c8c8c; // 제목의 글씨 색상
   font-weight: bold;
+  /* align-items: center; */
+  display: flex;
+  flex-direction: row;
 `;
 
 const BiddingBox = styled.div`
@@ -109,6 +112,19 @@ const DiarySquare = styled.div`
   border-radius: 1rem;
   border: 2px solid ${({ theme }) => theme.colors.gray1};
   background: ${({ theme }) => theme.colors.white};
+`;
+const DiarySelectedText = styled.span`
+  display: flex;
+  font-size: 0.875rem;
+  color: #2a7f00;
+  margin-left: 0.5rem;
+`;
+const RedCircle = styled.div`
+  width: 0.25rem;
+  height: 0.25rem;
+  background-color: ${({ theme }) => theme.colors.red0};
+  margin: 0 0.2rem;
+  border-radius: 50%;
 `;
 
 const TradePost = () => {
@@ -188,7 +204,8 @@ const TradePost = () => {
 
       await handlePost(formData);
       setSelectedFiles([]);
-      navigate("/trade");
+      setSelectedDiaryId(null);
+      // navigate("/trade");
       // 요청 성공 후 페이지 이동 또는 상태 업데이트
       // navigate("/trade");
     } catch (error) {
@@ -196,6 +213,7 @@ const TradePost = () => {
       console.error("업로드 실패:", error);
     }
   };
+  console.log("전 다이어리에요", diary);
   return (
     <>
       {modal && (
@@ -214,10 +232,12 @@ const TradePost = () => {
           name="title"
           placeholder="제목을 입력해주세요"
           onChange={setTitle}
-          isRequired={false}
+          isRequired={true}
         />
         <RadioBox>
-          <TitleText>거래 방법</TitleText>
+          <TitleText>
+            거래 방법 <RedCircle />
+          </TitleText>
           <RadioBoxContainer>
             {tradeOptions.map((option, index) => (
               <SelectContainer
@@ -235,7 +255,10 @@ const TradePost = () => {
           </RadioBoxContainer>
         </RadioBox>
         <RadioBox>
-          <TitleText>거래 단위</TitleText>
+          <TitleText>
+            거래 단위
+            <RedCircle />
+          </TitleText>
           <RadioBoxContainer>
             {cashCheck === true ? (
               <SelectContainer>
@@ -267,7 +290,7 @@ const TradePost = () => {
           name="startcash"
           placeholder="₩ 가격을 입력해주세요."
           onChange={setCash}
-          isRequired={false}
+          isRequired={true}
         />
         <RadioBox>
           <TitleText>입찰 단위</TitleText>
@@ -282,7 +305,7 @@ const TradePost = () => {
           name="place"
           placeholder="거래 장소를 입력해주세요."
           onChange={setPlace}
-          isRequired={false}
+          isRequired={true}
         />
         <StyledTextArea
           label="내용"
@@ -291,13 +314,14 @@ const TradePost = () => {
           value={content}
           onChange={setContent}
           maxLength={300}
-          isRequired={false}
+          isRequired={true}
         />
         <DiaryBox>
           <Label>작물 일지</Label>
           <DiarySquare onClick={openModal}>
             <img src={Diary} alt="diary" />
           </DiarySquare>
+          {diary && <DiarySelectedText>선택되었습니다</DiarySelectedText>}
         </DiaryBox>
         <DiaryBox>
           <MultiFileUploadInput />

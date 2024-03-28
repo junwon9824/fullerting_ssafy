@@ -182,14 +182,6 @@ const TradeModify = () => {
       setImageFiles(initialImages);
     }
   }, [isEditMode, location.state, setImageFiles]);
-  const handleAddImage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newImages = event.target.files;
-    if (newImages) {
-      // 파일 객체 배열을 기존 상태 배열에 추가
-      setImageFiles((prev) => [...prev, ...newImages]);
-    }
-  };
-
   const tradeOptions = [
     { title: "제안", value: "DEAL" },
     { title: "일반 거래", value: "GENERAL_TRANSACTION" },
@@ -207,6 +199,10 @@ const TradeModify = () => {
     selectedFiles.forEach((file) => {
       formData.append("images", file);
     });
+    if (selectedFiles.length === 0) {
+      // 이미지 파일이 없을 경우 빈 문자열을 서버에 보냅니다.
+      formData.append("images", new Blob([], { type: "application/json" }));
+    }
     const updateInfo = {
       exArticleTitle: title,
       exArticleContent: content,
@@ -224,6 +220,7 @@ const TradeModify = () => {
     try {
       await handleModified({ postId, formData });
       setSelectedFiles([]);
+      setSelectedDiaryId(null);
       navigate(-1);
       // 요청 성공 후 페이지 이동 또는 상태 업데이트
       // navigate("/trade");
@@ -297,7 +294,7 @@ const TradeModify = () => {
             )}
           </RadioBoxContainer>
         </RadioBox>
-        <StyledInput
+        {/* <StyledInput
           label="시작가"
           type="text"
           id="startcash"
@@ -306,7 +303,8 @@ const TradeModify = () => {
           value={cash}
           onChange={setCash}
           isRequired={false}
-        />
+        /> */}
+        <BiddingBox>{cash}원</BiddingBox>
         <RadioBox>
           <TitleText>입찰 단위</TitleText>
           <BiddingBox>
