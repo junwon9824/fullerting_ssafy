@@ -10,7 +10,4 @@ import java.time.LocalDateTime;
 public class BidProposeRequest {
     private int dealCurPrice;
     private Long userId ;
-//    private LocalDateTime localDateTime;
-//    private Long chattingRoomId;
-//    private int bidLogPrice;
 }
