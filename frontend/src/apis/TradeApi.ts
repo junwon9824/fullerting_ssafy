@@ -56,9 +56,41 @@ export const getDealList = async (accessToken: string, postId: number) => {
     const response = await api.get(`/exchanges/${postId}/suggestion`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
+
     return response.data.data_body;
   } catch (e) {
     console.log("에러났어요", e);
+  }
+};
+export const getDealCategoryList = async (accessToken: string) => {
+  try {
+    const response = await api.get(`/exchanges/category/deal`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log(response);
+    return response.data.data_body;
+  } catch (e) {
+    console.log("경매 카테고리 조회 실패", e);
+  }
+};
+export const getGeneralCategoryList = async (accessToken: string) => {
+  try {
+    const response = await api.get(`/exchanges/category/trans`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("제안 카테고리 조회 실패", e);
+  }
+};
+export const getSharingCategoryList = async (accessToken: string) => {
+  try {
+    const response = await api.get(`/exchanges/category/share`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("나눔 카테고리 조회 실패", e);
   }
 };
 export const useLike = () => {
