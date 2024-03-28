@@ -5,6 +5,7 @@ import com.ssafy.fullerting.community.article.exception.ArticleException;
 import com.ssafy.fullerting.community.article.model.dto.request.RegistArticleRequest;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.model.entity.Article;
+import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import com.ssafy.fullerting.community.article.repository.ArticleRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
@@ -89,5 +90,48 @@ public class ArticleService {
                 })
                 .collect(Collectors.toList());
 
+    }
+
+    public List<ArticleResponse> findAllArticlebyCategory(String keyword) {
+
+
+        if (keyword.equals("FREE_BOARD")) {
+            return articleRepository.findAllByType((ArticleType.FREE_BOARD)).stream().map(article -> {
+                        ArticleResponse articleResponse = article.toResponse();
+                        return articleResponse;
+                    })
+                    .collect(Collectors.toList());
+        } else if (keyword.equals("INTRODUCE")) {
+            return articleRepository.findAllByType((ArticleType.INTRODUCE)).stream().map(article -> {
+                        ArticleResponse articleResponse = article.toResponse();
+                        return articleResponse;
+                    })
+                    .collect(Collectors.toList());
+        } else if (keyword.equals("COOK")) {
+            return articleRepository.findAllByType((ArticleType.COOK)).stream().map(article -> {
+                        ArticleResponse articleResponse = article.toResponse();
+                        return articleResponse;
+                    })
+                    .collect(Collectors.toList());
+        } else {
+            return articleRepository.findAllByType((ArticleType.SHARE_TIPS)).stream().map(article -> {
+                        ArticleResponse articleResponse = article.toResponse();
+                        return articleResponse;
+                    })
+                    .collect(Collectors.toList());
+        }
+
+
+    }
+
+    public List<ArticleResponse> search(String keyword) {
+
+        return articleRepository.
+                findAllByContentandtitle(keyword)
+                .stream().map(article -> {
+                    ArticleResponse articleResponse = article.toResponse();
+                    return articleResponse;
+                })
+                .collect(Collectors.toList());
     }
 }
