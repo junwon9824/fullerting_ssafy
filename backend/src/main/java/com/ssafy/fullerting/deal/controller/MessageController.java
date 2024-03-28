@@ -56,6 +56,15 @@ public class MessageController {
             ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
                     ExArticleErrorCode.NOT_EXISTS));
 
+            // 최고가 검증
+            // bid 서비스에서 맥스값 뽑는 메서드
+            int maxBidPrice = bidService.getMaxBidPrice(exArticle);
+            log.info("현재 최고가: {} ", maxBidPrice);
+            log.info("현재가 : {}", exArticle.getDeal().getDealCurPrice());
+            if (dealstartRequest.getDealCurPrice() <= maxBidPrice || dealstartRequest.getDealCurPrice() < exArticle.getDeal().getDealCurPrice()) {
+                throw new RuntimeException("최고가보다 낮거나 같은 입찰가 입력 : " + maxBidPrice);
+            }
+
             // 입찰 기록(bid_log) 저장
             BidLog socketdealbid = bidService.socketdealbid(exArticle,
                     BidProposeRequest.builder()
@@ -63,17 +72,8 @@ public class MessageController {
                             .userId(bidUserId)
                             .build());
 
-            // 최고가 검증
-            // bid 서비스에서 맥스값 뽑는 메서드
-            int maxBidPrice = bidService.getMaxBidPrice(exArticle);
-            if (dealstartRequest.getDealCurPrice() <= maxBidPrice) {
-                throw new RuntimeException("최고가보다 낮거나 같은 입찰가 입력 : " + maxBidPrice);
-            }
-
             // bid_log에서 distinct로 유일한 user_id 갯수 추출한 값 현재 입찰 참여자 수로 보내기
             int bidderCount = bidService.getBidderCount(exArticle);
-
-//            dealstartRequest.setId(socketdealbid.getId()); // 입찰로그 ID -> 입찰제안 별 유일한 식별값 구분을 위해서
 
             // 구독할 때 -> 서버에서 어떤 이벤트나 데이터의 변경이 생기는 경우
             // 서버가 해당 sub를 구독하고 있는 유저들에게 메시지 전달
@@ -82,8 +82,10 @@ public class MessageController {
                             .bidLogId(socketdealbid.getId())
                             .exArticleId(bidUserId)
                             .userResponse(bidUser)
+                            .dealCurPrice(dealstartRequest.getDealCurPrice())
                             .maxPrice(maxBidPrice)
                             .bidderCount(bidderCount)
+                            .build()
             );
 
             log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(), exArticleId);
