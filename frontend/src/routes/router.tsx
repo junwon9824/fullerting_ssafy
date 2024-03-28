@@ -35,6 +35,7 @@ import Alarm from "../pages/alarm/Alarm";
 import RecognizePage from "../pages/diary/RecognizePage";
 import TradeModifyPage from "../pages/trade/TradeModifyPage";
 import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
+import GardenPage from "../pages/garden/GardenPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -42,6 +43,8 @@ const authRoutes = [
   { path: "/join", element: <JoinPage /> },
   { path: "/auth/callback", element: <AuthCallbackPage /> },
 ];
+
+const gardenRoutes = [{ path: "/garden", element: <GardenPage /> }];
 
 const diaryRoutes = [
   { path: "/crop", element: <CropPage /> },
@@ -113,6 +116,7 @@ const routes = [
   ...mypageRoutes,
   ...communityRoutes,
   ...alarm,
+  ...gardenRoutes,
 ];
 
 const router = createBrowserRouter(routes);
