@@ -1,4 +1,4 @@
-package com.ssafy.fullerting.community.love.model;
+package com.ssafy.fullerting.community.love.model.entity;
 
 import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.user.model.entity.CustomUser;

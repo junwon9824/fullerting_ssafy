@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.community.comment.model.entity;
 
 import com.ssafy.fullerting.community.article.model.entity.Article;
+import com.ssafy.fullerting.community.comment.model.dto.response.CommentResonse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,4 +33,12 @@ public class Comment {
     private Article article;
 
     private String comment_content;
+
+    public CommentResonse tocommentResonse(){
+        return CommentResonse.builder()
+                .commentcontent(this.comment_content)
+                .id(this.id)
+
+                .build();
+    }
 }

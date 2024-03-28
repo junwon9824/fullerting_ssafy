@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 public class ArticleResponse {
 
+    private Long id;
 
     private String title;
 
@@ -15,5 +16,6 @@ public class ArticleResponse {
 
 
     private ArticleType type;
+    private int love;
 
 }

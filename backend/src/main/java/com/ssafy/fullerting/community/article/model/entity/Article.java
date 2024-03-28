@@ -2,10 +2,13 @@ package com.ssafy.fullerting.community.article.model.entity;
 
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
+import com.ssafy.fullerting.community.love.model.entity.Love;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @NoArgsConstructor
@@ -44,11 +47,25 @@ public class Article {
     @Enumerated(EnumType.STRING)
     private ArticleType type;
 
+    @OneToMany(mappedBy = "article")
+    private List<Love> loves = new ArrayList<>();
+
+
+    public void addlove(Love love) {
+        loves.add(love);
+    }
+
+    public void removelove(Love love) {
+        loves.remove(love);
+    }
+
     public ArticleResponse toResponse() {
         return ArticleResponse.builder()
                 .title(this.title)
+                .id(this.id)
                 .content(this.content)
                 .type(this.type)
+                .love(this.getLoves().size())
                 .build();
     }
 

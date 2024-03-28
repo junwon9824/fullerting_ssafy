@@ -50,6 +50,21 @@ public class ArticleController {
         return ResponseEntity.ok(MessageUtils.success(articleResponse));
     }
 
+    @GetMapping("/category/{keyword}")
+    public ResponseEntity<MessageUtils> findAllArticlebyCategory(
+            @PathVariable String keyword) {
+        List<ArticleResponse> articleResponse = articleService.findAllArticlebyCategory(keyword);
+        return ResponseEntity.ok(MessageUtils.success(articleResponse));
+    }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<MessageUtils> search(
+            @PathVariable String keyword) {
+        List<ArticleResponse> articleResponse = articleService.search(keyword);
+        return ResponseEntity.ok(MessageUtils.success(articleResponse));
+    }
+
+
     @DeleteMapping("{article_id}")
     public ResponseEntity<MessageUtils> deletearticlebyid(@PathVariable Long article_id
     ) {

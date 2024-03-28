@@ -6,6 +6,7 @@ import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
@@ -38,12 +39,13 @@ public class TransService {
     private final ExArticleRepository exArticleRepository;
     private final UserService userService;
 
-    public List<TransResponse> selectAllshare() {
+    public List<ExArticleAllResponse> selectAllshare() {
 
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
 
-        List<TransResponse> transResponse = new ArrayList<>();
+//        List<TransResponse> transResponse = new ArrayList<>();
+        List<ExArticleAllResponse> transResponse = new ArrayList<>();
 
         List<ExArticleResponse> exArticleResponses = exArticleRepository
                 .findAllByType(ExArticleType.SHARING)
@@ -56,20 +58,21 @@ public class TransService {
 // sharing 만 가져와야한다.
 
         transResponse = exArticleResponses.stream().map(exArticleResponse -> {
-                    TransResponse transResponse1 = new TransResponse();
+                    ExArticleAllResponse transResponse1 = new ExArticleAllResponse();
 //                    transResponse1.setExArticleResponse(exArticleResponse);
 
                     Trans trans = transRepository.findByExArticleId(exArticleResponse.getExArticleId())
                             .orElseThrow(() -> new TransException(TransErrorCode.NOT_EXISTS));
 
-                    transResponse1.setPrice(trans.getTrans_sell_price());
-                    transResponse1.setId(trans.getId());
+                    transResponse1.setTransResponse(trans.toResponse(trans));
+                    transResponse1.setExArticleResponse(
+                            trans.getExArticle().toResponse(trans.getExArticle(), customUser));
+                    transResponse1.setPackDiaryResponse(trans.getExArticle().getPackDiary().toResponse(trans.getExArticle().getPackDiary()));
                     return transResponse1;
                 })
-                .collect(Collectors.toList())
-        ;
+                .collect(Collectors.toList());
 
-
+        log.info("trrr" + transResponse);
         return transResponse;
     }
 
