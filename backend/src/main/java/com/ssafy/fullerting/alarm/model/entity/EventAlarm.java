@@ -20,11 +20,11 @@ public class EventAlarm {
 
     @ManyToOne
     @JoinColumn(name = "receive_user_id")
-    private CustomUser receiveUserId;
+    private CustomUser receiveUser;
 
     @ManyToOne
     @JoinColumn(name = "send_user_id")
-    private CustomUser sendUserId;
+    private CustomUser sendUser;
 
     @Column(name = "event_alarm_type", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
@@ -48,8 +48,8 @@ public class EventAlarm {
 
     // 빌더 생성자 -> 빌더 객체로부터 값을 받아 EventAlarm 초기화 
     public EventAlarm(Builder builder) {
-        this.receiveUserId = builder.receiveUserId;
-        this.sendUserId = builder.sendUserId;
+        this.receiveUser = builder.receiveUser;
+        this.sendUser = builder.sendUser;
         this.type = builder.type;
         this.content = builder.content;
         this.isChecked = builder.isChecked;
@@ -63,21 +63,21 @@ public class EventAlarm {
     }
 
     public static class Builder {
-        private CustomUser receiveUserId;
-        private CustomUser sendUserId;
+        private CustomUser receiveUser;
+        private CustomUser sendUser;
         private EventAlarmType type;
         private String content;
         private boolean isChecked = false;
         private String redirect;
 
 
-        public Builder receiveUserId(CustomUser receiveUserId) {
-            this.receiveUserId = receiveUserId;
+        public Builder receiveUser(CustomUser receiveUser) {
+            this.receiveUser = receiveUser;
             return this;
         }
 
-        public Builder sendUserId(CustomUser sendUserId) {
-            this.sendUserId = sendUserId;
+        public Builder sendUser(CustomUser sendUser) {
+            this.sendUser = sendUser;
             return this;
         }
 

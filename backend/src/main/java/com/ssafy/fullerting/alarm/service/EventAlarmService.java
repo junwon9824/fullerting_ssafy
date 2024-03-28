@@ -1,16 +1,16 @@
 package com.ssafy.fullerting.alarm.service;
 
+import com.ssafy.fullerting.alarm.model.EventAlarmType;
+import com.ssafy.fullerting.alarm.model.entity.EventAlarm;
 import com.ssafy.fullerting.alarm.repository.EventAlarmRepository;
-import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
-import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.service.UserService;
+import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class EventAlarmService {
-    private final UserService userService;
     private final EventAlarmRepository eventAlarmRepository;
     // 알림 트리거
     // 1. 내가 쓴 게시물에 댓글이 달렸을 때
@@ -23,12 +23,18 @@ public class EventAlarmService {
 
     // 현재 사용자의 알림함에 저장하는 메서드
     // 실행조건 : 입찰자가 입찰하기를 눌렀을 때
-    public void notifyAuctionBidReceived(Long bidUserId, ExArticleResponse exArticleResponse) {
+    public EventAlarm notifyAuctionBidReceived(CustomUser bidUser, ExArticle exArticle, String redirectURL) {
         // 내가 가격제안 게시물을 올렸는데
         // 누군가가 입찰을 했을 때 알림
-        Long receiveUserId = exArticleResponse.getExArticleId();
 
+        EventAlarm alarm = EventAlarm.builder()
+                .receiveUser(exArticle.getUser())
+                .sendUser(bidUser)
+                .type(EventAlarmType.작물거래)
+                .content(bidUser + "님이 가격을 제안하셨어요.")
+                .redirect(redirectURL)
+                .build();
 
+        return eventAlarmRepository.save(alarm);
     }
-
 }
