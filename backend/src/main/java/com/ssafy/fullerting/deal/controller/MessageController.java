@@ -49,7 +49,10 @@ public class MessageController {
         if (authentication != null) {
             // 여기에서 authentication.getUserId() 등을 통해 사용자 ID를 사용할 수 있음
             Long bidUserId = authentication.getUserId();
-            UserResponse bidUser = userService.getUserInfobyid(bidUserId);
+//            UserResponse bidUser = userService.getUserInfobyid(bidUserId);
+            CustomUser bidUser = userService.getUserEntityById(bidUserId);
+
+
             log.info("웹소켓에서 추출한 유저 : {}", bidUser.toString());
 
             // 게시물 정보
@@ -81,7 +84,7 @@ public class MessageController {
                     DealstartResponse.builder()
                             .bidLogId(socketdealbid.getId())
                             .exArticleId(bidUserId)
-                            .userResponse(bidUser)
+                            .userResponse(bidUser.toResponse())
                             .dealCurPrice(dealstartRequest.getDealCurPrice())
                             .maxPrice(maxBidPrice)
                             .bidderCount(bidderCount)
@@ -89,10 +92,9 @@ public class MessageController {
             );
 
             log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(), exArticleId);
-
+            log.info("리디렉트 {} : ", dealstartRequest.getRedirectURL());
             // 입찰 알림
-//            CustomUser bidUser = userRepository.findById(bidUserId).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-//            eventAlarmService.notifyAuctionBidReceived(bidUser, exArticle, redirectURL);
+            eventAlarmService.notifyAuctionBidReceived(bidUser, exArticle, dealstartRequest.getRedirectURL());
 
         } else {
             log.error("웹소켓 요청에 유저 정보없음");
