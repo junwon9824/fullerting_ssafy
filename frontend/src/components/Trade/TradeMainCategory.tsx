@@ -176,12 +176,13 @@ const WriteBox = styled.img`
   bottom: 4.75rem;
 `;
 
-const Post = () => {
+const TradeMainCategory = () => {
   const [favorite, setFavorite] = useState<string>("");
   const navigate = useNavigate();
   const handelWriteClick = () => {
     navigate("/trade/post");
     handleLikeClick(75);
+    console.log("데이터임", data);
   };
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
@@ -197,7 +198,7 @@ const Post = () => {
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
-
+  console.log("데이터 입니다", data);
   return (
     <>
       <ContentBox>
@@ -280,7 +281,7 @@ const Post = () => {
                   alt="gray"
                   style={{ marginRight: "0.19rem" }}
                 />
-                {item.favoriteResponse.isLikeCnt}
+                {/* {item.favoriteResponse.isLikeCnt} */}
               </HeartBox>
               <ExplainBox>
                 <StateIcon
@@ -318,4 +319,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default TradeMainCategory;
