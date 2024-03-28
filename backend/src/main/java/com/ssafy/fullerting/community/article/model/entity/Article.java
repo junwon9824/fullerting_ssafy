@@ -1,4 +1,4 @@
-package com.ssafy.fullerting.community.article.model;
+package com.ssafy.fullerting.community.article.model.entity;
 
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import jakarta.persistence.*;
@@ -25,7 +25,7 @@ public class Article {
 
 
     @Column(name = "user_id", nullable = false)
-    private int userId;
+    private Long userId;
 
     @Column(name = "article_title", nullable = false, length = 30)
     private String title;

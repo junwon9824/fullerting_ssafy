@@ -1,12 +1,9 @@
 package com.ssafy.fullerting.community.love.model;
 
-import com.ssafy.fullerting.community.article.model.Article;
-import com.ssafy.fullerting.community.article.model.enums.ArticleType;
+import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 
 @NoArgsConstructor
