@@ -1,0 +1,20 @@
+package com.ssafy.fullerting.alarm.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class EventAlarmService {
+    // 알림 트리거
+    // 1. 내가 쓴 게시물에 댓글이 달렸을 때
+    // 2. 채팅이 왔을 때 (채팅이 생성됐을 때)
+    // 3. 가격제안 왔을 때
+    // 4. 내가 입찰한 게시물의 거래가 종료되었을 때
+    // 5. 뱃지 획득했을 때
+    // 6. 등급 올랐을 때
+
+    public void temp() {
+    }
+
+}
