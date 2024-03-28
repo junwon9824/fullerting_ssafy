@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.deal.model.entity;
 
+import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.deal.model.dto.response.DealResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
@@ -8,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,6 +32,9 @@ public class Deal {
 
     @Column(name = "deal_cur_price", nullable = false)
     private int dealCurPrice;
+
+    @OneToMany(mappedBy = "deal",cascade = CascadeType.ALL)
+    private List<BidLog> bidLog;
 
     public void setexarticle(ExArticle exArticle) {
         this.exArticle = exArticle;

@@ -21,7 +21,7 @@ public class ExArticleResponse {
 
     private String exLocation;
     private Long exArticleId;
-    private Long userId;
+    private Long userId;  // 게시글 작성자 id
     private String exArticleTitle;
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
     private List<ImageResponse> imageResponses; //

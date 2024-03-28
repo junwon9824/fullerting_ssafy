@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "./Base";
 import { imageFilesAtom } from "../stores/trade";
 import { atom } from "jotai";
+import { useNavigate } from "react-router-dom";
 interface DataItem {
   exArticleResponse: ExArticleResponse;
   packDiaryResponse: PackDiaryResponse | null; // JSON 예제에는 객체가 있지만, 여기서는 null일 수도 있음을 표현
@@ -55,9 +56,41 @@ export const getDealList = async (accessToken: string, postId: number) => {
     const response = await api.get(`/exchanges/${postId}/suggestion`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
+
     return response.data.data_body;
   } catch (e) {
     console.log("에러났어요", e);
+  }
+};
+export const getDealCategoryList = async (accessToken: string) => {
+  try {
+    const response = await api.get(`/exchanges/category/deal`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log(response);
+    return response.data.data_body;
+  } catch (e) {
+    console.log("경매 카테고리 조회 실패", e);
+  }
+};
+export const getGeneralCategoryList = async (accessToken: string) => {
+  try {
+    const response = await api.get(`/exchanges/category/trans`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("제안 카테고리 조회 실패", e);
+  }
+};
+export const getSharingCategoryList = async (accessToken: string) => {
+  try {
+    const response = await api.get(`/exchanges/category/share`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("나눔 카테고리 조회 실패", e);
   }
 };
 export const useLike = () => {
@@ -112,6 +145,7 @@ export const useLike = () => {
 
 export const usePost = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: async (formData: FormData) => {
       const accessToken = sessionStorage.getItem("accessToken");
@@ -135,10 +169,12 @@ export const usePost = () => {
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ["tradeList"] });
+      navigate("/trade");
       console.log("업로드 성공:", res);
     },
     onError: (error) => {
       console.error("업로드 에러:", error);
+      alert("필수 항목을 모두 입력해주세요");
     },
   });
 };

@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import MenuBarButton from "./menuBarButton";
 import { useState } from "react";
+import { useAtom } from "jotai";
+import { selectedCategory } from "../../stores/trade";
 
 const MenuContainer = styled.div`
   width: 100%;
@@ -13,11 +15,11 @@ const MenuContainer = styled.div`
 `;
 
 const MenuBar = () => {
-  const [selectButton, setSelectButton] = useState<number>(1);
+  const [selectButton, setSelectButton] = useAtom(selectedCategory);
   const handleButtonClick = (index: number) => {
     setSelectButton(index);
   };
-  const menuArray = ["전체", "거래", "제안", "나눔", "관심"];
+  const menuArray = ["전체", "제안", "거래", "나눔", "관심"];
   return (
     <MenuContainer>
       {menuArray.map((key, index) => (

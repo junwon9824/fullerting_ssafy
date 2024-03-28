@@ -4,7 +4,11 @@ import GrayHeart from "/src/assets/svg/grayheart.svg";
 import { useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
-import { getTradeList, useLike } from "../../apis/TradeApi";
+import {
+  getDealCategoryList,
+  getTradeList,
+  useLike,
+} from "../../apis/TradeApi";
 import { useQuery } from "@tanstack/react-query";
 interface ClickLike {
   onClick: () => void;
@@ -176,7 +180,7 @@ const WriteBox = styled.img`
   bottom: 4.75rem;
 `;
 
-const Post = () => {
+const TradeDealCategory = () => {
   const [favorite, setFavorite] = useState<string>("");
   const navigate = useNavigate();
   const handelWriteClick = () => {
@@ -186,8 +190,8 @@ const Post = () => {
   };
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
-    queryKey: ["tradeList"],
-    queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
+    queryKey: ["tradeDealList"],
+    queryFn: accessToken ? () => getDealCategoryList(accessToken) : undefined,
   });
 
   const { mutate: handleLikeClick } = useLike();
@@ -198,7 +202,7 @@ const Post = () => {
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
-  console.log("데이터 입니다", data);
+  console.log("딜 데이터 입니다", data);
   return (
     <>
       <ContentBox>
@@ -242,7 +246,7 @@ const Post = () => {
                   >
                     가격
                   </StateIcon>
-                  {item.transResponse.price}원
+                  {item?.transResponse?.price || 0}원
                 </>
               ) : (
                 <>
@@ -254,7 +258,7 @@ const Post = () => {
                   >
                     현재
                   </StateIcon>
-                  {item.dealResponse.price}원
+                  {item?.dealResponse?.price || 0}원
                 </>
               )}
 
@@ -281,7 +285,7 @@ const Post = () => {
                   alt="gray"
                   style={{ marginRight: "0.19rem" }}
                 />
-                {item.favoriteResponse.isLikeCnt}
+                {/* {item.favoriteResponse.isLikeCnt} */}
               </HeartBox>
               <ExplainBox>
                 <StateIcon
@@ -319,4 +323,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default TradeDealCategory;

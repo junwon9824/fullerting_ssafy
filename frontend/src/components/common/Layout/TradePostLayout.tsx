@@ -1,7 +1,12 @@
 import styled from "styled-components";
 import { PropsWithChildren } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { NavBar, TopBar } from "../Navigator/navigator";
+import {
+  NavBar,
+  PostTopBar,
+  TopBar,
+  TradeTopBar,
+} from "../Navigator/navigator";
 import { BottomButton } from "../Button/LargeButton";
 
 const MainBox = styled.main`
@@ -39,7 +44,7 @@ const TradePostLayout = ({
   };
   return (
     <>
-      <TopBar title={title} showEdit={showEdit} />
+      <PostTopBar title={title} showEdit={showEdit} />
       <MainBox>
         <InnerBox>{children || <Outlet />}</InnerBox>
       </MainBox>

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { getExchange } from "../../apis/Main";
 import { useNavigate } from "react-router-dom";
 import arrow_forward_ios from "../../assets/svg/arrow_forward_ios.svg";
+import constructWithOptions from "styled-components/dist/constructors/constructWithOptions";
 
 const MainBox = styled.div`
   justify-content: center;
@@ -88,13 +89,14 @@ const NextButton = styled.button`
 const MainExchange = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, data, error } = useQuery({
     queryKey: ["Exchange"],
     queryFn: getExchange,
   });
-
-  const handleItemClick = (index: number) => {
-    navigate(`/trade/${index}/generaldetail`);
+  // console.log(data[0].exArticleResponse.exArticleType);
+  console.log(data);
+  const handleItemClick = () => {
+    navigate(`/trade`);
   };
 
   const handleNextClick = () => {
@@ -103,7 +105,6 @@ const MainExchange = () => {
       console.log();
     }
   };
-  console.log("여기", data);
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (!data || !data || data.length === 0) return <div>거래 데이터 없음</div>;

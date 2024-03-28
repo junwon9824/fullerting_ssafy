@@ -8,6 +8,7 @@ import router from "./routes/router";
 import GlobalStyle from "./styles/globalStyle";
 import { theme } from "./styles/theme";
 import { RouterProvider } from "react-router-dom";
+import NotificationModal from "./pages/alarm/NotificationModal";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ function App() {
           <ThemeProvider theme={theme}>
             <GlobalStyle />
             <RouterProvider router={router} />
+            <NotificationModal />
           </ThemeProvider>
         </Provider>
       </QueryClientProvider>

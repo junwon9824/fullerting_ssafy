@@ -187,9 +187,14 @@ const TradeDetailDeal = () => {
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
 
-  console.log("데이터 id", data?.userResponse.id, "유저 id", userData?.id);
+  console.log(
+    "데이터 id",
+    data?.exArticleResponse?.userId,
+    "유저 id",
+    userData?.id
+  );
   const BtnClick = (postId: number) => {
-    if (data?.userResponse?.id === userData?.id) {
+    if (data?.exArticleResponse?.userId === userData?.id) {
       navigate(`/trade/${postId}/seller`);
     } else {
       navigate(`/trade/${postId}/buyer`);
