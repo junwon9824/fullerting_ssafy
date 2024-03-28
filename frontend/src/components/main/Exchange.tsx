@@ -92,7 +92,7 @@ const ScrollExchange: React.FC<ScrollExchangeProps> = ({
   const image =
     currentItem?.exArticleResponse?.imageResponses?.[0]?.imgStoreUrl;
   const title = currentItem?.exArticleResponse?.exArticleTitle;
-  const price = currentItem?.exArticleResponse?.price;
+  const price = currentItem?.dealResponse?.price;
   const location = currentItem?.exArticleResponse?.exLocation;
   return (
     <ExchangeItemContainer onClick={() => onClick(currentIndex)}>
