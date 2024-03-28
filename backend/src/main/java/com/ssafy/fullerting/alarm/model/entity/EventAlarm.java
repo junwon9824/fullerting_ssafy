@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.alarm.model.entity;
 
+import com.ssafy.fullerting.alarm.model.EventAlarmType;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,8 +22,13 @@ public class EventAlarm {
     @JoinColumn(name = "user_id")
     private CustomUser customUser;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private CustomUser fromUserId;
+
     @Column(name = "event_alarm_type", nullable = false, length = 20)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private EventAlarmType type;
 
     @Column(name = "event_alarm_content", nullable = false, length = 200)
     private String content;

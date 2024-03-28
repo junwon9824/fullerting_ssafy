@@ -14,7 +14,11 @@ public class EventAlarmService {
     // 5. 뱃지 획득했을 때
     // 6. 등급 올랐을 때
 
-    public void temp() {
+
+    // 현재 사용자의 알림함에 저장하는 메서드
+    public void saveAlarm() {
+
+
     }
 
 }
