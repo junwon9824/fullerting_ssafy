@@ -206,7 +206,7 @@ const TradePost = () => {
       setSelectedFiles([]);
       setSelectedDiaryId(null);
       // navigate("/trade");
-      // 요청 성공 후 페이지 이동 또는 상태 업데이트
+
       // navigate("/trade");
     } catch (error) {
       // 오류 처리
@@ -283,21 +283,23 @@ const TradePost = () => {
             )}
           </RadioBoxContainer>
         </RadioBox>
-        <StyledInput
-          label="시작가"
-          type="text"
-          id="startcash"
-          name="startcash"
-          placeholder="₩ 가격을 입력해주세요."
-          onChange={setCash}
-          isRequired={true}
-        />
-        <RadioBox>
-          <TitleText>입찰 단위</TitleText>
-          <BiddingBox>
-            <CashText>100원</CashText>
-          </BiddingBox>
-        </RadioBox>
+        {tradeType === "SHARING" ? (
+          <RadioBox>
+            <TitleText>시작가</TitleText>
+            <BiddingBox />
+          </RadioBox>
+        ) : (
+          <StyledInput
+            label="시작가"
+            type="text"
+            id="startcash"
+            name="startcash"
+            placeholder="₩ 가격을 입력해주세요."
+            onChange={setCash}
+            isRequired={true}
+          ></StyledInput>
+        )}
+
         <StyledInput
           label="거래 희망 장소"
           type="text"
