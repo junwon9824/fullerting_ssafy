@@ -23,22 +23,18 @@ public class Chat {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ex_article_id")
-    private ExArticle exArticle; //작물거래
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoom chatRoom; //채팅방
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private CustomUser customUser; //보내는 사람
-
-    @Column(name = "to_userId")
+    @Column(name = "chat_sender_id")
     @NotNull
-    private int toUserId; //받는 사람
+    private Long senderId; //보낸 사람
 
-    @Column(name = "chat_content")
+    @Column(name = "chat_message", length = 5000)
     @NotNull
-    private String content; //내용
+    private String message; //내용
 
     @Column(name = "chat_send_at")
     @NotNull
-    private Timestamp sendAt; //보낸시간
+    private Timestamp sendAt; //전송일자
 }
