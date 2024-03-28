@@ -74,7 +74,7 @@ public class ExArticle {
     @Column(name = "ex_article_purchaser_id")
     private Long purchaserId;
 
-    @OneToOne(mappedBy = "exArticle")
+    @OneToOne(mappedBy = "exArticle",cascade = CascadeType.ALL)
     private Deal deal;
 
 
