@@ -1,5 +1,4 @@
 import Search from "../../components/common/Input/Search";
-import Post from "../../components/Trade/post";
 import useInput from "../../hooks/useInput";
 import {
   LayoutMainBox,
