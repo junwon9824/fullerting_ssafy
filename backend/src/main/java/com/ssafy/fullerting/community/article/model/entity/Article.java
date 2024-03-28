@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.community.article.model.entity;
 
+import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,7 +41,16 @@ public class Article {
     private int love;
 
     @Column(name = "article_type", nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
     private ArticleType type;
+
+    public ArticleResponse toResponse() {
+        return ArticleResponse.builder()
+                .title(this.title)
+                .content(this.content)
+                .type(this.type)
+                .build();
+    }
 
 //    @OneToMany(mappedBy = "")
 //    private Love love;
