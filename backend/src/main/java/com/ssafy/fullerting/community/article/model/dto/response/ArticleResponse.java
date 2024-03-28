@@ -17,5 +17,6 @@ public class ArticleResponse {
 
     private ArticleType type;
     private int love;
+    private boolean mylove;
 
 }
