@@ -242,7 +242,7 @@ const Post = () => {
                   >
                     가격
                   </StateIcon>
-                  {item.transResponse.price}원
+                  {item?.transResponse?.price || 0}원
                 </>
               ) : (
                 <>
@@ -254,7 +254,7 @@ const Post = () => {
                   >
                     현재
                   </StateIcon>
-                  {item.dealResponse.price}원
+                  {item?.dealResponse?.price || 0}원
                 </>
               )}
 

@@ -5,6 +5,8 @@ import Diary from "/src/assets/svg/diary.svg";
 import Home from "/src/assets/svg/home.svg";
 import Mypage from "/src/assets/svg/mypage.svg";
 import { useNavigate } from "react-router-dom";
+import { useAtom } from "jotai";
+import { imageFilesAtom, selectedDiaryIdAtom } from "../../../stores/trade";
 
 interface NavItem {
   Icon: string;
@@ -112,6 +114,97 @@ TopBarType) => {
 
   const onClickBack = () => {
     navigate(-1);
+  };
+
+  const onClickEdit = () => {
+    console.log("수정버튼이 클릭됐어여!!");
+    navigate("update");
+  };
+
+  const onClickDelete = () => {
+    const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
+    console.log("삭제 버튼이 클릭됐어요!!");
+    if (isConfirmed) {
+      deleteFunc();
+    }
+  };
+
+  return (
+    <TopBox>
+      <TopInnerBox>
+        {showBack && (
+          <BackSvgBox onClick={onClickBack}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z"
+                fill="black"
+              />
+            </svg>
+          </BackSvgBox>
+        )}
+        <TitleBox>{showTitle && title}</TitleBox>
+        {showEdit && (
+          <EditBox>
+            <EditButton onClick={onClickEdit}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M14.0588 9.02L14.9788 9.94L5.91878 19H4.99878V18.08L14.0588 9.02ZM17.6588 3C17.4088 3 17.1488 3.1 16.9588 3.29L15.1288 5.12L18.8788 8.87L20.7088 7.04C21.0988 6.65 21.0988 6.02 20.7088 5.63L18.3688 3.29C18.1688 3.09 17.9188 3 17.6588 3ZM14.0588 6.19L2.99878 17.25V21H6.74878L17.8088 9.94L14.0588 6.19Z"
+                  fill="black"
+                />
+              </svg>
+            </EditButton>
+            <DeleteButton onClick={onClickDelete}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M3 6H21M19 6V20C19 21 18 22 17 22H7C6 22 5 21 5 20V6M8 6V4C8 3 9 2 10 2H14C15 2 16 3 16 4V6M10 11V17M14 11V17"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </DeleteButton>
+          </EditBox>
+        )}
+      </TopInnerBox>
+    </TopBox>
+  );
+};
+const PostTopBar = ({
+  title,
+  showEdit = false,
+  showBack = true,
+  showTitle = true,
+  deleteFunc,
+}: // onEdit,
+// onDelete,
+TopBarType) => {
+  const [diary, setDiary] = useAtom(selectedDiaryIdAtom);
+  const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
+  const navigate = useNavigate();
+
+  const onClickBack = () => {
+    navigate("/trade");
+    setSelectedFiles([]);
+    setDiary(null);
   };
 
   const onClickEdit = () => {
@@ -307,4 +400,4 @@ const NavBar = (): JSX.Element => {
   );
 };
 
-export { TopBar, NavBar, TradeTopBar };
+export { TopBar, NavBar, TradeTopBar, PostTopBar };

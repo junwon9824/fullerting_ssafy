@@ -16,7 +16,7 @@ const TradePage = () => {
   const [search, setSearch] = useInput("");
   return (
     <>
-      <TopBar title="작물거래" />
+      <TopBar title="작물거래" showBack={false} />
       <LayoutMainBox>
         <LayoutInnerBox>
           <Search
