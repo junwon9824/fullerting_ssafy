@@ -19,7 +19,7 @@ const MenuBar = () => {
   const handleButtonClick = (index: number) => {
     setSelectButton(index);
   };
-  const menuArray = ["전체", "거래", "제안", "나눔", "관심"];
+  const menuArray = ["전체", "제안", "거래", "나눔", "관심"];
   return (
     <MenuContainer>
       {menuArray.map((key, index) => (

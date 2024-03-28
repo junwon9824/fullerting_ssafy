@@ -297,12 +297,12 @@ const TradeSharingCategory = () => {
                   color="#8c8c8c"
                 >
                   {item.exArticleResponse.exArticleType === "DEAL"
-                    ? "거래"
+                    ? "제안"
                     : item.exArticleResponse.exArticleType === "SHARING"
                     ? "나눔"
                     : item.exArticleResponse.exArticleType ===
                       "GENERAL_TRANSACTION"
-                    ? "제안"
+                    ? "거래"
                     : "error"}
                 </StateIcon>
                 {item.packDiaryResponse ? (
