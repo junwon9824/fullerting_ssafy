@@ -38,7 +38,7 @@ public class DealService {
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
 
-        List<Deal> deals = dealRepository.findAllMyDeal(customUser.getId());
+        List<Deal> deals = dealRepository.findAllDeal( );
 
         return deals.stream().map(deal -> {
             ExArticleAllResponse exArticleAllResponse = ExArticleAllResponse.builder()
