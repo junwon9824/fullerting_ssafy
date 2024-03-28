@@ -1,15 +1,105 @@
 import styled from "styled-components";
 import pullright from "/src/assets/svg/pullright.svg";
+import { useNavigate } from "react-router-dom";
+const posts = [
+  {
+    id: 1,
+    title: "자유게시판이게 무슨 식물이야?",
+    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
+    imageUrl: pullright,
+    name: "작심삼일",
+    time: 13,
+    likes: 17,
+    comments: 3,
+    type: "자유게시판",
+  },
+  {
+    id: 2,
+    title: "꿀팁공식물이야?",
+    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
+    imageUrl: pullright,
+    name: "작심삼일",
+    time: 13,
+    likes: 17,
+    comments: 3,
+    type: "꿀팁공유",
+  },
+  {
+    id: 3,
+    title: "꿀팁공유이게 무슨 식물이야?",
+    content: "무슨 식물인지 모르겠어...",
+    imageUrl: pullright,
+    name: "작심삼일",
+    time: 13,
+    likes: 17,
+    comments: 3,
+    type: "꿀팁공유",
+  },
+  {
+    id: 4,
+    title: "꿀팁공유이게 무슨 식물이야?",
+    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
+    imageUrl: pullright,
+    name: "작심삼일",
+    time: 13,
+    likes: 17,
+    comments: 3,
+    type: "꿀팁공유",
+  },
+  {
+    id: 4,
+    title: "꿀팁공유이게 무슨 식물이야?",
+    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
+    imageUrl: pullright,
+    name: "작심삼일",
+    time: 13,
+    likes: 17,
+    comments: 3,
+    type: "꿀팁공유",
+  },
+  {
+    id: 4,
+    title: "꿀팁공유이게 무슨 식물이야?",
+    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
+    imageUrl: pullright,
+    name: "작심삼일",
+    time: 13,
+    likes: 17,
+    comments: 3,
+    type: "꿀팁공유",
+  },
+  {
+    id: 4,
+    title: "꿀팁공유이게 무슨 식물이야?",
+    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
+    imageUrl: pullright,
+    name: "작심삼일",
+    time: 13,
+    likes: 17,
+    comments: 3,
+    type: "꿀팁공유",
+  },
+  {
+    id: 4,
+    title: "꿀팁공유이게 무슨 식물이야?",
+    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
+    imageUrl: pullright,
+    name: "작심삼일",
+    time: 13,
+    likes: 17,
+    comments: 3,
+    type: "꿀팁공유",
+  },
+];
 
 const MainBox = styled.div`
-  display: flex;
   flex-direction: column;
+  align-items:end
   justify-content: center;
-  align-items: end;
 `;
 const LogoAndTextContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
   gap: 0.5rem;
 `;
@@ -38,39 +128,90 @@ const LogoText = styled.div`
   margin-top: 0.5rem;
 `;
 
-const ExchangeBox = styled.div`
-  width: 6.5rem;
+const SliderContainer = styled.div`
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const DiarySlider = styled.div`
+  display: flex;
+  gap: 0.3rem;
+`;
+
+const DiaryBox = styled.button`
+  padding: 0.5rem 1rem;
+  margin: 0.9rem 0 1rem 0.7rem;
+  width: 9rem;
   height: 5.2rem;
-  border-radius: 0.875rem;
+  border-radius: 0.9375rem;
   background: rgba(229, 249, 219, 0.37);
-  display: flex;
-  justify-content: center;
-  gap: 0.6875rem;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
 `;
 
-const ExchangeContainer = styled.div`
-  display: flex;
-  gap: 0.6875rem;
-  margin-bottom: 1rem;
+const TextContent = styled.div`
+  font-family: "GamtanRoad Dotum TTF";
+  width: 7rem;
 `;
 
+const DiaryText = styled.div`
+  color: #000000;
+  font-size: 0.8rem;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const BasicText = styled.div`
+  color: #000;
+  font-size: 0.6rem;
+  margin: 0.3rem;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
 const MainTip = () => {
+  const navigate = useNavigate();
+
+  const goCommunity = () => {
+    navigate("community");
+  };
   return (
     <MainBox>
       <LogoAndTextContainer>
         <LogoContent>
           작물 꿀팁을 공유해보세요
-          <LogoText>꿀팁 공유하기</LogoText>
+          <LogoText>커뮤니티 바로가기</LogoText>
         </LogoContent>
         <Character>
           <img src={pullright} alt="" />
         </Character>
       </LogoAndTextContainer>
-      <ExchangeContainer>
-        <ExchangeBox />
-        <ExchangeBox />
-        <ExchangeBox />
-      </ExchangeContainer>
+
+      <SliderContainer onClick={goCommunity}>
+        <DiarySlider>
+          {posts?.map((post) => (
+            <DiaryBox key={post.id}>
+              <TextContent>
+                <DiaryText>{post.title}</DiaryText>
+                <BasicText>{post.content}</BasicText>
+              </TextContent>
+            </DiaryBox>
+          ))}
+        </DiarySlider>
+      </SliderContainer>
     </MainBox>
   );
 };

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TopBar } from "../common/Navigator/navigator";
+import { TopBar, TradeTopBar } from "../common/Navigator/navigator";
 import Coli from "/src/assets/images/브로콜리.png";
 import { LayoutInnerBox, LayoutMainBox } from "../common/Layout/Box";
 import { BottomButton } from "../common/Button/LargeButton";
@@ -10,8 +10,8 @@ import NotLike from "/src/assets/svg/notlike.svg";
 import Like from "/src/assets/svg/like.svg";
 import { useState } from "react";
 import Tree from "/src/assets/svg/diarytree.svg";
-import { useQuery } from "@tanstack/react-query";
-import { getTradeDetail, useLike } from "../../apis/TradeApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deletePost, getTradeDetail, useLike } from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -162,15 +162,42 @@ const TradeGeneralDetail = () => {
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
-  // console.log(
-  //   "데이터에요",
-  //   data?.imageResponses.map(
-  //     (text: ImageResponse, index: number) => text.imgStoreUrl
-  //   )
-  // );
+  const handleEdit = () => {
+    console.log("저 클릭됐어요");
+    navigate(`/trade/${postId}/modify`, {
+      state: {
+        exArticleTitle: data?.exArticleResponse?.exArticleTitle,
+        exArticleContent: data?.exArticleResponse?.content,
+        exArticleType: data?.exArticleResponse?.exArticleType,
+        ex_article_location: data?.exArticleResponse?.exLocation,
+        packdiaryid: data?.packDiaryResponse?.packDiaryId.toString(),
+        deal_cur_price: data?.dealResponse?.price.toString(),
+        imageResponse: data?.imageResponses,
+        postId: data?.exArticleResponse.exArticleId,
+      },
+    });
+  };
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      navigate(-1);
+      //   navigate(`/crop/${packDiaryId}`);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
   return (
     <>
-      <TopBar title="작물거래" showBack={true} showEdit={true} />
+      <TradeTopBar
+        title="작물거래"
+        showBack={true}
+        showEdit={true}
+        onEdit={handleEdit}
+        onDelete={() => {
+          deleteMutation(data?.exArticleResponse.exArticleId);
+        }}
+      />
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper

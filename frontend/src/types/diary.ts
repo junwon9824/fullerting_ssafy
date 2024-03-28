@@ -26,8 +26,10 @@ interface CropFormType {
 
 interface DiaryFormType {
   packDiaryId: string;
+  diaryId: string;
   diarySelectedAt: string;
   images: File[];
+  originImages: number[];
   diaryTitle: string;
   diaryContent: string;
 }

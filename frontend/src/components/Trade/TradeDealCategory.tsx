@@ -4,7 +4,11 @@ import GrayHeart from "/src/assets/svg/grayheart.svg";
 import { useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
-import { getTradeList, useLike } from "../../apis/TradeApi";
+import {
+  getDealCategoryList,
+  getTradeList,
+  useLike,
+} from "../../apis/TradeApi";
 import { useQuery } from "@tanstack/react-query";
 interface ClickLike {
   onClick: () => void;
@@ -40,11 +44,21 @@ interface FavoriteResponse {
   islike: boolean;
   isLikeCnt: number;
 }
+interface TransResponse {
+  id?: number;
+  price?: number;
+}
+interface DealResponse {
+  id?: number;
+  price?: number;
+}
 
 interface DataItem {
   exArticleResponse: ExArticleResponse;
   packDiaryResponse: null | number; // 여기서는 예시로 null을 지정했지만, 필요에 따라 다른 타입을 지정할 수 있습니다.
   favoriteResponse: FavoriteResponse;
+  transResponse: TransResponse;
+  dealResponse: DealResponse;
 }
 // interface ToggleLikeParams {
 //   accessToken: string;
@@ -166,7 +180,7 @@ const WriteBox = styled.img`
   bottom: 4.75rem;
 `;
 
-const Post = () => {
+const TradeDealCategory = () => {
   const [favorite, setFavorite] = useState<string>("");
   const navigate = useNavigate();
   const handelWriteClick = () => {
@@ -176,11 +190,10 @@ const Post = () => {
   };
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
-    queryKey: ["tradeList"],
-    queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
+    queryKey: ["tradeDealList"],
+    queryFn: accessToken ? () => getDealCategoryList(accessToken) : undefined,
   });
-  // console.log("전 데이터 입니다", data);
-  // const [isLiked, setIsLiked] = useState(data?.favoriteResponse.islike);
+
   const { mutate: handleLikeClick } = useLike();
 
   const handleGeneralClick = (index: number) => {
@@ -189,6 +202,7 @@ const Post = () => {
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
+  console.log("딜 데이터 입니다", data);
   return (
     <>
       <ContentBox>
@@ -222,26 +236,32 @@ const Post = () => {
             </Town>
             <Title>{item.exArticleResponse.exArticleTitle}</Title>
             <State gap={0.44} fontSize={1}>
-              {item.exArticleResponse.price === 0 ? (
-                <StateIcon
-                  width={1.5}
-                  height={0.9375}
-                  backgroundColor="#A0D8B3"
-                  color="#ffffff"
-                >
-                  나눔
-                </StateIcon>
+              {item.transResponse ? (
+                <>
+                  <StateIcon
+                    width={1.5}
+                    height={0.9375}
+                    backgroundColor="#A0D8B3"
+                    color="#ffffff"
+                  >
+                    가격
+                  </StateIcon>
+                  {item?.transResponse?.price || 0}원
+                </>
               ) : (
-                <StateIcon
-                  width={1.5}
-                  height={0.9375}
-                  backgroundColor="#A0D8B3"
-                  color="#ffffff"
-                >
-                  현재
-                </StateIcon>
+                <>
+                  <StateIcon
+                    width={1.5}
+                    height={0.9375}
+                    backgroundColor="#A0D8B3"
+                    color="#ffffff"
+                  >
+                    현재
+                  </StateIcon>
+                  {item?.dealResponse?.price || 0}원
+                </>
               )}
-              {item.exArticleResponse.price}원
+
               {/* <StateIcon
               width={1.5}
               height={0.9375}
@@ -265,7 +285,7 @@ const Post = () => {
                   alt="gray"
                   style={{ marginRight: "0.19rem" }}
                 />
-                {item.favoriteResponse.isLikeCnt}
+                {/* {item.favoriteResponse.isLikeCnt} */}
               </HeartBox>
               <ExplainBox>
                 <StateIcon
@@ -303,4 +323,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default TradeDealCategory;

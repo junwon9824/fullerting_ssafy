@@ -72,7 +72,6 @@ const DeleteImageButton = styled.div`
 `;
 
 const FileUploadInput: React.FC = () => {
-  // const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [selectedFiles, setSelectedFiles] = useAtom(fileAtom);
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
 
@@ -91,9 +90,6 @@ const FileUploadInput: React.FC = () => {
 
   const handleFileUpload = async () => {
     if (!selectedFiles) return;
-
-    // const formData = new FormData();
-    // formData.append("file", selectedFiles);
   };
 
   const handleDeleteImage = (index: number) => {
@@ -145,7 +141,6 @@ const FileUploadInput: React.FC = () => {
           type="file"
           onChange={handleFileChange}
           onClick={handleFileUpload}
-          capture="environment"
           accept="image/*"
           multiple
         />

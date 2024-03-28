@@ -38,6 +38,19 @@ export const getDiaryList = async (packDiaryId: string) => {
   }
 };
 
+export const getDiaryData = async (diaryId: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.get(`/diaries/${diaryId}/detail`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error getDiaryData:", error);
+    throw error;
+  }
+};
+
 export const getCropType = async () => {
   const accessToken = sessionStorage.getItem("accessToken");
 
@@ -128,6 +141,27 @@ export const createWater = async (waterData: DiaryFormType) => {
   }
 };
 
+export const changeStep = async (cropData: {
+  packDiaryId: string;
+  cropStepGrowth: number;
+}) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+
+    const response = await api.post(
+      `/pack-diaries/${cropData.packDiaryId}/crop-step`,
+      { cropStepGrowth: cropData.cropStepGrowth },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error changeStep: ", error);
+    throw error;
+  }
+};
+
 export const updateCrop = async (cropForm: CropFormType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -158,6 +192,38 @@ export const updateHarvest = async (packDiaryId: string) => {
     return response.data;
   } catch (error) {
     console.error("Error updateHarvest: ", error);
+    throw error;
+  }
+};
+
+export const updateDiary = async (diaryData: DiaryFormType) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const formData = new FormData();
+    formData.append("diarySelectedAt", diaryData.diarySelectedAt);
+    formData.append("diaryTitle", diaryData.diaryTitle);
+    formData.append("diaryContent", diaryData.diaryContent);
+    diaryData.images.forEach((image) => {
+      formData.append(`newImages`, image);
+    });
+    diaryData.originImages.forEach((imageId) => {
+      formData.append(`images`, imageId);
+    });
+
+    const response = await api.patch(
+      `/diaries/${diaryData.diaryId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    console.log(response.data);
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error updateDiary: ", error);
     throw error;
   }
 };

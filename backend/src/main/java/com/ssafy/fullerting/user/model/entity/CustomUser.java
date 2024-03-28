@@ -26,7 +26,7 @@ public class CustomUser implements UserDetails{
     // DB 필드
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long id;
 
     @Column(name = "user_email", nullable = false, length = 50)
@@ -100,7 +100,6 @@ public class CustomUser implements UserDetails{
                 .rank(this.rank)
                 .location(this.location)
                 .authProvider(this.authProvider)
-
                 .build();
     }
 

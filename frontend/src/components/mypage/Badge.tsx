@@ -136,12 +136,10 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ onClose, onConfirm }) => {
 const Maintop = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  console.log("Maintop 컴포넌트 렌더링");
 
   const { mutate: performLogout } = useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
-      console.log("로그아웃 성공 로그아웃 성공");
       navigate("/");
     },
 

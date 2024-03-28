@@ -6,7 +6,6 @@ import {
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
 import CropProfile from "../../components/diary/CropProfile";
 import Button from "../../components/common/Button/primaryButton";
-import RecognizeButton from "../../components/diary/RecognizeButton";
 import DiaryList from "../../components/diary/DiaryList";
 import MenuBar from "../../components/diary/MenuBar";
 import { useAtom } from "jotai";
@@ -26,7 +25,7 @@ const TopBox = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 0.5rem;
+  gap: 0.2rem;
 `;
 
 const MiddleBox = styled.div`
@@ -97,8 +96,7 @@ const FixedContainer = styled.div`
   z-index: 3;
 
   width: 19.875rem;
-  gap: 1.5rem;
-  padding: 1.12rem 0;
+  gap: 1.3rem;
 `;
 
 const DiaryPage = () => {
@@ -151,7 +149,9 @@ const DiaryPage = () => {
   });
 
   const handleHarvestClick = () => {
+    if (cropData.packDiaryCulEndAt !== null) return;
     if (!packDiaryId) return;
+
     updateMutate(packDiaryId);
   };
 
@@ -173,17 +173,29 @@ const DiaryPage = () => {
             <TopBox>
               {cropData && <CropProfile crop={cropData} />}
               <ButtonBox>
-                <RecognizeButton />
+                <Button
+                  onClick={() => {
+                    navigate(`ai`);
+                  }}
+                  width={9.5}
+                  height={2.4}
+                  borderRadius={1.28125}
+                  backgroundColor="#A0D8B3"
+                  color="white"
+                  fontSize="0.9"
+                  fontWeight="bold"
+                  text="작물 인식하기"
+                />
                 <Button
                   onClick={handleHarvestClick}
                   width={9.5}
-                  height={2.5625}
+                  height={2.4}
                   borderRadius={1.28125}
                   backgroundColor={
                     cropData?.packDiaryCulEndAt !== null ? "#c8c8c8" : "#A0D8B3"
                   }
                   color="white"
-                  fontSize="1"
+                  fontSize="0.9"
                   fontWeight="bold"
                   text="수확하기"
                 />
@@ -191,7 +203,7 @@ const DiaryPage = () => {
             </TopBox>
             <MenuBar />
           </FixedContainer>
-          <MiddleBox style={{ marginTop: "16.4rem" }}>
+          <MiddleBox style={{ marginTop: "13.4rem" }}>
             {menu === "작물꿀팁" ? (
               <CropTips />
             ) : (

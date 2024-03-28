@@ -61,7 +61,6 @@ const Maintop = () => {
 
   const goToProfilePage = () => {
     navigate("editprofile");
-    console.log("durldudrludlruld", badges?.data.data_body.thumbnail);
   };
   const { data: badges, error } = useQuery({
     queryKey: ["Info"],
@@ -73,7 +72,6 @@ const Maintop = () => {
     return <div>사용자 데이터를 가져오는데 실패했습니다: {error.message}</div>;
   }
 
-  console.log("여기는 메인 TOP", badges?.data.data_body);
   return (
     <ProfileContent onClick={goToProfilePage}>
       <ProfileContainer>

@@ -76,6 +76,13 @@ const DeleteImageButton = styled.div`
     fill: #ffffff;
   }
 `;
+const RedCircle = styled.div`
+  width: 0.25rem;
+  height: 0.25rem;
+  background-color: ${({ theme }) => theme.colors.red0};
+  margin: 0 0.2rem;
+  border-radius: 50%;
+`;
 const CounterText = styled.div`
   color: ${({ theme }) =>
     theme.colors.gray0}; // 카운터 텍스트 색상을 조정하세요
@@ -84,24 +91,35 @@ const CounterText = styled.div`
 const MultiFileUploadInput: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
+  useEffect(() => {
+    const urls = selectedFiles.map((file) =>
+      typeof file === "string" ? file : URL.createObjectURL(file)
+    );
+    setPreviewURLs(urls);
+  }, [selectedFiles]);
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const newFiles = Array.from(event.target.files);
+      const updatedFiles = [...selectedFiles];
 
-    const newPreviewURLs = files.map((file) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      return new Promise<string>((resolve) => {
-        reader.onload = () => resolve(reader.result as string);
+      newFiles.forEach((newFile) => {
+        // 기존 파일 목록에 동일한 파일이 없는 경우에만 추가
+        if (
+          !updatedFiles.some(
+            (file) =>
+              typeof file !== "string" &&
+              file.name === newFile.name &&
+              file.size === newFile.size
+          )
+        ) {
+          updatedFiles.push(newFile);
+        }
       });
-    });
 
-    Promise.all(newPreviewURLs).then((urls) => {
-      setPreviewURLs((prevURLs) => [...prevURLs, ...urls]);
-    });
+      setSelectedFiles(updatedFiles);
+    }
   };
-
   const handleDeleteImage = (index: number) => {
     const newSelectedFiles = selectedFiles.filter((_, i) => i !== index);
     const newPreviewURLs = previewURLs.filter((_, i) => i !== index);
@@ -111,7 +129,10 @@ const MultiFileUploadInput: React.FC = () => {
 
   return (
     <>
-      <LabelSpan>사진 등록</LabelSpan>
+      <LabelSpan>
+        사진 등록
+        <RedCircle />
+      </LabelSpan>
 
       <FlexColumn>
         <RegisterBox>

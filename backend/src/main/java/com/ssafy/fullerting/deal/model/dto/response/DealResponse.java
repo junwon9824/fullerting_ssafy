@@ -8,10 +8,6 @@ import lombok.*;
 @Data
 @Builder
 public class DealResponse {
-
     private Long id;
-
     private int price;
-//    private ExArticleResponse exArticleResponse;
-    
 }
