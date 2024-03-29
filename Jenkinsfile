@@ -40,6 +40,8 @@ pipeline {
                             // 파일을 사용하는 작업 수행
                             // 예: 파일 내용 출력
                             sh 'ls -l $SECRET_FILE'
+                            sh 'echo "Secret file path: $SECRET_FILE"'
+
                             sh 'cat $SECRET_FILE'
                             sh 'pwd'
                             sh 'ls -al'
