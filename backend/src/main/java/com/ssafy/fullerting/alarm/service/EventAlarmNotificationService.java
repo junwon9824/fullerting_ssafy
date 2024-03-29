@@ -37,6 +37,7 @@ public class EventAlarmNotificationService {
             try {
                 emitter.send(SseEmitter.event()
                         .data(alarmPayload));
+                log.info("서버로부터 SSE 도착 : {} ", alarmPayload.toString());
             } catch (IOException e) {
                 emitter.completeWithError(e);
                 emitterMap.remove(alarmPayload.getReceiveUserId().toString());
