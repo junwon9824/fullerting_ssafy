@@ -2,7 +2,6 @@ package com.ssafy.fullerting.alarm.controller;
 
 import com.ssafy.fullerting.alarm.model.dto.request.AlarmPayload;
 import com.ssafy.fullerting.alarm.service.EventAlarmNotificationService;
-import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
