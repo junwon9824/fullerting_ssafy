@@ -35,9 +35,11 @@ import Alarm from "../pages/alarm/Alarm";
 import RecognizePage from "../pages/diary/RecognizePage";
 import TradeModifyPage from "../pages/trade/TradeModifyPage";
 import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
+import SSETest from "../pages/user/ssetest";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
+  { path: "/ssetest", element: <SSETest /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/join", element: <JoinPage /> },
   { path: "/auth/callback", element: <AuthCallbackPage /> },
