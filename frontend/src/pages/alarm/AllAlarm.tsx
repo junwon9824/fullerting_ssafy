@@ -2,7 +2,7 @@ import styled from "styled-components";
 import cartIcon from "../../assets/svg/cart.svg";
 import diaryIcon from "../../assets/svg/diary.svg";
 import { useQuery } from "@tanstack/react-query";
-import { getAlarms } from "../../apis/Alarm";
+import { getAlarms, readAlarm } from "../../apis/Alarm";
 import { useNavigate } from "react-router-dom";
 interface NotificationProps {
   alarmType: "커뮤니티" | "작물거래";
@@ -86,33 +86,27 @@ const AllAlarm = () => {
       }
     });
   };
+  const sortedNotifications = mockNotifications.slice().sort((a, b) => {
+    return Number(a.checked) - Number(b.checked);
+  });
 
-  const handleClick = (alarmId: number) => {
-    const notification = mockNotifications.find(
-      (notification) => notification.alarmId === alarmId
-    );
-
-    if (notification) {
+  const handleClick = async (alarmId: number) => {
+    try {
+      await readAlarm(alarmId);
+      const notification = mockNotifications.find(
+        (notification) => notification.alarmId === alarmId
+      );
       console.log(`Notification ${alarmId} clicked.`);
-      switch (notification.alarmType) {
-        case "작물거래":
-          navigate("/trade");
-          break;
-        case "커뮤니티":
-          navigate("/community");
-          break;
-        default:
-          console.error("alarmType 오류:", notification.alarmType);
-      }
-    } else {
-      console.error("알림 id를 찾을수없음", alarmId);
+      navigate(notification.alarmRedirect);
+    } catch (error) {
+      console.error(`알람 ${alarmId} 처리 중 오류 발생: `, error);
     }
   };
 
   return (
     <div>
       <NotificationList>
-        {mockNotifications.map((notification) => (
+        {sortedNotifications.map((notification) => (
           <NotificationItem
             key={notification.alarmId}
             isNew={notification.checked}
