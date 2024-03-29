@@ -69,7 +69,9 @@ public class ArticleService {
         }).collect(Collectors.toList());
 
 
+        log.info("imagesize"+images.size());
 //        images.forEach(article::addimage);
+
         images.forEach(image -> {
             article.addimage(image);
         });
