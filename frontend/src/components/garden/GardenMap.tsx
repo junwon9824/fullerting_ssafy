@@ -5,12 +5,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getGardenList } from "../../apis/GardenApi";
 
-const ReSettingMapBounds = ({ farmList }) => {
+const ReSettingMapBounds = ({ farmList }: { farmList: FarmType[] }) => {
   const map = useMap();
   const bounds = useMemo(() => {
     const bounds = new kakao.maps.LatLngBounds();
 
-    farmList.forEach((farm) => {
+    farmList.forEach((farm: FarmType) => {
       bounds.extend(new kakao.maps.LatLng(farm.farmPosLat, farm.farmPosLng));
     });
     return bounds;
@@ -47,7 +47,7 @@ const GardenMap = () => {
     >
       <MarkerClusterer averageCenter={true} minLevel={10}>
         {farmList &&
-          farmList.map((farm) => (
+          farmList.map((farm: FarmType) => (
             <MapMarker
               key={`${farm.farmPosLat}-${farm.farmPosLng}`}
               position={{
