@@ -3,6 +3,7 @@ package com.ssafy.fullerting.chat.service;
 import com.ssafy.fullerting.chat.exception.ChatException;
 import com.ssafy.fullerting.chat.model.dto.request.ChatRequest;
 import com.ssafy.fullerting.chat.model.dto.response.ChatResponse;
+import com.ssafy.fullerting.chat.model.dto.response.GetAllChatResponse;
 import com.ssafy.fullerting.chat.model.entity.Chat;
 import com.ssafy.fullerting.chat.model.entity.ChatRoom;
 import com.ssafy.fullerting.chat.repository.ChatRepository;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ssafy.fullerting.chat.exception.ChatErrorCode.NOT_EXISTS_CHAT_ROOM;
 import static com.ssafy.fullerting.chat.exception.ChatErrorCode.TRANSACTION_FAIL;
@@ -53,5 +56,25 @@ public class ChatServiceImpl implements ChatService{
         } catch(Exception e){
             throw new ChatException(TRANSACTION_FAIL);
         }
+    }
+
+    @Override
+    public List<GetAllChatResponse> getAllChat(Long chatRoomId) {
+        List<Chat> chatList = chatRepository.findByChatRoomId(chatRoomId);
+
+        return chatList.stream()
+                .map(chat -> {
+                    CustomUser sender = userRepository.findById(chat.getSenderId()).orElseThrow(()->new UserException(NOT_EXISTS_USER)); // senderId로 사용자 조회
+                    return GetAllChatResponse.builder()
+                            .chatId(chat.getId())
+                            .chatRoomId(chat.getChatRoom().getId())
+                            .chatSenderId(sender.getId())
+                            .chatSenderThumb(sender.getThumbnail())
+                            .chatSenderNick(sender.getNickname())
+                            .chatMessage(chat.getMessage())
+                            .chatSendAt(chat.getSendAt())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 }
