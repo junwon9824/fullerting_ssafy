@@ -70,6 +70,7 @@ function TestPage() {
   };
 
   useEffect(() => {
+    
     loadMessages();
 
     const accessToken = sessionStorage.getItem("accessToken");
@@ -79,7 +80,6 @@ function TestPage() {
 
     //  const socket = new WebSocket("ws://localhost:8080/ws");
     const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
-
     const client = Stomp.over(socket);
 
     console.log(socket);
@@ -95,6 +95,7 @@ function TestPage() {
         // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
         client.subscribe(`/sub/bidding/${exArticleId}`, (message) => {
           const msg: MessageRes = JSON.parse(message.body);
+          console.log(msg.bidLogId)
           const lastMessageId = msg.bidLogId;
 
           setMessages((prevMessages) => [...prevMessages, msg]);
@@ -115,6 +116,7 @@ function TestPage() {
         });
       }
     };
+
   }, [exArticleId]);
 
   const sendMessage = async () => {
