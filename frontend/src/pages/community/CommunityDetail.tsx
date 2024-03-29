@@ -5,7 +5,7 @@ import bell from "../../assets/svg/bell-ring.svg";
 
 const dummys = [
   {
-    id: "1",
+    id: "18",
     title: "무순",
     img: bell,
     nick: "kim",
