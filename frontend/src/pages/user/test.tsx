@@ -132,8 +132,8 @@ function TestPage() {
         const DealstartRequest = {
           exArticleId: exArticleId,
           dealCurPrice: messageReq.dealCurPrice,
-          redirectURL: window.location.href,
-        };
+          redirectURL: window.location.pathname
+        }
 
         stompClient.send(
           `/pub/bidding/${exArticleId}/messages`,
