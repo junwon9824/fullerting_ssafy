@@ -18,8 +18,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/sub", "/user"); // "/sub"과 "/user"로 시작하는 채널에 대한 구독을 활성화
+        config.enableSimpleBroker("/sub", "/topic", "/queue"); // 공개 메시지와 개인 메시지를 위한 경로
         config.setApplicationDestinationPrefixes("/pub"); // "/pub"으로 시작하는 메시지는 @MessageMapping 핸들러로 라우팅
+        config.setUserDestinationPrefix("/user");  // 사용자별 메시지 전송을 위한 접두사 설정
     }
 
     @Override

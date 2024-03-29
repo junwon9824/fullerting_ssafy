@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface LoveRepository extends JpaRepository<Love, Long> {
     //    @Query("select from user u")
-    Love findByCustomUserId(Long userid);
+    Love findByCustomUserIdAndArticleId(Long userid,Long Articleid);
 }

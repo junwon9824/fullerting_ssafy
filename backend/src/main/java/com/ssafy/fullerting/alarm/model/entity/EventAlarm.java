@@ -46,6 +46,12 @@ public class EventAlarm {
     // JPA 프록시 객체 생성을 위해 기본 생성자는 필수
     protected EventAlarm() {}
 
+    // 알람을 읽음 처리하는 메서드
+    public void markAsRead() {
+        this.isChecked = true;
+    }
+
+
     // 빌더 생성자 -> 빌더 객체로부터 값을 받아 EventAlarm 초기화 
     public EventAlarm(Builder builder) {
         this.receiveUser = builder.receiveUser;
