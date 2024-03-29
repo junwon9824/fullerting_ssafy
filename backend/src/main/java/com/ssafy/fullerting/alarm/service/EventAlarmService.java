@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class EventAlarmService {
+    private final EventAlarmNotificationService eventAlarmNotificationService;
     private final EventAlarmRepository eventAlarmRepository;
     private final UserService userService;
     // 알림 트리거
@@ -33,7 +34,7 @@ public class EventAlarmService {
 
     // 현재 사용자의 알림함에 저장하는 메서드
     // 실행조건 : 입찰자가 입찰하기를 눌렀을 때
-    public EventAlarm notifyAuctionBidReceived(CustomUser bidUser, ExArticle exArticle, String redirectURL) {
+    public void notifyAuctionBidReceived(CustomUser bidUser, ExArticle exArticle, String redirectURL) {
         // 내가 가격제안 게시물을 올렸는데
         // 누군가가 입찰을 했을 때 알림
 
@@ -45,8 +46,9 @@ public class EventAlarmService {
                 .redirect(redirectURL)
                 .build();
 
+        eventAlarmRepository.save(alarm);
+        eventAlarmNotificationService.sendAlarmToReceiveUser(alarm);
         log.info("이벤트 알람 도착 : {} ", alarm);
-        return eventAlarmRepository.save(alarm);
     }
 
     public List<MyEventAlarmResponse> getEventAlarmsForUser() {
@@ -62,6 +64,7 @@ public class EventAlarmService {
 
         return eventAlarmSlice.getContent().stream().map(eventAlarm ->
                 MyEventAlarmResponse.builder()
+                        .alarmId(eventAlarm.getAlarmId())
                         .alarmType(eventAlarm.getType().toString())
                         .alarmContent(eventAlarm.getContent())
                         .alarmRedirect(eventAlarm.getRedirect())

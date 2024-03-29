@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class MyEventAlarmResponse {
+    private Long alarmId;
     private String alarmType;
     private String alarmContent;
     private String alarmRedirect;
