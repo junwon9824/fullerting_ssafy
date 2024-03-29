@@ -1,3 +1,3 @@
 import { atom } from "jotai";
 
-export const markerAtom = atom<number | null>(null);
+export const markerAtom = atom<FarmType | null>(null);
