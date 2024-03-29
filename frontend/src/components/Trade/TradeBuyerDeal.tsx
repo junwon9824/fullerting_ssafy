@@ -314,6 +314,8 @@ const TradeBuyerDetail = () => {
   const [newMessage, setNewMessage] = useState<string>("");
   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
   const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+  const [max, setMax] = useState<number>(0);
+  const [bidCount, setBidCount] = useState<number>(0);
   useEffect(() => {
     console.log("데이터", dealListData);
 
@@ -332,50 +334,16 @@ const TradeBuyerDetail = () => {
 
     console.log(socket);
 
-    // client.connect(
-    //   {
-    //     Authorization: `Bearer ${accessToken}`,
-    //   },
-    //   () => {
-    //     console.log("WebSocket 연결됨");
-
-    //     // 백엔드로부터 메시지를 받는 부분
-    //     // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
-    //     client.subscribe(`/sub/bidding/${postNumber}}`, (message) => {
-    //       const msg: MessageRes = JSON.parse(message.body);
-    //       const lastMessageId = msg.bidLogId;
-
-    //       setMessages((prevMessages) => [...prevMessages, msg]);
-    //     });
-    //     setMessageSubscribed(true); // 한 번만 실행되도록 플래그 설정
-    //   },
-    //   (error) => {
-    //     console.error("WebSocket 연결 실패", error);
-    //   }
-    // );
-
     client.connect({ Authorization: `Bearer ${accessToken}` }, () => {
       client.subscribe(`/sub/bidding/${postNumber}`, (message) => {
+        console.log("저는 메세지 입니다", message);
+
         const msg: MessageRes = JSON.parse(message.body);
+        setMax(msg.maxPrice);
+        setBidCount(msg.bidderCount);
         queryClient.invalidateQueries({
           queryKey: ["dealDetail", postNumber],
         });
-        // React Query 캐시 업데이트
-        // queryClient.setQueryData<Deal[]>(
-        //   ["dealDetail", postNumber],
-        //   (oldDeals = []) => [
-        //     ...oldDeals,
-        //     {
-        //       // 수신된 메시지를 기반으로 새 Deal 객체 생성
-        //       bidLogPrice: msg.dealCurPrice,
-        //       exarticleid: msg.exArticleId,
-        //       id: msg.bidLogId,
-        //       localDateTime: "", // 예시
-        //       thumbnail: msg.userResponse.thumbnail,
-        //       nickname: msg.userResponse.nickname,
-        //     },
-        //   ]
-        // );
         setMessageSubscribed(true);
       });
     });
@@ -419,6 +387,7 @@ const TradeBuyerDetail = () => {
     }
   };
   //socket 끝
+  console.log(dealListData);
   const formatDateAndTime = (dateString: string) => {
     if (!dateString) return "";
     const [date, time] = dateString.split("T");
@@ -469,7 +438,7 @@ const TradeBuyerDetail = () => {
               >
                 최고가
               </Situation>
-              <TextStyle>800원</TextStyle>
+              <TextStyle>{max}원</TextStyle>
             </SituationGroup>
             <SituationGroup>
               <Situation
@@ -478,7 +447,7 @@ const TradeBuyerDetail = () => {
               >
                 참여자
               </Situation>
-              <TextStyle>3명</TextStyle>
+              <TextStyle>{bidCount}명</TextStyle>
             </SituationGroup>
           </SituationBox>
           <DealBox>

@@ -168,7 +168,6 @@ const CommunityAll = () => {
   };
 
 
-
   return (
     <div>
       {posts

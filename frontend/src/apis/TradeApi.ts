@@ -227,3 +227,63 @@ export const deletePost = async (postId: string) => {
     throw error;
   }
 };
+
+export const useSendChat = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (formData: FormData) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        throw new Error("로그인이 필요합니다.");
+      }
+      const response = await api.post("/pub/chat", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return response;
+    },
+    onSuccess: (res) => {
+      console.log(res, "성공");
+    },
+    onError: (e) => {
+      console.log(e, "에러");
+    },
+  });
+};
+export const createChatRoom = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (formData: FormData) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        throw new Error("로그인이 필요합니다.");
+      }
+      const response = await api.post("/chat-room", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return response;
+    },
+    onSuccess: (res) => {
+      console.log("방 만들기 성공", res);
+    },
+    onError: (res) => {
+      console.log("방 만들기 실패", res);
+    },
+  });
+};
+
+export const getChatRoom = async (accessToken: string, postId: number) => {
+  try {
+    const response = await api.get(`/chat/${postId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response;
+  } catch (e) {
+    console.log("채팅방 조회 실패", e);
+  }
+};

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Stomp from "stompjs";
 import { api } from "../../apis/Base";
+import { createChatRoom, getChatRoom, useSendChat } from "../../apis/TradeApi";
+import { useQuery } from "@tanstack/react-query";
 
 interface UserResponse {
   id: number;
@@ -30,56 +32,61 @@ interface ChatResponse {
   chatSenderId: number; //전송자 ID
   chatMessage: string; //채팅 내용
   chatSendAt: Date; // 전송일자
-  chatId:number;
+  chatId: number;
 }
 
 function ChatTestPage() {
   const chatRoomId = 168;
-
+  const postId = 1;
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [messages, setMessages] = useState<ChatResponse[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
-
+  const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+  const client = Stomp.over(socket);
   const accessToken = sessionStorage.getItem("accessToken") || ""; // accessToken이 null인 경우에는 빈 문자열로 대체
+  const { mutate: createChat } = createChatRoom();
+  const { mutate: sendChat } = useSendChat();
+  const { isLoading, data, error } = useQuery({
+    queryKey: ["chatList", postId],
+    queryFn: accessToken ? () => getChatRoom(accessToken, postId) : undefined,
+  });
+  console.log(data);
+  // const loadMessages = async () => {
+  //   try {
+  //     const accessToken = sessionStorage.getItem("accessToken");
+  //     if (!accessToken) {
+  //       throw new Error("Access token is not available.");
+  //     }
 
-  const loadMessages = async () => {
-    try {
-      const accessToken = sessionStorage.getItem("accessToken");
-      if (!accessToken) {
-        throw new Error("Access token is not available.");
-      }
+  //     const response = await api.get(`/exchanges/${chatRoomId}/suggestion`, {
+  //       //지금까지 채팅 내역 디비에서 가져오기
+  //       headers: { Authorization: `Bearer ${accessToken}` },
+  //     });
+  //     console.log("데이터", response.data.data_body);
 
-      const response = await api.get(`/exchanges/${chatRoomId}/suggestion`, { //지금까지 채팅 내역 디비에서 가져오기
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      console.log("데이터", response.data.data_body);
+  //     // API 응답 데이터를 변환하는 부분 id: number;
 
-      // API 응답 데이터를 변환하는 부분 id: number; 
+  //     const transformedData = response.data.data_body.map(
+  //       (item: ChatResponse) => ({
+  //         chatId: item.chatId,
+  //         chatRoomId: item.chatRoomId,
+  //         chatSenderId: item.chatSenderId,
+  //         chatSenderNick: item.chatSenderNick,
+  //         chatSenderThumb: item.chatSenderThumb,
+  //         chatSendAt: item.chatSendAt,
+  //         chatMessage: item.chatMessage,
+  //       })
+  //     );
 
- 
-
-      const transformedData = response.data.data_body.map((item: ChatResponse) => ({
-
-        chatId:item.chatId,
-        chatRoomId: item.chatRoomId,
-        chatSenderId: item.chatSenderId,
-        chatSenderNick: item.chatSenderNick,
-        chatSenderThumb: item.chatSenderThumb,
-        chatSendAt: item.chatSendAt,
-        chatMessage:item.chatMessage,
-      }));
-
-      setMessages(transformedData);
-
-    } catch (error) {
-      console.error("채팅 내역 로드 실패", error);
-    }
-  };
+  //     setMessages(transformedData);
+  //   } catch (error) {
+  //     console.error("채팅 내역 로드 실패", error);
+  //   }
+  // };
 
   useEffect(() => {
-
-    loadMessages();
+    // loadMessages();
 
     const accessToken = sessionStorage.getItem("accessToken");
     if (!accessToken) {
@@ -87,8 +94,6 @@ function ChatTestPage() {
     }
 
     //  const socket = new WebSocket("ws://localhost:8080/ws");
-    const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
-    const client = Stomp.over(socket);
 
     console.log(socket);
 
@@ -103,7 +108,7 @@ function ChatTestPage() {
         // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
         client.subscribe(`/sub/chat/${chatRoomId}`, (message) => {
           const msg: ChatResponse = JSON.parse(message.body);
-          console.log(msg)
+          console.log(msg);
 
           setMessages((prevMessages) => [...prevMessages, msg]);
         });
@@ -123,7 +128,6 @@ function ChatTestPage() {
         });
       }
     };
-
   }, [chatRoomId]);
 
   const sendMessage = async () => {
@@ -144,11 +148,7 @@ function ChatTestPage() {
           // redirectURL: window.location.href,
         };
 
-        stompClient.send(
-          `/pub/chat`,
-          {},
-          JSON.stringify(chatRequest)
-        );
+        stompClient.send(`/pub/chat`, {}, JSON.stringify(chatRequest));
         setNewMessage("");
       } catch (error) {
         console.error("메시지 전송 실패", error);
@@ -170,8 +170,8 @@ function ChatTestPage() {
           {messages &&
             messages.map((msg) => (
               <li key={msg.chatId}>
-                messageid {msg.chatId}상대 아이디 {msg.chatSenderId}
-                : 채팅내용 {msg.chatMessage}
+                messageid {msg.chatId}상대 아이디 {msg.chatSenderId}: 채팅내용{" "}
+                {msg.chatMessage}
                 <hr />
               </li>
             ))}

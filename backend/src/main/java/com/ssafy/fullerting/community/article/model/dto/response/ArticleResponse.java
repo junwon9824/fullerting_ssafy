@@ -4,6 +4,8 @@ import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 public class ArticleResponse {
@@ -18,5 +20,5 @@ public class ArticleResponse {
     private ArticleType type;
     private int love;
     private boolean mylove;
-
+    private List<String> imgurls;
 }

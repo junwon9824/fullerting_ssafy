@@ -37,9 +37,11 @@ import TradeModifyPage from "../pages/trade/TradeModifyPage";
 import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
 import GardenPage from "../pages/garden/GardenPage";
 import ChatTestPage from "../pages/user/test";
+import SSETest from "../pages/user/ssetest";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
+  { path: "/ssetest", element: <SSETest /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/join", element: <JoinPage /> },
   { path: "/auth/callback", element: <AuthCallbackPage /> },
