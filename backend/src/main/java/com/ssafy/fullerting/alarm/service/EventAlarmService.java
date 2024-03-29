@@ -7,6 +7,7 @@ import com.ssafy.fullerting.alarm.repository.EventAlarmRepository;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -31,26 +32,6 @@ public class EventAlarmService {
     // 5. 뱃지 획득했을 때
     // 6. 등급 올랐을 때
 
-
-    // 현재 사용자의 알림함에 저장하는 메서드
-    // 실행조건 : 입찰자가 입찰하기를 눌렀을 때
-    public void notifyAuctionBidReceived(CustomUser bidUser, ExArticle exArticle, String redirectURL) {
-        // 내가 가격제안 게시물을 올렸는데
-        // 누군가가 입찰을 했을 때 알림
-
-        EventAlarm alarm = EventAlarm.builder()
-                .receiveUser(exArticle.getUser())
-                .sendUser(bidUser)
-                .type(EventAlarmType.작물거래)
-                .content(bidUser.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 가격을 제안하셨어요.")
-                .redirect(redirectURL)
-                .build();
-
-        eventAlarmRepository.save(alarm);
-        eventAlarmNotificationService.sendAlarmToReceiveUser(alarm);
-        log.info("이벤트 알람 도착 : {} ", alarm);
-    }
-
     public List<MyEventAlarmResponse> getEventAlarmsForUser() {
         // 첫 페이지, 페이지 당 30개 항목으로 페이징 설정
         Slice<EventAlarm> eventAlarmSlice = eventAlarmRepository.
@@ -72,4 +53,39 @@ public class EventAlarmService {
                         .build()
         ).collect(Collectors.toList());
     }
+
+    // 알람 읽음 처리
+    @Transactional
+    public void markAlarmAsRead(Long alarmId) {
+        // ID로 알람을 찾습니다.
+        EventAlarm alarm = eventAlarmRepository.findById(alarmId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 알람 ID : " + alarmId));
+
+        // 알람을 읽음 상태로 표시하고 저장.
+        alarm.markAsRead();
+        eventAlarmRepository.save(alarm);
+        log.info("알람 읽음 처리됨: {} ", alarmId);
+    }
+
+
+    // 3. 가격제안 왔을 때
+    // 현재 사용자의 알림함에 저장하는 메서드
+    // 실행조건 : 입찰자가 입찰하기를 눌렀을 때
+    public void notifyAuctionBidReceived(CustomUser bidUser, ExArticle exArticle, String redirectURL) {
+        // 내가 가격제안 게시물을 올렸는데
+        // 누군가가 입찰을 했을 때 알림
+
+        EventAlarm alarm = EventAlarm.builder()
+                .receiveUser(exArticle.getUser())
+                .sendUser(bidUser)
+                .type(EventAlarmType.작물거래)
+                .content(bidUser.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 가격을 제안하셨어요.")
+                .redirect(redirectURL)
+                .build();
+
+        eventAlarmRepository.save(alarm);
+        eventAlarmNotificationService.sendAlarmToReceiveUser(alarm);
+        log.info("이벤트 알람 도착 : {} ", alarm);
+    }
+
 }
