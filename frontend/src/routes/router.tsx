@@ -35,7 +35,8 @@ import Alarm from "../pages/alarm/Alarm";
 import RecognizePage from "../pages/diary/RecognizePage";
 import TradeModifyPage from "../pages/trade/TradeModifyPage";
 import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
-import SSETest from "../pages/user/ssetest";
+import GardenPage from "../pages/garden/GardenPage";
+import ChatTestPage from "../pages/user/test";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -44,6 +45,8 @@ const authRoutes = [
   { path: "/join", element: <JoinPage /> },
   { path: "/auth/callback", element: <AuthCallbackPage /> },
 ];
+
+const gardenRoutes = [{ path: "/garden", element: <GardenPage /> }];
 
 const diaryRoutes = [
   { path: "/crop", element: <CropPage /> },
@@ -67,6 +70,7 @@ const tradeRoutes = [
   { path: "/trade/:postId/Chat", element: <TradeChatPage /> },
   { path: "/trade/:postId/modify", element: <TradeModifyPage /> },
   { path: "/trade/test", element: <TestPage /> },
+  { path: "/trade/chattest", element: <ChatTestPage /> },
 ];
 
 const mypageRoutes = [
@@ -115,6 +119,7 @@ const routes = [
   ...mypageRoutes,
   ...communityRoutes,
   ...alarm,
+  ...gardenRoutes,
 ];
 
 const router = createBrowserRouter(routes);

@@ -138,18 +138,10 @@ const Maintop = () => {
     console.log("알림", setNotification);
   };
 
-  const { isLoading, data: cropList } = useQuery({
+  const { data: cropList } = useQuery({
     queryKey: ["cropList"],
     queryFn: accessToken ? () => getCropList(accessToken) : undefined,
   });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!cropList) {
-    return <div>작물을 등록해주세요</div>;
-  }
 
   const goToDiary = () => {
     navigate(`/crop`);

@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.image.model.entity;
 
+import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
@@ -34,6 +35,12 @@ public class Image {
     @ManyToOne
     @JoinColumn(name = "diary_id")
     private Diary diary;
+
+
+    @ManyToOne
+    @JoinColumn(name = "article_id")
+    private Article article;
+
 
     private String imgStoreUrl;
 

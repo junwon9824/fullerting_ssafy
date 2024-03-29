@@ -78,6 +78,7 @@ const Community = () => {
             />
           </Button>
           <WriteBox src={Write} onClick={handelWriteClick} />
+          
           <CommunityAll />
         </LayoutInnerBox>
       </LayoutMainBox>
