@@ -41,15 +41,12 @@ const GardenMap = () => {
         width: "100%",
         height: "28rem",
       }}
-      level={14}
+      level={25}
     >
       <MarkerClusterer averageCenter={true} minLevel={10}>
         {farmList &&
           farmList.map((farm: FarmType) => (
-            <GardenMarker
-              key={`${farm.farmPosLat}-${farm.farmPosLng}`}
-              farm={farm}
-            />
+            <GardenMarker key={farm.farmId} farm={farm} />
           ))}
       </MarkerClusterer>
       {farmList && <ReSettingMapBounds farmList={farmList} />}
