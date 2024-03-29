@@ -33,7 +33,7 @@ interface ChatResponse {
   chatId:number;
 }
 
-function TestPage() {
+function ChatTestPage() {
   const chatRoomId = 168;
 
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
@@ -197,4 +197,4 @@ function TestPage() {
   );
 }
 
-export default TestPage;
+export default ChatTestPage;

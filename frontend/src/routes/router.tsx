@@ -36,6 +36,7 @@ import RecognizePage from "../pages/diary/RecognizePage";
 import TradeModifyPage from "../pages/trade/TradeModifyPage";
 import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
 import GardenPage from "../pages/garden/GardenPage";
+import ChatTestPage from "../pages/user/test";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -68,6 +69,7 @@ const tradeRoutes = [
   { path: "/trade/:postId/Chat", element: <TradeChatPage /> },
   { path: "/trade/:postId/modify", element: <TradeModifyPage /> },
   { path: "/trade/test", element: <TestPage /> },
+  { path: "/trade/chattest", element: <ChatTestPage /> },
 ];
 
 const mypageRoutes = [

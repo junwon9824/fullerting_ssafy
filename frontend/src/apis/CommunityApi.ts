@@ -9,6 +9,7 @@ interface LoginType {
 export const getallcommunities = async ( ) => {
   try {
     const response = await api.get("/articles/all");
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error("Error : ", error);
