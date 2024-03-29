@@ -35,9 +35,9 @@ import Alarm from "../pages/alarm/Alarm";
 import RecognizePage from "../pages/diary/RecognizePage";
 import TradeModifyPage from "../pages/trade/TradeModifyPage";
 import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
-import SSETest from "../pages/user/ssetest";
 import GardenPage from "../pages/garden/GardenPage";
 import ChatTestPage from "../pages/user/test";
+import SSETest from "../pages/user/ssetest";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
