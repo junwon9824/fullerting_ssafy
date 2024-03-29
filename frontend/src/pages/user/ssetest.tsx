@@ -45,7 +45,7 @@ const SSETest: React.FC = () => {
                 setTimeout(() => {
                     console.log("SSE 재연결 시도...");
                     connectSSE();
-                }, 1000); // 1초 후 재연결 시도
+                }, 5000); // 5초 후 재연결 시도
             };
 
             // 컴포넌트 언마운트 시 연결 종료
