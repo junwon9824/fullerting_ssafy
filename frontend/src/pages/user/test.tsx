@@ -22,6 +22,22 @@ interface MessageRes {
   bidderCount: number;
 }
 
+interface MessageRes {
+  bidLogId: number; // 입찰제안 ID
+  exArticleId: number; // 가격제안 게시물 id
+  userResponse: UserResponse; // 입찰자 ID, 썸네일, 닉네임
+  dealCurPrice: number; // 입찰자가 제안한 금액
+  maxPrice: number; // 현재 이 경매글의 최고가
+  bidderCount: number; //참여자수
+}
+interface Response {
+  id: number;
+  exarticleid: number;
+  userId: number;
+  nickname: string;
+  thumbnail: string;
+  bidLogPrice: number;
+}
 function TestPage() {
   const exArticleId = 168;
 
@@ -71,7 +87,6 @@ function TestPage() {
 
     //  const socket = new WebSocket("ws://localhost:8080/ws");
     const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
-
     const client = Stomp.over(socket);
 
     console.log(socket);
@@ -107,6 +122,7 @@ function TestPage() {
         });
       }
     };
+
   }, [exArticleId]);
 
   const sendMessage = async () => {

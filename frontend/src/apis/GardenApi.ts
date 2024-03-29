@@ -1,6 +1,8 @@
 import { api } from "./Base";
 
-export const getGardenList = async (accessToken: string) => {
+export const getGardenList = async () => {
+  const accessToken = sessionStorage.getItem("accessToken");
+
   try {
     const response = await api.get("/farms", {
       headers: { Authorization: `Bearer ${accessToken}` },
