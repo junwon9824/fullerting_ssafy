@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { TopBar } from "../common/Navigator/navigator";
 import Coli from "/src/assets/images/브로콜리.png";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getDealList, getTradeDetail, useLike } from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -11,6 +11,7 @@ import Send from "/src/assets/images/send.png";
 import "swiper/css";
 import "swiper/css/navigation";
 import useInput from "../../hooks/useInput";
+import Stomp from "stompjs";
 
 interface ImageResponse {
   imgStoreUrl: string;
@@ -33,6 +34,33 @@ interface Deal {
   localDateTime: string;
   thumbnail: string;
   nickname: string;
+}
+// socket
+interface MessageRes {
+  bidLogId: number; // 입찰제안 ID
+  exArticleId: number; // 가격제안 게시물 id
+  userResponse: UserResponse; // 입찰자 ID, 썸네일, 닉네임
+  dealCurPrice: number; // 입찰자가 제안한 금액
+  maxPrice: number; // 현재 이 경매글의 최고가
+  bidderCount: number; //참여자수
+}
+interface UserResponse {
+  id: number;
+  email: string;
+  role: string;
+  nickname: string;
+  thumbnail: string;
+  rank: string;
+  location: string;
+  authProvider: string;
+}
+interface Response {
+  id: number;
+  exarticleid: number;
+  userId: number;
+  nickname: string;
+  thumbnail: string;
+  bidLogPrice: number;
 }
 const AppContainer = styled.div`
   display: flex;
@@ -279,8 +307,118 @@ const TradeBuyerDetail = () => {
       ? () => getDealList(accessToken, postNumber)
       : undefined,
   });
+  //socket
+  const queryClient = useQueryClient();
+  const [messages, setMessages] = useState<MessageRes[]>([]);
+  const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
+  const [newMessage, setNewMessage] = useState<string>("");
+  const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
+  const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+  useEffect(() => {
+    console.log("데이터", dealListData);
 
-  console.log("난데이터얌", dealListData);
+    const transformedData = dealListData?.map((item: Response) => ({
+      bidLogId: item.id,
+      exArticleId: item.exarticleid,
+      userResponse: {
+        id: item.userId,
+        nickname: item.nickname,
+        thumbnail: item.thumbnail,
+      },
+      dealCurPrice: item.bidLogPrice,
+    }));
+    setMessages(transformedData);
+    const client = Stomp.over(socket);
+
+    console.log(socket);
+
+    // client.connect(
+    //   {
+    //     Authorization: `Bearer ${accessToken}`,
+    //   },
+    //   () => {
+    //     console.log("WebSocket 연결됨");
+
+    //     // 백엔드로부터 메시지를 받는 부분
+    //     // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
+    //     client.subscribe(`/sub/bidding/${postNumber}}`, (message) => {
+    //       const msg: MessageRes = JSON.parse(message.body);
+    //       const lastMessageId = msg.bidLogId;
+
+    //       setMessages((prevMessages) => [...prevMessages, msg]);
+    //     });
+    //     setMessageSubscribed(true); // 한 번만 실행되도록 플래그 설정
+    //   },
+    //   (error) => {
+    //     console.error("WebSocket 연결 실패", error);
+    //   }
+    // );
+
+    client.connect({ Authorization: `Bearer ${accessToken}` }, () => {
+      client.subscribe(`/sub/bidding/${postNumber}`, (message) => {
+        const msg: MessageRes = JSON.parse(message.body);
+        queryClient.invalidateQueries({
+          queryKey: ["dealDetail", postNumber],
+        });
+        // React Query 캐시 업데이트
+        // queryClient.setQueryData<Deal[]>(
+        //   ["dealDetail", postNumber],
+        //   (oldDeals = []) => [
+        //     ...oldDeals,
+        //     {
+        //       // 수신된 메시지를 기반으로 새 Deal 객체 생성
+        //       bidLogPrice: msg.dealCurPrice,
+        //       exarticleid: msg.exArticleId,
+        //       id: msg.bidLogId,
+        //       localDateTime: "", // 예시
+        //       thumbnail: msg.userResponse.thumbnail,
+        //       nickname: msg.userResponse.nickname,
+        //     },
+        //   ]
+        // );
+        setMessageSubscribed(true);
+      });
+    });
+    setStompClient(client);
+    return () => {
+      if (client.connected) {
+        client.disconnect(() => {
+          console.log("Disconnected from WebSocket server");
+        });
+      }
+    };
+  }, [dealListData]);
+
+  const sendMessage = async () => {
+    if (stompClient && newMessage.trim() !== "") {
+      try {
+        const messageReq = {
+          dealCurPrice: newMessage,
+        };
+
+        const accessToken = sessionStorage.getItem("accessToken");
+        if (!accessToken) {
+          throw new Error("Access token is not available.");
+        }
+
+        const DealstartRequest = {
+          exArticleId: postNumber,
+          dealCurPrice: messageReq.dealCurPrice,
+          redirectURL: window.location.href,
+        };
+
+        stompClient.send(
+          `/pub/bidding/${postNumber}/messages`,
+          {},
+          JSON.stringify(DealstartRequest)
+        );
+        setNewMessage("");
+      } catch (error) {
+        console.error("메시지 전송 실패", error);
+      }
+    }
+  };
+  //socket 끝
   const formatDateAndTime = (dateString: string) => {
     if (!dateString) return "";
     const [date, time] = dateString.split("T");
@@ -357,8 +495,11 @@ const TradeBuyerDetail = () => {
         </LayoutInnerBox>
       </LayoutMainBox>
       <DealChatBox>
-        <DealInput placeholder="최고가보다 높게 제안해주세요" />
-        <SendButton src={Send} alt="send" />
+        <DealInput
+          placeholder="최고가보다 높게 제안해주세요"
+          onChange={(e) => setNewMessage(e.target.value)}
+        />
+        <SendButton src={Send} alt="send" onClick={sendMessage} />
       </DealChatBox>
       {/* </AppContainer> */}
     </>
