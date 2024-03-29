@@ -42,6 +42,7 @@ pipeline {
                             sh 'ls -l $SECRET_FILE'
                             sh 'cat $SECRET_FILE'
                             sh 'pwd'
+                            sh 'ls -al'
                            sh 'cp $SECRET_FILE back/src/main/resources/application.yml'
 
                         }
