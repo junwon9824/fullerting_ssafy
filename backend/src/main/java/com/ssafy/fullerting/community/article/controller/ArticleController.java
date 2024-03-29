@@ -32,8 +32,9 @@ public class ArticleController {
 
     @PatchMapping("{article_id}")
     public ResponseEntity<MessageUtils> updatearticle(@PathVariable Long article_id,
-                                                      @RequestBody RegistArticleRequest registArticleRequest) {
-        articleService.update(registArticleRequest, article_id);
+                                                      @RequestPart("RegistArticleRequest") RegistArticleRequest registArticleRequest,
+                                                      @RequestPart("images") List<MultipartFile> files) {
+        articleService.update(registArticleRequest, article_id,files);
 
         return ResponseEntity.ok(MessageUtils.success());
     }

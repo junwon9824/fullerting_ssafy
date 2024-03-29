@@ -79,7 +79,8 @@ public class ArticleService {
 
     }
 
-    public void update(RegistArticleRequest registArticleRequest, Long articleId) {
+    public void update(RegistArticleRequest registArticleRequest, Long articleId, List<MultipartFile> files) {
+
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
 
@@ -91,6 +92,9 @@ public class ArticleService {
             throw new ArticleException(ArticleErrorCode.NOT_MINE);
         }
 
+        S3ManyFilesResponse response =
+                amazonS3Service.uploadFiles(files);
+
         for (Image image : article.getImages()) {
             amazonS3Service.deleteFile(image.getImgStoreUrl());
             imageRepository.delete(image);
@@ -99,8 +103,6 @@ public class ArticleService {
 
         articleRepository.save(article);
 
-        S3ManyFilesResponse response =
-                amazonS3Service.uploadFiles(registArticleRequest.getSelectedFiles());
 
         List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
             Image image = new Image();
