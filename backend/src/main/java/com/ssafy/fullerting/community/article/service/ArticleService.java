@@ -72,7 +72,7 @@ public class ArticleService {
         CustomUser customUser = userResponse.toEntity(userResponse);
         boolean mylove = false;
 
-        if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+        if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), articleId) != null) {
             mylove = true;
         }
         return article.toResponse(mylove);
@@ -97,12 +97,13 @@ public class ArticleService {
     public List<ArticleResponse> findAllArticle() {
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        CustomUser customUser = userResponse.toEntity(userResponse); //로그인한 유저..
 
 
         return articleRepository.findAll().stream().map(article -> {
                     boolean mylove = false;
-                    if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+
+                    if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                         mylove = true;
                     }
 
@@ -110,11 +111,9 @@ public class ArticleService {
                     return articleResponse;
                 })
                 .collect(Collectors.toList());
-
     }
 
     public List<ArticleResponse> findAllArticlebyCategory(String keyword) {
-
 
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
@@ -124,7 +123,7 @@ public class ArticleService {
             return articleRepository.findAllByType((ArticleType.FREE_BOARD)).stream().map(article -> {
 
                         boolean mylove = false;
-                        if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                        if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
                         ArticleResponse articleResponse = article.toResponse(mylove);
@@ -134,7 +133,7 @@ public class ArticleService {
         } else if (keyword.equals("INTRODUCE")) {
             return articleRepository.findAllByType((ArticleType.INTRODUCE)).stream().map(article -> {
                         boolean mylove = false;
-                        if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                        if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
                         ArticleResponse articleResponse = article.toResponse(mylove);
@@ -144,7 +143,7 @@ public class ArticleService {
         } else if (keyword.equals("COOK")) {
             return articleRepository.findAllByType((ArticleType.COOK)).stream().map(article -> {
                         boolean mylove = false;
-                        if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                        if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
                         ArticleResponse articleResponse = article.toResponse(mylove);
@@ -154,7 +153,7 @@ public class ArticleService {
         } else {
             return articleRepository.findAllByType((ArticleType.SHARE_TIPS)).stream().map(article -> {
                         boolean mylove = false;
-                        if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                        if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
                         ArticleResponse articleResponse = article.toResponse(mylove);
@@ -175,7 +174,7 @@ public class ArticleService {
                 findAllByContentandtitle(keyword)
                 .stream().map(article -> {
                     boolean mylove = false;
-                    if (loveRepository.findByCustomUserId(customUser.getId()) != null) {
+                    if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                         mylove = true;
                     }
                     ArticleResponse articleResponse = article.toResponse(mylove);
