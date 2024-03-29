@@ -3,10 +3,19 @@ package com.ssafy.fullerting.chat.service;
 import com.ssafy.fullerting.chat.model.dto.request.CreateChatRoomRequest;
 import com.ssafy.fullerting.chat.model.dto.response.CreateChatRoomResponse;
 import com.ssafy.fullerting.chat.model.dto.response.GetAllChatRoomResponse;
+import com.ssafy.fullerting.chat.model.entity.Chat;
 import com.ssafy.fullerting.chat.model.entity.ChatRoom;
+import com.ssafy.fullerting.chat.repository.ChatRepository;
 import com.ssafy.fullerting.chat.repository.ChatRoomRepository;
+import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
+import com.ssafy.fullerting.exArticle.exception.ExArticleException;
+import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
+import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
+import com.ssafy.fullerting.user.exception.UserErrorCode;
+import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +23,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode.NOT_EXISTS;
+import static com.ssafy.fullerting.user.exception.UserErrorCode.NOT_EXISTS_USER;
 
 @RequiredArgsConstructor
 @Service
@@ -21,6 +34,9 @@ import java.util.Optional;
 public class ChatRoomServiceImpl implements ChatRoomService{
     private final UserService userService;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatRepository chatRepository;
+    private final ExArticleRepository exArticleRepository;
+    private final UserRepository userRepository;
 
     @Override
     public CreateChatRoomResponse createChatRoom(CreateChatRoomRequest createChatRoomRequest) {
@@ -47,12 +63,42 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         //현재 유저 정보 받아오기
         UserResponse userResponse = userService.getUserInfo();
 
-        //현재 유저가 구매자이거나 판매자일 경우 List에 저장
+        //현재 유저가 구매자이거나 판매자인 경우 모든 채팅방 조회
+        List<ChatRoom> chatRoomList = chatRoomRepository.findByBuyerIdOrExArticleUserId(userResponse.getId());
 
-        //상대방 판단해서 정보 저장
+        return chatRoomList.stream()
+                // 채팅방 리스트를 최신 채팅 메시지가 먼저 오도록 정렬
+                .sorted((chatRoom1, chatRoom2) -> {
+                    Chat lastChat1 = chatRepository.findLatestChatByChatRoomId(chatRoom1.getId());
+                    Chat lastChat2 = chatRepository.findLatestChatByChatRoomId(chatRoom2.getId());
+                    return lastChat2.getSendAt().compareTo(lastChat1.getSendAt());
+                })
+                .map(chatRoom -> {
+                    //상대방 ID 조회
+                    ExArticle exArticle = exArticleRepository.findById(chatRoom.getExArticleId()).orElseThrow(() -> new ExArticleException(NOT_EXISTS));
+                    CustomUser otherUser = null;
+                    //현재 유저가 판매자와 동일할 경우
+                    if (exArticle.getUser().getId().equals(userResponse.getId())) {
+                        //상대방 정보에 구매자 저장
+                        otherUser = userRepository.findById(chatRoom.getBuyerId()).orElseThrow(() -> new UserException(NOT_EXISTS_USER));
+                    }
+                    //현재 유저가 구매자와 동일할 경우
+                    else {
+                        //상대방 정보에 판매자 저장
+                        otherUser = exArticle.getUser();
+                    }
 
-        //List별 채팅방 마지막 메시지 및 전송일자 조회
+                    //채팅방 최근 메시지 조회
+                    Chat lastChat = chatRepository.findLatestChatByChatRoomId(chatRoom.getId());
 
-        return null;
+                    return GetAllChatRoomResponse.builder()
+                            .chatRoomId(chatRoom.getId())
+                            .chatRoomOtherThumb(otherUser.getThumbnail())
+                            .chatOtherNick(otherUser.getNickname())
+                            .chatRoomLastMessage(lastChat.getMessage())
+                            .chatRoomLastMessageSendAt(lastChat.getSendAt())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 }
