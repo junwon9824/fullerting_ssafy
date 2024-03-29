@@ -45,7 +45,7 @@ public class ExArticleController {
         Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, files);
 //        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email);
 
-        log.info("[register article ]: {}", exArticleRegisterRequest.toString());
+//        log.info("[register article ]: {}", exArticleRegisterRequest.toString());
 
         return ResponseEntity.ok().body(MessageUtils.success(exarticleid));
     }
@@ -68,7 +68,7 @@ public class ExArticleController {
         List<ExArticleAllResponse> exArticleResponse = exArticleService.allArticle();
 
 
-        log.info("[all article ]: {}", exArticleResponse);
+//        log.info("[all article ]: {}", exArticleResponse);
         return ResponseEntity.ok().body(MessageUtils.success(exArticleResponse));
     }
 
@@ -77,7 +77,7 @@ public class ExArticleController {
     public ResponseEntity<MessageUtils> detail(@PathVariable Long ex_article_id) {
         ExArticleDetailResponse detail = exArticleService.detail(ex_article_id);
 
-        log.info("[detail article]: {}", detail);
+//        log.info("[detail article]: {}", detail);
         return ResponseEntity.ok().body(MessageUtils.success(detail));
     }
 
