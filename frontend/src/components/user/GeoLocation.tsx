@@ -1,7 +1,11 @@
+import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Map, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk";
+import { locationAtom } from "../../stores/user";
 
 const GeoLocation = () => {
+  const { kakao } = window;
+
   const [loading, error] = useKakaoLoader({
     appkey: "563ce3be1426203d4293138c499aea59",
     libraries: ["clusterer", "drawing", "services"],
@@ -16,6 +20,20 @@ const GeoLocation = () => {
     isLoading: true,
     isPanto: true,
   });
+
+  const [address, setAddress] = useAtom(locationAtom);
+
+  const getAddress = (lat, lng) => {
+    const geocoder = new kakao.maps.services.Geocoder(); // 좌표 -> 주소로 변환해주는 객체
+    const coord = new kakao.maps.LatLng(lat, lng); // 주소로 변환할 좌표 입력
+    const callback = function (result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        setAddress(result[0].address);
+        console.log(result[0].address);
+      }
+    };
+    geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+  };
 
   useEffect(() => {
     if (navigator.geolocation) {
