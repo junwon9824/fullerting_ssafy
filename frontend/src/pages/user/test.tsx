@@ -54,6 +54,7 @@ function TestPage() {
           thumbnail: item.thumbnail,
         },
         dealCurPrice: item.bidLogPrice,
+        
       }));
 
    
