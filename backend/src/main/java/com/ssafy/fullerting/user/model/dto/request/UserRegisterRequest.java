@@ -28,7 +28,8 @@ public class UserRegisterRequest {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
     @Schema(example = "examplePwd1234!",description = "유저가 앞으로 사용할 비밀번호")
     private String password;
-    
+
+    @NotNull(message = "닉네임은 필수입니다.")
     @Schema(example="happyday1",description = "유저가 앞으로 사용할 닉네임")
     private String nickname;
 
