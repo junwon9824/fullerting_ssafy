@@ -128,6 +128,7 @@ const CommunityAll = () => {
     const fetchData = async () => {
       try {
         const data = await getallcommunities();
+        console.log(data)
         setPosts(data);
       } catch (error) {
         console.error("Error occurred while fetching data: ", error);
