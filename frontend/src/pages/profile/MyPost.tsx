@@ -5,6 +5,7 @@ import {
   LayoutInnerBox,
 } from "../../components/common/Layout/Box";
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
+import TradeMainCategory from "../../components/Trade/TradeMainCategory";
 const LikedPost = () => {
   const [search, setSearch] = useInput("");
   return (
@@ -19,7 +20,7 @@ const LikedPost = () => {
             placeholder="내용 또는 작성자를 입력해주세요"
             onChange={setSearch}
           />
-          <Post />
+          <TradeMainCategory />
         </LayoutInnerBox>
       </LayoutMainBox>
       <NavBar />
