@@ -41,6 +41,8 @@ pipeline {
                             // 예: 파일 내용 출력
                             sh 'ls -l $SECRET_FILE'
                             sh 'cat $SECRET_FILE'
+                           sh 'cp $SECRET_FILE backend/src/main/resources/application.yml'
+
                         }
 
 
