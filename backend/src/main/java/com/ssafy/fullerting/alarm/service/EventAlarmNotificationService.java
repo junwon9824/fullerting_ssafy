@@ -16,7 +16,7 @@ public class EventAlarmNotificationService {
     // thread-safe 한 컬렉션 객체로 sse emitter 객체를 관리
     private final Map<String, SseEmitter> emitterMap = new ConcurrentHashMap<>();
     private static final long TIMEOUT = 60 * 1000;
-    private static final long HEARTBEAT_INTERVAL = 40 * 1000L; // 40초마다 하트비트 전송
+    private static final long HEARTBEAT_INTERVAL = 25 * 1000L; // 25초마다 하트비트 전송
 
     public SseEmitter subscribe(String userId) {
         SseEmitter emitter = new SseEmitter(TIMEOUT);
