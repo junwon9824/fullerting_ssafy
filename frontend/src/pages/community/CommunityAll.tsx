@@ -5,53 +5,9 @@ import { selectedTypeAtom } from "../../stores/community";
 import pullright from "../../assets/svg/pullright.svg";
 import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
+import { getallcommunities } from "../../apis/CommunityApi";
+import { useState, useEffect } from "react";
 
-const posts = [
-  {
-    id: 1,
-    title: "자유게시판이게 무슨 식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "자유게시판",
-  },
-  {
-    id: 2,
-    title: "꿀팁공유이게 무슨 식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "꿀팁공유",
-  },
-  {
-    id: 3,
-    title: "꿀팁공유이게 무슨 식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "꿀팁공유",
-  },
-  {
-    id: 4,
-    title: "꿀팁공유이게 무슨 식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "꿀팁공유",
-  },
-];
 
 const CommunityItem = styled.div`
   background-color: white;
@@ -143,18 +99,82 @@ const ContentImage = styled.div`
 
 const NameTime = styled.div``;
 const ContentTitle = styled.div``;
+
 const CommunityAll = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  
+  interface Post {
+    id: number;
+    title: string;
+    content: string;
+    imageUrl: string;
+    name: string;
+    time: number;
+    likes: number;
+    comments: number;
+    type: string;
+  }
+  // const fetchData = async () => {
+  //   try {
+  //     const data = await getallcommunities();
+  //     return data; // 데이터를 반환하여 호출한 곳에서 posts에 할당할 수 있도록 함
+  //   } catch (error) {
+  //     console.error("Error occurred while fetching data: ", error);
+  //     throw error;
+  //   }
+  // };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getallcommunities();
+        console.log(data)
+        setPosts(data);
+      } catch (error) {
+        console.error("Error occurred while fetching data: ", error);
+      }
+    };
+  
+    fetchData(); // fetchData 함수 호출
+  
+    // cleanup 함수가 필요하지 않으므로 비워둡니다.
+  
+  }, []);
+  
+
+  // const posts = [
+
+
+  //   {
+  //     id: 1,
+  //     title: "자유게시판이게 무슨 식물이야1?",
+  //     content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
+  //     imageUrl: pullright,
+  //     name: "작심삼일",
+  //     time: 13,
+  //     likes: 17,
+  //     comments: 3,
+  //     type: "자유게시판",
+  //   },
+
+
+  // ];
+
   const [selectedType] = useAtom(selectedTypeAtom);
   const navigate = useNavigate();
 
   const handlePostClick = (id) => {
     navigate(`/community/${id}`);
   };
+
+
+
   return (
     <div>
       {posts
         .filter((post) => post.type === selectedType)
         .map((post) => (
+
           <CommunityItem key={post.id} onClick={() => handlePostClick(post.id)}>
             <PostHeader>
               <ContentImage>

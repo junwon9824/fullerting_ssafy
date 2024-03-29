@@ -15,25 +15,29 @@ interface UserResponse {
 
 interface MessageRes {
   bidLogId: number; // 입찰제안 ID
-  exArticleId: number; // 가격제안 게시물 id
+  chatRoomId: number; // 가격제안 게시물 id
   userResponse: UserResponse; // 입찰자 ID, 썸네일, 닉네임
   dealCurPrice: number; // 입찰자가 제안한 금액
   maxPrice: number; // 현재 이 경매글의 최고가
   bidderCount: number; //참여자수
 }
-interface Response {
-  id: number;
-  exarticleid: number;
-  userId: number;
-  nickname: string;
-  thumbnail: string;
-  bidLogPrice: number;
+
+interface ChatResponse {
+  // id: number;
+  chatRoomId: number;
+  chatSenderThumb: string;
+  chatSenderNick: string;
+  chatSenderId: number; //전송자 ID
+  chatMessage: string; //채팅 내용
+  chatSendAt: Date; // 전송일자
+  chatId:number;
 }
-function TestPage() {
-  const exArticleId = 168;
+
+function ChatTestPage() {
+  const chatRoomId = 168;
 
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
-  const [messages, setMessages] = useState<MessageRes[]>([]);
+  const [messages, setMessages] = useState<ChatResponse[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
 
@@ -46,31 +50,35 @@ function TestPage() {
         throw new Error("Access token is not available.");
       }
 
-      const response = await api.get(`/exchanges/${exArticleId}/suggestion`, {
+      const response = await api.get(`/exchanges/${chatRoomId}/suggestion`, { //지금까지 채팅 내역 디비에서 가져오기
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-
-      // API 응답 데이터를 변환하는 부분
-      const transformedData = response.data.data_body.map((item: Response) => ({
-        bidLogId: item.id,
-        exArticleId: item.exarticleid,
-        userResponse: {
-          id: item.userId,
-          nickname: item.nickname,
-          thumbnail: item.thumbnail,
-        },
-        dealCurPrice: item.bidLogPrice,
-        
-      }));
       console.log("데이터", response.data.data_body);
+
+      // API 응답 데이터를 변환하는 부분 id: number; 
+
+ 
+
+      const transformedData = response.data.data_body.map((item: ChatResponse) => ({
+
+        chatId:item.chatId,
+        chatRoomId: item.chatRoomId,
+        chatSenderId: item.chatSenderId,
+        chatSenderNick: item.chatSenderNick,
+        chatSenderThumb: item.chatSenderThumb,
+        chatSendAt: item.chatSendAt,
+        chatMessage:item.chatMessage,
+      }));
+
       setMessages(transformedData);
+
     } catch (error) {
       console.error("채팅 내역 로드 실패", error);
     }
   };
 
   useEffect(() => {
-    
+
     loadMessages();
 
     const accessToken = sessionStorage.getItem("accessToken");
@@ -93,10 +101,9 @@ function TestPage() {
 
         // 백엔드로부터 메시지를 받는 부분
         // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
-        client.subscribe(`/sub/bidding/${exArticleId}`, (message) => {
-          const msg: MessageRes = JSON.parse(message.body);
-          console.log(msg.bidLogId)
-          const lastMessageId = msg.bidLogId;
+        client.subscribe(`/sub/chat/${chatRoomId}`, (message) => {
+          const msg: ChatResponse = JSON.parse(message.body);
+          console.log(msg)
 
           setMessages((prevMessages) => [...prevMessages, msg]);
         });
@@ -117,13 +124,13 @@ function TestPage() {
       }
     };
 
-  }, [exArticleId]);
+  }, [chatRoomId]);
 
   const sendMessage = async () => {
     if (stompClient && newMessage.trim() !== "") {
       try {
         const messageReq = {
-          dealCurPrice: newMessage,
+          chatMessage: newMessage,
         };
 
         const accessToken = sessionStorage.getItem("accessToken");
@@ -131,16 +138,16 @@ function TestPage() {
           throw new Error("Access token is not available.");
         }
 
-        const DealstartRequest = {
-          exArticleId: exArticleId,
-          dealCurPrice: messageReq.dealCurPrice,
-          redirectURL: window.location.pathname
-        }
+        const chatRequest = {
+          chatRoomId: chatRoomId,
+          chatMessage: messageReq.chatMessage,
+          // redirectURL: window.location.href,
+        };
 
         stompClient.send(
-          `/pub/bidding/${exArticleId}/messages`,
+          `/pub/chat`,
           {},
-          JSON.stringify(DealstartRequest)
+          JSON.stringify(chatRequest)
         );
         setNewMessage("");
       } catch (error) {
@@ -148,6 +155,13 @@ function TestPage() {
       }
     }
   };
+  // chatId:item.chatId,
+  // chatRoomId: item.chatRoomId,
+  // chatSenderId: item.chatSenderId,
+  // chatSenderNick: item.chatSenderNick,
+  // chatSenderThumb: item.chatSenderThumb,
+  // chatSendAt: item.chatSendAt,
+  // chatMessage:item.chatMessage,
 
   return (
     <div>
@@ -155,9 +169,9 @@ function TestPage() {
         <ul>
           {messages &&
             messages.map((msg) => (
-              <li key={msg.bidLogId}>
-                messageid {msg.bidLogId}입찰희망자 아이디 {msg.userResponse?.id}
-                : 입찰 제안 가격 {msg.dealCurPrice}
+              <li key={msg.chatId}>
+                messageid {msg.chatId}상대 아이디 {msg.chatSenderId}
+                : 채팅내용 {msg.chatMessage}
                 <hr />
               </li>
             ))}
@@ -183,4 +197,4 @@ function TestPage() {
   );
 }
 
-export default TestPage;
+export default ChatTestPage;

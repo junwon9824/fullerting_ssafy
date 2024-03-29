@@ -8,7 +8,7 @@ COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
-#COPY secure-settings .
+#COPY fullertingsecretfolder .
 
 
 # 소스 코드를 Docker 이미지 안으로 복사
