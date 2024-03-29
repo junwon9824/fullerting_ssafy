@@ -1,7 +1,7 @@
-import { Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
+import { Map, MapMarker, MarkerClusterer, useMap } from "react-kakao-maps-sdk";
 import useKakaoLoader from "../../hooks/useKakaoLoader";
 import shovelImg from "../../assets/images/shovel.png";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const gardenDummy = [
   {
@@ -105,6 +105,23 @@ const gardenDummy = [
   },
 ];
 
+const ReSettingMapBounds = ({ farmList }) => {
+  const map = useMap();
+  const bounds = useMemo(() => {
+    const bounds = new kakao.maps.LatLngBounds();
+
+    farmList.forEach((farm) => {
+      bounds.extend(new kakao.maps.LatLng(farm.farmPosLat, farm.farmPosLng));
+    });
+    return bounds;
+  }, [farmList]);
+
+  useEffect(() => {
+    map.setBounds(bounds);
+  }, [bounds]);
+  return <></>;
+};
+
 const GardenMap = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -169,6 +186,7 @@ const GardenMap = () => {
             </MapMarker>
           ))}
       </MarkerClusterer>
+      {gardenDummy && <ReSettingMapBounds farmList={gardenDummy} />}
     </Map>
   );
 };
