@@ -6,7 +6,6 @@ import { useState } from "react";
 import { getExchange } from "../../apis/Main";
 import { useNavigate } from "react-router-dom";
 import arrow_forward_ios from "../../assets/svg/arrow_forward_ios.svg";
-import constructWithOptions from "styled-components/dist/constructors/constructWithOptions";
 
 const MainBox = styled.div`
   justify-content: center;
@@ -86,28 +85,39 @@ const NextButton = styled.button`
   cursor: pointer;
 `;
 
+const TokenBox = styled.div`
+  font-family: "GamtanRoad Dotum TTF";
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+  font-weight: bold;
+  color: #a0d8b3;
+`;
+
 const MainExchange = () => {
+  const accessToken = sessionStorage.getItem("accessToken");
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
-  const { isLoading, data, error } = useQuery({
+
+  const { data } = useQuery({
     queryKey: ["Exchange"],
-    queryFn: getExchange,
+    queryFn: accessToken ? () => getExchange(accessToken) : undefined,
   });
-  // console.log(data[0].exArticleResponse.exArticleType);
-  console.log(data);
+
   const handleItemClick = () => {
     navigate(`/trade`);
+  };
+
+  const goToLogin = () => {
+    navigate("/login");
   };
 
   const handleNextClick = () => {
     if (data) {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
-      console.log();
     }
   };
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  if (!data || !data || data.length === 0) return <div>거래 데이터 없음</div>;
   return (
     <MainBox>
       <Text>나의 반려작물의 모든 것, 풀러팅에서 함께</Text>
@@ -120,18 +130,26 @@ const MainExchange = () => {
           <LogoText>작물 거래하기</LogoText>
         </LogoContent>
       </LogoAndTextContainer>
-      <ExchangeContainer>
-        <ExchangeBox>
-          <ScrollExchange
-            onClick={handleItemClick}
-            currentIndex={currentIndex}
-            data={data}
-          />
+      {accessToken ? (
+        <ExchangeContainer>
+          <ExchangeBox>
+            <ScrollExchange
+              onClick={handleItemClick}
+              currentIndex={currentIndex}
+              data={data}
+            />
+          </ExchangeBox>
+          <NextBox>
+            <NextButton onClick={handleNextClick} />
+          </NextBox>
+        </ExchangeContainer>
+      ) : (
+        <ExchangeBox onClick={goToLogin}>
+          <TokenBox>
+            <div>로그인을 해주세요</div>
+          </TokenBox>
         </ExchangeBox>
-        <NextBox>
-          <NextButton onClick={handleNextClick} />
-        </NextBox>
-      </ExchangeContainer>
+      )}
     </MainBox>
   );
 };
