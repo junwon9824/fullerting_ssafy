@@ -32,6 +32,8 @@ public class EventAlarmService {
     // 5. 뱃지 획득했을 때
     // 6. 등급 올랐을 때
 
+
+    // [알림함] 사용자가 받은 알림 조회
     public List<MyEventAlarmResponse> getEventAlarmsForUser() {
         // 첫 페이지, 페이지 당 30개 항목으로 페이징 설정
         Slice<EventAlarm> eventAlarmSlice = eventAlarmRepository.
@@ -54,10 +56,10 @@ public class EventAlarmService {
         ).collect(Collectors.toList());
     }
 
-    // 알람 읽음 처리
+    // [알림함] 클릭한 알람 읽음 처리
     @Transactional
     public void markAlarmAsRead(Long alarmId) {
-        // ID로 알람을 찾습니다.
+        // ID로 알람을 찾는다
         EventAlarm alarm = eventAlarmRepository.findById(alarmId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 알람 ID : " + alarmId));
 
@@ -66,6 +68,10 @@ public class EventAlarmService {
         eventAlarmRepository.save(alarm);
         log.info("알람 읽음 처리됨: {} ", alarmId);
     }
+
+
+    // 2.채팅이 왔을 때 ( 채팅방 생성됐을 때 )
+    // 누군가에게 채팅이 오면 푸쉬알람을 띄운다
 
 
     // 3. 가격제안 왔을 때
@@ -84,7 +90,7 @@ public class EventAlarmService {
                 .build();
 
         eventAlarmRepository.save(alarm);
-        eventAlarmNotificationService.sendAlarmToReceiveUser(alarm);
+//        eventAlarmNotificationService.sendAlarmToReceiveUser(alarm);
         log.info("이벤트 알람 도착 : {} ", alarm);
     }
 
