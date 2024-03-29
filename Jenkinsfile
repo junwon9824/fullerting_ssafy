@@ -35,6 +35,14 @@ pipeline {
                         // 테스트용 쉘 코드 추가
                         sh 'echo "This is a test shell script"'
 
+  // 시크릿 파일 사용
+                withCredentials([file(credentialsId: 'secret-backend', variable: 'SECRET_FILE')]) {
+                    // 파일을 사용하는 작업 수행
+                    // 예: 파일 내용 출력
+                    sh 'cat $SECRET_FILE'
+                }
+
+
                         // sh 'chmod +x ./gradlew'
                         // def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
                         // version = version_value.split(/:/)[1].trim()
