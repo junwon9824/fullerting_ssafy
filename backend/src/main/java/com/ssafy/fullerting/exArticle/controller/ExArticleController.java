@@ -115,7 +115,7 @@ public class ExArticleController {
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
-    @PostMapping("/{ex_article_id}/done")
+    @PatchMapping("/{ex_article_id}/done")
     @Operation(summary = "작물거래 완료   ", description = "작물거래 완료   ")
     public ResponseEntity<MessageUtils> done(@PathVariable Long ex_article_id, @RequestBody ExArticleDoneRequest exArticleDoneRequest) {
 
@@ -165,12 +165,13 @@ public class ExArticleController {
         return ResponseEntity.ok().body(MessageUtils.success());
 
     }
+
     @CrossOrigin("*")
     @PatchMapping("/{ex_article_id}/modify")
     @Operation(summary = "나의 작물 거래 게시물 수정 ", description = "나의 작물 거래 게시물 수정 ")
     public ResponseEntity<MessageUtils> modifyarticle(@PathVariable Long ex_article_id,
                                                       @RequestPart(value = "updateInfo") UpdateArticleRequest updateArticleRequest,
-                                                      @RequestPart (value = "images") List<MultipartFile> images
+                                                      @RequestPart(value = "images") List<MultipartFile> images
 
     ) {
 //        @ModelAttribute UpdateArticleRequest updateArticleRequest) {
@@ -180,7 +181,7 @@ public class ExArticleController {
 
         CustomUser customUser = userResponse.toEntity(userResponse);
 
-        ExArticle article = exArticleService.modifyarticle(ex_article_id, updateArticleRequest, customUser,images);
+        ExArticle article = exArticleService.modifyarticle(ex_article_id, updateArticleRequest, customUser, images);
 
         ExArticleResponse articleResponse = article.toResponse(article, customUser);
 
