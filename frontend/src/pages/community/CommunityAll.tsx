@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 
 const posts = [
+  
+
   {
     id: 1,
     title: "자유게시판이게 무슨 식물이야?",
@@ -51,6 +53,8 @@ const posts = [
     comments: 3,
     type: "꿀팁공유",
   },
+
+
 ];
 
 const CommunityItem = styled.div`
@@ -144,17 +148,24 @@ const ContentImage = styled.div`
 const NameTime = styled.div``;
 const ContentTitle = styled.div``;
 const CommunityAll = () => {
+
   const [selectedType] = useAtom(selectedTypeAtom);
   const navigate = useNavigate();
 
   const handlePostClick = (id) => {
     navigate(`/community/${id}`);
   };
+
+  
+
+
+
   return (
     <div>
       {posts
         .filter((post) => post.type === selectedType)
         .map((post) => (
+
           <CommunityItem key={post.id} onClick={() => handlePostClick(post.id)}>
             <PostHeader>
               <ContentImage>
