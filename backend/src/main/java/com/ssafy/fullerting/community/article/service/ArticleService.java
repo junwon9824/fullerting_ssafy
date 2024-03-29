@@ -119,8 +119,8 @@ public class ArticleService {
         CustomUser customUser = userResponse.toEntity(userResponse);
 
 
-        if (keyword.equals("FREE_BOARD")) {
-            return articleRepository.findAllByType((ArticleType.FREE_BOARD)).stream().map(article -> {
+        if (keyword.equals("자유게시판")) {
+            return articleRepository.findAllByType((ArticleType.자유게시판)).stream().map(article -> {
 
                         boolean mylove = false;
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
@@ -130,8 +130,8 @@ public class ArticleService {
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
-        } else if (keyword.equals("INTRODUCE")) {
-            return articleRepository.findAllByType((ArticleType.INTRODUCE)).stream().map(article -> {
+        } else if (keyword.equals("작물소개")) {
+            return articleRepository.findAllByType((ArticleType.작물소개)).stream().map(article -> {
                         boolean mylove = false;
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
@@ -140,8 +140,8 @@ public class ArticleService {
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
-        } else if (keyword.equals("COOK")) {
-            return articleRepository.findAllByType((ArticleType.COOK)).stream().map(article -> {
+        } else if (keyword.equals("텃밭요리")) {
+            return articleRepository.findAllByType((ArticleType.텃밭요리)).stream().map(article -> {
                         boolean mylove = false;
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
@@ -151,7 +151,7 @@ public class ArticleService {
                     })
                     .collect(Collectors.toList());
         } else {
-            return articleRepository.findAllByType((ArticleType.SHARE_TIPS)).stream().map(article -> {
+            return articleRepository.findAllByType((ArticleType.꿀팁공유)).stream().map(article -> {
                         boolean mylove = false;
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
