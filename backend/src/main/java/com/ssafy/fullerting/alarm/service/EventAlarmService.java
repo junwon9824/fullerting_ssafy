@@ -7,6 +7,7 @@ import com.ssafy.fullerting.alarm.repository.EventAlarmRepository;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -52,6 +53,20 @@ public class EventAlarmService {
                         .build()
         ).collect(Collectors.toList());
     }
+
+    // 알람 읽음 처리
+    @Transactional
+    public void markAlarmAsRead(Long alarmId) {
+        // ID로 알람을 찾습니다.
+        EventAlarm alarm = eventAlarmRepository.findById(alarmId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 알람 ID : " + alarmId));
+
+        // 알람을 읽음 상태로 표시하고 저장.
+        alarm.markAsRead();
+        eventAlarmRepository.save(alarm);
+        log.info("알람 읽음 처리됨: {} ", alarmId);
+    }
+
 
     // 3. 가격제안 왔을 때
     // 현재 사용자의 알림함에 저장하는 메서드
