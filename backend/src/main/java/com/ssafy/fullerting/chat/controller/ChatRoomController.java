@@ -25,9 +25,10 @@ public class ChatRoomController {
         //채팅방 ID 반환
         return ResponseEntity.ok().body(MessageUtils.success(chatRoomService.createChatRoom(createChatRoomRequest)));
     }
-    
-    /*
-    채팅방 전체조회
+
+    /**
+     * 채팅방 전체조회
+     * @return
      */
     @GetMapping
     public ResponseEntity<MessageUtils> getAllChatRoom() {
