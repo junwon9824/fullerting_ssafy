@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import cartIcon from "../../assets/svg/cart.svg";
 import diaryIcon from "../../assets/svg/diary.svg";
+import { useQuery } from "@tanstack/react-query";
+import { getAlarms } from "../../apis/Alarm";
+import { useNavigate } from "react-router-dom";
 interface NotificationProps {
-  type: "커뮤니티" | "작물거래";
+  alarmType: "커뮤니티" | "작물거래";
+  alarmContent: string;
+  alarmRedirect: string;
+  alarmId: number;
+  checked: boolean;
 }
+
 const NotificationList = styled.div`
   display: flex;
   flex-direction: column;
@@ -23,20 +30,20 @@ const Notification = styled.div<NotificationProps>`
     height: 0.75rem;
     margin-right: 10px;
     background-image: url(${(props) =>
-      props.type === "커뮤니티" ? diaryIcon : cartIcon});
+      props.alarmType === "커뮤니티" ? diaryIcon : cartIcon});
     background-size: cover;
     background-repeat: no-repeat;
   }
 `;
 const NotificationItem = styled.div<{ isNew: boolean }>`
   font-family: "GamtanRoad Dotum TTF";
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 400;
   line-height: 1.7rem;
   width: 23.45rem;
   height: 5.5rem;
   padding: 0.5rem 1.5rem;
-  background-color: ${(props) => (props.isNew ? "#E5F9DB" : "none")};
+  background-color: ${(props) => (props.isNew ? "none" : "#E5F9DB")};
   border-bottom: 1px solid #e5e7eb;
   cursor: pointer;
 
@@ -44,76 +51,78 @@ const NotificationItem = styled.div<{ isNew: boolean }>`
     border-top: 1.5px solid #e5e7eb;
   }
 `;
-const mockNotifications = [
-  {
-    type: "커뮤니티",
-    id: 1,
-    message: "찐명님이 친구 요청을 보냈습니다.",
-    isNew: true,
-  },
-  {
-    type: "작물거래",
-    id: 2,
-    message: "찐명님이 당신의 게시물에 댓글을 남겼습니다.",
-    isNew: true,
-  },
-  {
-    type: "커뮤니티",
-    id: 3,
-    message: "찐명님이 당신의 게시물에 댓글을 남겼습니다.",
-    isNew: true,
-  },
-  {
-    type: "작물거래",
-    id: 4,
-    message: "찐명님이 당신의 게시물에 댓글을 남겼습니다.",
-    isNew: true,
-  },
-  {
-    type: "커뮤니티",
-    id: 5,
-    message: "찐명님이 당신의 게시물에 댓글을 남겼습니다.",
-    isNew: false,
-  },
-  {
-    type: "작물거래",
-    id: 6,
-    message: "찐명님이 당신의 게시물에 댓글을 남겼습니다.",
-    isNew: false,
-  },
-];
 
 const AllAlarm = () => {
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const navigate = useNavigate();
+  const {
+    data: mockNotifications,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["alarms"],
+    queryFn: getAlarms,
+  });
 
-  useEffect(() => {
-    setNotifications((notifications) =>
-      [...notifications].sort((a, b) => Number(b.isNew) - Number(a.isNew))
-    );
-  }, []);
+  if (isLoading) {
+    console.log("데이터 로딩 중...");
+    return <div>로딩중..</div>;
+  }
 
-  const handleClick = (id: number) => {
-    setNotifications((notifications) =>
-      notifications.map((notification) =>
-        notification.id === id
-          ? { ...notification, isNew: false }
-          : notification
-      )
-    );
+  if (error) {
+    console.error("알람 데이터를 가져오는데 실패했습니다:", error);
+    return <div>알람 데이터를 가져오는데 실패했습니다: {error.message}</div>;
+  }
+  console.log("alarm", mockNotifications);
+
+  const parseContent = (content: string): React.ReactNode => {
+    const regex = /#(.*?)#/g;
+    const parts = content.split(regex);
+
+    return parts.map((part, index) => {
+      if (index % 2 === 1) {
+        return <strong key={index}>{part}</strong>;
+      } else {
+        return part;
+      }
+    });
   };
+
+  const handleClick = (alarmId: number) => {
+    const notification = mockNotifications.find(
+      (notification) => notification.alarmId === alarmId
+    );
+
+    if (notification) {
+      console.log(`Notification ${alarmId} clicked.`);
+      switch (notification.alarmType) {
+        case "작물거래":
+          navigate("/trade");
+          break;
+        case "커뮤니티":
+          navigate("/community");
+          break;
+        default:
+          console.error("alarmType 오류:", notification.alarmType);
+      }
+    } else {
+      console.error("알림 id를 찾을수없음", alarmId);
+    }
+  };
+
   return (
     <div>
       <NotificationList>
-        {notifications.map((notification) => (
+        {mockNotifications.map((notification) => (
           <NotificationItem
-            key={notification.id}
-            isNew={notification.isNew}
-            onClick={() => handleClick(notification.id)}
+            key={notification.alarmId}
+            isNew={notification.checked}
+            onClick={() => handleClick(notification.alarmId)}
           >
-            <Notification type={notification.type}>
-              {notification.type}
+            <Notification alarmType={notification.alarmType}>
+              {notification.alarmType}
+              {notification.alarmId}
             </Notification>
-            {notification.message}
+            <div>{parseContent(notification.alarmContent)}</div>
           </NotificationItem>
         ))}
       </NotificationList>
