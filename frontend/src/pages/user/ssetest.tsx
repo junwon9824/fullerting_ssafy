@@ -16,7 +16,9 @@ const SSETest: React.FC = () => {
     useEffect(() => {
         const connectSSE = () => {
             // SSE 연결 URL. 서버 설정에 따라 변경해주세요.
-            const url = 'http://localhost:8080/v1/noti/pub';
+            // const url = 'http://localhost:8080/v1/noti/pub';
+            const url = 'https://j10c102.p.ssafy.io/noti/pub';
+
             const eventSource = new EventSourcePolyfill(url, {
                 headers: { 'Authorization': `Bearer ${accessToken}` }
             });
