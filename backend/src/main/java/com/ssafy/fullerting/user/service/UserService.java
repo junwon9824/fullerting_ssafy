@@ -28,16 +28,13 @@ public class UserService {
     private final AmazonS3Service amazonS3Service;
 
     public CustomUser createUserEntity(UserRegisterRequest userRegisterRequest) {
-        String inputEmail = userRegisterRequest.getEmail();
-        String inputPassword = userRegisterRequest.getPassword();
-        String inputNickname = userRegisterRequest.getNickname();
-
         return CustomUser.builder()
-                .email(inputEmail)
-                .password(passwordEncoder.encode(inputPassword))
-                .nickname(inputNickname)
+                .email(userRegisterRequest.getEmail())
+                .password(passwordEncoder.encode(userRegisterRequest.getPassword()))
+                .nickname(userRegisterRequest.getNickname())
                 .role(String.valueOf(UserRole.ROLE_MEMBER))
                 .rank(String.valueOf(UserRank.새싹))
+                .authProvider(userRegisterRequest.getAuthProvider())
                 .build();
     }
 

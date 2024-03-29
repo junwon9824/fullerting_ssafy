@@ -70,7 +70,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
                             authorities
                     ); // principal,userid,password,authorities 가 들어감}
             SecurityContextHolder.getContext().setAuthentication(customAuthenticationToken);
-            log.info("jwt 토큰 검증 : {}", SecurityContextHolder.getContext().toString());
+//            log.info("jwt 토큰 검증 : {}", SecurityContextHolder.getContext().toString());
         }
 
 

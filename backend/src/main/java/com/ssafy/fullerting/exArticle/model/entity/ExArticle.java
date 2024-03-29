@@ -118,8 +118,6 @@ public class ExArticle {
 
     public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
-        log.info(" articlearticle" + article);
-
         Favorite favorite1 = null;
 
         if (!article.getFavorite().isEmpty()) {
@@ -210,7 +208,6 @@ public class ExArticle {
                 )
                 .build();
 
-        log.info("exArticleAllResponseexArticleAllResponse" + exArticleAllResponse);
         return exArticleAllResponse;
     }
 
