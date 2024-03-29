@@ -83,7 +83,7 @@ const NotificationModal: React.FC = () => {
 
       const timer = setTimeout(() => {
         setNotification((prev) => ({ ...prev, show: false }));
-      }, 3000);
+      }, 30000);
 
       return () => clearTimeout(timer);
     }
