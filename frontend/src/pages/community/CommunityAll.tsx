@@ -8,15 +8,15 @@ import { useAtom } from "jotai";
 import { getallcommunities } from "../../apis/CommunityApi";
 import { useState, useEffect } from "react";
 
-
 const CommunityItem = styled.div`
-  background-color: white;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
   margin: 0.5rem;
+
   display: flex;
+  padding: 1.25rem 0rem;
   flex-direction: column;
   align-items: center;
-  padding: 1rem;
+  gap: 0.8125rem;
 `;
 
 const PostHeader = styled.div`
@@ -29,17 +29,19 @@ const PostHeader = styled.div`
 const PostTitle = styled.h2`
   color: #000;
   font-family: "GamtanRoad Dotum TTF";
-  font-size: 0.8rem;
+  font-size: 1rem;
+  font-style: normal;
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  line-height: normal;
 `;
 
 const PostContent = styled.p`
   color: #000;
   font-family: "GamtanRoad Dotum TTF";
-  font-size: 0.7rem;
+  font-size: 0.875rem;
+  font-style: normal;
   font-weight: 400;
-  line-height: 1.2rem;
+  line-height: 0.9375rem;
 `;
 
 const PostMeta = styled.div`
@@ -86,7 +88,7 @@ const LikeCommentCount = styled.span`
 `;
 
 const PostImage = styled.img`
-  width: 5rem;
+  width: 4rem;
   object-fit: cover;
   border-radius: 10px;
   margin-bottom: 1rem;
@@ -95,14 +97,17 @@ const PostImage = styled.img`
 
 const ContentImage = styled.div`
   display: flex;
+  gap: 7em;
 `;
+
+const ImgCon = styled.div``;
 
 const NameTime = styled.div``;
 const ContentTitle = styled.div``;
 
 const CommunityAll = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  
+
   interface Post {
     id: number;
     title: string;
@@ -114,51 +119,20 @@ const CommunityAll = () => {
     comments: number;
     type: string;
   }
-  // const fetchData = async () => {
-  //   try {
-  //     const data = await getallcommunities();
-  //     return data; // 데이터를 반환하여 호출한 곳에서 posts에 할당할 수 있도록 함
-  //   } catch (error) {
-  //     console.error("Error occurred while fetching data: ", error);
-  //     throw error;
-  //   }
-  // };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getallcommunities();
-        console.log(data)
+        console.log(data);
         setPosts(data);
       } catch (error) {
         console.error("Error occurred while fetching data: ", error);
       }
     };
-  
+
     fetchData(); // fetchData 함수 호출
-  
-    // cleanup 함수가 필요하지 않으므로 비워둡니다.
-  
   }, []);
-  
-
-  // const posts = [
-
-
-  //   {
-  //     id: 1,
-  //     title: "자유게시판이게 무슨 식물이야1?",
-  //     content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-  //     imageUrl: pullright,
-  //     name: "작심삼일",
-  //     time: 13,
-  //     likes: 17,
-  //     comments: 3,
-  //     type: "자유게시판",
-  //   },
-
-
-  // ];
 
   const [selectedType] = useAtom(selectedTypeAtom);
   const navigate = useNavigate();
@@ -167,13 +141,11 @@ const CommunityAll = () => {
     navigate(`/community/${id}`);
   };
 
-
   return (
     <div>
       {posts
         .filter((post) => post.type === selectedType)
         .map((post) => (
-
           <CommunityItem key={post.id} onClick={() => handlePostClick(post.id)}>
             <PostHeader>
               <ContentImage>
@@ -181,7 +153,9 @@ const CommunityAll = () => {
                   <PostTitle>{post.title}</PostTitle>
                   <PostContent>{post.content}</PostContent>
                 </ContentTitle>
-                <PostImage src={post.imageUrl} alt="Post image" />
+                <ImgCon>
+                  <PostImage src={post.imageUrl} alt="Post image" />
+                </ImgCon>
               </ContentImage>
               <PostMeta>
                 <UserMeta>

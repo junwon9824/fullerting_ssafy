@@ -11,13 +11,7 @@ import { selectedTypeAtom } from "../../stores/community";
 import { useAtom } from "jotai";
 
 const LayoutInnerBox = styled.div`
-  display: flex;
-  width: 19.875rem;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 1.12rem 0;
-  gap: 0.5rem;
+  padding: 1.25rem 0rem;
 `;
 const Button = styled.div`
   margin-top: 1rem;
@@ -78,7 +72,7 @@ const Community = () => {
             />
           </Button>
           <WriteBox src={Write} onClick={handelWriteClick} />
-          
+
           <CommunityAll />
         </LayoutInnerBox>
       </LayoutMainBox>
