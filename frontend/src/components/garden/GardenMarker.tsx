@@ -1,9 +1,48 @@
 import { useState } from "react";
 import { MapMarker } from "react-kakao-maps-sdk";
 import shovelImg from "../../assets/images/shovel.png";
+import styled from "styled-components";
+
+const InfoBox = styled.div`
+  position: relative;
+  background-color: #ffffff;
+  padding: 0.4rem;
+  width: 100%;
+`;
+
+const CloseButton = styled.img`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+`;
+
+const InfoItemBox = styled.div`
+  padding: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const OffSite = styled.span`
+  background-color: #ffca60;
+  padding: 0.3rem 0.5rem;
+  color: ${({ theme }) => theme.colors.white};
+  border-radius: 0.7rem;
+  font-weight: bold;
+`;
 
 const GardenMarker = ({ farm }: { farm: FarmType }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const renderOffSite = (offSite: string) => {
+    const offSiteList = offSite.split(",").map((item) => item.trim());
+    const filteredOffSiteList = offSiteList.filter((item) => item !== "등");
+
+    return filteredOffSiteList.map((item, index) => (
+      <OffSite key={index}>{item}</OffSite>
+    ));
+  };
 
   return (
     <>
@@ -30,25 +69,50 @@ const GardenMarker = ({ farm }: { farm: FarmType }) => {
         onClick={() => setIsOpen(true)}
       >
         {isOpen && (
-          <div style={{ minWidth: "15rem" }}>
-            <img
+          <InfoBox>
+            <CloseButton
+              src="https://t1.daumcdn.net/localimg/localimages/07/mapjsapi/2x/bt_close.gif"
               alt="close"
               width="14"
               height="13"
-              src="https://t1.daumcdn.net/localimg/localimages/07/mapjsapi/2x/bt_close.gif"
-              style={{
-                position: "absolute",
-                right: "5px",
-                top: "5px",
-                cursor: "pointer",
-              }}
               onClick={() => setIsOpen(false)}
             />
-            <div>{farm.farmName}</div>
-            <div>{farm.farmType}</div>
-            <div>{farm.farmAddress}</div>
-            <div>{farm.farmOffSite}</div>
-          </div>
+            <InfoItemBox>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                }}
+              >
+                <div style={{ fontSize: "0.9rem", fontWeight: "bold" }}>
+                  {farm.farmName}
+                </div>
+                <div
+                  style={{
+                    fontSize: "0.6rem",
+                    color: "#8c8c8c",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {farm.farmType}
+                </div>
+              </div>
+              <div style={{ fontSize: "0.8rem" }}>주소: {farm.farmAddress}</div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "0.3rem",
+                  fontSize: "0.5rem",
+                  flexWrap: "wrap",
+                }}
+              >
+                {renderOffSite(farm.farmOffSite)}
+              </div>
+            </InfoItemBox>
+          </InfoBox>
         )}
       </MapMarker>
     </>
