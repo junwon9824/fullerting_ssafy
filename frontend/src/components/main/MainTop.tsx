@@ -122,7 +122,13 @@ const DiarySlider = styled.div`
     flex: 0 0 auto;
   }
 `;
-
+const calculateDDay = (createdAt: string) => {
+  const today = new Date();
+  const createdDate = new Date(createdAt);
+  const diffTime = Math.abs(today.getTime() - createdDate.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return `D+${diffDays}`;
+};
 const Maintop = () => {
   const accessToken = sessionStorage.getItem("accessToken");
   const navigate = useNavigate();
@@ -164,10 +170,12 @@ const Maintop = () => {
               <DiaryBox key={crop.packDiaryId} onClick={goToDiary}>
                 <Content>
                   <TextContent>
-                    <DiaryText>{cropList[index].packDiaryTitle}</DiaryText>
+                    <DiaryText>{crop.packDiaryTitle}</DiaryText>
                     <BasicText>와 함께한 시간</BasicText>
                   </TextContent>
-                  <DDayCounter>더미</DDayCounter>
+                  <DDayCounter>
+                    {calculateDDay(crop.packDiaryCulStartAt)}
+                  </DDayCounter>
                   <Diary>일지 작성하러 가기</Diary>
                 </Content>
                 <CropImage
