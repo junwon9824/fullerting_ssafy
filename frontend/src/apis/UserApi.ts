@@ -56,3 +56,22 @@ export const userIndividualCheck = async (
     throw e;
   }
 };
+
+export const updateTown = async (location: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.patch(
+      `/users/town`,
+      {
+        userLocation: location,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error updateTown: ", error);
+    throw error;
+  }
+};
