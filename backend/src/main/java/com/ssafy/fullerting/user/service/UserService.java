@@ -98,6 +98,11 @@ public class UserService {
         return customUser.toResponse();
     }
 
+    public CustomUser getUserEntityById(Long userId) {
+        CustomUser customUser = userRepository.findById(userId).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        return customUser;
+    }
+
     public void updatetown(UserTownRequest userTownRequest) {
         CustomUser user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         user.setLocation(userTownRequest.getUserLocation());

@@ -19,9 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/v1/users")
 @Tag(name = "유저 기능 API", description = "유저와 관련된 기능 제공")
 public class UserController {
-
     private final UserService userService;
-
 
     @PostMapping("/register")
     @Operation(summary = "유저 회원가입", description = "이메일, 비밀번호, 닉네임을 입력받아 회원가입을 진행한다")

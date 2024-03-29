@@ -22,6 +22,7 @@ public class ChatRoomController {
      */
     @PostMapping
     public ResponseEntity<MessageUtils> createChatRoom(@RequestBody CreateChatRoomRequest createChatRoomRequest) {
+        //채팅방 ID 반환
         return ResponseEntity.ok().body(MessageUtils.success(chatRoomService.createChatRoom(createChatRoomRequest)));
     }
 
