@@ -7,6 +7,7 @@ import com.ssafy.fullerting.community.love.model.entity.Love;
 import com.ssafy.fullerting.image.model.entity.Image;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class Article {
     }
 
     public ArticleResponse toResponse(Article article, boolean mylove) {
+        Hibernate.initialize(article.getImages());
 
 
         return ArticleResponse.builder()
