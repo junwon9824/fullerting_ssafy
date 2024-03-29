@@ -118,6 +118,7 @@ const MainExchange = () => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
     }
   };
+  if (!data || data.length === 0) return <div>거래 데이터 없음</div>;
   return (
     <MainBox>
       <Text>나의 반려작물의 모든 것, 풀러팅에서 함께</Text>
