@@ -8,7 +8,7 @@ import GardenMap from "../../components/garden/GardenMap";
 const GardenPage = () => {
   return (
     <>
-      <TopBar title="작물일지" showBack={false} />
+      <TopBar title="텃밭정보" showBack={false} />
       <GardenMap />
       <LayoutMainBox>
         <LayoutInnerBox></LayoutInnerBox>
