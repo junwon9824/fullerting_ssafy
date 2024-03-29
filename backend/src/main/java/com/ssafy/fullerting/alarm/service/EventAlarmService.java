@@ -1,17 +1,27 @@
 package com.ssafy.fullerting.alarm.service;
 
 import com.ssafy.fullerting.alarm.model.EventAlarmType;
+import com.ssafy.fullerting.alarm.model.dto.response.MyEventAlarmResponse;
 import com.ssafy.fullerting.alarm.model.entity.EventAlarm;
 import com.ssafy.fullerting.alarm.repository.EventAlarmRepository;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EventAlarmService {
     private final EventAlarmRepository eventAlarmRepository;
+    private final UserService userService;
     // 알림 트리거
     // 1. 내가 쓴 게시물에 댓글이 달렸을 때
     // 2. 채팅이 왔을 때 (채팅이 생성됐을 때)
@@ -31,10 +41,32 @@ public class EventAlarmService {
                 .receiveUser(exArticle.getUser())
                 .sendUser(bidUser)
                 .type(EventAlarmType.작물거래)
-                .content(bidUser + "님이 가격을 제안하셨어요.")
+                .content(bidUser.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 가격을 제안하셨어요.")
                 .redirect(redirectURL)
                 .build();
 
+        log.info("이벤트 알람 도착 : {} ", alarm);
         return eventAlarmRepository.save(alarm);
+    }
+
+    public List<MyEventAlarmResponse> getEventAlarmsForUser() {
+        // 첫 페이지, 페이지 당 30개 항목으로 페이징 설정
+        Slice<EventAlarm> eventAlarmSlice = eventAlarmRepository.
+                findByReceiveUserId(
+                        userService.getUserInfo().getId(),
+                        PageRequest.of(0, 10)
+                );
+        log.info("알람 요청자 : {} ", userService.getUserInfo().getId());
+        log.info("내 알람리스트 : {}", eventAlarmSlice.toString());
+        // 조회된 이벤트 알람 리스트 반환
+
+        return eventAlarmSlice.getContent().stream().map(eventAlarm ->
+                MyEventAlarmResponse.builder()
+                        .alarmType(eventAlarm.getType().toString())
+                        .alarmContent(eventAlarm.getContent())
+                        .alarmRedirect(eventAlarm.getRedirect())
+                        .isChecked(eventAlarm.isChecked())
+                        .build()
+        ).collect(Collectors.toList());
     }
 }

@@ -90,7 +90,7 @@ public class MessageController {
                             .bidderCount(bidderCount)
                             .build()
             );
-
+            
             log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(), exArticleId);
             log.info("리디렉트 {} : ", dealstartRequest.getRedirectURL());
             // 입찰 알림
