@@ -38,6 +38,7 @@ import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
 import GardenPage from "../pages/garden/GardenPage";
 import ChatTestPage from "../pages/user/test";
 import SSETest from "../pages/user/ssetest";
+import TownCertifyPage from "../pages/user/TownCertifyPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -45,6 +46,7 @@ const authRoutes = [
   { path: "/login", element: <LoginPage /> },
   { path: "/join", element: <JoinPage /> },
   { path: "/auth/callback", element: <AuthCallbackPage /> },
+  { path: "/town", element: <TownCertifyPage /> },
 ];
 
 const gardenRoutes = [{ path: "/garden", element: <GardenPage /> }];
