@@ -2,14 +2,9 @@ import { MapMarker } from "react-kakao-maps-sdk";
 import shovelImg from "../../assets/images/shovel.png";
 import { useAtom } from "jotai";
 import { markerAtom } from "../../stores/garden";
-import { useEffect } from "react";
 
 const GardenMarker = ({ farm }: { farm: FarmType }) => {
   const [selectedMarker, setSelectedMarker] = useAtom(markerAtom);
-
-  useEffect(() => {
-    console.log(selectedMarker);
-  }, [selectedMarker]);
 
   return (
     <>
