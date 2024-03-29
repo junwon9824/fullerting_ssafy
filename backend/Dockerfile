@@ -29,5 +29,6 @@ WORKDIR /app
 # 빌드 결과물을 이전 단계에서 복사
 COPY --from=build /app/build/libs/*.jar /app/back.jar
 
+
 # 서버 실행
 ENTRYPOINT ["java","-jar", "-Djava.security.egd=file:/dev/./urandom","/app/back.jar"]

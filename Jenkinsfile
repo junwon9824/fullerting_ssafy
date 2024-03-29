@@ -36,25 +36,14 @@ pipeline {
                         sh 'echo "This is a test shell script"'
 
   // 시크릿 파일 사용
-                withCredentials([file(credentialsId: 'secret-backend', variable: 'SECRET_FILE')]) {
-                    // 파일을 사용하는 작업 수행
-                    // 예: 파일 내용 출력
-                    sh 'cat $SECRET_FILE'
-                }
+                        withCredentials([file(credentialsId: 'secret-backend', variable: 'SECRET_FILE')]) {
+                            // 파일을 사용하는 작업 수행
+                            // 예: 파일 내용 출력
+                            sh 'ls -l $SECRET_FILE'
+                            sh 'cat $SECRET_FILE'
+                        }
 
 
-                        // sh 'chmod +x ./gradlew'
-                        // def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
-                        // version = version_value.split(/:/)[1].trim()
-                        // env.TAG = version
-
-                        // Gradle 설정 추가
-                        // sh "echo 'org.gradle.java.home=${ORG_GRADLE_JAVA_HOME}' > gradle.properties"
-
-                    //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
-                    //docker에 동적으로 tag를 지정하기 위해 사용했다.
-                    // sh "echo TAG=$version >> .env"
-                    // sh 'cat .env'
                     }
                 }
             }
