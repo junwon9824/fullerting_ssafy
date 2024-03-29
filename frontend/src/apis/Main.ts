@@ -1,11 +1,8 @@
 import { api } from "./Base";
 
-export const getExchange = async () => {
+export const getExchange = async (accessToken: string) => {
   try {
-    const accessToken = sessionStorage.getItem("accessToken");
-    if (!accessToken) {
-      throw new Error("Access token is not available.");
-    }
+  
     const response = await api.get(`/exchanges/all`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
