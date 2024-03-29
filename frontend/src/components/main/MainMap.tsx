@@ -55,7 +55,7 @@ const MainMap = () => {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    navigate("/join");
+    navigate("/garden");
   };
   return (
     <MainBox>
