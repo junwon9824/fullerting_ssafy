@@ -31,9 +31,11 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                     .exArticleId(createChatRoomRequest.getExArticleId())
                     .buyerId(userResponse.getId())
                     .build());
-
-
+            return CreateChatRoomResponse.toResponse(chatRoom);
         }
-        return null;
+        //존재하는 경우 해당 채팅방 응답
+        else{
+            return CreateChatRoomResponse.toResponse(chatRoomOptional.get());
+        }
     }
 }
