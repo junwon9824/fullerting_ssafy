@@ -106,7 +106,6 @@ const GardenMarker = ({ farm }: { farm: FarmType }) => {
               alt="close"
               width="14"
               height="13"
-              onClick={() => setIsOpen(false)}
             />
             <InfoItemBox>
               <div
