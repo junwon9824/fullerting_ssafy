@@ -1,5 +1,10 @@
-import { Map, MarkerClusterer, useMap } from "react-kakao-maps-sdk";
-import useKakaoLoader from "../../hooks/useKakaoLoader";
+import {
+  Map,
+  MarkerClusterer,
+  useKakaoLoader,
+  useMap,
+} from "react-kakao-maps-sdk";
+// import useKakaoLoader from "../../hooks/useKakaoLoader";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getGardenList } from "../../apis/GardenApi";
@@ -23,7 +28,12 @@ const ReSettingMapBounds = ({ farmList }: { farmList: FarmType[] }) => {
 };
 
 const GardenMap = () => {
-  useKakaoLoader();
+  // useKakaoLoader();
+
+  const [loading, error] = useKakaoLoader({
+    appkey: import.meta.env.VITE_KAKAO_MAP_KEY,
+    libraries: ["clusterer", "drawing", "services"],
+  });
 
   const { data: farmList } = useQuery({
     queryKey: ["farmList"],
