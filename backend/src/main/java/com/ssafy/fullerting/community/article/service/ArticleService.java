@@ -3,6 +3,7 @@ package com.ssafy.fullerting.community.article.service;
 import com.ssafy.fullerting.community.article.exception.ArticleErrorCode;
 import com.ssafy.fullerting.community.article.exception.ArticleException;
 import com.ssafy.fullerting.community.article.model.dto.request.RegistArticleRequest;
+import com.ssafy.fullerting.community.article.model.dto.response.ArticleAllResponse;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
@@ -37,7 +38,7 @@ public class ArticleService {
     private final ImageRepository imageRepository;
     private final AmazonS3Service amazonS3Service;
 
-    public void registarticle(RegistArticleRequest registArticleRequest, List<MultipartFile> files) {
+    public void registerticle(RegistArticleRequest registArticleRequest, List<MultipartFile> files) {
 
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
@@ -69,7 +70,7 @@ public class ArticleService {
         }).collect(Collectors.toList());
 
 
-        log.info("imagesize"+images.size());
+        log.info("imagesize" + images.size());
 //        images.forEach(article::addimage);
 
         images.forEach(image -> {
@@ -131,7 +132,7 @@ public class ArticleService {
         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), articleId) != null) {
             mylove = true;
         }
-        return article.toResponse(mylove);
+        return article.toResponse(article, mylove);
 
     }
 
@@ -150,7 +151,7 @@ public class ArticleService {
         articleRepository.delete(article);
     }
 
-    public List<ArticleResponse> findAllArticle() {
+    public List<ArticleAllResponse> findAllArticle() {
 
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse); //로그인한 유저..
@@ -163,9 +164,10 @@ public class ArticleService {
                         mylove = true;
                     }
 
-                    ArticleResponse articleResponse = article.toResponse(mylove);
+                    ArticleAllResponse articleResponse = article.toAllResponse(article, mylove);
                     return articleResponse;
                 })
+
                 .collect(Collectors.toList());
     }
 
@@ -182,7 +184,7 @@ public class ArticleService {
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
-                        ArticleResponse articleResponse = article.toResponse(mylove);
+                        ArticleResponse articleResponse = article.toResponse(article, mylove);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -192,7 +194,7 @@ public class ArticleService {
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
-                        ArticleResponse articleResponse = article.toResponse(mylove);
+                        ArticleResponse articleResponse = article.toResponse(article, mylove);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -202,7 +204,7 @@ public class ArticleService {
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
-                        ArticleResponse articleResponse = article.toResponse(mylove);
+                        ArticleResponse articleResponse = article.toResponse(article, mylove);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -212,7 +214,7 @@ public class ArticleService {
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
-                        ArticleResponse articleResponse = article.toResponse(mylove);
+                        ArticleResponse articleResponse = article.toResponse(article, mylove);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -233,7 +235,7 @@ public class ArticleService {
                     if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                         mylove = true;
                     }
-                    ArticleResponse articleResponse = article.toResponse(mylove);
+                    ArticleResponse articleResponse = article.toResponse(article, mylove);
                     return articleResponse;
                 })
                 .collect(Collectors.toList());

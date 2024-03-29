@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.community.article.controller;
 
 import com.ssafy.fullerting.community.article.model.dto.request.RegistArticleRequest;
+import com.ssafy.fullerting.community.article.model.dto.response.ArticleAllResponse;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.service.ArticleService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
@@ -24,7 +25,7 @@ public class ArticleController {
     public ResponseEntity<MessageUtils> registarticle(@RequestPart("RegistArticleRequest") RegistArticleRequest registArticleRequest,
                                                       @RequestPart("images") List<MultipartFile> files
     ) {
-        articleService.registarticle(registArticleRequest,files);
+        articleService.registerticle(registArticleRequest,files);
 
         return ResponseEntity.ok(MessageUtils.success());
     }
@@ -48,7 +49,7 @@ public class ArticleController {
     @GetMapping("/all")
     public ResponseEntity<MessageUtils> findAllArticle(
     ) {
-        List<ArticleResponse> articleResponse = articleService.findAllArticle();
+        List<ArticleAllResponse > articleResponse = articleService.findAllArticle();
 
         return ResponseEntity.ok(MessageUtils.success(articleResponse));
     }
