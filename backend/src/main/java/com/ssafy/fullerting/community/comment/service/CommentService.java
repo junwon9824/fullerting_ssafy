@@ -45,12 +45,14 @@ public class CommentService {
     }
 
 
-    public List<CommentResonse> allcomment() {
-        return commentRepository.findAll()
+    public List<CommentResonse> allcomment(Long article_id) {
+
+        return commentRepository.findAllByArticle_Id(article_id)
                 .stream().map(comment -> {
                     CommentResonse commentResonse = comment.tocommentResonse();
                     return commentResonse;
                 }).collect(Collectors.toList());
+
     }
 
 

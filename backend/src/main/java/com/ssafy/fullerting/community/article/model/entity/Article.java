@@ -1,10 +1,10 @@
 package com.ssafy.fullerting.community.article.model.entity;
 
+import com.ssafy.fullerting.community.article.model.dto.response.ArticleAllResponse;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import com.ssafy.fullerting.community.love.model.entity.Love;
 import com.ssafy.fullerting.image.model.entity.Image;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -64,7 +64,11 @@ public class Article {
 
 
     public void addimage(Image image) {
-        images.add(image);
+        if (this.images == null) {
+            this.images = new ArrayList<>();
+        }
+        this.images.add(image);
+
     }
 
     public void removeimage(Image image) {
@@ -75,20 +79,31 @@ public class Article {
         loves.remove(love);
     }
 
-    public ArticleResponse toResponse(boolean mylove) {
+    public ArticleResponse toResponse(Article article, boolean mylove) {
+
 
         return ArticleResponse.builder()
-                .title(this.title)
-                .id(this.id)
-                .content(this.content)
-                .type(this.type)
-                .love(this.getLoves().size())
+                .title(article.getTitle())
+                .id(article.getId())
+                .content(article.getContent())
+                .type(article.getType())
+                .love(article.getLove())
                 .mylove(mylove)
-                .imgurls(this.getImages().stream().map(image -> {
-                    return image.getImgStoreUrl();
-                }).collect(Collectors.toList()))
+                .imgurls(article.getImages() != null ? article.getImages().stream().map(Image::getImgStoreUrl).collect(Collectors.toList()) : null)
                 .build();
     }
+
+    public ArticleAllResponse toAllResponse(Article article, boolean mylove) {
+        return ArticleAllResponse.builder()
+                .title(article.getTitle())
+                .id(article.getId())
+                .content(article.getContent())
+                .type(article.getType())
+                .love(article.getLove())
+                .mylove(mylove)
+                .build();
+    }
+
 
 //    @OneToMany(mappedBy = "")
 //    private Love love;

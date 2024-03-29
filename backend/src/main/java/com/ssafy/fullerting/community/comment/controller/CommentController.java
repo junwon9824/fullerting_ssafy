@@ -27,10 +27,10 @@ public class CommentController {
 
     }
 
-    @GetMapping("/comments/all")
-    public ResponseEntity<MessageUtils> allcomment() {
+    @GetMapping("/{article_id}/comments/all")
+    public ResponseEntity<MessageUtils> allcomment(@PathVariable Long article_id) {
 
-        List<CommentResonse> commentResonses = commentService.allcomment();
+        List<CommentResonse> commentResonses = commentService.allcomment(article_id);
         return ResponseEntity.ok(MessageUtils.success(commentResonses));
 
     }
