@@ -47,7 +47,7 @@ public class JwtUtils {
 
     // 토큰만료시간
     public Date getExpiredTime(Long period) {
-        log.info("Token : lifetime = {}", period);
+//        log.info("Token : lifetime = {}", period);
         return Date.from(ZonedDateTime.now(zoneId).plus(Duration.ofMillis(period)).toInstant());
     }
 
@@ -59,7 +59,7 @@ public class JwtUtils {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        log.info("Token : Issue AccessToken for princiapl : {}, authorities : {}", email, authorityList);
+//        log.info("Token : Issue AccessToken for princiapl : {}, authorities : {}", email, authorityList);
 
         return Jwts.builder()
                 .setSubject(email)
