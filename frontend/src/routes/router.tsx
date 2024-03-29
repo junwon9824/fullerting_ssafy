@@ -40,6 +40,7 @@ import ChatTestPage from "../pages/user/test";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
+  { path: "/ssetest", element: <SSETest /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/join", element: <JoinPage /> },
   { path: "/auth/callback", element: <AuthCallbackPage /> },
