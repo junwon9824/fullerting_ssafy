@@ -1,13 +1,14 @@
-import { useState } from "react";
 import { CustomOverlayMap, MapMarker } from "react-kakao-maps-sdk";
 import shovelImg from "../../assets/images/shovel.png";
 import styled from "styled-components";
+import { useAtom } from "jotai";
+import { markerAtom } from "../../stores/garden";
 
 const InfoBox = styled.div`
   position: relative;
   background-color: #ffffff;
   padding: 0.5rem;
-  width: 15rem;
+  width: 18rem;
   margin-bottom: 4.8rem;
   border-radius: 0.6rem;
 `;
@@ -24,6 +25,7 @@ const InfoItemBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 100%;
 `;
 
 const OffSite = styled.span`
@@ -35,23 +37,38 @@ const OffSite = styled.span`
 `;
 
 const GardenMarker = ({ farm }: { farm: FarmType }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [selectedMarker, setSelectedMarker] = useAtom(markerAtom);
 
   const renderOffSite = (offSite: string) => {
     const offSiteList = offSite.split(",").map((item) => item.trim());
     const filteredOffSiteList = offSiteList.filter((item) => item !== "등");
 
-    if (filteredOffSiteList.length == 0) return null;
+    console.log(filteredOffSiteList);
 
-    return filteredOffSiteList.map(
-      (item, index) => item && <OffSite key={index}>{item}</OffSite>
+    return (
+      filteredOffSiteList[0] !== "" &&
+      filteredOffSiteList[0] !== "-" && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "0.3rem",
+            fontSize: "0.5rem",
+            flexWrap: "wrap",
+          }}
+        >
+          {filteredOffSiteList.map(
+            (item, index) => item && <OffSite key={index}>{item}</OffSite>
+          )}
+        </div>
+      )
     );
   };
 
   return (
     <>
       <MapMarker
-        key={`${farm.farmPosLat}-${farm.farmPosLng}`}
+        key={farm.farmId}
         position={{
           lat: farm.farmPosLat,
           lng: farm.farmPosLng,
@@ -69,10 +86,13 @@ const GardenMarker = ({ farm }: { farm: FarmType }) => {
             },
           },
         }}
-        // clickable={true} // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
-        onClick={() => setIsOpen(true)}
-      ></MapMarker>
-      {isOpen && (
+        clickable={true} // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+        onClick={() => {
+          renderOffSite(farm.farmOffSite);
+          setSelectedMarker(farm.farmId);
+        }}
+      />
+      {selectedMarker === farm.farmId && (
         <CustomOverlayMap
           position={{
             lat: farm.farmPosLat,
@@ -143,17 +163,7 @@ const GardenMarker = ({ farm }: { farm: FarmType }) => {
                 </svg>
                 {farm.farmAddress}
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: "0.3rem",
-                  fontSize: "0.5rem",
-                  flexWrap: "wrap",
-                }}
-              >
-                {renderOffSite(farm.farmOffSite)}
-              </div>
+              {renderOffSite(farm.farmOffSite)}
             </InfoItemBox>
           </InfoBox>
         </CustomOverlayMap>
