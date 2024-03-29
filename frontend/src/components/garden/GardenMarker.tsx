@@ -30,7 +30,7 @@ const GardenMarker = ({ farm }: { farm: FarmType }) => {
         onClick={() => setIsOpen(true)}
       >
         {isOpen && (
-          <div style={{ minWidth: "150px" }}>
+          <div style={{ minWidth: "15rem" }}>
             <img
               alt="close"
               width="14"
@@ -44,7 +44,10 @@ const GardenMarker = ({ farm }: { farm: FarmType }) => {
               }}
               onClick={() => setIsOpen(false)}
             />
-            <div style={{ padding: "0.28rem" }}>{farm.farmName}</div>
+            <div>{farm.farmName}</div>
+            <div>{farm.farmType}</div>
+            <div>{farm.farmAddress}</div>
+            <div>{farm.farmOffSite}</div>
           </div>
         )}
       </MapMarker>
