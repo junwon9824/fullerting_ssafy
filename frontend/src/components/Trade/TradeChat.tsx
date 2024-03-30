@@ -16,6 +16,9 @@ interface ChatResponse {
   chatSendAt: Date; // 전송일자
   chatId: number;
 }
+interface ContentResponse {
+  justifyContent: string;
+}
 const ProductBox = styled.div`
   width: 100%;
   justify-content: space-between;
@@ -107,6 +110,27 @@ const SendButton = styled.img`
   height: 2.1875rem;
 `;
 
+const ChattingBox = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.25rem;
+`;
+const Thumbnail = styled.img`
+  width: 2.1875rem;
+  height: 2.1875rem;
+  border-radius: 50%;
+`;
+const ContentBox = styled.div`
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  width: 13.0625rem;
+  height: auto;
+  border-radius: 0rem 0.625rem 0.625rem 0.625rem;
+  background: var(--gary3, #f4f4f4);
+`;
+
 const TradeChat = () => {
   const { chatId } = useParams();
   const chatNumber = Number(chatId);
@@ -125,7 +149,7 @@ const TradeChat = () => {
       : undefined,
   });
   console.log(chatNumber);
-  // console.log(data);
+  console.log(data);
   useEffect(() => {
     console.log("저 호출됐어요");
     const transformedData = data?.map((item: ChatResponse) => ({
@@ -202,9 +226,12 @@ const TradeChat = () => {
           </ProductBox>
           <ChatBox>
             {data?.map((item: any) => (
-              <div>
-                `보낸 아이디 {item.chatSenderId} : {item.chatMessage}`
-              </div>
+              <ChattingBox>
+                <Thumbnail src={item.chatSenderThumb} />
+                <ContentBox>
+                  `보낸 아이디 {item.chatSenderNick} : {item.chatMessage}`
+                </ContentBox>
+              </ChattingBox>
             ))}
           </ChatBox>
           <SendBox>
