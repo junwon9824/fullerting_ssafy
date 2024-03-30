@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import Send from "/src/assets/images/send.png";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { getChatRecord } from "../../apis/TradeApi";
+import { getChatRecord, getChatRoomDetail } from "../../apis/TradeApi";
 import Stomp from "stompjs";
+import { userCheck } from "../../apis/UserApi";
 interface ChatResponse {
   // id: number;
   chatRoomId: number;
@@ -16,8 +17,11 @@ interface ChatResponse {
   chatSendAt: Date; // 전송일자
   chatId: number;
 }
-interface ContentResponse {
-  justifyContent: string;
+interface ChattingBoxProps {
+  isCurrentUser: boolean;
+}
+interface ContentBoxProps {
+  backgroundColor: string;
 }
 const ProductBox = styled.div`
   width: 100%;
@@ -110,25 +114,29 @@ const SendButton = styled.img`
   height: 2.1875rem;
 `;
 
-const ChattingBox = styled.div`
-  width: 100%;
+const ChattingBox = styled.div<ChattingBoxProps>`
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  width: 100%;
+  justify-content: ${(props) =>
+    props.isCurrentUser ? "flex-end" : "flex-start"};
   gap: 0.25rem;
 `;
+
 const Thumbnail = styled.img`
   width: 2.1875rem;
   height: 2.1875rem;
   border-radius: 50%;
 `;
-const ContentBox = styled.div`
+const ContentBox = styled.div<ContentBoxProps>`
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
   width: 13.0625rem;
   height: auto;
   border-radius: 0rem 0.625rem 0.625rem 0.625rem;
-  background: var(--gary3, #f4f4f4);
+  background-color: ${(props) => props.backgroundColor};
 `;
 
 const TradeChat = () => {
@@ -148,8 +156,26 @@ const TradeChat = () => {
       ? () => getChatRecord(accessToken, chatNumber)
       : undefined,
   });
-  console.log(chatNumber);
-  console.log(data);
+  const {
+    isLoading: detailIsLoading,
+    data: detailData,
+    error: detailError,
+  } = useQuery({
+    queryKey: ["chatRoomDetail", chatNumber],
+    queryFn: accessToken
+      ? () => getChatRoomDetail(accessToken, chatNumber)
+      : undefined,
+  });
+  const {
+    isLoading: userDataIsLoading,
+    data: userData,
+    error: userDataError,
+  } = useQuery({
+    queryKey: ["userData"],
+    queryFn: accessToken ? () => userCheck(accessToken) : undefined,
+  });
+  console.log("유저", userData);
+  console.log("글", data);
   useEffect(() => {
     console.log("저 호출됐어요");
     const transformedData = data?.map((item: ChatResponse) => ({
@@ -221,18 +247,37 @@ const TradeChat = () => {
       <LayoutMainBox>
         <LayoutInnerBox>
           <ProductBox>
-            <TitleBox>심우석 머리 브로콜리</TitleBox>
+            <TitleBox>{detailData?.chatRoomExArticleTitle}</TitleBox>
             <FisishButton>거래종료</FisishButton>
           </ProductBox>
           <ChatBox>
-            {data?.map((item: any) => (
-              <ChattingBox>
-                <Thumbnail src={item.chatSenderThumb} />
-                <ContentBox>
-                  `보낸 아이디 {item.chatSenderNick} : {item.chatMessage}`
-                </ContentBox>
-              </ChattingBox>
-            ))}
+            {data?.map((item: any) =>
+              item.chatSenderId === detailData?.chatRoomUserId ? (
+                <ChattingBox
+                  key={item?.chatId}
+                  isCurrentUser={
+                    item.chatSenderId === detailData?.chatRoomUserId
+                  }
+                >
+                  <ContentBox backgroundColor="var(--sub1, #E5F9DB)">
+                    보낸 아이디 {item.chatSenderNick} : {item.chatMessage}
+                  </ContentBox>
+                  <Thumbnail src={item.chatSenderThumb} />
+                </ChattingBox>
+              ) : (
+                <ChattingBox
+                  key={item?.chatId}
+                  isCurrentUser={
+                    item.chatSenderId === detailData?.chatRoomUserId
+                  }
+                >
+                  <Thumbnail src={item.chatSenderThumb} />
+                  <ContentBox backgroundColor="var(--gary3, #F4F4F4)">
+                    보낸 아이디 {item.chatSenderNick} : {item.chatMessage}
+                  </ContentBox>
+                </ChattingBox>
+              )
+            )}
           </ChatBox>
           <SendBox>
             <SendInput

@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Stomp from "stompjs";
 import { api } from "../../apis/Base";
-import {
-  createChatRoom,
-  getChatRecord,
-  useSendChat,
-} from "../../apis/TradeApi";
+import { createChatRoom, getChatRecord } from "../../apis/TradeApi";
 import { useQuery } from "@tanstack/react-query";
 
 interface UserResponse {
@@ -50,7 +46,7 @@ function ChatTestPage() {
   const client = Stomp.over(socket);
   const accessToken = sessionStorage.getItem("accessToken") || ""; // accessToken이 null인 경우에는 빈 문자열로 대체
   const { mutate: createChat } = createChatRoom();
-  const { mutate: sendChat } = useSendChat();
+  // const { mutate: sendChat } = useSendChat();
   const { isLoading, data, error } = useQuery({
     queryKey: ["chatList", postId],
     queryFn: accessToken ? () => getChatRecord(accessToken, postId) : undefined,
