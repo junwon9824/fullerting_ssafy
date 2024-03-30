@@ -7,6 +7,7 @@ import com.ssafy.fullerting.community.love.model.entity.Love;
 import com.ssafy.fullerting.image.model.entity.Image;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.catalina.User;
 import org.hibernate.Hibernate;
 
 import java.time.Duration;
@@ -96,12 +97,13 @@ public class Article {
                 .build();
     }
 
-    public ArticleAllResponse toAllResponse(Article article, boolean mylove) {
+    public ArticleAllResponse toAllResponse(Article article, boolean mylove, String authornickname) {
 
         Hibernate.initialize(article.getImages());
         LocalDateTime currentTime = LocalDateTime.now();
         Duration timeDifference = Duration.between(article.getCreatedAt(), currentTime);
         long minutesDifference = timeDifference.toMinutes(); // 분으로 환산
+
 
         return ArticleAllResponse.builder()
                 .title(article.getTitle())
@@ -112,6 +114,7 @@ public class Article {
                 .imgurls(article.getImages() != null ? article.getImages().stream().map(Image::getImgStoreUrl).collect(Collectors.toList()) : null)
                 .mylove(mylove)
                 .time(minutesDifference)
+                .authornickname(authornickname)
                 .build();
     }
 

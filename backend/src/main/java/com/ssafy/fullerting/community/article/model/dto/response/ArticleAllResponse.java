@@ -21,4 +21,5 @@ public class ArticleAllResponse {
     private int love;
     private boolean mylove;
     private Long time;
+    private String authornickname;
 }
