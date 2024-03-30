@@ -100,7 +100,7 @@ const BasicText = styled.div`
   -webkit-box-orient: vertical;
   overflow: hidden;
 `;
-const MainTip: React.FC = () => {
+const MainTip = () => {
   const navigate = useNavigate();
   const { data: posts } = useQuery<Post[]>({
     queryKey: ["communityList"],

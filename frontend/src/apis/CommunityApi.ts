@@ -7,7 +7,6 @@ export const getallcommunities = async () => {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    console.log(response)
     return response.data.data_body;
   } catch (error) {
     console.error("Error : ", error);
