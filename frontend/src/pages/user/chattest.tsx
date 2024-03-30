@@ -143,7 +143,7 @@ function ChatTestPage() {
         }
 
         const chatRequest = {
-          chatRoomId: chatRoomId,
+          chatRoomId: postId,
           chatMessage: messageReq.chatMessage,
           // redirectURL: window.location.href,
         };
