@@ -107,18 +107,17 @@ const NameTime = styled.div`
 const ContentTitle = styled.div``;
 
 const CommunityAll = () => {
-  
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  imgurls: string;
-  name: string;
-  time: number;
-  likes: number;
-  comments: number;
-  type: string;
-}
+  interface Post {
+    id: number;
+    title: string;
+    content: string;
+    imgurls: string;
+    name: string;
+    time: number;
+    likes: number;
+    comments: number;
+    type: string;
+  }
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedType] = useAtom(selectedTypeAtom);
@@ -127,7 +126,7 @@ interface Post {
     const fetchData = async () => {
       try {
         const data = await getallcommunities();
-        console.log(data)
+        console.log(data);
         setPosts(data);
       } catch (error) {
         console.error("Error occurred while fetching data: ", error);
@@ -143,19 +142,21 @@ interface Post {
     navigate(`/community/${id}`);
   };
 
-  const getTimeDifference = (minutes:number) => {
+  const getTimeDifference = (minutes: number) => {
     if (minutes < 1) {
-        return `방금 전`;
+      return `방금 전`;
     } else if (minutes < 60) {
-        return `${minutes}분 전`;
+      return `${minutes}분 전`;
     } else if (minutes < 1440) {
-        const hours = Math.floor(minutes / 60);
-        return `${hours}시간 전`;
+      const hours = Math.floor(minutes / 60);
+      return `${hours}시간 전`;
     } else {
-        const days = Math.floor(minutes / 1440);
-        return `${days}일 전`;
+      const days = Math.floor(minutes / 1440);
+      return `${days}일 전`;
     }
-};
+  };
+
+  console.log(posts);
 
   return (
     <div>
