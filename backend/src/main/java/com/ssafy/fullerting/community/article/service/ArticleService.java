@@ -166,7 +166,8 @@ public class ArticleService {
                         mylove = true;
                     }
 
-                    ArticleAllResponse articleResponse = article.toAllResponse(article, mylove);
+                    String authornickname = userService.getUserInfobyid(article.getUserId()).getNickname() ;
+                    ArticleAllResponse articleResponse = article.toAllResponse(article, mylove,authornickname);
                     return articleResponse;
                 })
 
