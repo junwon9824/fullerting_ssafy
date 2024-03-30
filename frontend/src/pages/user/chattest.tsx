@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Stomp from "stompjs";
 import { api } from "../../apis/Base";
-import { createChatRoom, getChatRoom, useSendChat } from "../../apis/TradeApi";
+import {
+  createChatRoom,
+  getChatRecord,
+  useSendChat,
+} from "../../apis/TradeApi";
 import { useQuery } from "@tanstack/react-query";
 
 interface UserResponse {
