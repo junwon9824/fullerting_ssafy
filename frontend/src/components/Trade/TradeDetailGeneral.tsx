@@ -11,7 +11,12 @@ import Like from "/src/assets/svg/like.svg";
 import { useState } from "react";
 import Tree from "/src/assets/svg/diarytree.svg";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { deletePost, getTradeDetail, useLike } from "../../apis/TradeApi";
+import {
+  createChatRoom,
+  deletePost,
+  getTradeDetail,
+  useLike,
+} from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -123,9 +128,9 @@ const Thumbnail = styled.img`
 
 const TradeGeneralDetail = () => {
   const navigate = useNavigate();
-  const BtnClick = () => {
-    navigate("/trade/chat");
-  };
+  // const BtnClick = (postId: number) => {
+  //   navigate(`/trade/${postId}/chat`);
+  // };
   const [like, setLike] = useState<boolean>(false);
   const handleLike = () => {
     setLike(!like);
@@ -149,6 +154,7 @@ const TradeGeneralDetail = () => {
     queryKey: ["userDetail"],
     queryFn: accessToken ? () => userCheck(accessToken) : undefined,
   });
+  const { mutate: clickChat } = createChatRoom();
   const userId = userData?.id;
 
   const DiaryId = data?.packDiaryResponse?.packDiaryId;
@@ -187,6 +193,10 @@ const TradeGeneralDetail = () => {
       console.log(err);
     },
   });
+  const handleChatClick = () => {
+    clickChat(postNumber);
+    console.log(postNumber);
+  };
   return (
     <>
       <TradeTopBar
@@ -259,7 +269,7 @@ const TradeGeneralDetail = () => {
             </ExplainText>
           </TitleBox>
         </LayoutInnerBox>
-        <BottomButton text="채팅하기" onClick={BtnClick} />
+        <BottomButton text="채팅하기" onClick={handleChatClick} />
       </LayoutMainBox>
     </>
   );
