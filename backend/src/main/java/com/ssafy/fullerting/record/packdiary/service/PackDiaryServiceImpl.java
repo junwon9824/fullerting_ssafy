@@ -183,25 +183,26 @@ public class PackDiaryServiceImpl implements PackDiaryService {
                         .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
                         .build());
 
-                //마지막 단계일 경우 뱃지 생성
-                if(getCropStepRequest.getCropStepGrowth() == cropStepRepository.findMaxStepByCropId(packDiary.getCrop().getId())){
-                    return GetCropStepResponse.builder()
-                            .cropTypeName(packDiary.getCrop().getName())
-                            .cropStepGrowth(packDiary.getGrowthStep())
-                            .cropRenewal(true)
-                            .myBadgeResponse(badgeService.earnBadge(packDiary))
-                            .build();
-                }
-
-                return GetCropStepResponse.builder()
-                        .cropTypeName(packDiary.getCrop().getName())
-                        .cropStepGrowth(packDiary.getGrowthStep())
-                        .cropRenewal(true)
-                        .build();
             } catch (Exception e){
                 throw new PackDiaryException(TRANSACTION_FAIL);
 
             }
+
+            //마지막 단계일 경우 뱃지 생성
+            if(getCropStepRequest.getCropStepGrowth() == cropStepRepository.findMaxStepByCropId(packDiary.getCrop().getId())){
+                return GetCropStepResponse.builder()
+                        .cropTypeName(packDiary.getCrop().getName())
+                        .cropStepGrowth(packDiary.getGrowthStep())
+                        .cropRenewal(true)
+                        .myBadgeResponse(badgeService.earnBadge(packDiary))
+                        .build();
+            }
+
+            return GetCropStepResponse.builder()
+                    .cropTypeName(packDiary.getCrop().getName())
+                    .cropStepGrowth(packDiary.getGrowthStep())
+                    .cropRenewal(true)
+                    .build();
         }
         //단계가 갱신되지 않은 경우
         else {
