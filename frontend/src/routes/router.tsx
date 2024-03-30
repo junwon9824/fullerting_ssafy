@@ -36,7 +36,7 @@ import RecognizePage from "../pages/diary/RecognizePage";
 import TradeModifyPage from "../pages/trade/TradeModifyPage";
 import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
 import GardenPage from "../pages/garden/GardenPage";
-import ChatTestPage from "../pages/user/test";
+import ChatTestPage from "../pages/user/chattest";
 import SSETest from "../pages/user/ssetest";
 import TownCertifyPage from "../pages/user/TownCertifyPage";
 

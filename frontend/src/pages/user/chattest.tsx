@@ -52,41 +52,41 @@ function ChatTestPage() {
     queryFn: accessToken ? () => getChatRoom(accessToken, postId) : undefined,
   });
   console.log(data);
-  // const loadMessages = async () => {
-  //   try {
-  //     const accessToken = sessionStorage.getItem("accessToken");
-  //     if (!accessToken) {
-  //       throw new Error("Access token is not available.");
-  //     }
+  const loadMessages = async () => {
+    try {
+      const accessToken = sessionStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token is not available.");
+      }
 
-  //     const response = await api.get(`/exchanges/${chatRoomId}/suggestion`, {
-  //       //지금까지 채팅 내역 디비에서 가져오기
-  //       headers: { Authorization: `Bearer ${accessToken}` },
-  //     });
-  //     console.log("데이터", response.data.data_body);
+      const response = await api.get(`/chat/${postId}`, {
+        //지금까지 채팅 내역 디비에서 가져오기
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      console.log("데이터", response.data.data_body);
 
-  //     // API 응답 데이터를 변환하는 부분 id: number;
+      // API 응답 데이터를 변환하는 부분 id: number;
 
-  //     const transformedData = response.data.data_body.map(
-  //       (item: ChatResponse) => ({
-  //         chatId: item.chatId,
-  //         chatRoomId: item.chatRoomId,
-  //         chatSenderId: item.chatSenderId,
-  //         chatSenderNick: item.chatSenderNick,
-  //         chatSenderThumb: item.chatSenderThumb,
-  //         chatSendAt: item.chatSendAt,
-  //         chatMessage: item.chatMessage,
-  //       })
-  //     );
+      const transformedData = response.data.data_body.map(
+        (item: ChatResponse) => ({
+          chatId: item.chatId,
+          chatRoomId: item.chatRoomId,
+          chatSenderId: item.chatSenderId,
+          chatSenderNick: item.chatSenderNick,
+          chatSenderThumb: item.chatSenderThumb,
+          chatSendAt: item.chatSendAt,
+          chatMessage: item.chatMessage,
+        })
+      );
 
-  //     setMessages(transformedData);
-  //   } catch (error) {
-  //     console.error("채팅 내역 로드 실패", error);
-  //   }
-  // };
+      setMessages(transformedData);
+    } catch (error) {
+      console.error("채팅 내역 로드 실패", error);
+    }
+  };
 
   useEffect(() => {
-    // loadMessages();
+    loadMessages();
 
     const accessToken = sessionStorage.getItem("accessToken");
     if (!accessToken) {
@@ -106,7 +106,7 @@ function ChatTestPage() {
 
         // 백엔드로부터 메시지를 받는 부분
         // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
-        client.subscribe(`/sub/chat/${chatRoomId}`, (message) => {
+        client.subscribe(`/sub/chat/${postId}`, (message) => {
           const msg: ChatResponse = JSON.parse(message.body);
           console.log(msg);
 
