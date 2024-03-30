@@ -7,6 +7,17 @@ import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { getallcommunities } from "../../apis/CommunityApi";
 import { useState, useEffect } from "react";
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  imageUrl: string;
+  name: string;
+  time: number;
+  likes: number;
+  comments: number;
+  type: string;
+}
 
 const CommunityItem = styled.div`
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
@@ -41,7 +52,7 @@ const PostContent = styled.p`
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 0.9375rem;
+  line-height: 1rem;
 `;
 
 const PostMeta = styled.div`
@@ -102,42 +113,31 @@ const ContentImage = styled.div`
 
 const ImgCon = styled.div``;
 
-const NameTime = styled.div``;
+const NameTime = styled.div`
+  margin-top: 1rem;
+`;
 const ContentTitle = styled.div``;
 
 const CommunityAll = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
-  interface Post {
-    id: number;
-    title: string;
-    content: string;
-    imageUrl: string;
-    name: string;
-    time: number;
-    likes: number;
-    comments: number;
-    type: string;
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getallcommunities();
-        console.log(data);
         setPosts(data);
       } catch (error) {
         console.error("Error occurred while fetching data: ", error);
       }
     };
 
-    fetchData(); // fetchData 함수 호출
+    fetchData();
   }, []);
 
   const [selectedType] = useAtom(selectedTypeAtom);
   const navigate = useNavigate();
 
-  const handlePostClick = (id) => {
+  const handlePostClick = (id: number) => {
     navigate(`/community/${id}`);
   };
 
@@ -160,7 +160,7 @@ const CommunityAll = () => {
               <PostMeta>
                 <UserMeta>
                   <NameTime>
-                    <UserName>{post.name} - </UserName>
+                    <UserName>{post.id} - </UserName>
                     <PostTime>{post.time}분 전</PostTime>
                   </NameTime>
                 </UserMeta>
