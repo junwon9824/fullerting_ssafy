@@ -27,4 +27,22 @@ export const getDetailCommunities = async ( communityId: string) => {
     throw error;
   }
 };
+ 
+  
+export const create = async (formdata:FormData) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.post(
+      `articles`,
+      formdata,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("alarmId error: ", error);
+    throw error;
+  }
+};
 
