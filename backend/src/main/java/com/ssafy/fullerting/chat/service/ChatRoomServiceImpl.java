@@ -71,7 +71,17 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                 .sorted((chatRoom1, chatRoom2) -> {
                     Chat lastChat1 = chatRepository.findLatestChatByChatRoomId(chatRoom1.getId());
                     Chat lastChat2 = chatRepository.findLatestChatByChatRoomId(chatRoom2.getId());
-                    return lastChat2.getSendAt().compareTo(lastChat1.getSendAt());
+
+                    // 최신 채팅 메시지가 없는 경우에는 정렬하지 않음
+                    if (lastChat1 == null && lastChat2 == null) {
+                        return 0;
+                    } else if (lastChat1 == null) {
+                        return 1; // lastChat2가 존재하면 lastChat1 보다 나중으로 간주
+                    } else if (lastChat2 == null) {
+                        return -1; // lastChat1이 존재하면 lastChat2 보다 나중으로 간주
+                    } else {
+                        return lastChat2.getSendAt().compareTo(lastChat1.getSendAt());
+                    }
                 })
                 .map(chatRoom -> {
                     //상대방 ID 조회
@@ -95,8 +105,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                             .chatRoomId(chatRoom.getId())
                             .chatRoomOtherThumb(otherUser.getThumbnail())
                             .chatOtherNick(otherUser.getNickname())
-                            .chatRoomLastMessage(lastChat.getMessage())
-                            .chatRoomLastMessageSendAt(lastChat.getSendAt())
+                            .chatRoomLastMessage(lastChat != null ? lastChat.getMessage() : null)
+                            .chatRoomLastMessageSendAt(lastChat != null ? lastChat.getSendAt() : null)
                             .build();
                 })
                 .collect(Collectors.toList());
