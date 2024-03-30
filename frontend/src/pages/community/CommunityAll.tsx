@@ -183,7 +183,7 @@ const CommunityAll = () => {
                 </UserMeta>
                 <InteractionIcons>
                   <Icon src={likeIcon} alt="Likes" />
-                  <LikeCommentCount>{post.likes}</LikeCommentCount>
+                  <LikeCommentCount>{post.love}</LikeCommentCount>
                   <Icon src={commentIcon} alt="Comments" />
                   <LikeCommentCount>{post.comments}</LikeCommentCount>
                 </InteractionIcons>
