@@ -277,7 +277,7 @@ export const createChatRoom = () => {
   });
 };
 
-export const getChatRoom = async (accessToken: string, postId: number) => {
+export const getChatRecord = async (accessToken: string, postId: number) => {
   try {
     const response = await api.get(`/chat/${postId}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
