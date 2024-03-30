@@ -16,6 +16,7 @@ public interface PackDiaryService {
     void deletePackDiary(Long packDiaryId);
     List<GetAllPackDiaryResponse> getAllPackDiary();
     GetDetailPackDiaryResponse getDetailPackDiary(Long packDiaryId);
+    List<GetAllPackDiaryResponse> searchPackDiary(String keyword);
     void endCropCultivation(Long packDiaryId);
     GetCropStepResponse getCropStep(Long packDiaryId, GetCropStepRequest getCropStepRequest);
 }
