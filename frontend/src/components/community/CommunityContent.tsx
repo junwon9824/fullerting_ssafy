@@ -69,7 +69,6 @@ const HeartBox = styled.div`
 
 const CommunityContent = () => {
   const { communityId } = useParams();
-  console.log(communityId);
   const { data: community, isLoading } = useQuery({
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
@@ -77,7 +76,6 @@ const CommunityContent = () => {
   if (isLoading) {
     return <div>Loading..</div>;
   }
-  console.log(community);
 
   return (
     <All>
