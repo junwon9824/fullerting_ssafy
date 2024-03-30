@@ -34,9 +34,14 @@ public class ChatRoomController {
     public ResponseEntity<MessageUtils> getAllChatRoom() {
         return ResponseEntity.ok().body(MessageUtils.success(chatRoomService.getAllChatRoom()));
     }
-    
-    /*
-    채팅방 상세조회
-     */
 
+    /**
+     * 채팅방 상세조회
+     * @param chatRoomId
+     * @return
+     */
+    @GetMapping("/{chat_room_id}")
+    public ResponseEntity<MessageUtils> getDetailChatRoom(@PathVariable("chat_room_id") Long chatRoomId) {
+        return ResponseEntity.ok().body(MessageUtils.success(chatRoomService.getDetailChatRoom(chatRoomId)));
+    }
 }
