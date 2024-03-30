@@ -7,17 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { getallcommunities } from "../../apis/CommunityApi";
 import { useState, useEffect } from "react";
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  imageUrl: string;
-  name: string;
-  time: number;
-  likes: number;
-  comments: number;
-  type: string;
-}
 
 const CommunityItem = styled.div`
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
@@ -119,12 +108,26 @@ const NameTime = styled.div`
 const ContentTitle = styled.div``;
 
 const CommunityAll = () => {
+  
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  imgurls: string;
+  name: string;
+  time: number;
+  likes: number;
+  comments: number;
+  type: string;
+}
+
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getallcommunities();
+        console.log(data)
         setPosts(data);
       } catch (error) {
         console.error("Error occurred while fetching data: ", error);
@@ -154,7 +157,7 @@ const CommunityAll = () => {
                   <PostContent>{post.content}</PostContent>
                 </ContentTitle>
                 <ImgCon>
-                  <PostImage src={post.imageUrl} alt="Post image" />
+                  <PostImage src={post.imgurls} alt="Post image" />
                 </ImgCon>
               </ContentImage>
               <PostMeta>
