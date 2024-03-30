@@ -1,21 +1,7 @@
 import { api } from "./Base";
 
-interface LoginType {
-  email: string;
-  password: string;
-}
-
-
 export const getallcommunities = async () => {
-
   const accessToken = sessionStorage.getItem("accessToken");
-
-  // try {
-  //   const response = await api.get("/alarms", {
-  //     headers: { Authorization: `Bearer ${accessToken}` },
-  //   });
-
-
   try {
     const response = await api.get("/articles/all", {
       headers: { Authorization: `Bearer ${accessToken}` },
