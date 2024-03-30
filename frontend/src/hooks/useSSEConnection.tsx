@@ -16,12 +16,9 @@ export const useSSEConnection = () => {
     });
 
     eventSource.onmessage = (event) => {
-      console.log("메시지 수신:", event.data);
-
       if (event.data !== "heartbeat") {
         try {
           const newMessage = JSON.parse(event.data);
-          console.log(newMessage);
           setNotification({
             show: true,
             name: newMessage.alarmType,
@@ -45,9 +42,7 @@ export const useSSEConnection = () => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("Notification 상태 업데이트:", notification);
-  }, [notification]);
+  useEffect(() => {}, [notification]);
 
   return { messages, notification };
 };
