@@ -22,7 +22,7 @@ public class RegistArticleRequest {
 
     private ArticleType type;
 
-    private List<MultipartFile> selectedFiles=new ArrayList<>();
+//    private List<MultipartFile> selectedFiles=new ArrayList<>();
 
 
 }
