@@ -53,7 +53,7 @@ function ChatTestPage() {
   const { mutate: sendChat } = useSendChat();
   const { isLoading, data, error } = useQuery({
     queryKey: ["chatList", postId],
-    queryFn: accessToken ? () => getChatRoom(accessToken, postId) : undefined,
+    queryFn: accessToken ? () => getChatRecord(accessToken, postId) : undefined,
   });
   console.log(data);
   const loadMessages = async () => {

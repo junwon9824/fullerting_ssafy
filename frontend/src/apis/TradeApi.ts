@@ -253,23 +253,30 @@ export const useSendChat = () => {
   });
 };
 export const createChatRoom = () => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (formData: FormData) => {
+    mutationFn: async (exArticleId: number) => {
       const accessToken = sessionStorage.getItem("accessToken");
 
       if (!accessToken) {
         throw new Error("로그인이 필요합니다.");
       }
-      const response = await api.post("/chat-room", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      return response;
+      const response = await api.post(
+        "/chat-room",
+        { exArticleId },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      return response.data.data_body;
     },
     onSuccess: (res) => {
+      const chatRoomId = res.chatRoomId;
       console.log("방 만들기 성공", res);
+      navigate(`/trade/chat/${chatRoomId}`);
     },
     onError: (res) => {
       console.log("방 만들기 실패", res);
