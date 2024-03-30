@@ -228,30 +228,6 @@ export const deletePost = async (postId: string) => {
   }
 };
 
-export const useSendChat = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async (formData: FormData) => {
-      const accessToken = sessionStorage.getItem("accessToken");
-
-      if (!accessToken) {
-        throw new Error("로그인이 필요합니다.");
-      }
-      const response = await api.post("/pub/chat", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      return response;
-    },
-    onSuccess: (res) => {
-      console.log(res, "성공");
-    },
-    onError: (e) => {
-      console.log(e, "에러");
-    },
-  });
-};
 export const createChatRoom = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -292,5 +268,18 @@ export const getChatRecord = async (accessToken: string, postId: number) => {
     return response.data.data_body;
   } catch (e) {
     console.log("채팅방 조회 실패", e);
+  }
+};
+export const getChatRoomDetail = async (
+  accessToken: string,
+  chatRoomId: number
+) => {
+  try {
+    const response = await api.get(`/chat-room/${chatRoomId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("채팅방 상세 조회 실패", e);
   }
 };

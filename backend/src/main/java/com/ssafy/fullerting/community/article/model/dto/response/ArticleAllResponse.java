@@ -15,8 +15,10 @@ public class ArticleAllResponse {
 
     private String content;
 
+    private List<String> imgurls;
 
     private ArticleType type;
     private int love;
     private boolean mylove;
+    private Long time;
 }

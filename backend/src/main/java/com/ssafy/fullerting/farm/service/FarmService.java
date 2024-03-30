@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface FarmService {
     void getFarmInfoExAPI();
-    List<GetAllFarmResponse> getAllFarm();
+    List<GetAllFarmResponse> searchFarm(String region);
 }

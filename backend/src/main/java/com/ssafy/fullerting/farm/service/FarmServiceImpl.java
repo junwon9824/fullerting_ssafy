@@ -26,10 +26,10 @@ public class FarmServiceImpl implements FarmService {
     private final FarmRepository farmRepository;
     private final WebClient.Builder webClientBuilder;
 
-//    @Value("${api.key}") 
+    @Value("${api.key}")
     private String apiKey;
 
-//    @PostConstruct //어플리케이션 실행 시 자동으로 호출
+    @PostConstruct //어플리케이션 실행 시 자동으로 호출
     @Override
     public void getFarmInfoExAPI() { //텃밭정보 open API 호출
         WebClient webClient = webClientBuilder.baseUrl("http://211.237.50.150:7080/").build();
@@ -53,10 +53,12 @@ public class FarmServiceImpl implements FarmService {
                         try {
                             //필요없는 데이터 필터링
                             if(!row.getFarmName().contains("[보안점검]") && !row.getFarmName().isEmpty()
+                                    && !row.getAreaLcd().isEmpty() && !row.getAreaLcd().isBlank()
                                     && !row.getFarmName().isBlank() && !row.getPosLat().isEmpty()){
                                 farmRepository.save(Farm.toEntity(row));
                             }
                         } catch(Exception e){
+                            e.printStackTrace();
                             throw new FarmException(TRANSACTION_FAIL);
                         }
                     }
@@ -67,7 +69,7 @@ public class FarmServiceImpl implements FarmService {
     }
 
     @Override
-    public List<GetAllFarmResponse> getAllFarm() {
+    public List<GetAllFarmResponse> searchFarm(String region) {
         List<Farm> farmList = farmRepository.findAll();
         return farmList.stream().map(GetAllFarmResponse::toResponse).collect(Collectors.toList());
     }

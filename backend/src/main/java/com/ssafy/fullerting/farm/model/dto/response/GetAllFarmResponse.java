@@ -15,8 +15,10 @@ public class GetAllFarmResponse {
     private Long farmId;
     private String farmType; //운영주체
     private String farmName; //텃밭명
-    private String farmAreaLnm; //도
-    private String farmAreaMnm; //시구
+    private Integer farmAreaLcd; //시도코드
+    private String farmAreaLnm; //시도명
+    private Integer farmAreaMcd; //시군구코드
+    private String farmAreaMnm; //시군구명
     private String farmAddress; //주소
     private String farmOffSite; //부대시설
     private float farmPosLat; //위도
@@ -27,7 +29,9 @@ public class GetAllFarmResponse {
                 .farmId(farm.getId())
                 .farmType(farm.getType())
                 .farmName(farm.getName())
+                .farmAreaLcd(farm.getAreaLcd())
                 .farmAreaLnm(farm.getAreaLnm())
+                .farmAreaMcd(farm.getAreaMcd())
                 .farmAreaMnm(farm.getAreaMnm())
                 .farmAddress(farm.getAddress())
                 .farmOffSite(farm.getOffSite())
