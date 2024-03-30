@@ -69,8 +69,18 @@ public class FarmServiceImpl implements FarmService {
     }
 
     @Override
-    public List<GetAllFarmResponse> searchFarm(String region) {
-        List<Farm> farmList = farmRepository.findAll();
+    public List<GetAllFarmResponse> searchFarm(Integer region) {
+        List<Farm> farmList = null;
+
+        //전체조회
+        if(region == 0) {
+            farmList = farmRepository.findAll();
+        }
+        //지역별 검색
+        else {
+            farmList = farmRepository.findByAreaLcd(region);
+        }
+
         return farmList.stream().map(GetAllFarmResponse::toResponse).collect(Collectors.toList());
     }
 }
