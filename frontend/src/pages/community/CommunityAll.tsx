@@ -2,7 +2,6 @@ import styled from "styled-components";
 import likeIcon from "../../assets/svg/like.svg";
 import commentIcon from "../../assets/svg/classes.svg";
 import { selectedTypeAtom } from "../../stores/community";
-import pullright from "../../assets/svg/pullright.svg";
 import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { getallcommunities } from "../../apis/CommunityApi";
@@ -122,6 +121,7 @@ interface Post {
 }
 
   const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedType] = useAtom(selectedTypeAtom);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -137,7 +137,6 @@ interface Post {
     fetchData();
   }, []);
 
-  const [selectedType] = useAtom(selectedTypeAtom);
   const navigate = useNavigate();
 
   const handlePostClick = (id: number) => {

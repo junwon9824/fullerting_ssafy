@@ -14,3 +14,17 @@ export const getallcommunities = async () => {
   }
 };
 
+export const getDetailCommunities = async ( communityId: string) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+  try {
+    const response = await api.get(`/articles/${communityId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error : ", error);
+    throw error;
+  }
+};
+
