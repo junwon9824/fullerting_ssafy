@@ -2,7 +2,7 @@ import TradePost from "../../components/Trade/TradePost";
 import { useSSEConnection } from "../../hooks/useSSEConnection";
 
 const TradePostPage = () => {
-  useSSEConnection();
+  // useSSEConnection();
   return <TradePost />;
 };
 

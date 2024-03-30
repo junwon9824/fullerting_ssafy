@@ -20,7 +20,7 @@ import TradeSharingCategory from "../../components/Trade/TradeSharingCategory";
 import { useSSEConnection } from "../../hooks/useSSEConnection";
 
 const TradePage = () => {
-  useSSEConnection();
+  // useSSEConnection();
   const [selectButton, setSelectButton] = useAtom(selectedCategory);
   const [search, setSearch] = useInput("");
   const renderSelectedComponent = () => {
