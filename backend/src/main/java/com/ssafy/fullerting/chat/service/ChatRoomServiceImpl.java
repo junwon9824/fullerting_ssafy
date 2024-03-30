@@ -46,6 +46,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     public CreateChatRoomResponse createChatRoom(CreateChatRoomRequest createChatRoomRequest) {
         UserResponse userResponse = userService.getUserInfo();
 
+        //게시글 존재하는지 확인
+        exArticleRepository.findById(createChatRoomRequest.getExArticleId()).orElseThrow(()->new ExArticleException(NOT_EXISTS));
         //이미 존재하는 채팅방인지 조회
         Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByExArticleIdAndBuyerId(createChatRoomRequest.getExArticleId(), userResponse.getId());
         //존재하지 않을 경우 채팅방 생성
