@@ -72,29 +72,35 @@ const CloseButton = styled.button`
   font-family: "Comic Sans MS", "Chilanka", cursive;
   cursor: pointer;
 `;
-
 const NotificationModal: React.FC = () => {
+  console.log("모달 컴포넌트 들어옴");
   const [notification, setNotification] = useAtom(notificationAtom);
+  console.log("모달 컴포넌트 들어옴", notification);
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     if (notification.show) {
       setIsAnimating(true);
-
+      // 모달을 보여준 후 3초 뒤에 자동으로 닫힘
       const timer = setTimeout(() => {
         setNotification((prev) => ({ ...prev, show: false }));
-      }, 30000);
+      }, 3000);
 
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer); // 컴포넌트가 언마운트될 때 타이머 정리
+      };
     }
-  }, [notification.show, setNotification]);
+  }, [notification.show]); // notification.show에만 의존
 
   if (!notification.show) {
-    return null;
+    return null; // show가 false면 아무 것도 렌더링하지 않음
   }
+
   const handleViewAlarm = () => {
+    // 알림 상세 페이지로 리디렉션
     window.location.href = "/alarm";
   };
+
   return (
     <>
       <ModalContainer isAnimating={isAnimating}>
