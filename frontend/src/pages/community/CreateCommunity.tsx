@@ -8,8 +8,9 @@ import { TopBar } from "../../components/common/Navigator/navigator";
 import { BottomButton } from "../../components/common/Button/LargeButton";
 import { useNavigate } from "react-router-dom";
 import { create } from "../../apis/CommunityApi";
-import { useAtom } from 'jotai';
+import { useAtom } from "jotai";
 import { imageFilesAtom } from "../../stores/trade";
+import { selectedTypeAtom } from "../../stores/community";
 
 const DiaryBox = styled.div`
   display: flex;
@@ -42,18 +43,15 @@ const NavVlaue = styled.div`
   margin-bottom: 0.5rem;
 `;
 const TradePost = () => {
-
   const [title, setTitle] = useInput("");
   const [content, setContent] = useInput("");
-  const [tradeType, SettradeType] = useInput("");
 
   const navigate = useNavigate();
 
-
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
+  const [tradeType, setTradeType] = useAtom(selectedTypeAtom);
 
   const handleConfirmClick = async () => {
-
     const formData = new FormData();
 
     selectedFiles.forEach((file) => {
@@ -61,7 +59,6 @@ const TradePost = () => {
     });
 
     if (selectedFiles.length === 0) {
-      // 이미지 파일이 없을 경우 빈 문자열을 서버에 보냅니다.
       formData.append("images", new Blob([], { type: "application/json" }));
     }
     const updateInfo = {
@@ -69,37 +66,28 @@ const TradePost = () => {
       content: content,
       type: tradeType,
     };
-    console.log(updateInfo.type)
-    console.log(updateInfo.title)
+    console.log(updateInfo.type);
+    console.log(updateInfo.title);
     formData.append(
       "RegistArticleRequest",
       new Blob([JSON.stringify(updateInfo)], { type: "application/json" })
     );
 
     try {
-
-      await create(formData); // 수정된 부분
+      await create(formData);
 
       setSelectedFiles([]);
       navigate(-1);
-      // 요청 성공 후 페이지 이동 또는 상태 업데이트
-      // navigate("/trade");
     } catch (error) {
-      // 오류 처리
       console.error("업로드 실패:", error);
     }
-
 
     navigate("/community");
   };
 
-  const handleRadioButtonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const typeValue = event.target.value;
-    SettradeType(typeValue);
+  const handleRadioButtonChange = (value: string) => {
+    setTradeType(value);
   };
-
-
-
 
   return (
     <>
@@ -112,28 +100,26 @@ const TradePost = () => {
             name="exampleRadioGroup"
             value="자유게시판"
             checked={tradeType === "자유게시판"}
-            onChange={() => handleRadioButtonChange("자유게시판")} // 해당 부분 수정
+            onChange={() => handleRadioButtonChange("자유게시판")}
           />
           <RadioButton
             name="exampleRadioGroup"
             value="작물소개"
             checked={tradeType === "작물소개"}
-            onChange={() => handleRadioButtonChange("작물소개")} // 해당 부분 수정
+            onChange={() => handleRadioButtonChange("작물소개")}
           />
           <RadioButton
             name="exampleRadioGroup"
             value="텃밭요리"
             checked={tradeType === "텃밭요리"}
-            onChange={() => handleRadioButtonChange("텃밭요리")} // 해당 부분 수정
+            onChange={() => handleRadioButtonChange("텃밭요리")}
           />
           <RadioButton
             name="exampleRadioGroup"
             value="꿀팁공유"
             checked={tradeType === "꿀팁공유"}
-            onChange={() => handleRadioButtonChange("꿀팁공유")} // 해당 부분 수정
+            onChange={() => handleRadioButtonChange("꿀팁공유")}
           />
-
-
         </Nav>
         <Nav>
           <StyledInput
