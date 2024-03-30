@@ -43,7 +43,7 @@ public class ArticleService {
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
         log.info("type" + registArticleRequest.getType());
-        log.info("getSelectedFiles" + registArticleRequest.getSelectedFiles().size());
+//        log.info("getSelectedFiles" + registArticleRequest.getSelectedFiles().size());
 
 
         S3ManyFilesResponse response =
