@@ -17,7 +17,6 @@ import TradeMainCategory from "../../components/Trade/TradeMainCategory";
 import TradeDealCategory from "../../components/Trade/TradeDealCategory";
 import TradeGeneralCategory from "../../components/Trade/TradeGeneralCategory";
 import TradeSharingCategory from "../../components/Trade/TradeSharingCategory";
-import { useSSEConnection } from "../../hooks/useSSEConnection";
 
 const TradePage = () => {
   // useSSEConnection();
