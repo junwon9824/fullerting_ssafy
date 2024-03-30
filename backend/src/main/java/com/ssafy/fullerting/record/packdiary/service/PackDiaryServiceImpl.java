@@ -143,6 +143,12 @@ public class PackDiaryServiceImpl implements PackDiaryService {
     }
 
     @Override
+    public List<GetAllPackDiaryResponse> searchPackDiary(String keyword) {
+        List<PackDiary> packDiaryList = packDiaryRepository.findByTitle(keyword);
+        return packDiaryList.stream().map(GetAllPackDiaryResponse::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
     public void endCropCultivation(Long packDiaryId) {
         PackDiary packDiary = packDiaryRepository.findById(packDiaryId).orElseThrow(() -> new PackDiaryException(NOT_EXISTS_PACK_DIARY));
         packDiary = packDiary.toBuilder()
