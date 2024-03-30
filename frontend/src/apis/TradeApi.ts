@@ -276,7 +276,7 @@ export const createChatRoom = () => {
     onSuccess: (res) => {
       const chatRoomId = res.chatRoomId;
       console.log("방 만들기 성공", res);
-      navigate(`/trade/chat/${chatRoomId}`);
+      navigate(`/trade/${chatRoomId}/chat`);
     },
     onError: (res) => {
       console.log("방 만들기 실패", res);
@@ -289,7 +289,7 @@ export const getChatRecord = async (accessToken: string, postId: number) => {
     const response = await api.get(`/chat/${postId}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    return response;
+    return response.data.data_body;
   } catch (e) {
     console.log("채팅방 조회 실패", e);
   }

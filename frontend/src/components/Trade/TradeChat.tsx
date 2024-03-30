@@ -1,7 +1,21 @@
 import styled from "styled-components";
 import { TopBar } from "../common/Navigator/navigator";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Send from "/src/assets/images/send.png";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { getChatRecord } from "../../apis/TradeApi";
+import Stomp from "stompjs";
+interface ChatResponse {
+  // id: number;
+  chatRoomId: number;
+  chatSenderThumb: string;
+  chatSenderNick: string;
+  chatSenderId: number; //전송자 ID
+  chatMessage: string; //채팅 내용
+  chatSendAt: Date; // 전송일자
+  chatId: number;
+}
 const ProductBox = styled.div`
   width: 100%;
   justify-content: space-between;
@@ -92,8 +106,91 @@ const SendButton = styled.img`
   width: 2.1875rem;
   height: 2.1875rem;
 `;
+
 const TradeChat = () => {
+  const { chatId } = useParams();
+  const chatNumber = Number(chatId);
+  const accessToken = sessionStorage.getItem("accessToken");
+  const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
+  const [messages, setMessages] = useState<ChatResponse[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
+  const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
+  const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+  const client = Stomp.over(socket);
+  const queryClient = useQueryClient();
+  const { isLoading, data, error } = useQuery({
+    queryKey: ["chatList", chatNumber],
+    queryFn: accessToken
+      ? () => getChatRecord(accessToken, chatNumber)
+      : undefined,
+  });
+  console.log(chatNumber);
+  // console.log(data);
+  useEffect(() => {
+    console.log("저 호출됐어요");
+    const transformedData = data?.map((item: ChatResponse) => ({
+      chatId: item.chatId,
+      chatRoomId: item.chatRoomId,
+      chatSenderId: item.chatSenderId,
+      chatSenderNick: item.chatSenderNick,
+      chatSenderThumb: item.chatSenderThumb,
+      chatSendAt: item.chatSendAt,
+      chatMessage: item.chatMessage,
+    }));
+    setMessages(transformedData);
+    client.connect(
+      {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      () => {
+        console.log("WebSocket 연결됨");
+
+        // 백엔드로부터 메시지를 받는 부분
+        // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
+        client.subscribe(`/sub/chat/${chatNumber}`, (message) => {
+          const msg: ChatResponse = JSON.parse(message.body);
+          console.log(msg);
+
+          queryClient.invalidateQueries({
+            queryKey: ["chatList", chatNumber],
+          });
+          setMessages((prevMessages) => [...prevMessages, msg]);
+        });
+        setMessageSubscribed(true); // 한 번만 실행되도록 플래그 설정
+      },
+      (error) => {
+        console.error("WebSocket 연결 실패", error);
+      }
+    );
+    setStompClient(client);
+    return () => {
+      if (client.connected) {
+        client.disconnect(() => {
+          console.log("disconnect");
+        });
+      }
+    };
+  }, [data]);
+  const sendMessage = async () => {
+    if (stompClient && newMessage.trim() !== "") {
+      try {
+        const messageReq = {
+          chatMessage: newMessage,
+        };
+
+        const chatRequest = {
+          chatRoomId: chatNumber,
+          chatMessage: messageReq.chatMessage,
+          // redirectURL: window.location.href,
+        };
+
+        stompClient.send(`/pub/chat`, {}, JSON.stringify(chatRequest));
+        setNewMessage("");
+      } catch (error) {
+        console.error("메시지 전송 실패", error);
+      }
+    }
+  };
   return (
     <>
       <TopBar title="채팅" showBack={true} />
@@ -104,43 +201,20 @@ const TradeChat = () => {
             <FisishButton>거래종료</FisishButton>
           </ProductBox>
           <ChatBox>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
-            <div>심우석</div>
+            {data?.map((item: any) => (
+              <div>
+                `보낸 아이디 {item.chatSenderId} : {item.chatMessage}`
+              </div>
+            ))}
           </ChatBox>
           <SendBox>
-            <SendInput onChange={(e) => setNewMessage(e.target.value)} />
-            <SendButton src={Send} alt="send" />
+            <SendInput
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+            />
+            <SendButton src={Send} alt="send" onClick={sendMessage} />
           </SendBox>
         </LayoutInnerBox>
-        {/* <SendBox>
-          <SendInput onChange={(e) => setNewMessage(e.target.value)} />
-          <SendButton src={Send} alt="send" />
-        </SendBox> */}
       </LayoutMainBox>
     </>
   );
