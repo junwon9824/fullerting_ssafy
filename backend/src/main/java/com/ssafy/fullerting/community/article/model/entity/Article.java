@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,10 @@ public class Article {
     public ArticleAllResponse toAllResponse(Article article, boolean mylove) {
 
         Hibernate.initialize(article.getImages());
-        
+        LocalDateTime currentTime = LocalDateTime.now();
+        Duration timeDifference = Duration.between(article.getCreatedAt(), currentTime);
+        long minutesDifference = timeDifference.toMinutes(); // 분으로 환산
+
         return ArticleAllResponse.builder()
                 .title(article.getTitle())
                 .id(article.getId())
@@ -107,6 +111,7 @@ public class Article {
                 .love(article.getLove())
                 .imgurls(article.getImages() != null ? article.getImages().stream().map(Image::getImgStoreUrl).collect(Collectors.toList()) : null)
                 .mylove(mylove)
+                .time(minutesDifference)
                 .build();
     }
 

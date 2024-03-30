@@ -20,4 +20,5 @@ public class ArticleAllResponse {
     private ArticleType type;
     private int love;
     private boolean mylove;
+    private Long time;
 }
