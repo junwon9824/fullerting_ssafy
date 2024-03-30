@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCropList } from "../../apis/DiaryApi";
 import styled from "styled-components";
-import { notificationAtom } from "../../stores/notification";
-import { useAtom } from "jotai";
 const MainContainer = styled.div`
   justify-content: center;
   flex-direction: column;
@@ -133,17 +131,6 @@ const Maintop = () => {
   const accessToken = sessionStorage.getItem("accessToken");
   const navigate = useNavigate();
 
-  const [, setNotification] = useAtom(notificationAtom);
-
-  const showNotification = (name, type, content) => {
-    setNotification({ show: true, name, type, content });
-  };
-
-  const handleShowNotification = () => {
-    showNotification("새 알림", "성공", "이것은 테스트 알림입니다.");
-    console.log("알림", setNotification);
-  };
-
   const { data: cropList } = useQuery({
     queryKey: ["cropList"],
     queryFn: accessToken ? () => getCropList(accessToken) : undefined,
@@ -159,9 +146,7 @@ const Maintop = () => {
 
   return (
     <MainContainer>
-      <MainText>
-        풀러팅<button onClick={handleShowNotification}>알림 테스트</button>
-      </MainText>
+      <MainText>풀러팅</MainText>
       <TextBox>"{cropList?.length || 0}개의 작물을 가꾸고 계시군요"</TextBox>
       {accessToken ? (
         <SliderContainer>

@@ -73,9 +73,7 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 const NotificationModal: React.FC = () => {
-  console.log("모달 컴포넌트 들어옴");
   const [notification, setNotification] = useAtom(notificationAtom);
-  console.log("모달 컴포넌트 들어옴", notification);
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
