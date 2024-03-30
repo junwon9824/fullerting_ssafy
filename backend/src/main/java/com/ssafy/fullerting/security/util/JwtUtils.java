@@ -36,7 +36,7 @@ public class JwtUtils {
     @PostConstruct
     protected void encodeKey() {
         accessSecretKey = Base64.getEncoder().encodeToString(jwtProperties.getAccess().getBytes());
-        refreshSecretKey = Base64.getEncoder().encodeToString(jwtProperties.getAccess().getBytes());
+        refreshSecretKey = Base64.getEncoder().encodeToString(jwtProperties.getRefresh().getBytes());
     }
 
 
@@ -112,6 +112,7 @@ public class JwtUtils {
             log.info("exception : 지원되지 않는 엑세스 토큰");
             throw new JwtException(JwtErrorCode.NOT_SUPPORT_TOKEN, e.getMessage());
         }
+
     }
 
 

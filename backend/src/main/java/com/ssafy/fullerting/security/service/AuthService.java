@@ -47,6 +47,7 @@ public class AuthService {
         } catch (AuthenticationException e) {
             throw new UserException(UserErrorCode.ACCESS_DENIED);
         }
+
     }
 
     public void logout() {
@@ -62,6 +63,7 @@ public class AuthService {
         HttpServletRequest request = attr.getRequest();
 
         String token = request.getHeader("Authorization");
+
         if (token != null && token.startsWith("Bearer ")) {
             String accessToken = token.split(" ")[1];
             tokenService.removeAccessToken(accessToken);
@@ -77,6 +79,7 @@ public class AuthService {
         log.info("현재 쓰레드 Context에 저장된 principal : {} ", authentication.getName());
         return authentication;
     }
+
     public IssuedToken refresh(String refreshToken) {
         return tokenService.reIssueAccessTokenByRefreshToken(refreshToken);
     }
