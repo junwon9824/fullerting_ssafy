@@ -1,8 +1,11 @@
 package com.ssafy.fullerting.chat.service;
 
+import com.ssafy.fullerting.chat.exception.ChatErrorCode;
+import com.ssafy.fullerting.chat.exception.ChatException;
 import com.ssafy.fullerting.chat.model.dto.request.CreateChatRoomRequest;
 import com.ssafy.fullerting.chat.model.dto.response.CreateChatRoomResponse;
 import com.ssafy.fullerting.chat.model.dto.response.GetAllChatRoomResponse;
+import com.ssafy.fullerting.chat.model.dto.response.GetDetailChatRoomResponse;
 import com.ssafy.fullerting.chat.model.entity.Chat;
 import com.ssafy.fullerting.chat.model.entity.ChatRoom;
 import com.ssafy.fullerting.chat.repository.ChatRepository;
@@ -25,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.ssafy.fullerting.chat.exception.ChatErrorCode.NOT_EXISTS_CHAT_ROOM;
 import static com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode.NOT_EXISTS;
 import static com.ssafy.fullerting.user.exception.UserErrorCode.NOT_EXISTS_USER;
 
@@ -110,5 +114,13 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                             .build();
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public GetDetailChatRoomResponse getDetailChatRoom(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(()->new ChatException(NOT_EXISTS_CHAT_ROOM));
+        ExArticle exArticle = exArticleRepository.findById(chatRoom.getExArticleId()).orElseThrow(()->new ExArticleException(NOT_EXISTS));
+
+        return GetDetailChatRoomResponse.toResponse(exArticle);
     }
 }
