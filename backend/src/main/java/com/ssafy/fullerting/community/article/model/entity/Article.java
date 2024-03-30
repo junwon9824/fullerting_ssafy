@@ -96,12 +96,16 @@ public class Article {
     }
 
     public ArticleAllResponse toAllResponse(Article article, boolean mylove) {
+
+        Hibernate.initialize(article.getImages());
+        
         return ArticleAllResponse.builder()
                 .title(article.getTitle())
                 .id(article.getId())
                 .content(article.getContent())
                 .type(article.getType())
                 .love(article.getLove())
+                .imgurls(article.getImages() != null ? article.getImages().stream().map(Image::getImgStoreUrl).collect(Collectors.toList()) : null)
                 .mylove(mylove)
                 .build();
     }

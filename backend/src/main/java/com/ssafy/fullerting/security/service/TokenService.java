@@ -35,6 +35,7 @@ public class TokenService {
     private final DataBaseUserDetailsService dataBaseUserDetailsService;
 
     public IssuedToken issueToken(Authentication authentication) {
+
         String accessToken;
         String refreshToken;
         Long userId = null;
@@ -44,7 +45,9 @@ public class TokenService {
         if (authentication instanceof CustomAuthenticationToken) {
             CustomAuthenticationToken customAuth = (CustomAuthenticationToken) authentication;
             email = customAuth.getPrincipal().toString();
-        } else if (authentication.getPrincipal() instanceof OAuth2User) {
+        }
+
+        else if (authentication.getPrincipal() instanceof OAuth2User) {
             OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
             email = oAuth2User.getAttribute("email");
         }
@@ -67,6 +70,7 @@ public class TokenService {
         // Redis에 토큰 저장
         tokenRepository.save(new Token(userId, refreshToken));
         return new IssuedToken(accessToken, refreshToken);
+
     }
 
     public void removeAccessToken(String accessToken){

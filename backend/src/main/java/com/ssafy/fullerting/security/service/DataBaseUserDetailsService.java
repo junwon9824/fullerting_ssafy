@@ -33,6 +33,7 @@ public class DataBaseUserDetailsService implements UserDetailsService {
         // 권한 설정.
         return Collections.singletonList(new SimpleGrantedAuthority(customUser.getRole()));
     }
+
 }
 
 
