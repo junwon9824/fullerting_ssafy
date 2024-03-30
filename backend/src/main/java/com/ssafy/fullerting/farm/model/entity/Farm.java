@@ -26,11 +26,17 @@ public class Farm {
     @Column(name = "farm_nm")
     private String name; //텃밭명
 
+    @Column(name = "farm_area_lcd")
+    private Integer areaLcd; //시도코드
+
     @Column(name = "farm_area_lnm", length = 15)
-    private String areaLnm; //도
+    private String areaLnm; //시도명
+
+    @Column(name = "farm_area_mcd")
+    private Integer areaMcd; //시군구코드
 
     @Column(name = "farm_area_mnm", length = 30)
-    private String areaMnm; //시구
+    private String areaMnm; //시군구명
 
     @Column(name = "farm_address")
     private String address; //주소
@@ -45,10 +51,17 @@ public class Farm {
     private float posLng; //경도
 
     public static Farm toEntity(Row row){
+        Integer areaMcdValue = null;
+        if (row.getAreaMcd() != null && !row.getAreaMcd().isEmpty() && !row.getAreaMcd().isBlank()) {
+            areaMcdValue = Integer.parseInt(row.getAreaMcd());
+        }
+
         return Farm.builder()
                 .type(row.getFarmType())
                 .name(row.getFarmName())
+                .areaLcd(Integer.parseInt(row.getAreaLcd()))
                 .areaLnm(row.getAreaLnm())
+                .areaMcd(areaMcdValue)
                 .areaMnm(row.getAreaMnm())
                 .address(row.getAddress())
                 .offSite(row.getOffSite())
