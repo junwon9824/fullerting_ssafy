@@ -1,29 +1,27 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import { getDetailCommunities } from "../../apis/CommunityApi";
 import styled from "styled-components";
 
+const Comment = styled.div`
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.25rem;
+  display: flex;
+  padding: 0.375rem 0.6875rem;
+  gap: 0.625rem;
+  border-radius: 0.4rem;
+  background: var(--gary3, #f4f4f4);
+`;
 const All = styled.div`
-  width: 100%;
+  margin-top: 1rem;
   font-family: "GamtanRoad Dotum TTF";
-  height: 100%;
   padding-right: 3rem;
   padding-left: 3rem;
-  align-items: center;
-`;
-const Container = styled.div`
-  flex-direction: column;
-  padding-left: 2rem;
-`;
-const Title = styled.div`
-  padding-top: 4rem;
-  font-size: 1rem;
-  font-weight: bold;
 `;
 
 const Profile = styled.div`
   display: flex;
-  margin-top: 1.5rem;
 `;
 const Img = styled.div`
   width: 1.875rem;
@@ -48,8 +46,9 @@ const Grade = styled.div`
   font-weight: 400;
   line-height: 1rem;
 `;
-
 const Time = styled.div`
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
   display: flex;
   justify-content: end;
   color: #8c8c8c;
@@ -58,20 +57,9 @@ const Time = styled.div`
   font-weight: 400;
   line-height: 1rem;
 `;
-
-const CommunityTitle = () => {
-  const { communityId } = useParams();
-  const { data: community, isLoading } = useQuery({
-    queryKey: ["CommunityDetail"],
-    queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
-  });
-  if (isLoading) {
-    return <div>Loading..</div>;
-  }
-
+const CommunityComment = () => {
   return (
     <All>
-      <Title>{community.title}</Title>
       <Profile>
         <Img />
         <NickGrade>
@@ -79,10 +67,12 @@ const CommunityTitle = () => {
           <Grade>등급</Grade>
         </NickGrade>
       </Profile>
+      <Comment>
+        댓글 더미 무슨 보고 있으니 기분이 좋네요 얼마나 더 자랄지 기대가 됩니다
+      </Comment>
       <Time>시간</Time>
-      <Container></Container>
     </All>
   );
 };
 
-export default CommunityTitle;
+export default CommunityComment;
