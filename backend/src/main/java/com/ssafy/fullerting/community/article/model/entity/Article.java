@@ -8,6 +8,7 @@ import com.ssafy.fullerting.community.love.model.entity.Love;
 import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
@@ -92,7 +93,7 @@ public class Article {
 //
     public void removeimage(Image image) {
         this.images.remove(image);
-        log.info("removeimage"+this.images.size());
+        log.info("removeimage" + this.images.size());
     }
 
     public void removelove(Love love) {
@@ -100,6 +101,7 @@ public class Article {
     }
 
     public ArticleResponse toResponse(Article article, boolean mylove, CustomUser customUser) {
+
         Hibernate.initialize(article.getImages());
         LocalDateTime currentTime = LocalDateTime.now();
         Duration timeDifference = Duration.between(article.getCreatedAt(), currentTime);

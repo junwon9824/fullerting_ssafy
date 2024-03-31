@@ -61,12 +61,38 @@ const TradePost = () => {
 
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   const [tradeType, setTradeType] = useAtom(selectedTypeAtom);
+  // 문자열을 Blob으로 변환하는 함수
+
+  function downloadImageFromS3(url: string) {
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        // Blob을 사용하여 파일 생성
+        const file = new File([blob], "image.jpg", { type: "image/jpeg" });
+        
+        // 생성된 파일을 저장하거나 다른 작업 수행
+        // 예를 들어, 다운로드 링크 생성
+        const downloadLink = document.createElement("a");
+        downloadLink.href = URL.createObjectURL(file);
+        downloadLink.download = "image.jpg";
+        downloadLink.click();
+      })
+      .catch(error => {
+        console.error("이미지 다운로드 실패:", error);
+      });
+  }
 
   useEffect(() => {
     if (location.state?.imgurls) {
       const initialImages = location.state.imgurls
+      console.log(initialImages);
+
+      const blob = downloadImageFromS3(initialImages);
+      // 이후에는 필요한 작업을 수행하면 됩니다.
+      // console.log(blob);
 
       setSelectedFiles(initialImages);
+      // setSelectedFiles(blob);
 
     }
 
@@ -88,7 +114,7 @@ const TradePost = () => {
 
     selectedFiles.forEach((file) => {
       console.log(file)
-      
+
       formData.append("images", file);
     });
 
