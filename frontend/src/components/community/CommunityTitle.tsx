@@ -73,6 +73,10 @@ const CommunityTitle = () => {
     <All>
       <Title>{community.title}</Title>
       <Profile>
+
+
+
+        
         <Img />
         <NickGrade>
           <Nick>닉네임</Nick>

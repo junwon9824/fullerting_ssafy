@@ -31,6 +31,7 @@ public class LoveService {
         AtomicBoolean islike = new AtomicBoolean(false);
 
         Iterator<Love> iterator = article.getLoves().iterator();
+
         while (iterator.hasNext()) {
             Love love = iterator.next();
             if (love.getCustomUser().getId() == customUser.getId()) {
@@ -67,9 +68,9 @@ public class LoveService {
             article.setLove(article.getLove() + 1);
             article.addlove(love);
 
-            articleRepository.save(article);
 
         }
+        articleRepository.save(article);
 
 
     }
