@@ -20,11 +20,12 @@ const SSETest: React.FC = () => {
     console.log(accessToken);
     const connectSSE = () => {
       // SSE 연결 URL. 서버 설정에 따라 변경해주세요.
-      // const url = "http://localhost:8080/v1/noti/pub";
-      const url = "https://j10c102.p.ssafy.io/api/v1/noti/pub";
+      const url = "http://localhost:8080/v1/noti/pub";
+      // const url = "https://j10c102.p.ssafy.io/api/v1/noti/pub";
 
       const eventSource = new EventSourcePolyfill(url, {
         headers: { Authorization: `Bearer ${accessToken}` },
+        heartbeatTimeout: 20*60*1000,
       });
 
       console.log("sse 생성확인 : ", eventSource);
@@ -53,7 +54,7 @@ const SSETest: React.FC = () => {
         setTimeout(() => {
           console.log("SSE 재연결 시도...");
           connectSSE();
-        }, 5000); // 5초 후 재연결 시도
+        }, 1000); // 5초 후 재연결 시도
       };
 
       // 컴포넌트 언마운트 시 연결 종료
