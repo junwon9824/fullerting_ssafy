@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { TopBar } from "../common/Navigator/navigator";
 import { useQuery } from "@tanstack/react-query";
 import { getChatRoomList } from "../../apis/TradeApi";
+import { useNavigate } from "react-router-dom";
 interface ChatData {
   chatOtherNick: string;
   chatRoomId: number;
@@ -106,9 +107,14 @@ const TradeChatRoom = () => {
   };
   //시간
   const renderTimeAgo = (timeString: string) => {
+    if (!timeString) {
+      return "날짜 정보 없음";
+    }
     const time = new Date(timeString);
     const now = new Date();
     const difference = now.getTime() - time.getTime(); // 밀리초 단위
+    // console.log("time", time);
+    // console.log("now", now);
 
     const minutes = Math.floor(difference / (1000 * 60));
     const hours = Math.floor(difference / (1000 * 60 * 60));
@@ -122,7 +128,12 @@ const TradeChatRoom = () => {
       return `${days}일 전`;
     }
   };
+  // 시간 끝
 
+  const navigate = useNavigate();
+  const handleChatRoomClick = (chatRoomId: number) => {
+    navigate(`/trade/${chatRoomId}/chat`);
+  };
   return (
     <>
       <TopBar title="채팅 목록" showBack={true} />
@@ -130,12 +141,15 @@ const TradeChatRoom = () => {
       <LayoutMainBox>
         <LayoutInnerBox>
           {data?.map((item: ChatData, index: number) => (
-            <ChatRoom key={item.chatRoomId}>
+            <ChatRoom
+              key={item.chatRoomId}
+              onClick={() => handleChatRoomClick(item.chatRoomId)}
+            >
               <ProfileImage src={item?.chatRoomOtherThumb} />
               <ChatDetail>
                 <TitleBox>
                   <Title>{item.chatOtherNick}</Title>
-                  <Time>{renderTimeAgo(item.chatRoomLastMessageSendAt)}</Time>
+                  <Time>{renderTimeAgo(item?.chatRoomLastMessageSendAt)}</Time>
                 </TitleBox>
                 <Content>
                   {renderContentText(item?.chatRoomLastMessage)}

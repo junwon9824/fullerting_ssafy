@@ -21,4 +21,10 @@ public class ArticleResponse {
     private int love;
     private boolean mylove;
     private List<String> imgurls;
+    private String authornickname;
+    private String rank;
+    private String thumbnail;
+
+
+//    닉네임,등급,섬네일 불러오기
 }

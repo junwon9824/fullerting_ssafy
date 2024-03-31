@@ -32,40 +32,27 @@ public class EventAlarmNotificationService {
         return emitter;
     }
 
-    @Async("notiExecutor")
     public void sendAsync(AlarmPayload alarmPayload) {
-        log.info("비동기 메서드 시작: {} (스레드: {})", alarmPayload, Thread.currentThread().getName());
-        SseEmitter emitter = emitterMap.get(alarmPayload.getReceiveUserId().toString());
+        String userId = alarmPayload.getReceiveUserId().toString();
+        log.info("비동기 메서드 시작: 사용자 {}, 데이터 {} (스레드: {})", userId, alarmPayload, Thread.currentThread().getName());
+        SseEmitter emitter = emitterMap.get(userId);
+
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().data(alarmPayload));
-                log.info("서버로부터 SSE 도착 (비동기) : {} ", alarmPayload.toString());
+                log.info("서버로부터 SSE 전송 성공: 사용자 {}, 데이터 {}", userId, alarmPayload);
             } catch (IOException e) {
-                log.error("SSE 전송 실패 : {}", e.getMessage());
+                log.error("SSE 전송 실패: 사용자 {}, 오류 메시지 {}", userId, e.getMessage(), e);
                 emitter.completeWithError(e);
-                emitterMap.remove(alarmPayload.getReceiveUserId().toString());
+                emitterMap.remove(userId);
             }
+        } else {
+            log.warn("SSE 전송 시도 실패: 사용자 {}에 대한 Emitter 없음", userId);
         }
-        log.info("비동기 메서드 종료: {} (스레드: {})", alarmPayload, Thread.currentThread().getName());
+
+        log.info("비동기 메서드 종료: 사용자 {} (스레드: {})", userId, Thread.currentThread().getName());
     }
 
-
-
-
-//    public void sendToUser(AlarmPayload alarmPayload) {
-//
-//        SseEmitter emitter = emitterMap.get(alarmPayload.getReceiveUserId().toString());
-//        if (emitter != null) {
-//            try {
-//                emitter.send(SseEmitter.event()
-//                        .data(alarmPayload));
-//                log.info("서버로부터 SSE 도착 : {} ", alarmPayload.toString());
-//            } catch (IOException e) {
-//                emitter.completeWithError(e);
-//                emitterMap.remove(alarmPayload.getReceiveUserId().toString());
-//            }
-//        }
-//    }
 
     // 하트비트 전송을 위한 메소드 추가
     @Scheduled(fixedRate = HEARTBEAT_INTERVAL)
