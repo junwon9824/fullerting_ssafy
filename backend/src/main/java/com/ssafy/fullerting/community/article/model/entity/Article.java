@@ -9,6 +9,7 @@ import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.hibernate.Hibernate;
 
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @Entity
 @ToString
 @Table(name = "article")
-
+@Slf4j
 public class Article {
 
     @Id
@@ -90,7 +91,8 @@ public class Article {
 //    }
 //
     public void removeimage(Image image) {
-        images.remove(image);
+        this.images.remove(image);
+        log.info("removeimage"+this.images.size());
     }
 
     public void removelove(Love love) {
