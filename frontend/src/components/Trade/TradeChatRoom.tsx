@@ -106,9 +106,14 @@ const TradeChatRoom = () => {
   };
   //시간
   const renderTimeAgo = (timeString: string) => {
+    if (!timeString) {
+      return "날짜 정보 없음";
+    }
     const time = new Date(timeString);
     const now = new Date();
     const difference = now.getTime() - time.getTime(); // 밀리초 단위
+    // console.log("time", time);
+    // console.log("now", now);
 
     const minutes = Math.floor(difference / (1000 * 60));
     const hours = Math.floor(difference / (1000 * 60 * 60));
@@ -135,7 +140,7 @@ const TradeChatRoom = () => {
               <ChatDetail>
                 <TitleBox>
                   <Title>{item.chatOtherNick}</Title>
-                  <Time>{renderTimeAgo(item.chatRoomLastMessageSendAt)}</Time>
+                  <Time>{renderTimeAgo(item?.chatRoomLastMessageSendAt)}</Time>
                 </TitleBox>
                 <Content>
                   {renderContentText(item?.chatRoomLastMessage)}
