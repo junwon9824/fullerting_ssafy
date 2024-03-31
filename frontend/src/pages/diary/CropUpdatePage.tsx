@@ -82,6 +82,7 @@ const CropUpdatePage = () => {
             placeholder=""
             value={selectedDate}
             onChange={handleDateChange}
+            max={new Date().toISOString().slice(0, 10)}
           />
           <StyledInput
             label="작물 닉네임"
