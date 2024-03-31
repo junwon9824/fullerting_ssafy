@@ -5,6 +5,8 @@ import styled from "styled-components";
 import grayheart from "../../assets/svg/grayheart.svg";
 import like from "../../assets/svg/greenheart.svg";
 import Speech from "../../assets/svg/Speech Bubble.svg";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
 
 interface ImgProps {
   backgroundImage: string;
@@ -69,7 +71,7 @@ const HeartBox = styled.div`
 
 const CommunityContent = () => {
   const queryClient = useQueryClient();
-  const { communityId } = useParams();
+  const { communityId } = useParams<{ communityId: string }>();
   const { data: community, isLoading } = useQuery({
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
@@ -78,7 +80,6 @@ const CommunityContent = () => {
   const { mutate } = useMutation({
     mutationFn: () => toggleLike(communityId),
     onSuccess: () => {
-      // 성공 시 쿼리 데이터 갱신
       queryClient.invalidateQueries(["CommunityDetail", communityId]);
     },
     onError: (error) => {
@@ -90,15 +91,26 @@ const CommunityContent = () => {
     return <div>Loading..</div>;
   }
 
-  // 좋아요 클릭 핸들러
   const handleLikeClick = () => {
-    mutate(); // mutate 함수를 호출하여 뮤테이션 실행
+    mutate();
   };
 
-  // ... 컴포넌트 반환부
   return (
     <All>
-      <Img backgroundImage={community.imgurls} />
+      {community.imgurls && community.imgurls.length > 0 && (
+        <Swiper
+          modules={[Navigation]}
+          navigation
+          spaceBetween={50}
+          slidesPerView={1}
+        >
+          {community.imgurls.map((url: string, index: number) => (
+            <SwiperSlide key={index}>
+              <Img backgroundImage={url} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
       <Content>{community.content}</Content>
 
       <HeartBox>
@@ -108,7 +120,7 @@ const CommunityContent = () => {
         />
         <Num>{community.love}</Num>
         <img src={Speech} alt="" />
-        <Num>{community.love}</Num>
+        <Num>{community.commentsize}</Num>
       </HeartBox>
     </All>
   );

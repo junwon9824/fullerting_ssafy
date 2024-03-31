@@ -167,7 +167,7 @@ const CommunityAll = () => {
                   <PostContent>{post.content}</PostContent>
                 </ContentTitle>
                 <ImgCon>
-                  <PostImage src={post.imgurls} alt="Post image" />
+                  <PostImage src={post.imgurls[0]} alt="Post image" />
                 </ImgCon>
               </ContentImage>
               <PostMeta>
