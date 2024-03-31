@@ -100,11 +100,7 @@ export const useLike = () => {
     mutationFn: async (postId: number) => {
       // 여기서 accessToken을 검색하고, 요청에 포함합니다.
       const accessToken = sessionStorage.getItem("accessToken");
-      console.log("토큰이에요", accessToken);
-      if (!accessToken) {
-        // accessToken이 없는 경우, 오류를 반환하거나 다른 처리를 할 수 있습니다.
-        throw new Error("No access token available");
-      }
+
       return await api.post(
         `/exchanges/${postId}/convert_like`,
         {},
@@ -114,7 +110,8 @@ export const useLike = () => {
       );
     },
     onSuccess: (res) => {
-      console.log("좋아요 성공", res);
+      queryClient.invalidateQueries({ queryKey: ["tradeList"] });
+      console.log(res);
     },
     onError: (error) => {
       console.log("에러났어요", error);

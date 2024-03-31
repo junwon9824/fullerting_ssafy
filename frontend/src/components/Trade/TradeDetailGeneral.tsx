@@ -24,10 +24,14 @@ import "swiper/css/navigation";
 import SwiperCore, { Navigation, Pagination } from "swiper/modules";
 import { userCheck } from "../../apis/UserApi";
 import TradePostLayout from "../common/Layout/TradePostLayout";
+import { useAtom } from "jotai";
+import { likeAtom } from "../../stores/trade";
 interface ImageResponse {
   imgStoreUrl: string;
 }
-
+interface ClickLike {
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
 const ImgBox = styled.img`
   width: 100%;
   height: 15.5625rem;
@@ -125,6 +129,16 @@ const Thumbnail = styled.img`
   width: 1.875rem;
   height: 1.875rem;
 `;
+const LikeBox = styled.div<ClickLike>`
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  position: absolute;
+  bottom: 0.38rem;
+  right: 0.38rem;
+  z-index: 3;
+  cursor: pointer;
+`;
 
 const TradeGeneralDetail = () => {
   const navigate = useNavigate();
@@ -154,6 +168,18 @@ const TradeGeneralDetail = () => {
     queryKey: ["userDetail"],
     queryFn: accessToken ? () => userCheck(accessToken) : undefined,
   });
+  const [likes, setLikes] = useAtom(likeAtom);
+
+  const toggleLike = (postId: number) => {
+    const isLiked = likes.includes(postId);
+    setLikes((currentLikes) =>
+      isLiked
+        ? currentLikes.filter((id) => id !== postId)
+        : [...currentLikes, postId]
+    );
+
+    handleLikeClick(postId);
+  };
   console.log("디테일데이터", data);
   console.log("유저데이터", userData);
   const { mutate: clickChat } = createChatRoom();
@@ -246,13 +272,17 @@ const TradeGeneralDetail = () => {
           <TitleBox>
             <Title>
               {data?.exArticleResponse.exArticleTitle}
-              <img
-                src={data?.favoriteResponse.islike === true ? Like : NotLike}
-                alt="like"
-                onClick={() => {
-                  handleLikeClick(data?.exArticleResponse.exArticleId);
+              <LikeBox
+                onClick={(e) => {
+                  e.stopPropagation(); // 이벤트 전파 방지
+                  toggleLike(data?.exArticleResponse.exArticleId);
                 }}
-              />
+              >
+                <img
+                  src={data?.favoriteResponse.islike === true ? Like : NotLike}
+                  alt="like"
+                />
+              </LikeBox>
             </Title>
             <Price>{data?.transResponse.price}원</Price>
             <DiaryBox>
