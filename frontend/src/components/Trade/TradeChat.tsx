@@ -169,65 +169,19 @@ const TradeChat = () => {
       ? () => getChatRoomDetail(accessToken, chatNumber)
       : undefined,
   });
-  const {
-    isLoading: userDataIsLoading,
-    data: userData,
-    error: userDataError,
-  } = useQuery({
-    queryKey: ["userData"],
-    queryFn: accessToken ? () => userCheck(accessToken) : undefined,
-  });
+  // const {
+  //   isLoading: userDataIsLoading,
+  //   data: userData,
+  //   error: userDataError,
+  // } = useQuery({
+  //   queryKey: ["userData"],
+  //   queryFn: accessToken ? () => userCheck(accessToken) : undefined,
+  // });
   const { mutate: finishClick } = useDealFinish();
   const handleFinishClick = () => {
     finishClick(detailData?.chatRoomExArticleId);
   };
-  console.log("유저", userData);
-  console.log("글", data);
-  // useEffect(() => {
-  //   console.log("저 호출됐어요");
-  //   const transformedData = data?.map((item: ChatResponse) => ({
-  //     chatId: item.chatId,
-  //     chatRoomId: item.chatRoomId,
-  //     chatSenderId: item.chatSenderId,
-  //     chatSenderNick: item.chatSenderNick,
-  //     chatSenderThumb: item.chatSenderThumb,
-  //     chatSendAt: item.chatSendAt,
-  //     chatMessage: item.chatMessage,
-  //   }));
-  //   setMessages(transformedData);
-  //   client.connect(
-  //     {
-  //       Authorization: `Bearer ${accessToken}`,
-  //     },
-  //     () => {
-  //       console.log("WebSocket 연결됨");
 
-  //       // 백엔드로부터 메시지를 받는 부분
-  //       // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
-  //       client.subscribe(`/sub/chat/${chatNumber}`, (message) => {
-  //         const msg: ChatResponse = JSON.parse(message.body);
-  //         console.log(msg);
-
-  //         queryClient.invalidateQueries({
-  //           queryKey: ["chatList", chatNumber],
-  //         });
-  //         setMessages((prevMessages) => [...prevMessages, msg]);
-  //       });
-  //       setMessageSubscribed(true); // 한 번만 실행되도록 플래그 설정
-  //     },
-  //     (error) => {
-  //       console.error("WebSocket 연결 실패", error);
-  //     }
-  //   );
-  //   setStompClient(client);
-  //   return () => {
-  //     if (client.connected) {
-  //       client.disconnect(() => {
-  //         console.log("disconnect");
-  //       });
-  //     }
-  //   };
-  // }, [data]);
   useEffect(() => {
     const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
     const client = Stomp.over(socket);
