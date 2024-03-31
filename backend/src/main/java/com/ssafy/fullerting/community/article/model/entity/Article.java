@@ -3,6 +3,7 @@ package com.ssafy.fullerting.community.article.model.entity;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleAllResponse;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
+import com.ssafy.fullerting.community.comment.model.entity.Comment;
 import com.ssafy.fullerting.community.love.model.entity.Love;
 import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
@@ -62,9 +63,22 @@ public class Article {
     private List<Image> images = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "article",cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
+
     public void addlove(Love love) {
         loves.add(love);
     }
+//
+//    public void addcomment(Comment comment) {
+//        comments.add(comment);
+//    }
+//
+//    public void removecomment(Comment comment) {
+//        comments.remove(comment);
+//    }
+
 
 
     public void addimage(Image image) {
@@ -119,6 +133,7 @@ public class Article {
                 .mylove(mylove)
                 .time(minutesDifference)
                 .authornickname(authornickname)
+                .commentsize(article.getComments().size())
                 .build();
     }
 
