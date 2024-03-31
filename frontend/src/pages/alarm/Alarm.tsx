@@ -16,7 +16,7 @@ const LayoutInnerBox = styled.div`
 const Alarm = () => {
   return (
     <>
-      <TopBar title="알림" />
+      <TopBar title="알림" showBack={false} />
       <LayoutMainBox>
         <LayoutInnerBox>
           <AllAlarm />
