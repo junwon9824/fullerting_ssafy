@@ -74,9 +74,8 @@ const LoginPage = () => {
       <LoginForm />
       <Line />
       <SocialLoginBox>
-        <Description>카카오로 풀러팅 간편하게 시작하기</Description>
+        <Description>풀러팅 간편하게 시작하기</Description>
         <img src={Social} onClick={googleLogin} alt="" />
-        <SvgBox>카카오</SvgBox>
       </SocialLoginBox>
     </MainBox>
   );
