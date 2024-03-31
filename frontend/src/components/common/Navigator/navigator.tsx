@@ -7,6 +7,9 @@ import Mypage from "/src/assets/svg/mypage.svg";
 import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { imageFilesAtom, selectedDiaryIdAtom } from "../../../stores/trade";
+import { useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getDetailCommunities } from "../../../apis/CommunityApi";
 
 interface NavItem {
   Icon: string;
@@ -200,8 +203,37 @@ const TopBar = ({
     navigate(-1);
   };
 
+  const { communityId } = useParams<{ communityId: string }>();
+  const { data: community    } = useQuery({
+    queryKey: ["CommunityDetail"],
+    queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
+  });
+  console.log(community);
+  // const { mutate } = useMutation({
+  //   mutationFn: () => toggleLike(communityId),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(["CommunityDetail", communityId]);
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //   },
+  // });
+
   const onClickEdit = () => {
-    navigate("update");
+    console.log("수정버튼이 클릭됐어여!!");
+    // navigate("update");
+    console.log('title'+title)
+    navigate(`update`, {
+      state: {
+        title:  community.title,
+        content:  community.content,
+        imgurls:  community.imgurls,
+        // imageResponse: community?.imageResponses,
+
+
+      },
+    });
+
   };
 
   const onClickDelete = () => {

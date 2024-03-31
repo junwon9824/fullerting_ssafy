@@ -20,6 +20,7 @@ import CropCreatePage from "../pages/diary/CropCreatePage";
 import TestPage from "../pages/user/test";
 import CommunityLayout from "../pages/community/CommunityLayout";
 import Community from "../pages/community/Community";
+import UpdateCommunity from "../pages/community/UpdateCommunity";
 import CreateCommunity from "../pages/community/CreateCommunity";
 import CommunityDetail from "../pages/community/CommunityDetail";
 import TradeGeneralDetailPage from "../pages/trade/TradeGeneralDetail";
@@ -105,6 +106,7 @@ const communityRoutes = [
       { index: true, element: <Community /> },
       { path: "createcommunity", element: <CreateCommunity /> },
       { path: ":communityId", element: <CommunityDetail /> },
+      { path: ":communityId/update", element: <UpdateCommunity /> },
     ],
   },
 ];

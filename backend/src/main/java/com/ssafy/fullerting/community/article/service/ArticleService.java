@@ -160,7 +160,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public void deletearticlebyid(Long articleId) {
+     public void deletearticlebyid(Long articleId) {
 
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
