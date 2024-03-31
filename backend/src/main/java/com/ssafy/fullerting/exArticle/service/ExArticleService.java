@@ -264,6 +264,10 @@ public class ExArticleService {
         ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
+        if (exArticle.getUser().getId() != customUser.getId()) {
+            throw new ExArticleException(ExArticleErrorCode.NOT_MINE);
+        }
+
         log.info("exxxx" + exArticle.getPurchaserId());
         exArticle.setdone();
         exArticle.setpurchaserid(exArticleDoneRequest.getExArticlePurchaserId());
