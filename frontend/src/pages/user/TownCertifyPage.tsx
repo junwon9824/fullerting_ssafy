@@ -9,14 +9,18 @@ import { useMutation } from "@tanstack/react-query";
 import { updateTown } from "../../apis/UserApi";
 import { useAtom } from "jotai";
 import { locationAtom } from "../../stores/user";
+import { useNavigate } from "react-router-dom";
 
 const TownCertifyPage = () => {
+  const navigate = useNavigate();
   const [address, setAddress] = useAtom(locationAtom);
 
   const { mutate } = useMutation({
     mutationFn: updateTown,
     onSuccess: () => {
       console.log("성공!");
+      alert("동네인증이 완료되었습니다");
+      navigate(`/trade`);
     },
     onError: (error) => {
       console.log(error);
@@ -25,7 +29,6 @@ const TownCertifyPage = () => {
 
   const handleConfirmClick = () => {
     const sigungu = `${address.region_1depth_name} ${address.region_2depth_name} ${address.region_3depth_name}`;
-    console.log(sigungu);
 
     mutate(sigungu);
   };
@@ -37,7 +40,9 @@ const TownCertifyPage = () => {
       <LayoutMainBox>
         <LayoutInnerBox>
           {address && (
-            <div>{`${address.region_1depth_name} ${address.region_2depth_name} ${address.region_3depth_name}`}</div>
+            <div
+              style={{ fontWeight: "bold", fontSize: "1.25rem" }}
+            >{`${address.region_1depth_name} ${address.region_2depth_name} ${address.region_3depth_name}`}</div>
           )}
           <div>내 동네가 맞나요?</div>
         </LayoutInnerBox>
