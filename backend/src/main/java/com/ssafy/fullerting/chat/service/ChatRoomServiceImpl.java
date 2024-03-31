@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.chat.service;
 
+import com.ssafy.fullerting.alarm.service.EventAlarmService;
 import com.ssafy.fullerting.chat.exception.ChatErrorCode;
 import com.ssafy.fullerting.chat.exception.ChatException;
 import com.ssafy.fullerting.chat.model.dto.request.CreateChatRoomRequest;
@@ -41,13 +42,15 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     private final ChatRepository chatRepository;
     private final ExArticleRepository exArticleRepository;
     private final UserRepository userRepository;
+    private final EventAlarmService eventAlarmService;
 
     @Override
     public CreateChatRoomResponse createChatRoom(CreateChatRoomRequest createChatRoomRequest) {
         UserResponse userResponse = userService.getUserInfo();
 
+
         //게시글 존재하는지 확인
-        exArticleRepository.findById(createChatRoomRequest.getExArticleId()).orElseThrow(()->new ExArticleException(NOT_EXISTS));
+        ExArticle exArticle = exArticleRepository.findById(createChatRoomRequest.getExArticleId()).orElseThrow(() -> new ExArticleException(NOT_EXISTS));
         //이미 존재하는 채팅방인지 조회
         Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByExArticleIdAndBuyerId(createChatRoomRequest.getExArticleId(), userResponse.getId());
         //존재하지 않을 경우 채팅방 생성
@@ -56,6 +59,12 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                     .exArticleId(createChatRoomRequest.getExArticleId())
                     .buyerId(userResponse.getId())
                     .build());
+            log.info("채팅방 첫 생성 : {}", exArticle.toString());
+
+            // 채팅방 생성 알림함 전송
+            eventAlarmService.notifyCreateChatRoomAuthor(userService.getUserEntityById(userResponse.getId()), exArticle, "http://localhost:5173/trade/chatroom");
+
+
             return CreateChatRoomResponse.toResponse(chatRoom);
         }
         //존재하는 경우 해당 채팅방 응답

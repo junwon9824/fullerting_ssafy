@@ -26,4 +26,7 @@ public class ChatRoom { //채팅방
     @Column(name = "chat_room_buyer_id")
     @NotNull
     private Long buyerId; //구매자
+
+    @Column(name = "chat_room_seller_id")
+    private Long sellerId; //판매자
 }

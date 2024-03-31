@@ -1,5 +1,8 @@
 package com.ssafy.fullerting.chat.controller;
 
+import com.ssafy.fullerting.alarm.model.EventAlarmType;
+import com.ssafy.fullerting.alarm.model.dto.request.AlarmPayload;
+import com.ssafy.fullerting.alarm.service.EventAlarmNotificationService;
 import com.ssafy.fullerting.chat.model.dto.request.ChatRequest;
 import com.ssafy.fullerting.chat.model.dto.response.ChatResponse;
 import com.ssafy.fullerting.chat.service.ChatService;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Controller;
 public class SocketController {
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatService chatService;
+    private final EventAlarmNotificationService eventAlarmNotificationService;
 
     /**
      * 채팅 전송

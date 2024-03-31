@@ -23,7 +23,7 @@ public class FarmController {
      * @return
      */
     @GetMapping("/search")
-    public ResponseEntity<MessageUtils> searchFarm(@RequestParam String region){
+    public ResponseEntity<MessageUtils> searchFarm(@RequestParam Integer region){
         return ResponseEntity.ok().body(MessageUtils.success(farmService.searchFarm(region)));
     }
 

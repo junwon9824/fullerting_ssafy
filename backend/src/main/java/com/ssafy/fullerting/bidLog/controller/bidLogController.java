@@ -63,9 +63,6 @@ public class bidLogController {
         CustomUser customUser=userResponse.toEntity(userResponse);
 
         BidLogResponse bidLogResponse = bidLog.tobidLogResponse(bidLog,customUser);
-
-        log.info("[dealbid  ]: {}");
-
         return ResponseEntity.ok().body(MessageUtils.success(bidLogResponse));
     }
 
@@ -75,7 +72,7 @@ public class bidLogController {
 
         BidLog bidLog = bidService.choosetbid(ex_article_id, bidSelectRequest);
 
-        log.info("[choosetbid  ]: {}");
+//        log.info("[choosetbid  ]: {}");
 
         return ResponseEntity.ok().body(MessageUtils.success(bidLog.getId()));
     }
