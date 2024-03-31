@@ -26,6 +26,7 @@ public class ArticleResponse {
     private String rank;
     private String thumbnail;
     private LocalDateTime createdAt;
+    private int commentsize;
 
 
 
