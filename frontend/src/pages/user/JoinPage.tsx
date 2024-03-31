@@ -13,19 +13,19 @@ import { userJoin } from "../../apis/UserApi";
 import { useNavigate } from "react-router-dom";
 
 const JoinPage = () => {
-  const [name, setName] = useInput("");
-  const [email, setEmail] = useInput("");
+  const [name, onName] = useInput("");
+  const [email, onEmail] = useInput("");
   // const [authCode, setAuthCode] = useInput("");
-  const [password, setPassword] = useInput("");
-  const [verifyPassword, setVerifyPassword] = useInput("");
-  const [isEmailVerify, setIsEmailVerify] = useState<boolean>(false);
+  const [password, onPassword] = useInput("");
+  const [verifyPassword, onVerifyPassword] = useInput("");
+  // const [isEmailVerify, setIsEmailVerify] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const { mutate } = useMutation({
     mutationFn: userJoin,
     onSuccess: (res) => {
-      console.log(res);
+      alert("회원가입이 완료되었습니다.\n로그인해주세요!");
       navigate("/login");
     },
     onError: (error) => {
@@ -36,16 +36,23 @@ const JoinPage = () => {
   const handleAuthCodeSend = () => {};
   const handleAuthCodeConfirm = () => {
     // 인증번호 확인 로직 추가 필요
-    setIsEmailVerify(true);
+    // setIsEmailVerify(true);
   };
   const handleConfirmClick = () => {
-    if (isEmailVerify && password === verifyPassword) {
-      mutate({
-        email: email,
-        password: password,
-        nickname: name,
-        authProvider: "MYAPP",
-      });
+    // if (isEmailVerify && password === verifyPassword) {
+    if (email && name && password) {
+      if (password === verifyPassword) {
+        mutate({
+          email: email,
+          password: password,
+          nickname: name,
+          authProvider: "MYAPP",
+        });
+      } else {
+        alert("비밀번호를 다시 확인해 주세요!");
+      }
+    } else {
+      alert("모든 정보를 입력해주세요!");
     }
   };
 
@@ -54,15 +61,15 @@ const JoinPage = () => {
       <TopBar title="회원가입" />
       <LayoutMainBox>
         <LayoutInnerBox>
-          <StyledInputWithButton
+          {/*<StyledInputWithButton
             label="이메일"
             type="email"
             id="email"
             name="email"
             placeholder="이메일"
-            onChange={setEmail}
+            onChange={onEmail}
             onClick={handleAuthCodeSend}
-            disabled={isEmailVerify}
+            // disabled={isEmailVerify}
           />
           <StyledInputWithButton
             label="인증번호"
@@ -71,9 +78,17 @@ const JoinPage = () => {
             id="code"
             name="code"
             placeholder="인증번호"
-            onChange={setEmail}
+            onChange={onEmail}
             onClick={handleAuthCodeConfirm}
-            disabled={isEmailVerify}
+          //  disabled={isEmailVerify}
+          />*/}
+          <StyledInput
+            label="이메일"
+            type="email"
+            id="email"
+            name="email"
+            placeholder="이메일"
+            onChange={onEmail}
           />
           <StyledInput
             label="비밀번호"
@@ -81,7 +96,7 @@ const JoinPage = () => {
             id="password"
             name="password"
             placeholder="비밀번호"
-            onChange={setPassword}
+            onChange={onPassword}
           />
           <StyledInput
             label="비밀번호 확인"
@@ -89,7 +104,7 @@ const JoinPage = () => {
             id="password"
             name="password"
             placeholder="비밀번호 확인"
-            onChange={setVerifyPassword}
+            onChange={onVerifyPassword}
           />
           <StyledInput
             label="닉네임"
@@ -97,7 +112,7 @@ const JoinPage = () => {
             id="password"
             name="password"
             placeholder="닉네임"
-            onChange={setName}
+            onChange={onName}
           />
         </LayoutInnerBox>
       </LayoutMainBox>
