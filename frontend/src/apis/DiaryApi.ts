@@ -100,9 +100,14 @@ export const createDiary = async (diaryData: DiaryFormType) => {
     formData.append("diarySelectedAt", diaryData.diarySelectedAt);
     formData.append("diaryTitle", diaryData.diaryTitle);
     formData.append("diaryContent", diaryData.diaryContent);
-    diaryData.images.forEach((image) => {
-      formData.append(`images`, image);
-    });
+
+    if (diaryData.images.length === 0) {
+      formData.append("images", new Blob([]));
+    } else {
+      diaryData.images.forEach((image) => {
+        formData.append(`images`, image);
+      });
+    }
 
     const response = await api.post(
       `/diaries/${diaryData.packDiaryId}`,
