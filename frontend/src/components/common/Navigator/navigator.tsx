@@ -143,8 +143,8 @@ TopBarType) => {
       state: {
         title:  community.title,
         content:  community.content,
-        // imgurls:  community.imgurls,
-        imageResponse: community?.imageResponses,
+        imgurls:  community.imgurls,
+        // imageResponse: community?.imageResponses,
 
 
       },

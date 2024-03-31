@@ -13,6 +13,7 @@ import { selectedTypeAtom } from "../../stores/community";
 import { useParams } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 interface ImageInfo {
   id: number;
   imgStoreUrl: string;
@@ -56,20 +57,28 @@ const TradePost = () => {
 
 
   const navigate = useNavigate();
-  const { communityId  } = useParams();
+  const { communityId } = useParams();
 
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   const [tradeType, setTradeType] = useAtom(selectedTypeAtom);
 
   useEffect(() => {
-    
-    if (   location.state?.imageResponse) {
-      // imageResponse 배열에서 필요한 정보만 추출하여 setImageFiles 호출
-      const initialImages = location.state.imageResponse.map(
-        (img: ImageInfo) => img.imgStoreUrl
-      ); // 예시 코드, 실제 구조에 맞게 조정 필요
+    if (location.state?.imgurls) {
+      const initialImages = location.state.imgurls
+
       setSelectedFiles(initialImages);
+
     }
+
+
+    // if (location.state?.imageResponse) {
+    //   // imageResponse 배열에서 필요한 정보만 추출하여 setImageFiles 호출
+    //   const initialImages = location.state.imageResponse.map(
+    //     (img: ImageInfo) => img.imgStoreUrl
+    //   ); // 예시 코드, 실제 구조에 맞게 조정 필요
+    //   setSelectedFiles(initialImages);
+    // }
+
   }, [location.state, setSelectedFiles]);
 
   const handleConfirmClick = async () => {
@@ -78,6 +87,8 @@ const TradePost = () => {
     console.log('image등록등록등록등록' + selectedFiles.length)
 
     selectedFiles.forEach((file) => {
+      console.log(file)
+      
       formData.append("images", file);
     });
 
