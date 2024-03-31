@@ -4,6 +4,7 @@ import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,6 +25,9 @@ public class ArticleResponse {
     private String authornickname;
     private String rank;
     private String thumbnail;
+    private Long time;
+    private int commentsize;
+
 
 
 //    닉네임,등급,섬네일 불러오기
