@@ -46,6 +46,22 @@ export const create = async (formdata:FormData) => {
   }
 };
 
+export const update = async (formdata:FormData,articleid : number) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.patch(
+      `articles/${articleid}`,
+      formdata,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("alarmId error: ", error);
+    throw error;
+  }
+};
 
 export const userCheck = async ( communityId: string) => {
   const accessToken = sessionStorage.getItem("accessToken");
