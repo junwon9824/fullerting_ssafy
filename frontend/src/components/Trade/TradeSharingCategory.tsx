@@ -10,8 +10,12 @@ import {
   useLike,
 } from "../../apis/TradeApi";
 import { useQuery } from "@tanstack/react-query";
+import { useAtom } from "jotai";
+import { likeAtom } from "../../stores/trade";
+import Like from "../../assets/svg/like.svg";
+import NonLike from "../../assets/svg/notlike.svg";
 interface ClickLike {
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 interface StateGap {
   gap?: number;
@@ -198,7 +202,17 @@ const TradeSharingCategory = () => {
   });
 
   const { mutate: handleLikeClick } = useLike();
+  const [likes, setLikes] = useAtom(likeAtom);
+  const toggleLike = (postId: number) => {
+    const isLiked = likes.includes(postId);
+    setLikes((currentLikes) =>
+      isLiked
+        ? currentLikes.filter((id) => id !== postId)
+        : [...currentLikes, postId]
+    );
 
+    handleLikeClick(postId);
+  };
   const handleGeneralClick = (index: number) => {
     navigate(`/trade/${index}/generaldetail`);
   };
@@ -224,16 +238,21 @@ const TradeSharingCategory = () => {
                   src={item?.exArticleResponse?.imageResponses[0]?.imgStoreUrl}
                   alt="img"
                 ></StyledImg>
-                {/* <LikeBox
-                onClick={() =>
-                  handleLikeClick(item.exArticleResponse.exArticleId)
-                }
-              >
-                <img
-                  src={item.favoriteResponse.islike ? Like : NonLike}
-                  alt="like button"
-                />
-              </LikeBox> */}
+                <LikeBox
+                  onClick={(e) => {
+                    e.stopPropagation(); // 이벤트 전파 방지
+                    toggleLike(item.exArticleResponse.exArticleId);
+                  }}
+                >
+                  <img
+                    src={
+                      likes.includes(item.exArticleResponse.exArticleId)
+                        ? Like
+                        : NonLike
+                    }
+                    alt="like button"
+                  />
+                </LikeBox>
               </ImgBox>
               <Town>
                 <img src={Location} alt="location" />
