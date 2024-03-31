@@ -15,7 +15,7 @@ interface Post {
   name: string;
   time: number;
   likes: number;
-  comments: number;
+  commentsize: number;
   love: number;
   authornickname: string;
   type: string;
@@ -181,7 +181,7 @@ const CommunityAll = () => {
                   <Icon src={likeIcon} alt="Likes" />
                   <LikeCommentCount>{post.love}</LikeCommentCount>
                   <Icon src={commentIcon} alt="Comments" />
-                  <LikeCommentCount>{post.comments}</LikeCommentCount>
+                  <LikeCommentCount>{post.commentsize}</LikeCommentCount>
                 </InteractionIcons>
               </PostMeta>
             </PostHeader>

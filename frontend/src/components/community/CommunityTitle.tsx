@@ -3,6 +3,10 @@ import { useParams } from "react-router-dom";
 import { getDetailCommunities } from "../../apis/CommunityApi";
 import styled from "styled-components";
 
+interface ImgProps {
+  backgroundImage: string;
+}
+
 const All = styled.div`
   width: 100%;
   font-family: "GamtanRoad Dotum TTF";
@@ -25,12 +29,13 @@ const Profile = styled.div`
   display: flex;
   margin-top: 1.5rem;
 `;
-const Img = styled.div`
+const Img = styled.div<ImgProps>`
   width: 1.875rem;
   height: 1.875rem;
   flex-shrink: 0;
   border-radius: 1.6875rem;
-  background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+  background: ${(props) =>
+    `url(${props.backgroundImage}) lightgray 50% / cover no-repeat`};
 `;
 const NickGrade = styled.div`
   margin-left: 0.5rem;
@@ -61,22 +66,25 @@ const Time = styled.div`
 
 const CommunityTitle = () => {
   const { communityId } = useParams();
-  const { data: community, isLoading } = useQuery({
+  const { data: community, isLoading: isCommunityDetailLoading } = useQuery({
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
   });
-  if (isLoading) {
+  console.log(community);
+
+  if (isCommunityDetailLoading) {
     return <div>Loading..</div>;
   }
-
+  console.log(communityId);
   return (
     <All>
       <Title>{community.title}</Title>
       <Profile>
-        <Img />
+        <Img backgroundImage={community.thumbnail} />
+
         <NickGrade>
-          <Nick>닉네임</Nick>
-          <Grade>등급</Grade>
+          <Nick>{community.authornickname}</Nick>
+          <Grade>{community.rank}</Grade>
         </NickGrade>
       </Profile>
       <Time>시간</Time>
