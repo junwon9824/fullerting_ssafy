@@ -40,6 +40,7 @@ import ChatTestPage from "../pages/user/chattest";
 import SSETest from "../pages/user/ssetest";
 import TownCertifyPage from "../pages/user/TownCertifyPage";
 import TradeChatRoomPage from "../pages/trade/TradeChatRoomPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -117,6 +118,8 @@ const alarm = [
   },
 ];
 
+const notFound = [{ path: "*", element: <NotFoundPage /> }];
+
 const routes = [
   ...authRoutes,
   ...diaryRoutes,
@@ -125,6 +128,7 @@ const routes = [
   ...communityRoutes,
   ...alarm,
   ...gardenRoutes,
+  ...notFound,
 ];
 
 const router = createBrowserRouter(routes);
