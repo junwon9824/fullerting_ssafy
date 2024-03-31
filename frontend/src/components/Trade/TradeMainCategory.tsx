@@ -6,8 +6,12 @@ import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
 import { getTradeList, useLike } from "../../apis/TradeApi";
 import { useQuery } from "@tanstack/react-query";
+import { useAtom } from "jotai";
+import { likeAtom } from "../../stores/trade";
+import Like from "../../assets/svg/like.svg";
+import NonLike from "../../assets/svg/notlike.svg";
 interface ClickLike {
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 interface StateGap {
   gap?: number;
@@ -56,6 +60,9 @@ interface DataItem {
   favoriteResponse: FavoriteResponse;
   transResponse: TransResponse;
   dealResponse: DealResponse;
+}
+interface LikeButtonProps {
+  postId: number;
 }
 // interface ToggleLikeParams {
 //   accessToken: string;
@@ -178,7 +185,6 @@ const WriteBox = styled.img`
 `;
 
 const TradeMainCategory = () => {
-  const [favorite, setFavorite] = useState<string>("");
   const navigate = useNavigate();
   const handelWriteClick = () => {
     navigate("/trade/post");
@@ -192,7 +198,18 @@ const TradeMainCategory = () => {
   });
 
   const { mutate: handleLikeClick } = useLike();
+  const [likes, setLikes] = useAtom(likeAtom);
 
+  const toggleLike = (postId: number) => {
+    const isLiked = likes.includes(postId);
+    setLikes((currentLikes) =>
+      isLiked
+        ? currentLikes.filter((id) => id !== postId)
+        : [...currentLikes, postId]
+    );
+
+    handleLikeClick(postId);
+  };
   const handleGeneralClick = (index: number) => {
     navigate(`/trade/${index}/generaldetail`);
   };
@@ -219,16 +236,21 @@ const TradeMainCategory = () => {
                   src={item?.exArticleResponse?.imageResponses[0]?.imgStoreUrl}
                   alt="img"
                 ></StyledImg>
-                {/* <LikeBox
-                onClick={() =>
-                  handleLikeClick(item.exArticleResponse.exArticleId)
-                }
-              >
-                <img
-                  src={item.favoriteResponse.islike ? Like : NonLike}
-                  alt="like button"
-                />
-              </LikeBox> */}
+                <LikeBox
+                  onClick={(e) => {
+                    e.stopPropagation(); // 이벤트 전파 방지
+                    toggleLike(item.exArticleResponse.exArticleId);
+                  }}
+                >
+                  <img
+                    src={
+                      likes.includes(item.exArticleResponse.exArticleId)
+                        ? Like
+                        : NonLike
+                    }
+                    alt="like button"
+                  />
+                </LikeBox>
               </ImgBox>
               <Town>
                 <img src={Location} alt="location" />
