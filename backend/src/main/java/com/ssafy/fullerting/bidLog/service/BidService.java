@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,10 +73,16 @@ public class BidService {
 
         List<BidLog> bidLog = bidRepository.findAllByDealId(exArticle.getDeal().getId());
 
+        HashSet<Long> bidLogs = new HashSet<>();
+
+        for (BidLog bl : bidLog) {
+            bidLogs.add(bl.getUserId());
+        }
+
         List<BidLogResponse> bidLogResponses = bidLog.stream().map(bidLog1 -> {
                     CustomUser user = userRepository.
                             findById(bidLog1.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-                    return bidLog1.toBidLogsuggestionResponse(bidLog1, user);
+                    return bidLog1.toBidLogsuggestionResponse(bidLog1, user,bidLogs.size());
                 })
                 .collect(Collectors.toList());
 
@@ -104,6 +111,7 @@ public class BidService {
 
         return bidLog;
     }
+
     public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
 
         UserResponse userResponse = userService.getUserInfo();
@@ -147,7 +155,6 @@ public class BidService {
 
         return bidLog;
     }
-
 
 
     public int getBidderCount(ExArticle exArticle) {
