@@ -60,6 +60,7 @@ const DiaryWaterPage = () => {
             placeholder=""
             value={selectedDate}
             onChange={handleDateChange}
+            max={new Date().toISOString().slice(0, 10)}
           />
         </LayoutInnerBox>
       </LayoutMainBox>
