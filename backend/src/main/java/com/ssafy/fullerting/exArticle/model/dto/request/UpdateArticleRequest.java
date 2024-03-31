@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -25,5 +26,10 @@ public class UpdateArticleRequest {
 
     @Builder.Default
     private Long packdiaryid = null; // packdiary id
-    private List<Long> unmodifiedimageid;
+    //    private List<Long> unmodifiedimageid;
+    private List<Long> images;
+    private List<MultipartFile> newImages;
+
+
 }
+

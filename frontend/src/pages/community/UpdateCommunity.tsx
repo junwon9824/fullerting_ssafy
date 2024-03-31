@@ -210,6 +210,7 @@ const TradePost = () => {
         <DiaryBox>
           <MultiFileUploadInput />
         </DiaryBox>
+        
         <BottomButton onClick={handleConfirmClick} text="확인" />
       </Create>
     </>
