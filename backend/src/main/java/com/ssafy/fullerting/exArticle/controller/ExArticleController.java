@@ -172,7 +172,7 @@ public class ExArticleController {
     public ResponseEntity<MessageUtils> modifyarticle(@PathVariable Long ex_article_id,
                                                       @RequestPart(value = "updateInfo") UpdateArticleRequest updateArticleRequest,
                                                       @RequestPart(value = "images") List<MultipartFile> images
-
+//
     ) {
 //        @ModelAttribute UpdateArticleRequest updateArticleRequest) {
 
@@ -182,6 +182,7 @@ public class ExArticleController {
         CustomUser customUser = userResponse.toEntity(userResponse);
 
         ExArticle article = exArticleService.modifyarticle(ex_article_id, updateArticleRequest, customUser, images);
+//        ExArticle article = exArticleService.modifyarticle(ex_article_id, updateArticleRequest, customUser);
 
         ExArticleResponse articleResponse = article.toResponse(article, customUser);
 

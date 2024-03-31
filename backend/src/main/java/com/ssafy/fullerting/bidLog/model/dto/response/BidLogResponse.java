@@ -17,5 +17,6 @@ public class BidLogResponse {
 
     private int bidLogPrice;
     private Long exarticleid;
+    private  int bidcount;
 
 }

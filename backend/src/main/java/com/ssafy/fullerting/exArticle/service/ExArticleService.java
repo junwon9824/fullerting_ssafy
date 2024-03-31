@@ -381,9 +381,12 @@ public class ExArticleService {
         favoriteRepository.save(favorite);
 
     }
-//@Transactional
+
+    //@Transactional
     public ExArticle modifyarticle(Long exArticleId,
                                    UpdateArticleRequest updateArticleRequest, CustomUser customUser, List<MultipartFile> files) {
+//                                   UpdateArticleRequest updateArticleRequest, CustomUser customUser) {
+
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException
                 (ExArticleErrorCode.NOT_EXISTS));
 
@@ -397,9 +400,9 @@ public class ExArticleService {
         List<Image> unmodifiedimageList = new ArrayList<>();
         List<Image> delete_imageList = new ArrayList<>();
 
-        log.info("updateArticleRequest" + updateArticleRequest.getUnmodifiedimageid());
 
-        updateArticleRequest.getUnmodifiedimageid().forEach(
+//        updateArticleRequest.getImages().forEach(
+                updateArticleRequest.getImages().forEach(
                 aLong -> {
                     Image image = imageRepository.findById(aLong).orElseThrow(() -> new ImageException(ImageErrorCode.NOT_EXISTS));
                     unmodifiedimageList.add(image);
@@ -431,29 +434,30 @@ public class ExArticleService {
 //                    .build());
 //        });
 
-        if (!files.get(0).isEmpty()) {
+        if (!updateArticleRequest.getNewImages().get(0).isEmpty()) {
+            if (!files.get(0).isEmpty()) {
 
-            log.info("size 가 0보다 크다" + files.get(0));
-            //이미지 업로드
-            S3ManyFilesResponse response = amazonS3Service.uploadFiles(files);
-            //이미지 DB 저장
-            response.getUrls().
-                    entrySet().
-                    stream().
-                    map(stringStringEntry ->
-                    {
-                        Image image = imageRepository.save(Image.builder()
-                                .imgStoreUrl(stringStringEntry.getValue())
-                                .exArticle(article)
-                                .build());
-                        images1.add(image);
-                        article.addimage(image);
-                        return image;
-                    }).
+                //이미지 업로드
+//                S3ManyFilesResponse response = amazonS3Service.uploadFiles(updateArticleRequest.getNewImages());
+                S3ManyFilesResponse response = amazonS3Service.uploadFiles(files);
+                //이미지 DB 저장
+                response.getUrls().
+                        entrySet().
+                        stream().
+                        map(stringStringEntry ->
+                        {
+                            Image image = imageRepository.save(Image.builder()
+                                    .imgStoreUrl(stringStringEntry.getValue())
+                                    .exArticle(article)
+                                    .build());
+                            images1.add(image);
+                            article.addimage(image);
+                            return image;
+                        }).
 
-                    collect(Collectors.toList());
+                        collect(Collectors.toList());
+            }
         }
-
 
 //
 //        article.setImage(images.stream().map(multipartFile -> {
