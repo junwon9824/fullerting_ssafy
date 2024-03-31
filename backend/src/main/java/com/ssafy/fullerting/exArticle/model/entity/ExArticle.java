@@ -139,6 +139,7 @@ public class ExArticle {
 //                                .builder().islike(false).isLikeCnt(0).build()
 //                )
                 .time(article.created_at)
+                .isdone(article.isDone)
                 .content(article.getContent())
                 .userId(article.getUser().getId())
                 .build();

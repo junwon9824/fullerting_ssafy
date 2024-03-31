@@ -28,6 +28,7 @@ public class ExArticleResponse {
 //    private int price;
     private LocalDateTime time;
     private String content;
+    private boolean isdone;
 
 //    private  FavoriteResponse favoriteResponse;
 
