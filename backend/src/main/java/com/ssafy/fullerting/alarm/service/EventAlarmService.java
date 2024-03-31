@@ -78,6 +78,7 @@ public class EventAlarmService {
     // 3. 가격제안 왔을 때
     // 현재 사용자의 알림함에 저장하는 메서드
     // 실행조건 : 입찰자가 입찰하기를 눌렀을 때
+    @Transactional
     public void notifyAuctionBidReceived(CustomUser bidUser, ExArticle exArticle, String redirectURL) {
         // 내가 가격제안 게시물을 올렸는데
         // 누군가가 입찰을 했을 때 알림
@@ -91,13 +92,13 @@ public class EventAlarmService {
                 .build();
 
         eventAlarmRepository.save(alarm);
+        log.info("이벤트 알람 도착 : {} ", alarm);
+
         eventAlarmNotificationService.sendAsync(AlarmPayload.builder()
                 .receiveUserId(exArticle.getUser().getId())
                 .alarmType(EventAlarmType.작물거래.toString())
                 .alarmContent(bidUser.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 가격을 제안하셨어요.")
                 .alarmRedirect(redirectURL)
                 .build());
-        log.info("이벤트 알람 도착 : {} ", alarm);
     }
-
 }
