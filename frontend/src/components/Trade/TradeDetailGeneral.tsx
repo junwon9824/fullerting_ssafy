@@ -272,17 +272,13 @@ const TradeGeneralDetail = () => {
           <TitleBox>
             <Title>
               {data?.exArticleResponse.exArticleTitle}
-              <LikeBox
-                onClick={(e) => {
-                  e.stopPropagation(); // 이벤트 전파 방지
-                  toggleLike(data?.exArticleResponse.exArticleId);
+              <img
+                src={data?.favoriteResponse.islike === true ? Like : NotLike}
+                alt="like"
+                onClick={() => {
+                  handleLikeClick(data?.exArticleResponse.exArticleId);
                 }}
-              >
-                <img
-                  src={data?.favoriteResponse.islike === true ? Like : NotLike}
-                  alt="like"
-                />
-              </LikeBox>
+              />
             </Title>
             <Price>{data?.transResponse.price}원</Price>
             <DiaryBox>
