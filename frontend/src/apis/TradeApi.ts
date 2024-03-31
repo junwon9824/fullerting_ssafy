@@ -113,29 +113,8 @@ export const useLike = () => {
         }
       );
     },
-    onSuccess: (data, variables) => {
-      // data: 좋아요 요청에 대한 응답 데이터
-      // variables: 좋아요를 누른 게시글의 ID (여기서는 postId)
-
-      // `tradeList` 쿼리의 캐시된 데이터를 업데이트합니다.
-      queryClient.setQueryData<DataItem[]>(["tradeList"], (oldQueryData) => {
-        return oldQueryData?.map((item) => {
-          if (item.exArticleResponse.exArticleId === variables) {
-            return {
-              ...item,
-              favoriteResponse: {
-                ...item.favoriteResponse,
-                islike: !item.favoriteResponse.islike, // 좋아요 상태를 토글합니다.
-                isLikeCnt: item.favoriteResponse.islike
-                  ? item.favoriteResponse.isLikeCnt - 1
-                  : item.favoriteResponse.isLikeCnt + 1, // 좋아요 개수를 업데이트합니다.
-              },
-            };
-          } else {
-            return item;
-          }
-        });
-      });
+    onSuccess: (res) => {
+      console.log("좋아요 성공", res);
     },
     onError: (error) => {
       console.log("에러났어요", error);
@@ -282,4 +261,24 @@ export const getChatRoomDetail = async (
   } catch (e) {
     console.log("채팅방 상세 조회 실패", e);
   }
+};
+
+export const useDealFinish = () => {
+  return useMutation({
+    mutationFn: async (postId: number) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const response = await api.patch(`/exchanges/${postId}/done`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return response.data;
+    },
+    onSuccess: (res) => {
+      console.log("거래 종료", res);
+    },
+    onError: (error) => {
+      console.log("거래 종료 실패", error);
+    },
+  });
 };

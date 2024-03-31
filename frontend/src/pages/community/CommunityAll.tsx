@@ -117,6 +117,7 @@ const CommunityAll = () => {
     likes: number;
     love: string;
     comments: number;
+    love:number;
     type: string;
   }
 

@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import Send from "/src/assets/images/send.png";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { getChatRecord, getChatRoomDetail } from "../../apis/TradeApi";
+import {
+  getChatRecord,
+  getChatRoomDetail,
+  useDealFinish,
+} from "../../apis/TradeApi";
 import Stomp from "stompjs";
 import { userCheck } from "../../apis/UserApi";
 interface ChatResponse {
@@ -174,6 +178,10 @@ const TradeChat = () => {
     queryKey: ["userData"],
     queryFn: accessToken ? () => userCheck(accessToken) : undefined,
   });
+  const { mutate: finishClick } = useDealFinish();
+  const handleFinishClick = () => {
+    finishClick(detailData?.chatRoomExArticleId);
+  };
   console.log("유저", userData);
   console.log("글", data);
   useEffect(() => {
@@ -248,7 +256,7 @@ const TradeChat = () => {
         <LayoutInnerBox>
           <ProductBox>
             <TitleBox>{detailData?.chatRoomExArticleTitle}</TitleBox>
-            <FisishButton>거래종료</FisishButton>
+            <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
           </ProductBox>
           <ChatBox>
             {data?.map((item: any) =>
