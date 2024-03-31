@@ -59,11 +59,11 @@ public class Article {
     private List<Love> loves = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "article" ,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "article",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
 
@@ -80,7 +80,7 @@ public class Article {
 //    }
 
 
-//
+    //
 //    public void addimage(Image image) {
 //        if (this.images == null) {
 //            this.images = new ArrayList<>();
@@ -99,6 +99,9 @@ public class Article {
 
     public ArticleResponse toResponse(Article article, boolean mylove, CustomUser customUser) {
         Hibernate.initialize(article.getImages());
+        LocalDateTime currentTime = LocalDateTime.now();
+        Duration timeDifference = Duration.between(article.getCreatedAt(), currentTime);
+        long minutesDifference = timeDifference.toMinutes(); // 분으로 환산
 
 
         return ArticleResponse.builder()
@@ -111,7 +114,7 @@ public class Article {
                 .authornickname(customUser.getNickname())
                 .rank(customUser.getRank())
                 .thumbnail(customUser.getThumbnail())
-                .createdAt(article.getCreatedAt())
+                .time(minutesDifference)
                 .commentsize(article.getComments().size())
                 .imgurls(article.getImages() != null ? article.getImages().stream().map(Image::getImgStoreUrl).collect(Collectors.toList()) : null)
                 .build();

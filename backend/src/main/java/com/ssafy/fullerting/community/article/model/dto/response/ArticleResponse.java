@@ -25,7 +25,7 @@ public class ArticleResponse {
     private String authornickname;
     private String rank;
     private String thumbnail;
-    private LocalDateTime createdAt;
+    private Long time;
     private int commentsize;
 
 
