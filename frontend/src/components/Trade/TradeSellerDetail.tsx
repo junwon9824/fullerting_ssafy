@@ -220,21 +220,30 @@ const TradeSellerDetail = () => {
             <Situation border="2px solid var(--sub3, #FFBFBF)" color="#FFBFBF;">
               최고가
             </Situation>
-            <TextStyle>800원</TextStyle>
+            <TextStyle>
+              {dealListData && dealListData.length > 0
+                ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
+                : "0원"}
+            </TextStyle>
             <Situation border="2px solid var(--sub0, #A0D8B3)" color="#A0D8B3;">
               참여자
             </Situation>
-            <TextStyle>3명</TextStyle>
+            <TextStyle>{dealListData && dealListData.length | 0}명</TextStyle>
           </SituationBox>
+
           <DealBox>
-            <DealList>
-              {dealListData?.map((item: DealListResponse, index: number) => (
-                <ProfileBox onClick={handleChatClick}>
-                  <PhotoBox src={Coli} alt="coli" />
-                  <div>{getRandomSentence(String(item.bidLogPrice))}</div>
-                </ProfileBox>
-              ))}
-            </DealList>
+            {dealListData && dealListData.length > 0 ? (
+              dealListData.map((item: DealListResponse, index: number) => (
+                <DealList key={index}>
+                  <ProfileBox onClick={() => handleChatClick()}>
+                    <PhotoBox src={item.thumbnail} alt="img" />
+                    <div>{getRandomSentence(String(item.bidLogPrice))}</div>
+                  </ProfileBox>
+                </DealList>
+              ))
+            ) : (
+              <div>제안된 가격이 없습니다.</div>
+            )}
           </DealBox>
           <BottomText>
             마음에 드는 제안을 선택하고 채팅을 보내보세요!

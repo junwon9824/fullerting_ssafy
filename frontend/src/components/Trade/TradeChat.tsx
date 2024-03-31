@@ -9,7 +9,7 @@ import {
   getChatRoomDetail,
   useDealFinish,
 } from "../../apis/TradeApi";
-import Stomp from "stompjs";
+import Stomp, { client } from "stompjs";
 import { userCheck } from "../../apis/UserApi";
 import { getUsersInfo } from "../../apis/MyPage";
 interface ChatResponse {
@@ -139,7 +139,7 @@ const ContentBox = styled.div<ContentBoxProps>`
   padding-bottom: 0.5rem;
   padding-left: 0.2rem;
   padding-right: 0.2rem;
-  width: 13.0625rem;
+  width: auto;
   height: auto;
   border-radius: 0rem 0.625rem 0.625rem 0.625rem;
   background-color: ${(props) => props.backgroundColor};
@@ -171,7 +171,7 @@ const TradeChat = () => {
       ? () => getChatRoomDetail(accessToken, chatNumber)
       : undefined,
   });
-  console.log("디테일 데이터", detailData);
+  // console.log("디테일 데이터", detailData);
   // const {
   //   isLoading: userDataIsLoading,
   //   data: userData,
@@ -193,7 +193,7 @@ const TradeChat = () => {
     queryKey: ["userInfo"],
     queryFn: accessToken ? () => getUsersInfo() : undefined,
   });
-  console.log(userData, "유저데이턴");
+  // console.log(userData, "유저데이턴");
   useEffect(() => {
     const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
     const client = Stomp.over(socket);
@@ -229,7 +229,7 @@ const TradeChat = () => {
       }
     };
     // accessToken, chatNumber가 변경될 때만 연결 및 해제 로직 실행
-  }, [accessToken, chatNumber]);
+  }, [accessToken, chatNumber, queryClient]);
   const sendMessage = async () => {
     if (stompClient && newMessage.trim() !== "") {
       try {
@@ -271,7 +271,7 @@ const TradeChat = () => {
                   }
                 >
                   <ContentBox backgroundColor="var(--sub1, #E5F9DB)">
-                    보낸 아이디 {item.chatSenderNick} : {item.chatMessage}
+                    {item.chatMessage}
                   </ContentBox>
                   <Thumbnail src={item.chatSenderThumb} />
                 </ChattingBox>
@@ -284,7 +284,7 @@ const TradeChat = () => {
                 >
                   <Thumbnail src={item.chatSenderThumb} />
                   <ContentBox backgroundColor="var(--gary3, #F4F4F4)">
-                    보낸 아이디 {item.chatSenderNick} : {item.chatMessage}
+                    {item.chatMessage}
                   </ContentBox>
                 </ChattingBox>
               )
