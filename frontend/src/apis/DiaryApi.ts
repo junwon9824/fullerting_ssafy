@@ -100,9 +100,14 @@ export const createDiary = async (diaryData: DiaryFormType) => {
     formData.append("diarySelectedAt", diaryData.diarySelectedAt);
     formData.append("diaryTitle", diaryData.diaryTitle);
     formData.append("diaryContent", diaryData.diaryContent);
-    diaryData.images.forEach((image) => {
-      formData.append(`images`, image);
-    });
+
+    if (diaryData.images.length === 0) {
+      formData.append("images", new Blob([]));
+    } else {
+      diaryData.images.forEach((image) => {
+        formData.append(`images`, image);
+      });
+    }
 
     const response = await api.post(
       `/diaries/${diaryData.packDiaryId}`,
@@ -203,12 +208,22 @@ export const updateDiary = async (diaryData: DiaryFormType) => {
     formData.append("diarySelectedAt", diaryData.diarySelectedAt);
     formData.append("diaryTitle", diaryData.diaryTitle);
     formData.append("diaryContent", diaryData.diaryContent);
-    diaryData.images.forEach((image) => {
-      formData.append(`newImages`, image);
-    });
-    diaryData.originImages.forEach((imageId) => {
-      formData.append(`images`, imageId);
-    });
+
+    if (diaryData.images.length === 0) {
+      formData.append("newImages", new Blob([]));
+    } else {
+      diaryData.images.forEach((image) => {
+        formData.append(`newImages`, image);
+      });
+    }
+
+    if (diaryData.originImages.length === 0) {
+      formData.append("images", "");
+    } else {
+      diaryData.originImages.forEach((image) => {
+        formData.append(`images`, image.toString());
+      });
+    }
 
     const response = await api.patch(
       `/diaries/${diaryData.diaryId}`,
@@ -220,7 +235,6 @@ export const updateDiary = async (diaryData: DiaryFormType) => {
       }
     );
 
-    console.log(response.data);
     return response.data.data_body;
   } catch (error) {
     console.error("Error updateDiary: ", error);

@@ -1,5 +1,7 @@
-import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { deleteDiary, getDiaryList } from "../../apis/DiaryApi";
 
 const DiaryBox = styled.div`
   display: flex;
@@ -196,8 +198,10 @@ const Calender = (date: { date: string }) => {
   );
 };
 
-const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
+const DiaryList = () => {
   const navigate = useNavigate();
+  const { packDiaryId } = useParams();
+
   const isSpecialDate = (dateString: string) => {
     const today = new Date();
     const date = new Date(dateString);
@@ -217,12 +221,28 @@ const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
     }
   };
 
+  const { data: diaryList, refetch: refetchDiaryList } = useQuery({
+    queryKey: ["diaryList"],
+    queryFn: packDiaryId ? () => getDiaryList(packDiaryId) : undefined,
+  });
+
+  const { mutate: deleteMutate } = useMutation({
+    mutationFn: deleteDiary,
+    onSuccess: () => {
+      refetchDiaryList();
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   return (
     <DiaryBox>
-      {diaries.length === 0 ? (
+      {diaryList && diaryList.length === 0 ? (
         <div>다이어리를 작성해 주세요</div>
       ) : (
-        diaries.map((item) => (
+        diaryList &&
+        diaryList.map((item: DiaryType) => (
           <SDateCalCardBox key={item.diarySelectedAt}>
             <SpecialDate>{isSpecialDate(item.diarySelectedAt)}</SpecialDate>
             <CalCardBox>
@@ -233,7 +253,14 @@ const DiaryList = ({ diaries }: { diaries: DiaryType[] }) => {
                     key={diary.diaryId}
                     style={{ cursor: "pointer" }}
                     onClick={() => {
-                      navigate(`/diary/${diary.diaryId}`);
+                      if (diary.diaryBehavior === "다이어리") {
+                        navigate(`/diary/${diary.diaryId}`);
+                      } else {
+                        const isConfirmed = window.confirm("삭제하시겠습니까?");
+                        if (isConfirmed) {
+                          deleteMutate(diary.diaryId.toString());
+                        }
+                      }
                     }}
                   >
                     {diary.diaryBehavior === "다이어리" ? (

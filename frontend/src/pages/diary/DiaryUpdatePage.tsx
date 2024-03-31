@@ -132,6 +132,7 @@ const DiaryUpdatePage = () => {
                 placeholder=""
                 value={selectedDate}
                 onChange={handleDateChange}
+                max={new Date().toISOString().slice(0, 10)}
               />
               <StyledInput
                 label="제목"
