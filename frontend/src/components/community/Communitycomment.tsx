@@ -1,4 +1,8 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FormEvent, useState } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { createComment } from "../../apis/CommunityApi";
 
 const Comment = styled.div`
   margin-top: 0.5rem;
@@ -89,6 +93,29 @@ const SubmitButton = styled.button`
 `;
 
 const CommunityComment = () => {
+  const [comment, setComment] = useState("");
+  const { communityId } = useParams<{ communityId: string }>();
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: createComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["communityComments", communityId]);
+      setComment("");
+    },
+    onError: (error) => {
+      console.error("댓글 생성 오류:", error);
+    },
+  });
+
+  // 댓글 제출 핸들러
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!comment.trim()) return;
+    if (isLoading) return;
+
+    mutate({ commentContent: comment, communityId: communityId }); // 'commentcontent' 필드에 'comment' 상태 값을 전달합니다.
+  };
   return (
     <All>
       <Profile>
@@ -102,9 +129,14 @@ const CommunityComment = () => {
         댓글 더미 무슨 보고 있으니 기분이 좋네요 얼마나 더 자랄지 기대가 됩니다
       </Comment>
       <Time>시간</Time>
-      <CommentInputContainer>
-        <CommentInput type="text" placeholder="댓글을 입력하세요..." />
-        <SubmitButton>등록</SubmitButton>
+      <CommentInputContainer as="form" onSubmit={handleSubmit}>
+        <CommentInput
+          type="text"
+          placeholder="댓글을 입력하세요..."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <SubmitButton type="submit">등록</SubmitButton>
       </CommentInputContainer>
     </All>
   );

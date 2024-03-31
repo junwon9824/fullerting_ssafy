@@ -84,12 +84,10 @@ const CommunityTitle = () => {
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
   });
-  console.log(community);
 
   if (isCommunityDetailLoading) {
     return <div>Loading..</div>;
   }
-  console.log(communityId);
   return (
     <All>
       <Title>{community.title}</Title>
