@@ -20,7 +20,7 @@ public class EventAlarmNotificationService {
     private static final long HEARTBEAT_INTERVAL = 10 * 1000L; // 30초마다 하트비트 전송
 
     public SseEmitter subscribe(Long userId) {
-        log.info("SSE 구독 요청 시작: {} (스레드: {})", userId, Thread.currentThread().getName());
+//        log.info("SSE 구독 요청 시작: {} (스레드: {})", userId, Thread.currentThread().getName());
         SseEmitter emitter = new SseEmitter(TIMEOUT);
         emitterMap.put(userId.toString(), emitter);
 
@@ -34,11 +34,11 @@ public class EventAlarmNotificationService {
                 .build());
 
         emitter.onCompletion(() -> {
-            log.info("onCompletion callback");
+//            log.info("onCompletion callback");
             this.emitterMap.remove(userId);
         });
         emitter.onTimeout(() -> {
-            log.info("onTimeout callback");
+//            log.info("onTimeout callback");
             emitter.complete();
         });
 //                emitterMap.remove(userId));
@@ -51,7 +51,7 @@ public class EventAlarmNotificationService {
     @Async("notiExecutor")
     public void sendAsync(AlarmPayload alarmPayload) {
         String userId = alarmPayload.getReceiveUserId().toString();
-        log.info("비동기 메서드 시작: 사용자 {}, 데이터 {} (스레드: {})", userId, alarmPayload, Thread.currentThread().getName());
+//        log.info("비동기 메서드 시작: 사용자 {}, 데이터 {} (스레드: {})", userId, alarmPayload, Thread.currentThread().getName());
         SseEmitter emitter = emitterMap.get(userId);
 
         if (emitter != null) {
@@ -77,7 +77,7 @@ public class EventAlarmNotificationService {
         emitterMap.forEach((userId, emitter) -> {
             try {
                 emitter.send(SseEmitter.event().data("heartbeat"));
-                log.info("Heartbeat sent to {}", userId);
+//                log.info("Heartbeat sent to {}", userId);
             } catch (IOException e) {
                 emitter.completeWithError(e);
                 emitterMap.remove(userId);

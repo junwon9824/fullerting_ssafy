@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.chat.service;
 
+import com.ssafy.fullerting.alarm.service.EventAlarmService;
 import com.ssafy.fullerting.chat.exception.ChatException;
 import com.ssafy.fullerting.chat.model.dto.request.ChatRequest;
 import com.ssafy.fullerting.chat.model.dto.response.ChatResponse;
@@ -32,6 +33,7 @@ public class ChatServiceImpl implements ChatService{
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final EventAlarmService eventAlarmService;
 
     @Override
     public ChatResponse createChat(Long senderId, ChatRequest chatRequest) {
@@ -51,6 +53,7 @@ public class ChatServiceImpl implements ChatService{
                     .chatSenderThumb(customUser.getThumbnail())
                     .chatSenderNick(customUser.getNickname())
                     .build();
+
 
             return chatResponse;
         } catch(Exception e){

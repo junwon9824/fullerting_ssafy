@@ -72,12 +72,35 @@ public class EventAlarmService {
 
 
     // 2.채팅이 왔을 때 ( 채팅방 생성됐을 때 )
-    // 누군가에게 채팅이 오면 푸쉬알람을 띄운다
+    // 누군가에게 첫 채팅이 오면 알림함에 저장하고 푸쉬 알람을 띄운다
+    public void notifyCreateChatRoomAuthor(CustomUser buyer, ExArticle exArticle, String redirectURL) {
+        // 내가 가격제안 게시물을 올렸는데
+        // 누군가가 입찰을 했을 때 알림
+
+        EventAlarm alarm = EventAlarm.builder()
+                .receiveUser(exArticle.getUser())
+                .sendUser(buyer)
+                .type(EventAlarmType.작물거래)
+                .content(buyer.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 채팅을 보냈어요!")
+                .redirect(redirectURL)
+                .build();
+
+        eventAlarmRepository.save(alarm);
+        log.info("이벤트 알람 도착 : {} ", alarm);
+
+        eventAlarmNotificationService.sendAsync(AlarmPayload.builder()
+                .receiveUserId(exArticle.getUser().getId())
+                .alarmType(EventAlarmType.작물거래.toString())
+                .alarmContent(buyer.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 채팅을 보냈어요!")
+                .alarmRedirect(redirectURL)
+                .build());
+    }
 
 
     // 3. 가격제안 왔을 때
     // 현재 사용자의 알림함에 저장하는 메서드
     // 실행조건 : 입찰자가 입찰하기를 눌렀을 때
+    @Transactional
     public void notifyAuctionBidReceived(CustomUser bidUser, ExArticle exArticle, String redirectURL) {
         // 내가 가격제안 게시물을 올렸는데
         // 누군가가 입찰을 했을 때 알림
@@ -91,13 +114,15 @@ public class EventAlarmService {
                 .build();
 
         eventAlarmRepository.save(alarm);
+        log.info("이벤트 알람 도착 : {} ", alarm);
+
         eventAlarmNotificationService.sendAsync(AlarmPayload.builder()
                 .receiveUserId(exArticle.getUser().getId())
                 .alarmType(EventAlarmType.작물거래.toString())
                 .alarmContent(bidUser.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 가격을 제안하셨어요.")
                 .alarmRedirect(redirectURL)
                 .build());
-        log.info("이벤트 알람 도착 : {} ", alarm);
     }
+
 
 }
