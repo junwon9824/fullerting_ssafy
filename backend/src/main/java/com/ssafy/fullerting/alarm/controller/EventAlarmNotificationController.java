@@ -25,7 +25,7 @@ public class EventAlarmNotificationController {
     @GetMapping(path = "/pub", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public SseEmitter subscribe() {
-        return eventAlarmNotificationService.subscribe(userService.getUserInfo().getId().toString());
+        return eventAlarmNotificationService.subscribe(userService.getUserInfo().getId());
     }
 
     @PostMapping(path = "/send")
