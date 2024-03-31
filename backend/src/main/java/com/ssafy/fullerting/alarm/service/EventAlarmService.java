@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.alarm.service;
 
 import com.ssafy.fullerting.alarm.model.EventAlarmType;
+import com.ssafy.fullerting.alarm.model.dto.request.AlarmPayload;
 import com.ssafy.fullerting.alarm.model.dto.response.MyEventAlarmResponse;
 import com.ssafy.fullerting.alarm.model.entity.EventAlarm;
 import com.ssafy.fullerting.alarm.repository.EventAlarmRepository;
@@ -90,7 +91,12 @@ public class EventAlarmService {
                 .build();
 
         eventAlarmRepository.save(alarm);
-//        eventAlarmNotificationService.sendAlarmToReceiveUser(alarm);
+        eventAlarmNotificationService.sendAsync(AlarmPayload.builder()
+                .receiveUserId(exArticle.getUser().getId())
+                .alarmType(EventAlarmType.작물거래.toString())
+                .alarmContent(bidUser.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 가격을 제안하셨어요.")
+                .alarmRedirect(redirectURL)
+                .build());
         log.info("이벤트 알람 도착 : {} ", alarm);
     }
 
