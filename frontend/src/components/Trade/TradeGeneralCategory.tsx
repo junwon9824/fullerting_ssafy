@@ -201,7 +201,9 @@ const TradeGeneralCategory = () => {
       : undefined,
   });
 
-  const { mutate: handleLikeClick } = useLike();
+  const { mutate: handleLikeClick } = useLike({
+    queryKeys: ["tradeGeneralList"],
+  });
   const [likes, setLikes] = useState(data?.favoriteResponse?.islike);
 
   const handleGeneralClick = (index: number) => {
