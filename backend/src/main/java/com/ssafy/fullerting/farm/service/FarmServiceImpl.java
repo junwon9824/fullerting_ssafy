@@ -26,10 +26,10 @@ public class FarmServiceImpl implements FarmService {
     private final FarmRepository farmRepository;
     private final WebClient.Builder webClientBuilder;
 
-    @Value("${api.key}")
+//    @Value("${api.key}")
     private String apiKey;
 
-    @PostConstruct //어플리케이션 실행 시 자동으로 호출
+//    @PostConstruct //어플리케이션 실행 시 자동으로 호출
     @Override
     public void getFarmInfoExAPI() { //텃밭정보 open API 호출
         WebClient webClient = webClientBuilder.baseUrl("http://211.237.50.150:7080/").build();
