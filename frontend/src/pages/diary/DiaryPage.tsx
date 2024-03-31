@@ -152,7 +152,10 @@ const DiaryPage = () => {
     if (cropData.packDiaryCulEndAt !== null) return;
     if (!packDiaryId) return;
 
-    updateMutate(packDiaryId);
+    const isConfirmed = window.confirm("정말로 수확하시겠습니까?");
+    if (isConfirmed) {
+      updateMutate(packDiaryId);
+    }
   };
 
   const handleDeleteCrop = () => {
