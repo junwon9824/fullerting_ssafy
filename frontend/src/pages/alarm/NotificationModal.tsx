@@ -2,7 +2,6 @@ import React from "react";
 import styled, { keyframes } from "styled-components";
 import { useAtom } from "jotai";
 import { notificationAtom } from "../../stores/notification";
-import bell from "../../assets/svg/bell-ring.svg";
 import { useEffect, useState } from "react";
 
 interface ModalContainerProps {
@@ -48,14 +47,6 @@ const ModalContainer = styled.div<ModalContainerProps>`
     forwards;
 `;
 
-const BellIcon = styled.img`
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 20px;
-  height: 20px;
-`;
-
 const NotificationContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -88,16 +79,11 @@ const NotificationModal: React.FC = () => {
         clearTimeout(timer); // 컴포넌트가 언마운트될 때 타이머 정리
       };
     }
-  }, [notification.show]); // notification.show에만 의존
+  }, [notification.show]);
 
   if (!notification.show) {
     return null; // show가 false면 아무 것도 렌더링하지 않음
   }
-
-  const handleViewAlarm = () => {
-    // 알림 상세 페이지로 리디렉션
-    window.location.href = "/alarm";
-  };
 
   return (
     <>
@@ -114,11 +100,6 @@ const NotificationModal: React.FC = () => {
             Close
           </CloseButton>
         </NotificationContent>
-        <BellIcon
-          src={bell}
-          alt="Notification bell"
-          onClick={handleViewAlarm}
-        />
       </ModalContainer>
     </>
   );

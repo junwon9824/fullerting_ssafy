@@ -39,6 +39,7 @@ import GardenPage from "../pages/garden/GardenPage";
 import ChatTestPage from "../pages/user/chattest";
 import SSETest from "../pages/user/ssetest";
 import TownCertifyPage from "../pages/user/TownCertifyPage";
+import TradeChatRoomPage from "../pages/trade/TradeChatRoomPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -71,6 +72,7 @@ const tradeRoutes = [
   { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
   { path: "/trade/:postId/buyer", element: <TradeBuyerPage /> },
   { path: "/trade/:chatId/Chat", element: <TradeChatPage /> },
+  { path: "/trade/chatroom", element: <TradeChatRoomPage /> },
   { path: "/trade/:postId/modify", element: <TradeModifyPage /> },
   { path: "/trade/test", element: <TestPage /> },
   { path: "/trade/chattest", element: <ChatTestPage /> },
