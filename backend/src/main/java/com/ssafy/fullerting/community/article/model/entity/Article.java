@@ -112,6 +112,7 @@ public class Article {
                 .rank(customUser.getRank())
                 .thumbnail(customUser.getThumbnail())
                 .createdAt(article.getCreatedAt())
+                .commentsize(article.getComments().size())
                 .imgurls(article.getImages() != null ? article.getImages().stream().map(Image::getImgStoreUrl).collect(Collectors.toList()) : null)
                 .build();
     }
