@@ -381,7 +381,7 @@ public class ExArticleService {
         favoriteRepository.save(favorite);
 
     }
-@Transactional
+//@Transactional
     public ExArticle modifyarticle(Long exArticleId,
                                    UpdateArticleRequest updateArticleRequest, CustomUser customUser, List<MultipartFile> files) {
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException
