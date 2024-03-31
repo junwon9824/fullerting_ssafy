@@ -64,6 +64,20 @@ const Time = styled.div`
   line-height: 1rem;
 `;
 
+const getTimeDifference = (minutes: number) => {
+  if (minutes < 1) {
+    return `방금 전`;
+  } else if (minutes < 60) {
+    return `${minutes}분 전`;
+  } else if (minutes < 1440) {
+    const hours = Math.floor(minutes / 60);
+    return `${hours}시간 전`;
+  } else {
+    const days = Math.floor(minutes / 1440);
+    return `${days}일 전`;
+  }
+};
+
 const CommunityTitle = () => {
   const { communityId } = useParams();
   const { data: community, isLoading: isCommunityDetailLoading } = useQuery({
@@ -87,7 +101,7 @@ const CommunityTitle = () => {
           <Grade>{community.rank}</Grade>
         </NickGrade>
       </Profile>
-      <Time>시간</Time>
+      <Time>{getTimeDifference(community.time)}</Time>
       <Container></Container>
     </All>
   );
