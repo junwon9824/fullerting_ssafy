@@ -46,6 +46,7 @@ import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -63,6 +64,7 @@ import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.TRANSAC
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ExArticleService {
     private final ExArticleRepository exArticleRepository;
     private final DealRepository dealRepository;
