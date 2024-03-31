@@ -26,10 +26,10 @@ public class FarmServiceImpl implements FarmService {
     private final FarmRepository farmRepository;
     private final WebClient.Builder webClientBuilder;
 
-    @Value("${api.key}")
+//    @Value("${api.key}")
     private String apiKey;
 
-    @PostConstruct //어플리케이션 실행 시 자동으로 호출
+//    @PostConstruct //어플리케이션 실행 시 자동으로 호출
     @Override
     public void getFarmInfoExAPI() { //텃밭정보 open API 호출
         WebClient webClient = webClientBuilder.baseUrl("http://211.237.50.150:7080/").build();
@@ -69,8 +69,18 @@ public class FarmServiceImpl implements FarmService {
     }
 
     @Override
-    public List<GetAllFarmResponse> searchFarm(String region) {
-        List<Farm> farmList = farmRepository.findAll();
+    public List<GetAllFarmResponse> searchFarm(Integer region) {
+        List<Farm> farmList = null;
+
+        //전체조회
+        if(region == 0) {
+            farmList = farmRepository.findAll();
+        }
+        //지역별 검색
+        else {
+            farmList = farmRepository.findByAreaLcd(region);
+        }
+
         return farmList.stream().map(GetAllFarmResponse::toResponse).collect(Collectors.toList());
     }
 }
