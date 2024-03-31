@@ -123,7 +123,6 @@ const TradeSellerDetail = () => {
     setLike(!like);
   };
 
-  const { mutate: handleLikeClick } = useLike();
   const { postId } = useParams<{ postId?: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -133,6 +132,7 @@ const TradeSellerDetail = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
+  const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
 
   return (
     <>

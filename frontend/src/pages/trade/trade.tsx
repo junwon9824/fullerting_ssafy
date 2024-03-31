@@ -17,6 +17,7 @@ import TradeMainCategory from "../../components/Trade/TradeMainCategory";
 import TradeDealCategory from "../../components/Trade/TradeDealCategory";
 import TradeGeneralCategory from "../../components/Trade/TradeGeneralCategory";
 import TradeSharingCategory from "../../components/Trade/TradeSharingCategory";
+import TradeLikeCategory from "../../components/Trade/TradeLikeCategory";
 
 const TradePage = () => {
   // useSSEConnection();
@@ -33,7 +34,7 @@ const TradePage = () => {
       case 3:
         return <TradeSharingCategory />;
       case 4:
-        return <TradeMainCategory />;
+        return <TradeLikeCategory />;
     }
   };
   console.log(selectButton, "선택한 번호");
