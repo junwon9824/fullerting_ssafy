@@ -30,7 +30,7 @@ public class EventAlarmNotificationController {
 
     @PostMapping(path = "/send")
     public ResponseEntity<Void> sendToUser(@RequestBody AlarmPayload alarmPayload) {
-        eventAlarmNotificationService.sendToUser(alarmPayload);
+        eventAlarmNotificationService.sendAsync(alarmPayload);
         return ResponseEntity.ok().build();
     }
 }
