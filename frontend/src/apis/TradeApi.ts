@@ -282,3 +282,15 @@ export const useDealFinish = () => {
     },
   });
 };
+
+export const getChatRoomList = async () => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.get("/chat-room", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("채팅방 전체 조회 실패");
+  }
+};
