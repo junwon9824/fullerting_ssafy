@@ -22,4 +22,5 @@ public class ArticleAllResponse {
     private boolean mylove;
     private Long time;
     private String authornickname;
+    private int commentsize;
 }

@@ -3,8 +3,10 @@ package com.ssafy.fullerting.community.article.model.entity;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleAllResponse;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
+import com.ssafy.fullerting.community.comment.model.entity.Comment;
 import com.ssafy.fullerting.community.love.model.entity.Love;
 import com.ssafy.fullerting.image.model.entity.Image;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
 import org.apache.catalina.User;
@@ -61,9 +63,22 @@ public class Article {
     private List<Image> images = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "article",cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
+
     public void addlove(Love love) {
         loves.add(love);
     }
+//
+//    public void addcomment(Comment comment) {
+//        comments.add(comment);
+//    }
+//
+//    public void removecomment(Comment comment) {
+//        comments.remove(comment);
+//    }
+
 
 
     public void addimage(Image image) {
@@ -82,7 +97,7 @@ public class Article {
         loves.remove(love);
     }
 
-    public ArticleResponse toResponse(Article article, boolean mylove) {
+    public ArticleResponse toResponse(Article article, boolean mylove, CustomUser customUser) {
         Hibernate.initialize(article.getImages());
 
 
@@ -93,6 +108,9 @@ public class Article {
                 .type(article.getType())
                 .love(article.getLove())
                 .mylove(mylove)
+                .authornickname(customUser.getNickname())
+                .rank(customUser.getRank())
+                .thumbnail(customUser.getThumbnail())
                 .imgurls(article.getImages() != null ? article.getImages().stream().map(Image::getImgStoreUrl).collect(Collectors.toList()) : null)
                 .build();
     }
@@ -115,6 +133,7 @@ public class Article {
                 .mylove(mylove)
                 .time(minutesDifference)
                 .authornickname(authornickname)
+                .commentsize(article.getComments().size())
                 .build();
     }
 
