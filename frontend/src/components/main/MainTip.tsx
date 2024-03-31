@@ -102,6 +102,7 @@ const BasicText = styled.div`
 `;
 const MainTip = () => {
   const navigate = useNavigate();
+  
   const { data: posts } = useQuery<Post[]>({
     queryKey: ["communityList"],
     queryFn: getallcommunities,

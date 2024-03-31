@@ -5,6 +5,7 @@ import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import com.ssafy.fullerting.community.love.model.entity.Love;
 import com.ssafy.fullerting.image.model.entity.Image;
+import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
 import org.apache.catalina.User;
@@ -82,7 +83,7 @@ public class Article {
         loves.remove(love);
     }
 
-    public ArticleResponse toResponse(Article article, boolean mylove) {
+    public ArticleResponse toResponse(Article article, boolean mylove, CustomUser customUser) {
         Hibernate.initialize(article.getImages());
 
 
@@ -93,6 +94,9 @@ public class Article {
                 .type(article.getType())
                 .love(article.getLove())
                 .mylove(mylove)
+                .authornickname(customUser.getNickname())
+                .rank(customUser.getRank())
+                .thumbnail(customUser.getThumbnail())
                 .imgurls(article.getImages() != null ? article.getImages().stream().map(Image::getImgStoreUrl).collect(Collectors.toList()) : null)
                 .build();
     }

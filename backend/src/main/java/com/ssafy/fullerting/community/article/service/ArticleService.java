@@ -134,7 +134,11 @@ public class ArticleService {
         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), articleId) != null) {
             mylove = true;
         }
-        return article.toResponse(article, mylove);
+
+        UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
+        CustomUser user = userResponse1.toEntity(userResponse1);
+
+        return article.toResponse(article, mylove,user);
 
     }
 
@@ -166,8 +170,8 @@ public class ArticleService {
                         mylove = true;
                     }
 
-                    String authornickname = userService.getUserInfobyid(article.getUserId()).getNickname() ;
-                    ArticleAllResponse articleResponse = article.toAllResponse(article, mylove,authornickname);
+                    String authornickname = userService.getUserInfobyid(article.getUserId()).getNickname();
+                    ArticleAllResponse articleResponse = article.toAllResponse(article, mylove, authornickname);
                     return articleResponse;
                 })
 
@@ -187,7 +191,11 @@ public class ArticleService {
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
-                        ArticleResponse articleResponse = article.toResponse(article, mylove);
+
+                        UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
+                        CustomUser user = userResponse1.toEntity(userResponse1);
+
+                        ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -197,7 +205,11 @@ public class ArticleService {
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
-                        ArticleResponse articleResponse = article.toResponse(article, mylove);
+
+                        UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
+                        CustomUser user = userResponse1.toEntity(userResponse1);
+
+                        ArticleResponse articleResponse = article.toResponse(article, mylove,user);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -207,7 +219,11 @@ public class ArticleService {
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
-                        ArticleResponse articleResponse = article.toResponse(article, mylove);
+
+                        UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
+                        CustomUser user = userResponse1.toEntity(userResponse1);
+
+                        ArticleResponse articleResponse = article.toResponse(article, mylove,user);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -217,7 +233,11 @@ public class ArticleService {
                         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                             mylove = true;
                         }
-                        ArticleResponse articleResponse = article.toResponse(article, mylove);
+
+                        UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
+                        CustomUser user = userResponse1.toEntity(userResponse1);
+
+                        ArticleResponse articleResponse = article.toResponse(article, mylove,user);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -238,7 +258,11 @@ public class ArticleService {
                     if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
                         mylove = true;
                     }
-                    ArticleResponse articleResponse = article.toResponse(article, mylove);
+
+                    UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
+                    CustomUser user = userResponse1.toEntity(userResponse1);
+
+                    ArticleResponse articleResponse = article.toResponse(article, mylove,user);
                     return articleResponse;
                 })
                 .collect(Collectors.toList());
