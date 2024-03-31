@@ -57,6 +57,37 @@ const Time = styled.div`
   font-weight: 400;
   line-height: 1rem;
 `;
+const CommentInputContainer = styled.div`
+  margin-bottom: 3rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  background-color: #fff;
+`;
+
+const CommentInput = styled.input`
+  font-family: "GamtanRoad Dotum TTF";
+  width: calc(100% - 4rem);
+  padding: 0.5rem;
+  border-radius: 0.4rem;
+  border: 1px solid #ccc;
+`;
+
+const SubmitButton = styled.button`
+  font-family: "GamtanRoad Dotum TTF";
+  background: var(--sub0, #a0d8b3);
+  border: none;
+  color: white;
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 12px;
+  margin: 5px 8px;
+  cursor: pointer;
+  border-radius: 0.5rem;
+`;
+
 const CommunityComment = () => {
   return (
     <All>
@@ -71,6 +102,10 @@ const CommunityComment = () => {
         댓글 더미 무슨 보고 있으니 기분이 좋네요 얼마나 더 자랄지 기대가 됩니다
       </Comment>
       <Time>시간</Time>
+      <CommentInputContainer>
+        <CommentInput type="text" placeholder="댓글을 입력하세요..." />
+        <SubmitButton>등록</SubmitButton>
+      </CommentInputContainer>
     </All>
   );
 };

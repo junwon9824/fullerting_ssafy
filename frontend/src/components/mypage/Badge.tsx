@@ -178,7 +178,7 @@ const Maintop = () => {
     { title: "", onClick: () => navigate("/mypage/allbadge") },
     { title: "나의 제안 목록", onClick: () => navigate("/mypage/proposepost") },
     { title: "관심 게시글", onClick: () => navigate("/mypage/likedpost") },
-    { title: "나의 거래 게시글", onClick: () => navigate("/mypage/transpost") },
+    { title: "거래 완료 게시글", onClick: () => navigate("/mypage/transpost") },
     { title: "로그아웃", onClick: () => setIsModalOpen(true) },
   ];
 

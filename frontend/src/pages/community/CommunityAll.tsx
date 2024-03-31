@@ -1,16 +1,30 @@
 import styled from "styled-components";
-import likeIcon from "../../assets/svg/like.svg";
-import commentIcon from "../../assets/svg/classes.svg";
+import likeIcon from "../../assets/svg/greenheart.svg";
+import commentIcon from "../../assets/svg/Speech Bubble.svg";
 import { selectedTypeAtom } from "../../stores/community";
 import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { getallcommunities } from "../../apis/CommunityApi";
 import { useState, useEffect } from "react";
 
+interface Post {
+  id: number;
+  title: string;
+  content: string;
+  imgurls: string;
+  name: string;
+  time: number;
+  likes: number;
+  commentsize: number;
+  love: number;
+  authornickname: string;
+  type: string;
+}
+
 const CommunityItem = styled.div`
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  font-family: "GamtanRoad Dotum TTF";
   margin: 0.5rem;
-
   display: flex;
   padding: 1.25rem 0rem;
   flex-direction: column;
@@ -22,12 +36,9 @@ const PostHeader = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
 `;
 
 const PostTitle = styled.h2`
-  color: #000;
-  font-family: "GamtanRoad Dotum TTF";
   font-size: 1rem;
   font-style: normal;
   font-weight: bold;
@@ -35,8 +46,6 @@ const PostTitle = styled.h2`
 `;
 
 const PostContent = styled.p`
-  color: #000;
-  font-family: "GamtanRoad Dotum TTF";
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
@@ -59,7 +68,6 @@ const UserMeta = styled.div`
 
 const UserName = styled.span`
   color: var(--gray1, #8c8c8c);
-  font-family: "GamtanRoad Dotum TTF";
   font-size: 0.7rem;
 `;
 
@@ -72,12 +80,14 @@ const PostTime = styled.span`
 `;
 
 const InteractionIcons = styled.div`
+  margin-top: 1rem;
   display: flex;
   align-items: center;
+  gap: 0.2rem;
 `;
 
 const Icon = styled.img`
-  height: 1rem;
+  height: 0.7rem;
   margin: 0 0.25rem;
 `;
 
@@ -87,15 +97,15 @@ const LikeCommentCount = styled.span`
 `;
 
 const PostImage = styled.img`
-  width: 4rem;
+  width: 5rem;
   object-fit: cover;
   border-radius: 10px;
   margin-bottom: 1rem;
-  margin-left: 1rem;
 `;
 
 const ContentImage = styled.div`
   display: flex;
+  justify-content: space-between;
   gap: 7em;
 `;
 
@@ -107,20 +117,6 @@ const NameTime = styled.div`
 const ContentTitle = styled.div``;
 
 const CommunityAll = () => {
-  interface Post {
-    id: number;
-    title: string;
-    content: string;
-    imgurls: string;
-    name: string;
-    time: number;
-    likes: number;
-    love: string;
-    comments: number;
-    love:number;
-    type: string;
-  }
-
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedType] = useAtom(selectedTypeAtom);
 
@@ -158,8 +154,6 @@ const CommunityAll = () => {
     }
   };
 
-  console.log(posts);
-
   return (
     <div>
       {posts
@@ -173,13 +167,13 @@ const CommunityAll = () => {
                   <PostContent>{post.content}</PostContent>
                 </ContentTitle>
                 <ImgCon>
-                  <PostImage src={post.imgurls} alt="Post image" />
+                  <PostImage src={post.imgurls[0]} alt="Post image" />
                 </ImgCon>
               </ContentImage>
               <PostMeta>
                 <UserMeta>
                   <NameTime>
-                    <UserName>{post.id} - </UserName>
+                    <UserName>{post.authornickname} - </UserName>
                     <PostTime>{getTimeDifference(post.time)}</PostTime>
                   </NameTime>
                 </UserMeta>
@@ -187,7 +181,7 @@ const CommunityAll = () => {
                   <Icon src={likeIcon} alt="Likes" />
                   <LikeCommentCount>{post.love}</LikeCommentCount>
                   <Icon src={commentIcon} alt="Comments" />
-                  <LikeCommentCount>{post.comments}</LikeCommentCount>
+                  <LikeCommentCount>{post.commentsize}</LikeCommentCount>
                 </InteractionIcons>
               </PostMeta>
             </PostHeader>

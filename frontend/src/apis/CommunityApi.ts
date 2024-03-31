@@ -46,3 +46,34 @@ export const create = async (formdata:FormData) => {
   }
 };
 
+
+export const userCheck = async ( communityId: string) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+  try {
+    const response = await api.get(`/users/info/${communityId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error : ", error);
+    throw error;
+  }
+};
+ 
+
+
+export const toggleLike = async (communityId:string) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+  try {
+    const response = await api.post(`/articles/${communityId}/like`,{},
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("alarmId error: ", error);
+    throw error;
+  }
+};

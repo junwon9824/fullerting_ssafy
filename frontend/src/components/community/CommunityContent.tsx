@@ -1,10 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { getDetailCommunities } from "../../apis/CommunityApi";
+import { getDetailCommunities, toggleLike } from "../../apis/CommunityApi";
 import styled from "styled-components";
 import grayheart from "../../assets/svg/grayheart.svg";
-import like from "../../assets/svg/like.svg";
+import like from "../../assets/svg/greenheart.svg";
 import Speech from "../../assets/svg/Speech Bubble.svg";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
 
 interface ImgProps {
   backgroundImage: string;
@@ -68,25 +70,57 @@ const HeartBox = styled.div`
 `;
 
 const CommunityContent = () => {
-  const { communityId } = useParams();
+  const queryClient = useQueryClient();
+  const { communityId } = useParams<{ communityId: string }>();
   const { data: community, isLoading } = useQuery({
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
   });
+
+  const { mutate } = useMutation({
+    mutationFn: () => toggleLike(communityId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["CommunityDetail", communityId]);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   if (isLoading) {
     return <div>Loading..</div>;
   }
 
+  const handleLikeClick = () => {
+    mutate();
+  };
+
   return (
     <All>
-      <Img backgroundImage={community.imgurls} />
+      {community.imgurls && community.imgurls.length > 0 && (
+        <Swiper
+          modules={[Navigation]}
+          navigation
+          spaceBetween={50}
+          slidesPerView={1}
+        >
+          {community.imgurls.map((url: string, index: number) => (
+            <SwiperSlide key={index}>
+              <Img backgroundImage={url} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
       <Content>{community.content}</Content>
 
       <HeartBox>
-        <Heart backgroundImage={community.mylove ? like : grayheart} />
+        <Heart
+          backgroundImage={community.mylove ? like : grayheart}
+          onClick={handleLikeClick}
+        />
         <Num>{community.love}</Num>
         <img src={Speech} alt="" />
-        <Num>{community.love}</Num>
+        <Num>{community.commentsize}</Num>
       </HeartBox>
     </All>
   );

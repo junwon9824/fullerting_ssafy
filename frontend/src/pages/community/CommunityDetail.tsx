@@ -8,7 +8,7 @@ import CommunityComment from "../../components/community/Communitycomment";
 const CommunityDetail = () => {
   return (
     <>
-      <TopBar title="커뮤니티" />
+      <TopBar title="커뮤니티" showEdit={true} />
       <CommunityTitle />
       <Line />
       <CommunityContent />

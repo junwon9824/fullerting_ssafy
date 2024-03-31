@@ -10,7 +10,7 @@ const TransPost = () => {
   const [search, setSearch] = useInput("");
   return (
     <>
-      <TopBar title="나의 거래 목록" />
+      <TopBar title="거래 완료 게시글" />
       <LayoutMainBox>
         <LayoutInnerBox>
           <Search
