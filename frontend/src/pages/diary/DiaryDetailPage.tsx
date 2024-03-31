@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { diaryAtom } from "../../stores/diary";
 import { useAtom } from "jotai";
+import { BottomButton } from "../../components/common/Button/LargeButton";
 
 const Title = styled.div`
   font-size: 1.4rem;
@@ -91,9 +92,18 @@ const DiaryDetailPage = () => {
     return null;
   }
 
+  const handleConfirmClick = () => {
+    navigate(`/crop/${diaryData.packDiaryId}`);
+  };
+
   return (
     <>
-      <TopBar title="다이어리" showEdit={true} deleteFunc={handleDeleteDiary} />
+      <TopBar
+        title="다이어리"
+        showBack={false}
+        showEdit={true}
+        deleteFunc={handleDeleteDiary}
+      />
       <LayoutMainBox>
         <LayoutInnerBox>
           <div
@@ -124,6 +134,7 @@ const DiaryDetailPage = () => {
           </Content>
         </LayoutInnerBox>
       </LayoutMainBox>
+      <BottomButton onClick={handleConfirmClick} text="돌아가기" />
     </>
   );
 };

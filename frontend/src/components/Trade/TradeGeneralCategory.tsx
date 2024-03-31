@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Location from "/src/assets/svg/location.svg";
 import GrayHeart from "/src/assets/svg/grayheart.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
 import {
@@ -202,18 +202,8 @@ const TradeGeneralCategory = () => {
   });
 
   const { mutate: handleLikeClick } = useLike();
-  const [likes, setLikes] = useAtom(likeAtom);
+  const [likes, setLikes] = useState(data?.favoriteResponse?.islike);
 
-  const toggleLike = (postId: number) => {
-    const isLiked = likes.includes(postId);
-    setLikes((currentLikes) =>
-      isLiked
-        ? currentLikes.filter((id) => id !== postId)
-        : [...currentLikes, postId]
-    );
-
-    handleLikeClick(postId);
-  };
   const handleGeneralClick = (index: number) => {
     navigate(`/trade/${index}/generaldetail`);
   };
@@ -221,6 +211,9 @@ const TradeGeneralCategory = () => {
     navigate(`/trade/${index}/DealDetail`);
   };
   console.log("일반 데이터 입니다", data);
+  useEffect(() => {
+    setLikes(!likes);
+  }, [data]);
   return (
     <>
       <ContentBox>
@@ -242,15 +235,11 @@ const TradeGeneralCategory = () => {
                 <LikeBox
                   onClick={(e) => {
                     e.stopPropagation(); // 이벤트 전파 방지
-                    toggleLike(item.exArticleResponse.exArticleId);
+                    handleLikeClick(item.exArticleResponse.exArticleId);
                   }}
                 >
                   <img
-                    src={
-                      likes.includes(item.exArticleResponse.exArticleId)
-                        ? Like
-                        : NonLike
-                    }
+                    src={item.favoriteResponse?.islike ? Like : NonLike}
                     alt="like button"
                   />
                 </LikeBox>
