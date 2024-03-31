@@ -372,7 +372,7 @@ TradeTopBarType) => {
 const navItems: NavItem[] = [
   { Icon: Home, path: "/" },
   { Icon: Cart, path: "/trade" },
-  { Icon: Chat, path: "/chat" },
+  { Icon: Chat, path: "/trade/chatroom" },
   { Icon: Diary, path: "/crop" },
   { Icon: Mypage, path: "/mypage" },
 ];
