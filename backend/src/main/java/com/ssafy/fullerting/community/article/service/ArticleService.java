@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,9 +74,9 @@ public class ArticleService {
         log.info("imagesize" + images.size());
 //        images.forEach(article::addimage);
 
-        images.forEach(image -> {
-            article.addimage(image);
-        });
+//        images.forEach(image -> {
+//            article.addimage(image);
+//        });
 
     }
 
@@ -95,7 +96,11 @@ public class ArticleService {
         S3ManyFilesResponse response =
                 amazonS3Service.uploadFiles(files);
 
-        for (Image image : article.getImages()) {
+        log.info("imaggggggg"+article.getImages().size());
+        List<Image> imagesCopy = new ArrayList<>(article.getImages());
+
+        for (Image image : imagesCopy ) {
+
             amazonS3Service.deleteFile(image.getImgStoreUrl());
             imageRepository.delete(image);
             article.removeimage(image);

@@ -59,7 +59,7 @@ public class Article {
     private List<Love> loves = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article" ,cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
 
@@ -80,15 +80,15 @@ public class Article {
 //    }
 
 
-
-    public void addimage(Image image) {
-        if (this.images == null) {
-            this.images = new ArrayList<>();
-        }
-        this.images.add(image);
-
-    }
-
+//
+//    public void addimage(Image image) {
+//        if (this.images == null) {
+//            this.images = new ArrayList<>();
+//        }
+//        this.images.add(image);
+//
+//    }
+//
     public void removeimage(Image image) {
         images.remove(image);
     }
