@@ -11,7 +11,9 @@ export const useSSEConnection = () => {
     let isMounted = true; // 컴포넌트 마운트 상태를 추적
 
     const accessToken = sessionStorage.getItem("accessToken") || "";
-    const url = "http://localhost:8080/v1/noti/pub";
+    // const url = "http://localhost:8080/v1/noti/pub";
+    const url = "https://j10c102.p.ssafy.io/api/v1/noti/pub";
+
 
     const connectSSE = () => {
       const eventSource = new EventSourcePolyfill(url, {
