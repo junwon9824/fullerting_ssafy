@@ -164,7 +164,12 @@ const DiaryPage = () => {
 
   return (
     <>
-      <TopBar title="작물일기" showEdit={true} deleteFunc={handleDeleteCrop} />
+      <TopBar
+        title="작물일기"
+        showBack={false}
+        showEdit={true}
+        deleteFunc={handleDeleteCrop}
+      />
       <LayoutMainBox>
         <LayoutInnerBox>
           <FixedContainer>
