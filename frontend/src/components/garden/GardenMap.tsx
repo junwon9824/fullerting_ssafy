@@ -74,7 +74,7 @@ const GardenMap = () => {
 
   const { data: farmList } = useQuery({
     queryKey: ["farmList"],
-    queryFn: getGardenList,
+    queryFn: () => getGardenList(1),
   });
 
   const renderOffSite = (offSite: string) => {

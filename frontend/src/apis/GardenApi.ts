@@ -1,10 +1,10 @@
 import { api } from "./Base";
 
-export const getGardenList = async () => {
+export const getGardenList = async (regionCode: number) => {
   const accessToken = sessionStorage.getItem("accessToken");
 
   try {
-    const response = await api.get("/farms", {
+    const response = await api.get(`/farms/search?region=${regionCode}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return response.data.data_body;
