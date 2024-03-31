@@ -120,7 +120,7 @@ export const createComment = async (commentData: CommentType)=> {
 export const fetchAllComments  = async (communityId:string) => {
   const accessToken = sessionStorage.getItem("accessToken");
   try {
-    const response = await api.post(
+    const response = await api.get(
       `/articles/${communityId}/comments/all`, 
       {
         headers: { Authorization: `Bearer ${accessToken}` },

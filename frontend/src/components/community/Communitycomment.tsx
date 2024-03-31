@@ -4,24 +4,28 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { createComment, fetchAllComments } from "../../apis/CommunityApi";
 
-const Comment = styled.div`
-  margin-top: 0.5rem;
-  margin-left: 2rem;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1.25rem;
+const CommentContainer = styled.div`
   display: flex;
-  padding: 0.375rem 0.6875rem;
-  gap: 0.625rem;
-  border-radius: 0.4rem;
-  background: var(--gary3, #f4f4f4);
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+`;
+const Comment = styled.div`
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 80%;
+  margin-left: 1rem;
+  word-wrap: break-word;
+  font-size: 14px;
+  line-height: 1.5;
+  align-self: flex-end;
 `;
 const All = styled.div`
   margin-top: 1rem;
   font-family: "GamtanRoad Dotum TTF";
-  padding-right: 3rem;
   padding-left: 3rem;
+  margin-bottom: 9rem;
 `;
 
 const Profile = styled.div`
@@ -50,16 +54,12 @@ const Grade = styled.div`
   font-weight: 400;
   line-height: 1rem;
 `;
-const Time = styled.div`
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+const CommentTime = styled.div``;
+const Time = styled.span`
+  margin-left: 1rem;
+  font-size: 12px;
+  color: #888;
   display: flex;
-  justify-content: end;
-  color: #8c8c8c;
-  font-size: 0.6875rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1rem;
 `;
 const CommentInputContainer = styled.div`
   margin-bottom: 3rem;
@@ -92,19 +92,16 @@ const SubmitButton = styled.button`
   border-radius: 0.5rem;
 `;
 
+const Delete = styled.div`
+  margin-left: 17rem;
+  font-size: 12px;
+  color: #888;
+`;
+
 const CommunityComment = () => {
   const [comment, setComment] = useState("");
   const { communityId } = useParams<{ communityId: string }>();
   const queryClient = useQueryClient();
-
-  const { data: allComment, isLoading: Loading } = useQuery({
-    queryKey: ["allComment"],
-    queryFn: communityId ? () => fetchAllComments(communityId) : undefined,
-  });
-
-  if (Loading) {
-    <div>Loading..</div>;
-  }
 
   const { mutate, isLoading } = useMutation({
     mutationFn: createComment,
@@ -116,7 +113,6 @@ const CommunityComment = () => {
       console.error("댓글 생성 오류:", error);
     },
   });
-  console.log("dddd", allComment);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -125,19 +121,33 @@ const CommunityComment = () => {
 
     mutate({ commentContent: comment, communityId: communityId });
   };
+  const { data: allCommentData, isLoading: Loading } = useQuery({
+    queryKey: ["allCommentData", communityId],
+    queryFn: communityId ? () => fetchAllComments(communityId) : undefined,
+    enabled: !!communityId,
+  });
+
+  if (Loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <All>
-      <Profile>
-        <Img />
-        <NickGrade>
-          <Nick>닉네임</Nick>
-          <Grade>등급</Grade>
-        </NickGrade>
-      </Profile>
-      <Comment>
-        댓글 더미 무슨 보고 있으니 기분이 좋네요 얼마나 더 자랄지 기대가 됩니다
-      </Comment>
-      <Time>시간</Time>
+      {allCommentData?.map((CommontData) => (
+        <CommentContainer key={CommontData.id}>
+          <Profile>
+            <Img />
+            <NickGrade>
+              <Nick>닉네임</Nick>
+              <Grade>등급</Grade>
+            </NickGrade>
+          </Profile>
+          <CommentTime>
+            <Comment>{CommontData.commentcontent}</Comment>
+            <Time>시간</Time>
+            <Delete>댓글삭제</Delete>
+          </CommentTime>
+        </CommentContainer>
+      ))}
       <CommentInputContainer as="form" onSubmit={handleSubmit}>
         <CommentInput
           type="text"
