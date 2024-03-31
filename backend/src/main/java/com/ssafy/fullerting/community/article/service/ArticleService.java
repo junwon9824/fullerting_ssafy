@@ -18,6 +18,7 @@ import com.ssafy.fullerting.image.repository.ImageRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
@@ -80,6 +81,7 @@ public class ArticleService {
 
     }
 
+    @Transactional
     public void update(RegistArticleRequest registArticleRequest, Long articleId, List<MultipartFile> files) {
 
         UserResponse userResponse = userService.getUserInfo();
@@ -97,18 +99,24 @@ public class ArticleService {
                 amazonS3Service.uploadFiles(files);
 
         log.info("imaggggggg"+article.getImages().size());
-        List<Image> imagesCopy = new ArrayList<>(article.getImages());
+//        List<Image> imagesCopy = new ArrayList<>(article.getImages());
 
-        for (Image image : imagesCopy ) {
-            log.info("ddddddddddddd"+image);
-
+//        for (Image image : imagesCopy ) {
+//            log.info("ddddddddddddd"+image.getId());
+//
+//            amazonS3Service.deleteFile(image.getImgStoreUrl());
+//            imageRepository.delete(image);
+//            article.removeimage(image);
+//        }
+        // 기존 이미지 삭제
+        for (Image image : article.getImages()) {
             amazonS3Service.deleteFile(image.getImgStoreUrl());
             imageRepository.delete(image);
-            article.removeimage(image);
         }
 
-        articleRepository.save(article);
+//        articleRepository.save(article);
 
+        log.info("responseresponse"+response.getUrls().size());
 
         List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
             Image image = new Image();
@@ -125,8 +133,8 @@ public class ArticleService {
         article.setType(registArticleRequest.getType());
         article.setTitle(registArticleRequest.getTitle());
         article.setImages(images);
-        articleRepository.save(article);
-
+       Article article1= articleRepository.save(article);
+        log.info("resssssssss"+article1.getImages().size());
 
     }
 
