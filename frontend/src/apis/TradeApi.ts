@@ -93,18 +93,17 @@ export const getSharingCategoryList = async (accessToken: string) => {
     console.log("나눔 카테고리 조회 실패", e);
   }
 };
-export const useLike = () => {
+interface UseLikeArgs {
+  queryKeys: string[]; // 무효화할 쿼리 키 목록
+}
+export const useLike = ({ queryKeys }: UseLikeArgs) => {
   // useMutation 훅은 여기에서 동기적으로 호출됩니다.
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (postId: number) => {
       // 여기서 accessToken을 검색하고, 요청에 포함합니다.
       const accessToken = sessionStorage.getItem("accessToken");
-      console.log("토큰이에요", accessToken);
-      if (!accessToken) {
-        // accessToken이 없는 경우, 오류를 반환하거나 다른 처리를 할 수 있습니다.
-        throw new Error("No access token available");
-      }
+
       return await api.post(
         `/exchanges/${postId}/convert_like`,
         {},
@@ -114,7 +113,9 @@ export const useLike = () => {
       );
     },
     onSuccess: (res) => {
-      console.log("좋아요 성공", res);
+      queryKeys.forEach((key) => {
+        queryClient.invalidateQueries({ queryKey: [key] });
+      });
     },
     onError: (error) => {
       console.log("에러났어요", error);

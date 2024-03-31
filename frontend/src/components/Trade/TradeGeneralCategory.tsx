@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Location from "/src/assets/svg/location.svg";
 import GrayHeart from "/src/assets/svg/grayheart.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
 import {
@@ -195,37 +195,31 @@ const TradeGeneralCategory = () => {
   };
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
-    queryKey: ["tradeGeneralList"],
-    queryFn: accessToken
-      ? () => getGeneralCategoryList(accessToken)
-      : undefined,
+    queryKey: ["tradeList"],
+    queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
 
-  const { mutate: handleLikeClick } = useLike();
-  const [likes, setLikes] = useAtom(likeAtom);
+  const { mutate: handleLikeClick } = useLike({
+    queryKeys: ["tradeList"],
+  });
+  const [likes, setLikes] = useState(data?.favoriteResponse?.islike);
 
-  const toggleLike = (postId: number) => {
-    const isLiked = likes.includes(postId);
-    setLikes((currentLikes) =>
-      isLiked
-        ? currentLikes.filter((id) => id !== postId)
-        : [...currentLikes, postId]
-    );
-
-    handleLikeClick(postId);
-  };
   const handleGeneralClick = (index: number) => {
     navigate(`/trade/${index}/generaldetail`);
   };
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
-  console.log("일반 데이터 입니다", data);
+  console.log("좋아요", data?.[0].favoriteResponse?.islike);
   return (
     <>
       <ContentBox>
         {data
-          ?.filter((item: DataItem) => !item.exArticleResponse.isdone)
+          ?.filter(
+            (item: DataItem) =>
+              item.exArticleResponse.exArticleType === "GENERAL_TRANSACTION" &&
+              !item.exArticleResponse.isdone
+          )
           .map((item: DataItem, index: number) => (
             <PostBox
               onClick={() => {
@@ -242,15 +236,11 @@ const TradeGeneralCategory = () => {
                 <LikeBox
                   onClick={(e) => {
                     e.stopPropagation(); // 이벤트 전파 방지
-                    toggleLike(item.exArticleResponse.exArticleId);
+                    handleLikeClick(item.exArticleResponse.exArticleId);
                   }}
                 >
                   <img
-                    src={
-                      likes.includes(item.exArticleResponse.exArticleId)
-                        ? Like
-                        : NonLike
-                    }
+                    src={item.favoriteResponse?.islike ? Like : NonLike}
                     alt="like button"
                   />
                 </LikeBox>
