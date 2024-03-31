@@ -11,6 +11,7 @@ import {
 } from "../../apis/TradeApi";
 import Stomp from "stompjs";
 import { userCheck } from "../../apis/UserApi";
+import { getUsersInfo } from "../../apis/MyPage";
 interface ChatResponse {
   // id: number;
   chatRoomId: number;
@@ -133,6 +134,7 @@ const Thumbnail = styled.img`
   border-radius: 50%;
 `;
 const ContentBox = styled.div<ContentBoxProps>`
+  word-break: break-word; /* 넘치는 텍스트를 줄바꿈 */
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   padding-left: 0.2rem;
@@ -169,6 +171,7 @@ const TradeChat = () => {
       ? () => getChatRoomDetail(accessToken, chatNumber)
       : undefined,
   });
+  console.log("디테일 데이터", detailData);
   // const {
   //   isLoading: userDataIsLoading,
   //   data: userData,
@@ -182,6 +185,15 @@ const TradeChat = () => {
     finishClick(detailData?.chatRoomExArticleId);
   };
 
+  const {
+    isLoading: userIsLoading,
+    data: userData,
+    error: userError,
+  } = useQuery({
+    queryKey: ["userInfo"],
+    queryFn: accessToken ? () => getUsersInfo() : undefined,
+  });
+  console.log(userData, "유저데이턴");
   useEffect(() => {
     const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
     const client = Stomp.over(socket);
@@ -245,7 +257,9 @@ const TradeChat = () => {
         <LayoutInnerBox>
           <ProductBox>
             <TitleBox>{detailData?.chatRoomExArticleTitle}</TitleBox>
-            <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
+            {detailData?.chatRoomExArticleId === userData?.data.data_body.id ? (
+              <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
+            ) : null}
           </ProductBox>
           <ChatBox>
             {data?.map((item: any) =>

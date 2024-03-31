@@ -4,12 +4,16 @@ import GrayHeart from "/src/assets/svg/grayheart.svg";
 import { useState } from "react";
 import Write from "/src/assets/images/글쓰기.png";
 import { useNavigate } from "react-router-dom";
-import { getTradeList, useLike } from "../../apis/TradeApi";
+import {
+  getDealCategoryList,
+  getTradeList,
+  useLike,
+} from "../../apis/TradeApi";
 import { useQuery } from "@tanstack/react-query";
-import { useAtom } from "jotai";
-import { likeAtom } from "../../stores/trade";
 import Like from "../../assets/svg/like.svg";
 import NonLike from "../../assets/svg/notlike.svg";
+import { useAtom } from "jotai";
+import { likeAtom } from "../../stores/trade";
 interface ClickLike {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
@@ -60,9 +64,6 @@ interface DataItem {
   favoriteResponse: FavoriteResponse;
   transResponse: TransResponse;
   dealResponse: DealResponse;
-}
-interface LikeButtonProps {
-  postId: number;
 }
 // interface ToggleLikeParams {
 //   accessToken: string;
@@ -184,11 +185,11 @@ const WriteBox = styled.img`
   bottom: 4.75rem;
 `;
 
-const TradeMainCategory = () => {
+const TradeLikeCategory = () => {
+  const [favorite, setFavorite] = useState<string>("");
   const navigate = useNavigate();
   const handelWriteClick = () => {
     navigate("/trade/post");
-    console.log("데이터임", data);
   };
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
@@ -197,21 +198,25 @@ const TradeMainCategory = () => {
   });
 
   const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeList"] });
+  const [likes, setLikes] = useAtom(likeAtom);
+
   const handleGeneralClick = (index: number) => {
     navigate(`/trade/${index}/generaldetail`);
   };
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
-  console.log("좋아요", data?.[0].favoriteResponse?.islike);
+  console.log("딜 데이터 입니다", data);
   return (
     <>
       <ContentBox>
         {data
-          ?.filter((item: DataItem) => !item.exArticleResponse.isdone)
+          ?.filter(
+            (item: DataItem) =>
+              item.favoriteResponse?.islike && !item.exArticleResponse.isdone
+          )
           .map((item: DataItem, index: number) => (
             <PostBox
-              key={index}
               onClick={() => {
                 item.exArticleResponse.exArticleType == "DEAL"
                   ? handleTradeClick(item.exArticleResponse.exArticleId)
@@ -219,12 +224,10 @@ const TradeMainCategory = () => {
               }}
             >
               <ImgBox key={index}>
-                {item.exArticleResponse.imageResponses?.length > 0 && (
-                  <StyledImg
-                    src={item.exArticleResponse.imageResponses[0].imgStoreUrl}
-                    alt="img"
-                  />
-                )}
+                <StyledImg
+                  src={item?.exArticleResponse?.imageResponses[0]?.imgStoreUrl}
+                  alt="img"
+                ></StyledImg>
                 <LikeBox
                   onClick={(e) => {
                     e.stopPropagation(); // 이벤트 전파 방지
@@ -330,4 +333,4 @@ const TradeMainCategory = () => {
   );
 };
 
-export default TradeMainCategory;
+export default TradeLikeCategory;

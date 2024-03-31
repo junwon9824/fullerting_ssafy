@@ -150,7 +150,6 @@ const TradeGeneralDetail = () => {
     setLike(!like);
   };
 
-  const { mutate: handleLikeClick } = useLike();
   const { postId } = useParams<{ postId?: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -160,6 +159,7 @@ const TradeGeneralDetail = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
+  const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
   const {
     isLoading: isLoadingUserDetail,
     data: userData,
@@ -272,17 +272,13 @@ const TradeGeneralDetail = () => {
           <TitleBox>
             <Title>
               {data?.exArticleResponse.exArticleTitle}
-              <LikeBox
-                onClick={(e) => {
-                  e.stopPropagation(); // 이벤트 전파 방지
-                  toggleLike(data?.exArticleResponse.exArticleId);
+              <img
+                src={data?.favoriteResponse.islike === true ? Like : NotLike}
+                alt="like"
+                onClick={() => {
+                  handleLikeClick(data?.exArticleResponse.exArticleId);
                 }}
-              >
-                <img
-                  src={data?.favoriteResponse.islike === true ? Like : NotLike}
-                  alt="like"
-                />
-              </LikeBox>
+              />
             </Title>
             <Price>{data?.transResponse.price}원</Price>
             <DiaryBox>

@@ -130,7 +130,7 @@ const RedCircle = styled.div`
 const TradePost = () => {
   const [title, setTitle] = useInput("");
   const [check, setCheck] = useState([true, false, false]);
-  const [cashCheck, setCashCheck] = useState<boolean>(false);
+  const [cashCheck, setCashCheck] = useState<boolean>(true);
   const [cash, setCash] = useInput("");
   const [place, setPlace] = useInput("");
   const [content, setContent] = useInput("");

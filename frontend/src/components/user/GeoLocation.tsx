@@ -2,9 +2,11 @@ import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Map, MapMarker, useKakaoLoader } from "react-kakao-maps-sdk";
 import { locationAtom } from "../../stores/user";
+import { useNavigate } from "react-router-dom";
 
 const GeoLocation = () => {
   const { kakao } = window;
+  const navigate = useNavigate();
 
   const [loading, error] = useKakaoLoader({
     appkey: "563ce3be1426203d4293138c499aea59",
@@ -23,10 +25,10 @@ const GeoLocation = () => {
 
   const [address, setAddress] = useAtom(locationAtom);
 
-  const getAddress = (lat, lng) => {
+  const getAddress = (lat: number, lng: number) => {
     const geocoder = new kakao.maps.services.Geocoder(); // 좌표 -> 주소로 변환해주는 객체
     const coord = new kakao.maps.LatLng(lat, lng); // 주소로 변환할 좌표 입력
-    const callback = function (result, status) {
+    const callback = function (result: any, status: any) {
       if (status === kakao.maps.services.Status.OK) {
         setAddress(result[0].address);
         console.log(result[0].address);
@@ -37,33 +39,21 @@ const GeoLocation = () => {
 
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setState((prev) => ({
-            ...prev,
-            center: {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            },
-            isLoading: false,
-          }));
+      navigator.geolocation.getCurrentPosition((position) => {
+        setState((prev) => ({
+          ...prev,
+          center: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          },
+          isLoading: false,
+        }));
 
-          getAddress(position.coords.latitude, position.coords.longitude);
-        },
-        (err) => {
-          setState((prev) => ({
-            ...prev,
-            errMsg: err.message,
-            isLoading: false,
-          }));
-        }
-      );
+        getAddress(position.coords.latitude, position.coords.longitude);
+      });
     } else {
-      setState((prev) => ({
-        ...prev,
-        errMsg: "geolocation을 사용할수 없어요",
-        isLoading: false,
-      }));
+      alert("geolocation을 사용할수 없어요!");
+      navigate("/");
     }
   }, []);
 

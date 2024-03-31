@@ -40,6 +40,7 @@ public class ArticleService {
     private final ImageRepository imageRepository;
     private final AmazonS3Service amazonS3Service;
 
+    @Transactional
     public void registerticle(RegistArticleRequest registArticleRequest, List<MultipartFile> files) {
 
         UserResponse userResponse = userService.getUserInfo();
@@ -138,6 +139,7 @@ public class ArticleService {
 
     }
 
+    @Transactional
     public ArticleResponse findarticlebyid(Long articleId) {
         Article article = articleRepository.findById(articleId).orElseThrow(() ->
                 new ArticleException(ArticleErrorCode.NOT_EXISTS));
@@ -157,8 +159,8 @@ public class ArticleService {
 
     }
 
-
-    public void deletearticlebyid(Long articleId) {
+    @Transactional
+     public void deletearticlebyid(Long articleId) {
 
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
@@ -173,6 +175,8 @@ public class ArticleService {
         articleRepository.delete(article);
     }
 
+
+    @Transactional
     public List<ArticleAllResponse> findAllArticle() {
 
         UserResponse userResponse = userService.getUserInfo();
@@ -194,6 +198,7 @@ public class ArticleService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public List<ArticleResponse> findAllArticlebyCategory(String keyword) {
 
         UserResponse userResponse = userService.getUserInfo();
@@ -262,6 +267,7 @@ public class ArticleService {
 
     }
 
+    @Transactional
     public List<ArticleResponse> search(String keyword) {
 
         UserResponse userResponse = userService.getUserInfo();

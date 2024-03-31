@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { deleteDiary, getDiaryList } from "../../apis/DiaryApi";
+import Fetching from "../common/Fetching";
 
 const DiaryBox = styled.div`
   display: flex;
@@ -221,7 +222,11 @@ const DiaryList = () => {
     }
   };
 
-  const { data: diaryList, refetch: refetchDiaryList } = useQuery({
+  const {
+    data: diaryList,
+    refetch: refetchDiaryList,
+    isFetching,
+  } = useQuery({
     queryKey: ["diaryList"],
     queryFn: packDiaryId ? () => getDiaryList(packDiaryId) : undefined,
   });
@@ -235,6 +240,10 @@ const DiaryList = () => {
       console.log(err);
     },
   });
+
+  if (isFetching) {
+    return <Fetching />;
+  }
 
   return (
     <DiaryBox>

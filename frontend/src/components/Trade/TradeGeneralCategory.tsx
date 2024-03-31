@@ -195,13 +195,13 @@ const TradeGeneralCategory = () => {
   };
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
-    queryKey: ["tradeGeneralList"],
-    queryFn: accessToken
-      ? () => getGeneralCategoryList(accessToken)
-      : undefined,
+    queryKey: ["tradeList"],
+    queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
 
-  const { mutate: handleLikeClick } = useLike();
+  const { mutate: handleLikeClick } = useLike({
+    queryKeys: ["tradeList"],
+  });
   const [likes, setLikes] = useState(data?.favoriteResponse?.islike);
 
   const handleGeneralClick = (index: number) => {
@@ -210,15 +210,16 @@ const TradeGeneralCategory = () => {
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
-  console.log("일반 데이터 입니다", data);
-  useEffect(() => {
-    setLikes(!likes);
-  }, [data]);
+  console.log("좋아요", data?.[0].favoriteResponse?.islike);
   return (
     <>
       <ContentBox>
         {data
-          ?.filter((item: DataItem) => !item.exArticleResponse.isdone)
+          ?.filter(
+            (item: DataItem) =>
+              item.exArticleResponse.exArticleType === "GENERAL_TRANSACTION" &&
+              !item.exArticleResponse.isdone
+          )
           .map((item: DataItem, index: number) => (
             <PostBox
               onClick={() => {

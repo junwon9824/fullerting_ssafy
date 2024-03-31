@@ -25,6 +25,20 @@ export const getCropData = async (packDiaryId: string) => {
   }
 };
 
+export const getCropSearch = async (keyword: string) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+
+  try {
+    const response = await api.get(`/pack-diaries/search?keyword=${keyword}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error getCropSearch:", error);
+    throw error;
+  }
+};
+
 export const getDiaryList = async (packDiaryId: string) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");

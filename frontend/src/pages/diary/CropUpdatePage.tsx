@@ -56,8 +56,6 @@ const CropUpdatePage = () => {
       packDiaryCulStartAt: selectedDate,
     };
 
-    console.log(packDiaryData);
-
     mutate(packDiaryData);
   };
 

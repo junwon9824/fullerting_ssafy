@@ -195,14 +195,13 @@ const TradeSharingCategory = () => {
   };
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
-    queryKey: ["tradeSharingList"],
-    queryFn: accessToken
-      ? () => getSharingCategoryList(accessToken)
-      : undefined,
+    queryKey: ["tradeList"],
+    queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
 
-  const { mutate: handleLikeClick } = useLike();
-  const [likes, setLikes] = useAtom(likeAtom);
+  const { mutate: handleLikeClick } = useLike({
+    queryKeys: ["tradeList"],
+  });
 
   const handleGeneralClick = (index: number) => {
     navigate(`/trade/${index}/generaldetail`);
@@ -214,7 +213,11 @@ const TradeSharingCategory = () => {
     <>
       <ContentBox>
         {data
-          ?.filter((item: DataItem) => !item.exArticleResponse.isdone)
+          ?.filter(
+            (item: DataItem) =>
+              item.exArticleResponse.exArticleType === "SHARING" &&
+              !item.exArticleResponse.isdone
+          )
           .map((item: DataItem, index: number) => (
             <PostBox
               onClick={() => {

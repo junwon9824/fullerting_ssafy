@@ -12,12 +12,7 @@ import { useAtom } from "jotai";
 import { cropAtom, menuAtom } from "../../stores/diary";
 import CropTips from "../../components/diary/CropTips";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  deleteCrop,
-  getCropData,
-  getDiaryList,
-  updateHarvest,
-} from "../../apis/DiaryApi";
+import { deleteCrop, getCropData, updateHarvest } from "../../apis/DiaryApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 

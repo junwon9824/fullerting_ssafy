@@ -1,19 +1,18 @@
+import DaumPostcode from "react-daum-postcode";
 import { CommonTopBar } from "../../components/common/Navigator/navigator";
 import {
   LayoutInnerBox,
   LayoutMainBox,
 } from "../../components/common/Layout/Box";
-import GeoLocation from "../../components/user/GeoLocation";
 import { BottomButton } from "../../components/common/Button/LargeButton";
-import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { updateTown } from "../../apis/UserApi";
-import { useAtom } from "jotai";
-import { locationAtom } from "../../stores/user";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-const TownCertifyPage = () => {
+const SearchAddressPage = () => {
   const navigate = useNavigate();
-  const [address, setAddress] = useAtom(locationAtom);
+  const [sigungu, setSigungu] = useState<string | null>(null);
 
   const { mutate } = useMutation({
     mutationFn: updateTown,
@@ -28,25 +27,28 @@ const TownCertifyPage = () => {
   });
 
   const handleConfirmClick = () => {
-    if (address) {
-      mutate(
-        `${address.region_1depth_name} ${address.region_2depth_name} ${address.region_3depth_name}`
-      );
-    }
+    if (sigungu) mutate(sigungu);
+  };
+
+  const completeHandler = (data: any) => {
+    setSigungu(`${data.sido} ${data.sido} ${data.bname}`);
   };
 
   return (
     <>
       <CommonTopBar title="동네인증" backNavigate="trade" />
-      <GeoLocation />
+
       <LayoutMainBox>
+        <DaumPostcode onComplete={completeHandler} />
         <LayoutInnerBox>
-          {address && (
-            <div
-              style={{ fontWeight: "bold", fontSize: "1.25rem" }}
-            >{`${address.region_1depth_name} ${address.region_2depth_name} ${address.region_3depth_name}`}</div>
+          {sigungu && (
+            <>
+              <div style={{ fontWeight: "bold", fontSize: "1.25rem" }}>
+                {sigungu}
+              </div>
+              <div>내 동네가 맞나요?</div>
+            </>
           )}
-          <div>내 동네가 맞나요?</div>
           <button
             style={{
               border: "1px solid #c8c8c8",
@@ -54,10 +56,10 @@ const TownCertifyPage = () => {
               padding: "0.5rem 0.9rem",
             }}
             onClick={() => {
-              navigate("/address");
+              navigate("/town");
             }}
           >
-            주소 검색으로 동네인증하기 🍀
+            현재 위치로 동네인증하기 🍀
           </button>
         </LayoutInnerBox>
       </LayoutMainBox>
@@ -66,4 +68,4 @@ const TownCertifyPage = () => {
   );
 };
 
-export default TownCertifyPage;
+export default SearchAddressPage;

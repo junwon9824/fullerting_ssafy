@@ -3,6 +3,7 @@ import { cropAtom } from "../../stores/diary";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import { getTipList } from "../../apis/DiaryApi";
+import Fetching from "../common/Fetching";
 
 const CropType = styled.div`
   font-size: 1.5rem;
@@ -35,13 +36,13 @@ const Content = styled.div`
 const CropTips = () => {
   const [crop, setCrop] = useAtom(cropAtom);
 
-  const { isLoading, data: tipList } = useQuery({
+  const { isFetching, data: tipList } = useQuery({
     queryKey: ["cropList"],
     queryFn: crop ? () => getTipList(crop.cropTypeId) : undefined,
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (isFetching) {
+    return <Fetching />;
   }
 
   return (
