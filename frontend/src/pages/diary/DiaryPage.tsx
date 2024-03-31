@@ -119,11 +119,6 @@ const DiaryPage = () => {
     queryFn: packDiaryId ? () => getCropData(packDiaryId) : undefined,
   });
 
-  const { data: diaryList } = useQuery({
-    queryKey: ["diaryList"],
-    queryFn: packDiaryId ? () => getDiaryList(packDiaryId) : undefined,
-  });
-
   if (isSuccess) {
     setCrop(cropData);
   }
@@ -207,11 +202,7 @@ const DiaryPage = () => {
             <MenuBar />
           </FixedContainer>
           <MiddleBox style={{ marginTop: "13.4rem" }}>
-            {menu === "작물꿀팁" ? (
-              <CropTips />
-            ) : (
-              diaryList && <DiaryList diaries={diaryList} />
-            )}
+            {menu === "작물꿀팁" ? <CropTips /> : <DiaryList />}
           </MiddleBox>
         </LayoutInnerBox>
       </LayoutMainBox>
