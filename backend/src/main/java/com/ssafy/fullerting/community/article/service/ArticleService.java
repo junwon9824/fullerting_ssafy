@@ -100,6 +100,7 @@ public class ArticleService {
         List<Image> imagesCopy = new ArrayList<>(article.getImages());
 
         for (Image image : imagesCopy ) {
+            log.info("ddddddddddddd"+image);
 
             amazonS3Service.deleteFile(image.getImgStoreUrl());
             imageRepository.delete(image);
@@ -118,6 +119,7 @@ public class ArticleService {
             return image;
         }).collect(Collectors.toList());
 
+        log.info("iiiiiiiii"+images.size());
 
         article.setContent(registArticleRequest.getContent());
         article.setType(registArticleRequest.getType());
