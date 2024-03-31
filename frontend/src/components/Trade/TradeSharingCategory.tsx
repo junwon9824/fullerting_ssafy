@@ -201,8 +201,9 @@ const TradeSharingCategory = () => {
       : undefined,
   });
 
-  const { mutate: handleLikeClick } = useLike();
-  const [likes, setLikes] = useAtom(likeAtom);
+  const { mutate: handleLikeClick } = useLike({
+    queryKeys: ["tradeSharingList"],
+  });
 
   const handleGeneralClick = (index: number) => {
     navigate(`/trade/${index}/generaldetail`);

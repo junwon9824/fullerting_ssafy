@@ -196,7 +196,7 @@ const TradeMainCategory = () => {
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
 
-  const { mutate: handleLikeClick } = useLike();
+  const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeList"] });
 
   const handleGeneralClick = (index: number) => {
     navigate(`/trade/${index}/generaldetail`);

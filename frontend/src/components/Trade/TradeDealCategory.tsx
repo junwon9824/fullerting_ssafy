@@ -199,7 +199,7 @@ const TradeDealCategory = () => {
     queryFn: accessToken ? () => getDealCategoryList(accessToken) : undefined,
   });
 
-  const { mutate: handleLikeClick } = useLike();
+  const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDealList"] });
   const [likes, setLikes] = useAtom(likeAtom);
 
   const handleGeneralClick = (index: number) => {

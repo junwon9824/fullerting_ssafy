@@ -154,7 +154,6 @@ const TradeDetailDeal = () => {
     setLike(!like);
   };
 
-  const { mutate: handleLikeClick } = useLike();
   const { postId } = useParams<{ postId: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -165,6 +164,7 @@ const TradeDetailDeal = () => {
       : undefined,
   });
 
+  const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
   const {
     isLoading: isLoadingUserDetail,
     data: userData,

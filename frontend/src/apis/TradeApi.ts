@@ -93,7 +93,10 @@ export const getSharingCategoryList = async (accessToken: string) => {
     console.log("나눔 카테고리 조회 실패", e);
   }
 };
-export const useLike = () => {
+interface UseLikeArgs {
+  queryKeys: string[]; // 무효화할 쿼리 키 목록
+}
+export const useLike = ({ queryKeys }: UseLikeArgs) => {
   // useMutation 훅은 여기에서 동기적으로 호출됩니다.
   const queryClient = useQueryClient();
   return useMutation({
@@ -110,8 +113,9 @@ export const useLike = () => {
       );
     },
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ["tradeList"] });
-      console.log(res);
+      queryKeys.forEach((key) => {
+        queryClient.invalidateQueries({ queryKey: [key] });
+      });
     },
     onError: (error) => {
       console.log("에러났어요", error);
