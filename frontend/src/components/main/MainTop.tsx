@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCropList } from "../../apis/DiaryApi";
 import styled from "styled-components";
+import bell from "../../assets/svg/bell-ring.svg";
+
 const MainContainer = styled.div`
   justify-content: center;
   flex-direction: column;
@@ -50,6 +52,13 @@ const MainText = styled.div`
   font-weight: 600;
   line-height: normal;
   ${({ theme }) => theme.fonts.logo}
+`;
+
+const BellIcon = styled.img`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  height: 1.6rem;
 `;
 
 const DiaryBox = styled.button`
@@ -143,10 +152,20 @@ const Maintop = () => {
   const goToLogin = () => {
     navigate("/login");
   };
+  const handleViewAlarm = () => {
+    window.location.href = "/alarm";
+  };
 
   return (
     <MainContainer>
-      <MainText>풀러팅</MainText>
+      <MainText>
+        풀러팅{" "}
+        <BellIcon
+          src={bell}
+          alt="Notification bell"
+          onClick={handleViewAlarm}
+        />
+      </MainText>
       <TextBox>"{cropList?.length || 0}개의 작물을 가꾸고 계시군요"</TextBox>
       {accessToken ? (
         <SliderContainer>
