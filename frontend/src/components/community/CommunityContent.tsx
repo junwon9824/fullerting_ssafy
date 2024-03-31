@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { getDetailCommunities } from "../../apis/CommunityApi";
+import { getDetailCommunities, toggleLike } from "../../apis/CommunityApi";
 import styled from "styled-components";
 import grayheart from "../../assets/svg/grayheart.svg";
-import like from "../../assets/svg/like.svg";
+import like from "../../assets/svg/greenheart.svg";
 import Speech from "../../assets/svg/Speech Bubble.svg";
 
 interface ImgProps {
@@ -68,22 +68,44 @@ const HeartBox = styled.div`
 `;
 
 const CommunityContent = () => {
+  const queryClient = useQueryClient();
   const { communityId } = useParams();
   const { data: community, isLoading } = useQuery({
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
   });
+
+  const { mutate } = useMutation({
+    mutationFn: () => toggleLike(communityId),
+    onSuccess: () => {
+      // 성공 시 쿼리 데이터 갱신
+      queryClient.invalidateQueries(["CommunityDetail", communityId]);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   if (isLoading) {
     return <div>Loading..</div>;
   }
 
+  // 좋아요 클릭 핸들러
+  const handleLikeClick = () => {
+    mutate(); // mutate 함수를 호출하여 뮤테이션 실행
+  };
+
+  // ... 컴포넌트 반환부
   return (
     <All>
       <Img backgroundImage={community.imgurls} />
       <Content>{community.content}</Content>
 
       <HeartBox>
-        <Heart backgroundImage={community.mylove ? like : grayheart} />
+        <Heart
+          backgroundImage={community.mylove ? like : grayheart}
+          onClick={handleLikeClick}
+        />
         <Num>{community.love}</Num>
         <img src={Speech} alt="" />
         <Num>{community.love}</Num>
