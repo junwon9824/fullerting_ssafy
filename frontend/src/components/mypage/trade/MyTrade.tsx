@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Location from "/src/assets/svg/location.svg";
 import { useQuery } from "@tanstack/react-query";
 import { getExchanges } from "../../../apis/MyPage";
+import { useNavigate } from "react-router-dom";
 interface ImageResponse {
   id: number;
   imgStoreUrl: string;
@@ -49,6 +50,7 @@ interface DataItem {
   exArticleResponse: ExArticleResponse;
   packDiaryResponse: null | number;
   favoriteResponse: FavoriteResponse;
+  exArticleId: number;
 }
 
 const ImgBox = styled.div`
@@ -129,6 +131,7 @@ const State = styled.div<StateGap>`
 `;
 
 const MyTrade = () => {
+  const navigate = useNavigate();
   const { isLoading, data, error } = useQuery<DataItem[]>({
     queryKey: ["Exchanges"],
     queryFn: () => getExchanges(),
@@ -141,15 +144,16 @@ const MyTrade = () => {
   }
   console.log("작물거래 데이터", data);
 
+  const goToTrade = (exArticleId: number) => {
+    navigate(`/trade/${exArticleId}/generaldetail`);
+  };
+
   return (
     <ContentBox>
       {data?.map((item: DataItem, index: number) => (
-        <PostBox key={index}>
+        <PostBox key={index} onClick={() => goToTrade(item.exArticleId)}>
           <ImgBox>
-            <StyledImg
-              src={item.imageResponses[0]?.imgStoreUrl}
-              alt="image"
-            />
+            <StyledImg src={item.imageResponses[0]?.imgStoreUrl} alt="image" />
           </ImgBox>
           <Town>
             <img src={Location} alt="location" />
