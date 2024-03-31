@@ -41,6 +41,7 @@ import SSETest from "../pages/user/ssetest";
 import TownCertifyPage from "../pages/user/TownCertifyPage";
 import TradeChatRoomPage from "../pages/trade/TradeChatRoomPage";
 import NotFoundPage from "../pages/NotFoundPage";
+import SearchAddressPage from "../pages/user/SearchAddressPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -49,6 +50,7 @@ const authRoutes = [
   { path: "/join", element: <JoinPage /> },
   { path: "/auth/callback", element: <AuthCallbackPage /> },
   { path: "/town", element: <TownCertifyPage /> },
+  { path: "/address", element: <SearchAddressPage /> },
 ];
 
 const gardenRoutes = [{ path: "/garden", element: <GardenPage /> }];
