@@ -111,6 +111,7 @@ public class Article {
                 .authornickname(customUser.getNickname())
                 .rank(customUser.getRank())
                 .thumbnail(customUser.getThumbnail())
+                .createdAt(article.getCreatedAt())
                 .imgurls(article.getImages() != null ? article.getImages().stream().map(Image::getImgStoreUrl).collect(Collectors.toList()) : null)
                 .build();
     }
