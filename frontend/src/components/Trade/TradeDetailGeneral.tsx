@@ -154,6 +154,8 @@ const TradeGeneralDetail = () => {
     queryKey: ["userDetail"],
     queryFn: accessToken ? () => userCheck(accessToken) : undefined,
   });
+  console.log("디테일데이터", data);
+  console.log("유저데이터", userData);
   const { mutate: clickChat } = createChatRoom();
   const userId = userData?.id;
 
@@ -194,8 +196,12 @@ const TradeGeneralDetail = () => {
     },
   });
   const handleChatClick = () => {
-    clickChat(postNumber);
-    console.log(postNumber);
+    if (data?.exArticleResponse.userId === userData?.id) {
+      alert("본인 게시글 입니다");
+    } else {
+      clickChat(postNumber);
+      console.log(postNumber);
+    }
   };
   return (
     <>

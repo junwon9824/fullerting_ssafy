@@ -267,12 +267,12 @@ export const useDealFinish = () => {
   return useMutation({
     mutationFn: async (postId: number) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const response = await api.post(`/exchanges/${postId}/done`, {
+      const response = await api.patch(`/exchanges/${postId}/done`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      return response.data.data_body;
+      return response.data;
     },
     onSuccess: (res) => {
       console.log("거래 종료", res);
