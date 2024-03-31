@@ -20,6 +20,7 @@ import CropCreatePage from "../pages/diary/CropCreatePage";
 import TestPage from "../pages/user/test";
 import CommunityLayout from "../pages/community/CommunityLayout";
 import Community from "../pages/community/Community";
+import UpdateCommunity from "../pages/community/UpdateCommunity";
 import CreateCommunity from "../pages/community/CreateCommunity";
 import CommunityDetail from "../pages/community/CommunityDetail";
 import TradeGeneralDetailPage from "../pages/trade/TradeGeneralDetail";
@@ -39,6 +40,9 @@ import GardenPage from "../pages/garden/GardenPage";
 import ChatTestPage from "../pages/user/chattest";
 import SSETest from "../pages/user/ssetest";
 import TownCertifyPage from "../pages/user/TownCertifyPage";
+import TradeChatRoomPage from "../pages/trade/TradeChatRoomPage";
+import NotFoundPage from "../pages/NotFoundPage";
+import SearchAddressPage from "../pages/user/SearchAddressPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -47,6 +51,7 @@ const authRoutes = [
   { path: "/join", element: <JoinPage /> },
   { path: "/auth/callback", element: <AuthCallbackPage /> },
   { path: "/town", element: <TownCertifyPage /> },
+  { path: "/address", element: <SearchAddressPage /> },
 ];
 
 const gardenRoutes = [{ path: "/garden", element: <GardenPage /> }];
@@ -71,6 +76,7 @@ const tradeRoutes = [
   { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
   { path: "/trade/:postId/buyer", element: <TradeBuyerPage /> },
   { path: "/trade/:chatId/Chat", element: <TradeChatPage /> },
+  { path: "/trade/chatroom", element: <TradeChatRoomPage /> },
   { path: "/trade/:postId/modify", element: <TradeModifyPage /> },
   { path: "/trade/test", element: <TestPage /> },
   { path: "/trade/chattest", element: <ChatTestPage /> },
@@ -99,7 +105,8 @@ const communityRoutes = [
     children: [
       { index: true, element: <Community /> },
       { path: "createcommunity", element: <CreateCommunity /> },
-      { path: ":id", element: <CommunityDetail /> },
+      { path: ":communityId", element: <CommunityDetail /> },
+      { path: ":communityId/update", element: <UpdateCommunity /> },
     ],
   },
 ];
@@ -115,6 +122,8 @@ const alarm = [
   },
 ];
 
+const notFound = [{ path: "*", element: <NotFoundPage /> }];
+
 const routes = [
   ...authRoutes,
   ...diaryRoutes,
@@ -123,6 +132,7 @@ const routes = [
   ...communityRoutes,
   ...alarm,
   ...gardenRoutes,
+  ...notFound,
 ];
 
 const router = createBrowserRouter(routes);

@@ -30,10 +30,10 @@ public class Diary { //작물일기
     @NotNull
     private String behavior; //행동(다이어리,물주기)
 
-    @Column(name = "diary_title", length = 30)
+    @Column(name = "diary_title", length = 60)
     private String title; //제목
 
-    @Column(name = "diary_content", length = 500)
+    @Column(name = "diary_content", length = 1000)
     private String content; //내용
 
     @Column(name = "diary_selected_at")

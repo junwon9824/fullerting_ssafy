@@ -5,7 +5,12 @@ import { LayoutInnerBox, LayoutMainBox } from "../common/Layout/Box";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getTradeDetail, useLike } from "../../apis/TradeApi";
+import {
+  createChatRoom,
+  getDealList,
+  getTradeDetail,
+  useLike,
+} from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -18,6 +23,15 @@ interface ImageResponse {
 interface SituationResponse {
   border: string;
   color: string;
+}
+interface DealListResponse {
+  id: number;
+  nickname: string;
+  thumbnail: string;
+  userId: number;
+  localDateTIme: string;
+  bidLogPrice: number;
+  exarticleid: number;
 }
 const ImgBox = styled.img`
   width: 100%;
@@ -82,6 +96,7 @@ const DealList = styled.div`
   margin-left: 0;
 `;
 const ProfileBox = styled.div`
+  word-break: break-word;
   width: auto;
   justify-content: flex-start;
   display: flex;
@@ -113,6 +128,9 @@ const BottomText = styled.div`
   font-style: normal;
   font-weight: 400;
 `;
+const PriceText = styled.span<{ color: string }>`
+  color: ${(props) => props.color};
+`;
 const TradeSellerDetail = () => {
   const navigate = useNavigate();
   const BtnClick = () => {
@@ -123,7 +141,6 @@ const TradeSellerDetail = () => {
     setLike(!like);
   };
 
-  const { mutate: handleLikeClick } = useLike();
   const { postId } = useParams<{ postId?: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -133,7 +150,52 @@ const TradeSellerDetail = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
+  const {
+    isLoading: dealListLoading,
+    data: dealListData,
+    error: ealListError,
+  } = useQuery({
+    queryKey: ["dealDetail", postNumber],
+    queryFn: accessToken
+      ? () => getDealList(accessToken, postNumber)
+      : undefined,
+  });
+  // const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
+  //가격 제안
+  const sentences = [
+    "사랑으로 키운게 느껴져요 ${price}원 어떠심?",
+    "${price}원에 이런 품질이라니, 믿을 수 없어요!",
+    "정성이 가득 담긴 가격, ${price}원에 어떠세요?",
+    "이건 정말 훔쳐오는 거나 다름없는 가격이네요, ${price}원이라니!",
+    "${price}원이라면 저도 바로 결정했을 거예요!",
+    "지금이 바로 그 기회! ${price}원에 가져가세요.",
+    "우리 이웃님들, ${price}원에 이런 기회 놓치지 마세요.",
+    "아직도 고민하시나요? ${price}원이라는 걸 기억하세요!",
+    "가격보고 깜짝 놀랐어요, ${price}원이라니!",
+    "오늘의 행운이 ${price}원에 달려있어요.",
+    "${price}원에 이걸 안 산다면 후회할 거예요.",
+    "장바구니가 외로워하네요, ${price}원으로 채워주세요.",
+    "${price}원, 이 가격에 이걸 살 수 있다니 말도 안 돼요.",
+    "집에 가져가면 가족들이 좋아할 거예요, ${price}원에요.",
+    "제가 본 중에 ${price}원으로 최고의 선택이에요.",
+    "이 가격 실화인가요? ${price}원이라니, 놀랍습니다.",
+    "모든 것이 완벽해요, 가격도 ${price}원이라니까요.",
+    "이런 건 두 번 다시 없어요, ${price}원에 당장 잡으세요.",
+    "세상에, ${price}원이라면 저도 고민 없이 샀을 거예요.",
+    "친구에게도 추천해줘야겠어요, ${price}원에 이런 좋은 거라니!",
+  ];
 
+  // 랜덤 문장 선택 함수
+  const getRandomSentence = (price: string) => {
+    const randomIndex = Math.floor(Math.random() * sentences.length);
+    return sentences[randomIndex].replace("${price}", price);
+  };
+  //채팅 연결
+  const { mutate: clickChat } = createChatRoom();
+  const handleChatClick = () => {
+    clickChat(postNumber);
+    console.log(postNumber);
+  };
   return (
     <>
       <TopBar title="가격제안목록" showBack={true} showEdit={true} />
@@ -166,16 +228,12 @@ const TradeSellerDetail = () => {
           </SituationBox>
           <DealBox>
             <DealList>
-              <ProfileBox>
-                <PhotoBox src={Coli} alt="coli" />
-                사랑으로 키운게 느껴져요 300원 어떠심?
-              </ProfileBox>
-            </DealList>
-            <DealList>
-              <ProfileBox>
-                <PhotoBox src={Coli} alt="coli" />
-                사랑으로 키운게 느껴져요 300원 어떠심?
-              </ProfileBox>
+              {dealListData?.map((item: DealListResponse, index: number) => (
+                <ProfileBox onClick={handleChatClick}>
+                  <PhotoBox src={Coli} alt="coli" />
+                  <div>{getRandomSentence(String(item.bidLogPrice))}</div>
+                </ProfileBox>
+              ))}
             </DealList>
           </DealBox>
           <BottomText>

@@ -12,7 +12,6 @@ const MainTipDetail = () => {
     <div>
       <h1>{post.title}</h1>
       <p>{post.content}</p>
-      {/* 여기에 더 상세 정보를 표시... */}
     </div>
   );
 };

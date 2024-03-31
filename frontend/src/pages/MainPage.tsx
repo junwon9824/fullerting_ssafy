@@ -13,7 +13,7 @@ const MainBox = styled.main`
 `;
 
 const MainPage = () => {
-  // useSSEConnection();
+  useSSEConnection();
   return (
     <>
       <MainTop />

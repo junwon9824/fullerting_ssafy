@@ -12,12 +12,7 @@ import { useAtom } from "jotai";
 import { cropAtom, menuAtom } from "../../stores/diary";
 import CropTips from "../../components/diary/CropTips";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  deleteCrop,
-  getCropData,
-  getDiaryList,
-  updateHarvest,
-} from "../../apis/DiaryApi";
+import { deleteCrop, getCropData, updateHarvest } from "../../apis/DiaryApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -119,11 +114,6 @@ const DiaryPage = () => {
     queryFn: packDiaryId ? () => getCropData(packDiaryId) : undefined,
   });
 
-  const { data: diaryList } = useQuery({
-    queryKey: ["diaryList"],
-    queryFn: packDiaryId ? () => getDiaryList(packDiaryId) : undefined,
-  });
-
   if (isSuccess) {
     setCrop(cropData);
   }
@@ -152,7 +142,10 @@ const DiaryPage = () => {
     if (cropData.packDiaryCulEndAt !== null) return;
     if (!packDiaryId) return;
 
-    updateMutate(packDiaryId);
+    const isConfirmed = window.confirm("정말로 수확하시겠습니까?");
+    if (isConfirmed) {
+      updateMutate(packDiaryId);
+    }
   };
 
   const handleDeleteCrop = () => {
@@ -166,7 +159,12 @@ const DiaryPage = () => {
 
   return (
     <>
-      <TopBar title="작물일기" showEdit={true} deleteFunc={handleDeleteCrop} />
+      <TopBar
+        title="작물일기"
+        showBack={false}
+        showEdit={true}
+        deleteFunc={handleDeleteCrop}
+      />
       <LayoutMainBox>
         <LayoutInnerBox>
           <FixedContainer>
@@ -204,11 +202,7 @@ const DiaryPage = () => {
             <MenuBar />
           </FixedContainer>
           <MiddleBox style={{ marginTop: "13.4rem" }}>
-            {menu === "작물꿀팁" ? (
-              <CropTips />
-            ) : (
-              diaryList && <DiaryList diaries={diaryList} />
-            )}
+            {menu === "작물꿀팁" ? <CropTips /> : <DiaryList />}
           </MiddleBox>
         </LayoutInnerBox>
       </LayoutMainBox>

@@ -30,7 +30,6 @@ const Propose = () => {
     queryKey: ["ProposeList"],
     queryFn: () => getPropose(),
   });
-  console.log("페이지 들어옴", data);
 
   if (isLoading) {
     return <div>Loading...</div>;

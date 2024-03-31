@@ -16,6 +16,7 @@ import { createDiary, getDiaryData, updateDiary } from "../../apis/DiaryApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
+import Loading from "../../components/common/Loading";
 
 const PreviewImage = styled.img`
   width: 4.2rem;
@@ -120,7 +121,7 @@ const DiaryUpdatePage = () => {
       <LayoutMainBox>
         <LayoutInnerBox>
           {isLoading ? (
-            <div>로딩중...</div>
+            <Loading />
           ) : (
             <>
               {crop && <CropProfile crop={crop} />}
@@ -132,6 +133,7 @@ const DiaryUpdatePage = () => {
                 placeholder=""
                 value={selectedDate}
                 onChange={handleDateChange}
+                max={new Date().toISOString().slice(0, 10)}
               />
               <StyledInput
                 label="제목"
@@ -152,7 +154,6 @@ const DiaryUpdatePage = () => {
               />
               <FileUploadInput />
               <RegisterBox>
-                {" "}
                 {images.map((image) => (
                   <div key={image.id} style={{ position: "relative" }}>
                     <PreviewImage

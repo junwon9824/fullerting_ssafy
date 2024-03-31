@@ -286,7 +286,7 @@ const TradeBuyerDetail = () => {
     setLike(!like);
   };
 
-  const { mutate: handleLikeClick } = useLike();
+  // const { mutate: handleLikeClick } = useLike();
   const { postId } = useParams<{ postId?: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -307,18 +307,19 @@ const TradeBuyerDetail = () => {
       ? () => getDealList(accessToken, postNumber)
       : undefined,
   });
+  console.log("딜데이터", dealListData);
   //socket
   const queryClient = useQueryClient();
   const [messages, setMessages] = useState<MessageRes[]>([]);
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [newMessage, setNewMessage] = useState<string>("");
   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
-  const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+
   const [max, setMax] = useState<number>(0);
   const [bidCount, setBidCount] = useState<number>(0);
   useEffect(() => {
     console.log("데이터", dealListData);
-
+    const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
     const transformedData = dealListData?.map((item: Response) => ({
       bidLogId: item.id,
       exArticleId: item.exarticleid,
@@ -355,7 +356,7 @@ const TradeBuyerDetail = () => {
         });
       }
     };
-  }, [dealListData]);
+  }, [accessToken]);
 
   const sendMessage = async () => {
     if (stompClient && newMessage.trim() !== "") {
@@ -438,7 +439,11 @@ const TradeBuyerDetail = () => {
               >
                 최고가
               </Situation>
-              <TextStyle>{max}원</TextStyle>
+              <TextStyle>
+                {dealListData && dealListData.length > 0
+                  ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
+                  : "0원"}
+              </TextStyle>
             </SituationGroup>
             <SituationGroup>
               <Situation
@@ -447,7 +452,7 @@ const TradeBuyerDetail = () => {
               >
                 참여자
               </Situation>
-              <TextStyle>{bidCount}명</TextStyle>
+              <TextStyle>{dealListData && dealListData.length | 0}명</TextStyle>
             </SituationGroup>
           </SituationBox>
           <DealBox>

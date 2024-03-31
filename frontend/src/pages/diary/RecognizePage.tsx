@@ -12,6 +12,7 @@ import { fileAtom } from "../../stores/diary";
 import AIFileUploadInput from "../../components/common/Input/AIFileUploadInput";
 import { changeStep } from "../../apis/DiaryApi";
 import { useState } from "react";
+import Loading from "../../components/common/Loading";
 
 const RecognizePage = () => {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ const RecognizePage = () => {
       <TopBar title="작물인식" />
       <LayoutMainBox>
         <LayoutInnerBox>
-          {isLoading ? <div>로딩중...</div> : <AIFileUploadInput />}
+          {isLoading ? <Loading /> : <AIFileUploadInput />}
         </LayoutInnerBox>
       </LayoutMainBox>
       <BottomButton onClick={handleConfirmClick} text="확인" />

@@ -118,11 +118,11 @@ public class ExArticle {
 
     public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
-        Favorite favorite1 = null;
+//        Favorite favorite1 = null;
 
-        if (!article.getFavorite().isEmpty()) {
-            favorite1 = article.getFavorite().get(0);
-        }
+//        if (!article.getFavorite().isEmpty()) {
+//            favorite1 = article.getFavorite().get(0);
+//        }
 
 //        log.info("typetype"+article.getType()+" "+ article.trans.getTrans_sell_price());
 
@@ -139,6 +139,7 @@ public class ExArticle {
 //                                .builder().islike(false).isLikeCnt(0).build()
 //                )
                 .time(article.created_at)
+                .isdone(article.isDone)
                 .content(article.getContent())
                 .userId(article.getUser().getId())
                 .build();

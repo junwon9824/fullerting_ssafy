@@ -34,14 +34,19 @@ public class CommentService {
         Article article = articleRepository.findById(article_id).orElseThrow(() -> new
                 ArticleException(ArticleErrorCode.NOT_EXISTS));
 
+
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
 
-        commentRepository.save(Comment.builder()
+        Comment comment = commentRepository.save(Comment.builder()
                 .article(article)
                 .comment_content(registerCommentRequest.getCommentcontent())
                 .customUser(customUser)
                 .build());
+
+//        article.addcomment(comment);
+//        articleRepository.save(article);
+
     }
 
 
@@ -69,6 +74,9 @@ public class CommentService {
         if (comment.getCustomUser().getId() != customUser.getId()) {
             throw new CommentException(CommentErrorCode.NOT_MINE);
         }
+
+//        article.removecomment(comment);
+//        articleRepository.save(article);
 
         commentRepository.delete(comment);
 

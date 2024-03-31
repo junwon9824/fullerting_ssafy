@@ -7,6 +7,11 @@ import RadioButton from "../../components/common/Button/radioButton";
 import { TopBar } from "../../components/common/Navigator/navigator";
 import { BottomButton } from "../../components/common/Button/LargeButton";
 import { useNavigate } from "react-router-dom";
+import { create } from "../../apis/CommunityApi";
+import { useAtom } from "jotai";
+import { imageFilesAtom } from "../../stores/trade";
+import { selectedTypeAtom } from "../../stores/community";
+
 const DiaryBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -40,41 +45,80 @@ const NavVlaue = styled.div`
 const TradePost = () => {
   const [title, setTitle] = useInput("");
   const [content, setContent] = useInput("");
-  const navavigate = useNavigate();
 
-  const handleConfirmClick = () => {
-    navavigate("/community");
+  const navigate = useNavigate();
+
+  const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
+  const [tradeType, setTradeType] = useAtom(selectedTypeAtom);
+
+  const handleConfirmClick = async () => {
+    const formData = new FormData();
+
+    selectedFiles.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    if (selectedFiles.length === 0) {
+      formData.append("images", new Blob([], { type: "application/json" }));
+    }
+    const updateInfo = {
+      title: title,
+      content: content,
+      type: tradeType,
+    };
+    console.log(updateInfo.type);
+    console.log(updateInfo.title);
+    formData.append(
+      "RegistArticleRequest",
+      new Blob([JSON.stringify(updateInfo)], { type: "application/json" })
+    );
+
+    try {
+      await create(formData);
+
+      setSelectedFiles([]);
+      navigate(-1);
+    } catch (error) {
+      console.error("업로드 실패:", error);
+    }
+
+    navigate("/community");
   };
-  const handleRadioButtonChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    console.log(event.target.value);
+
+  const handleRadioButtonChange = (value: string) => {
+    setTradeType(value);
   };
+
   return (
     <>
       <TopBar title="커뮤니티" />
       <Create>
         <Nav>
           <NavVlaue>카테고리</NavVlaue>
+
           <RadioButton
             name="exampleRadioGroup"
             value="자유게시판"
-            onChange={handleRadioButtonChange}
+            checked={tradeType === "자유게시판"}
+            onChange={() => handleRadioButtonChange("자유게시판")}
           />
           <RadioButton
             name="exampleRadioGroup"
             value="작물소개"
-            onChange={handleRadioButtonChange}
+            checked={tradeType === "작물소개"}
+            onChange={() => handleRadioButtonChange("작물소개")}
           />
           <RadioButton
             name="exampleRadioGroup"
             value="텃밭요리"
-            onChange={handleRadioButtonChange}
+            checked={tradeType === "텃밭요리"}
+            onChange={() => handleRadioButtonChange("텃밭요리")}
           />
           <RadioButton
             name="exampleRadioGroup"
             value="꿀팁공유"
-            onChange={handleRadioButtonChange}
+            checked={tradeType === "꿀팁공유"}
+            onChange={() => handleRadioButtonChange("꿀팁공유")}
           />
         </Nav>
         <Nav>

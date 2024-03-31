@@ -46,6 +46,7 @@ import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -63,6 +64,7 @@ import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.TRANSAC
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ExArticleService {
     private final ExArticleRepository exArticleRepository;
     private final DealRepository dealRepository;
@@ -264,6 +266,10 @@ public class ExArticleService {
         ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
+        if (exArticle.getUser().getId() != customUser.getId()) {
+            throw new ExArticleException(ExArticleErrorCode.NOT_MINE);
+        }
+
         log.info("exxxx" + exArticle.getPurchaserId());
         exArticle.setdone();
         exArticle.setpurchaserid(exArticleDoneRequest.getExArticlePurchaserId());
@@ -375,7 +381,7 @@ public class ExArticleService {
         favoriteRepository.save(favorite);
 
     }
-
+//@Transactional
     public ExArticle modifyarticle(Long exArticleId,
                                    UpdateArticleRequest updateArticleRequest, CustomUser customUser, List<MultipartFile> files) {
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException
