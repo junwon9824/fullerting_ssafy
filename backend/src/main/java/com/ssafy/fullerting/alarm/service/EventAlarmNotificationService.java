@@ -16,22 +16,39 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EventAlarmNotificationService {
     // thread-safe 한 컬렉션 객체로 sse emitter 객체를 관리
     private final Map<String, SseEmitter> emitterMap = new ConcurrentHashMap<>();
-    private static final long TIMEOUT = 45 * 1000;
-    private static final long HEARTBEAT_INTERVAL = 25 * 1000L; // 25초마다 하트비트 전송
+    private static final long TIMEOUT = 10*60*1000;
+    private static final long HEARTBEAT_INTERVAL = 30 * 1000L; // 30초마다 하트비트 전송
 
-    public SseEmitter subscribe(String userId) {
+    public SseEmitter subscribe(Long userId) {
         log.info("SSE 구독 요청 시작: {} (스레드: {})", userId, Thread.currentThread().getName());
         SseEmitter emitter = new SseEmitter(TIMEOUT);
-        emitterMap.put(userId, emitter);
+        emitterMap.put(userId.toString(), emitter);
 
-        emitter.onCompletion(() -> emitterMap.remove(userId));
-        emitter.onTimeout(() -> emitterMap.remove(userId));
-        emitter.onError((e) -> emitterMap.remove(userId));
+
+        // FOR 503 ERR
+//        sendAsync(AlarmPayload.builder()
+//                .receiveUserId(userId)
+//                .alarmType("WELCOME!")
+//                .alarmContent("SSE CONNECTED!")
+//                .alarmRedirect("")
+//                .build());
+
+        emitter.onCompletion(() -> {
+            log.info("onCompletion callback");
+            this.emitterMap.remove(userId);
+        });
+        emitter.onTimeout(() -> {
+            log.info("onTimeout callback");
+            emitter.complete();
+        });
+//                emitterMap.remove(userId));
+//        emitter.onError((e) -> emitterMap.remove(userId));
 
         log.info("SSE 구독 요청 완료: {} (스레드: {})", userId, Thread.currentThread().getName());
         return emitter;
     }
 
+    @Async("notiExecutor")
     public void sendAsync(AlarmPayload alarmPayload) {
         String userId = alarmPayload.getReceiveUserId().toString();
         log.info("비동기 메서드 시작: 사용자 {}, 데이터 {} (스레드: {})", userId, alarmPayload, Thread.currentThread().getName());
