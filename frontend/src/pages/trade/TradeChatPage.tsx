@@ -2,7 +2,7 @@ import TradeChat from "../../components/Trade/TradeChat";
 import { useSSEConnection } from "../../hooks/useSSEConnection";
 
 const TradeChatPage = () => {
-  // useSSEConnection();
+  useSSEConnection();
   return <TradeChat />;
 };
 

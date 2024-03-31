@@ -18,9 +18,11 @@ import TradeDealCategory from "../../components/Trade/TradeDealCategory";
 import TradeGeneralCategory from "../../components/Trade/TradeGeneralCategory";
 import TradeSharingCategory from "../../components/Trade/TradeSharingCategory";
 import TradeLikeCategory from "../../components/Trade/TradeLikeCategory";
+import { useSSEConnection } from "../../hooks/useSSEConnection";
+
 
 const TradePage = () => {
-  // useSSEConnection();
+  useSSEConnection();
   const [selectButton, setSelectButton] = useAtom(selectedCategory);
   const [search, setSearch] = useInput("");
   const renderSelectedComponent = () => {
