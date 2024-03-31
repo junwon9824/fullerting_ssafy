@@ -100,3 +100,19 @@ export const createComment = async (commentData: CommentType)=> {
   }
 };
 
+
+export const fetchAllComments  = async (communityId:string) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+  try {
+    const response = await api.post(
+      `/articles/${communityId}/comments/all`, 
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error createComment: ", error);
+    throw error;
+  }
+};

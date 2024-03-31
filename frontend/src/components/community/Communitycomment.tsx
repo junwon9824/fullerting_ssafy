@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FormEvent, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { createComment } from "../../apis/CommunityApi";
+import { createComment, fetchAllComments } from "../../apis/CommunityApi";
 
 const Comment = styled.div`
   margin-top: 0.5rem;
@@ -97,6 +97,15 @@ const CommunityComment = () => {
   const { communityId } = useParams<{ communityId: string }>();
   const queryClient = useQueryClient();
 
+  const { data: allComment, isLoading: Loading } = useQuery({
+    queryKey: ["allComment"],
+    queryFn: communityId ? () => fetchAllComments(communityId) : undefined,
+  });
+
+  if (Loading) {
+    <div>Loading..</div>;
+  }
+
   const { mutate, isLoading } = useMutation({
     mutationFn: createComment,
     onSuccess: () => {
@@ -107,14 +116,14 @@ const CommunityComment = () => {
       console.error("댓글 생성 오류:", error);
     },
   });
+  console.log("dddd", allComment);
 
-  // 댓글 제출 핸들러
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!comment.trim()) return;
     if (isLoading) return;
 
-    mutate({ commentContent: comment, communityId: communityId }); // 'commentcontent' 필드에 'comment' 상태 값을 전달합니다.
+    mutate({ commentContent: comment, communityId: communityId });
   };
   return (
     <All>
