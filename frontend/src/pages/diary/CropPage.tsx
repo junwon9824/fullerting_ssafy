@@ -43,7 +43,7 @@ const CropPage = () => {
   return (
     <>
       <TopBar title="작물일지" showBack={false} />
-      <SearchContainer>
+      {/* <SearchContainer>
         <Search
           type="text"
           id="search"
@@ -51,9 +51,10 @@ const CropPage = () => {
           placeholder="작물명을 입력해주세요"
           onChange={onSearch}
         />
-      </SearchContainer>
+      </SearchContainer> */}
       <LayoutMainBox>
-        <LayoutInnerBox style={{ marginTop: "3.125rem" }}>
+        {/* <LayoutInnerBox style={{ marginTop: "3.125rem" }}> */}
+        <LayoutInnerBox>
           <CropList />
         </LayoutInnerBox>
       </LayoutMainBox>
