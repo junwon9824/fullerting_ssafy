@@ -375,7 +375,7 @@ const TradeBuyerDetail = () => {
         const DealstartRequest = {
           exArticleId: postNumber,
           dealCurPrice: messageReq.dealCurPrice,
-          redirectURL: window.location.href,
+          redirectURL: window.location.pathname,
         };
 
         stompClient.send(
