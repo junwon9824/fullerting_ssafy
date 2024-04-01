@@ -22,7 +22,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import SwiperCore, { Navigation, Pagination } from "swiper/modules";
-import { userCheck } from "../../apis/UserApi";
+import { userCheck, userIndividualCheck } from "../../apis/UserApi";
 import TradePostLayout from "../common/Layout/TradePostLayout";
 import { useAtom } from "jotai";
 import { likeAtom } from "../../stores/trade";
@@ -168,20 +168,17 @@ const TradeGeneralDetail = () => {
     queryKey: ["userDetail"],
     queryFn: accessToken ? () => userCheck(accessToken) : undefined,
   });
-  const [likes, setLikes] = useAtom(likeAtom);
+  const {
+    isLoading: isIndividualUserDetail,
+    data: IndividualUserData,
+    error: IndividualUserDetailError,
+  } = useQuery({
+    queryKey: ["individualUserDetail"],
+    queryFn: accessToken
+      ? () => userIndividualCheck(accessToken, data?.exArticleResponse.userId)
+      : undefined,
+  });
 
-  const toggleLike = (postId: number) => {
-    const isLiked = likes.includes(postId);
-    setLikes((currentLikes) =>
-      isLiked
-        ? currentLikes.filter((id) => id !== postId)
-        : [...currentLikes, postId]
-    );
-
-    handleLikeClick(postId);
-  };
-  console.log("디테일데이터", data);
-  console.log("유저데이터", userData);
   const { mutate: clickChat } = createChatRoom();
   const userId = userData?.id;
 
@@ -258,11 +255,11 @@ const TradeGeneralDetail = () => {
         <LayoutInnerBox>
           <InfoBox>
             <Profile>
-              <Thumbnail src={data?.userResponse.thumbnail} alt="profile" />
+              <Thumbnail src={IndividualUserData?.thumbnail} alt="profile" />
               <Name>
-                <NameText>{data?.userResponse.nickname}</NameText>
+                <NameText>{IndividualUserData?.nickname}</NameText>
                 <ClassesText>
-                  {data?.userResponse.rank}
+                  {IndividualUserData?.rank}
                   {/* <img src={Sprout} alt="Sprout" /> */}
                 </ClassesText>
               </Name>

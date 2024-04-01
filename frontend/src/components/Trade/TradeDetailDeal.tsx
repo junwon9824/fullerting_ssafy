@@ -17,7 +17,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import SwiperCore, { Navigation, Pagination } from "swiper/modules";
-import { userCheck } from "../../apis/UserApi";
+import { userCheck, userIndividualCheck } from "../../apis/UserApi";
 import TradePostLayout from "../common/Layout/TradePostLayout";
 interface ImageResponse {
   imgStoreUrl: string;
@@ -187,12 +187,16 @@ const TradeDetailDeal = () => {
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
 
-  console.log(
-    "데이터 id",
-    data?.exArticleResponse?.userId,
-    "유저 id",
-    userData?.id
-  );
+  const {
+    isLoading: isIndividualUserDetail,
+    data: IndividualUserData,
+    error: IndividualUserDetailError,
+  } = useQuery({
+    queryKey: ["individualUserDetail"],
+    queryFn: accessToken
+      ? () => userIndividualCheck(accessToken, data?.exArticleResponse.userId)
+      : undefined,
+  });
   const BtnClick = (postId: number) => {
     if (data?.exArticleResponse?.userId === userData?.id) {
       navigate(`/trade/${postId}/seller`);
@@ -256,11 +260,11 @@ const TradeDetailDeal = () => {
         <LayoutInnerBox>
           <InfoBox>
             <Profile>
-              <Thumbnail src={data?.userResponse?.thumbnail} alt="profile" />
+              <Thumbnail src={IndividualUserData?.thumbnail} alt="profile" />
               <Name>
-                <NameText>{data?.userResponse.nickname}</NameText>
+                <NameText>{IndividualUserData?.nickname}</NameText>
                 <ClassesText>
-                  {data?.userResponse.rank}
+                  {IndividualUserData?.rank}
                   {/* <img src={Sprout} alt="Sprout" /> */}
                 </ClassesText>
               </Name>
