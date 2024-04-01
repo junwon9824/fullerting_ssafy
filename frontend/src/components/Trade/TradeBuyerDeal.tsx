@@ -425,7 +425,7 @@ const TradeBuyerDetail = () => {
     //  <AppContainer>
     // <AppContainer>
     <>
-      <TopBar title="작물거래" showBack={true} showEdit={true} />
+      <TopBar title="작물거래" showBack={true} />
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper slidesPerView={1} pagination={true}>
