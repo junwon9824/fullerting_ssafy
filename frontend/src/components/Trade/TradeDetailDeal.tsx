@@ -136,6 +136,7 @@ const PriceBox = styled.div`
   font-size: 1.25rem;
   font-weight: bold;
 `;
+
 const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
   width: ${(props) => `${props.width}rem`};
   height: ${(props) => `${props.height}rem`};
@@ -155,51 +156,45 @@ const TradeDetailDeal = () => {
 
   const { postId } = useParams<{ postId: string }>();
 
-
   // useEffect(() => {
-    const fetchData = async () => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const accessToken = sessionStorage.getItem("accessToken"); // 세션 스토리지에서 accessToken을 가져옵니다.
 
-      try {
-        const accessToken = sessionStorage.getItem("accessToken"); // 세션 스토리지에서 accessToken을 가져옵니다.
+  //       const userinfo = await getUsersInfo();
 
-        const userinfo = await getUsersInfo();
+  //       console.log("userinfo" + JSON.stringify(userinfo));
 
-        console.log('userinfo' + JSON.stringify(userinfo));
+  //       console.log("userinfo" + userinfo.data.data_body.id);
+  //       setLoginId(userinfo.data.data_body.id);
 
-        console.log('userinfo' + userinfo.data.data_body.id);
-        setLoginId(userinfo.data.data_body.id)
+  //       console.log("postid:" + postId);
+  //       const postIdNumber = postId ? parseInt(postId) : undefined;
 
-        console.log("postid:" + postId);
-        const postIdNumber = postId ? parseInt(postId) : undefined;
+  //       if (accessToken !== null) {
+  //         // accessToken이 null이 아닌 경우에만 실행합니다.
 
-        if (accessToken !== null) { // accessToken이 null이 아닌 경우에만 실행합니다.
-         
-          if (postIdNumber) {
+  //         if (postIdNumber) {
+  //           const data = await getTradeDetail(accessToken, postIdNumber); // 비동기 함수를 호출합니다.
+  //           console.log("dettttttttttttt", JSON.stringify(data)); // data 객체를 직렬화하여 출력합니다.
+  //           console.log("dettttttttttttt", data.exArticleResponse.userId); // data 객체를 직렬화하여 출력합니다.
+  //           setAuthorId(data.exArticleResponse.userId);
+  // g        }
 
-            const data = await getTradeDetail(accessToken, postIdNumber); // 비동기 함수를 호출합니다.
-            console.log('dettttttttttttt', JSON.stringify(data)); // data 객체를 직렬화하여 출력합니다.
-            console.log('dettttttttttttt', data.exArticleResponse.userId); // data 객체를 직렬화하여 출력합니다.
-            setAuthorId(data.exArticleResponse.userId)
+  //         setTradeDetail(data); // 데이터를 상태에 저장합니다.
+  //       }
+  //     } catch (error) {
+  //       console.error("에러 발생:", error);
+  //     }
+  //   };
 
-          }
-
-          setTradeDetail(data); // 데이터를 상태에 저장합니다.
-        }
-      } catch (error) {
-        console.error("에러 발생:", error);
-      }
-    };
-
-    fetchData(); // 함수를 호출합니다.
+  // fetchData(); // 함수를 호출합니다.
   // }, []); // 빈 배열을 전달하여 컴포넌트가 처음 렌더링될 때 한 번만 호출되도록 설정합니다.
-
-
 
   const [like, setLike] = useState<boolean>(false);
   const handleLike = () => {
     setLike(!like);
   };
-
 
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -279,17 +274,31 @@ const TradeDetailDeal = () => {
       console.log(err);
     },
   });
+
   return (
     <>
-      <TradeTopBar
-        title="작물거래"
-        showBack={true}
-        showEdit={true}
-        onEdit={handleEdit}
-        onDelete={() => {
-          deleteMutation(data?.exArticleResponse.exArticleId);
-        }}
-      />
+      {data?.exArticleResponse.userId === data?.userResponse.id ? (
+        <TradeTopBar
+          title="작물거래"
+          showBack={true}
+          showEdit={true}
+          onEdit={handleEdit}
+          onDelete={() => {
+            deleteMutation(data?.exArticleResponse.exArticleId);
+          }}
+        />
+      ) : (
+        <TradeTopBar
+          title="작물거래"
+          showBack={true}
+          showEdit={false}
+          // onEdit={handleEdit}
+          // onDelete={() => {
+          //   deleteMutation(data?.exArticleResponse.exArticleId);
+          // }}
+        />
+      )}
+
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper
@@ -355,32 +364,20 @@ const TradeDetailDeal = () => {
             <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>
         </LayoutInnerBox>
-        {console.log("authorId:", authorId)}
-        {console.log("loginid:", loginid)}
+
         {/* 구매자면 가격 제안조회 고 판매자면 가격 제안하기. */}
-        {authorId !== null && loginid !== null && (
-          
-          authorId === loginid ? (
-            // 판매자일 경우
-            <BottomButton
-            text=" 제안조회"
-            onClick={() => handleSellerClick(postNumber)}
-          />
-          ) : (
-            // 구매자일 경우
-            <BottomButton 
-            text="가격 제안하기"
-            onClick={() => handleBuyerClick(postNumber)}
-          />
-          )
-        )}
-
-
-        {/* <BottomButton
-          text="가격 제안하기"
-          onClick={() => BtnClick(postNumber)}
-        /> */}
-
+        <BottomButton
+          text={
+            data?.userResponse.id === data?.exArticleResponse.userId
+              ? "제안목록 확인"
+              : "제안하기"
+          }
+          onClick={() =>
+            data?.userResponse.id === data?.exArticleResponse.userId
+              ? handleSellerClick(data?.exArticleResponse.exArticleId)
+              : handleBuyerClick(data?.exArticleResponse.exArticleId)
+          }
+        />
       </LayoutMainBox>
     </>
   );

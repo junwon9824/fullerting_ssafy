@@ -41,7 +41,9 @@ const FileUploadIcon = styled.svg`
   width: 2rem;
   height: 2rem;
 `;
-
+// const InputBox = styled.input`
+//   display: none;
+// `;
 const InputBox = styled.input.attrs({
   type: "file",
   accept: "image/*", // 이미지 파일만 받도록 설정
@@ -49,7 +51,6 @@ const InputBox = styled.input.attrs({
 })`
   display: none; // 여전히 입력 필드를 숨깁니다.
 `;
-
 const PreviewImage = styled.img`
   width: 4.2rem;
   height: 4.2rem;
@@ -179,11 +180,19 @@ const MultiFileUploadInput: React.FC = () => {
           <InputBox
             id="file"
             type="file"
-            accept="image/*" // 이미지 파일만 받도록 설정
-            // capture="environment" // 카메라 사용 활성화
-            multiple // 필요에 따라 여러 파일을 선택할 수 있도록 합니다. 필요 없다면 이 줄을 제거하세요.
+            accept="image/*"
+            capture="environment"
             onChange={handleFileChange}
+            // onClick={handleFileUpload}
+            multiple
           />
+          {/* <InputBox
+            id="file"
+            type="file"
+            onChange={handleFileChange}
+            accept="image/*"
+            multiple
+          /> */}
         </RegisterBox>
         {previewURLs.map((previewURL, index) => (
           <div key={index} style={{ position: "relative" }}>

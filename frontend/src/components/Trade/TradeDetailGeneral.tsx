@@ -229,17 +229,31 @@ const TradeGeneralDetail = () => {
   const handleSellerChatClick = () => {
     navigate("/trade/chatroom");
   };
+  console.log("data", data);
   return (
     <>
-      <TradeTopBar
-        title="작물거래"
-        showBack={true}
-        showEdit={true}
-        onEdit={handleEdit}
-        onDelete={() => {
-          deleteMutation(data?.exArticleResponse.exArticleId);
-        }}
-      />
+      {data?.exArticleResponse.userId === data?.userResponse.id ? (
+        <TradeTopBar
+          title="작물거래"
+          showBack={true}
+          showEdit={true}
+          onEdit={handleEdit}
+          onDelete={() => {
+            deleteMutation(data?.exArticleResponse.exArticleId);
+          }}
+        />
+      ) : (
+        <TradeTopBar
+          title="작물거래"
+          showBack={true}
+          showEdit={false}
+          // onEdit={handleEdit}
+          // onDelete={() => {
+          //   deleteMutation(data?.exArticleResponse.exArticleId);
+          // }}
+        />
+      )}
+
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper
@@ -291,14 +305,7 @@ const TradeGeneralDetail = () => {
                 작물일지 이동하기
               </NavigateText>
             </DiaryBox>
-            <ExplainText>
-              심우석의 머리를 브로콜리에 비유하는 것은 그의 독특하고 특이한 헤어
-              스타일을 묘사하기 위한 창의적인 방법입니다. 이 비유는 특히 그의
-              머리카락이 풍성하고 볼륨감이 많으며, 위로 솟아 오른 모양이 마치
-              브로콜리의 녹색 송이와 유사하다는 점에서 온 것일 수 있습니다.
-              브로콜리의 작은 꽃송이들이 모여 있는 모양은, 심우석의 머리카락이
-              여러 방향으로 풍성하게 서 있는 것과 비슷하다고 할 수 있습니다.
-            </ExplainText>
+            <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>
         </LayoutInnerBox>
         <BottomButton
