@@ -147,7 +147,9 @@ const CommunityComment = () => {
     if (!comment.trim()) return;
     if (isLoading) return;
 
-    mutate({ commentContent: comment, communityId: communityId });
+    mutate({ 
+      commentContent: comment, 
+      communityId: communityId});
   };
   // 댓글 삭제
 

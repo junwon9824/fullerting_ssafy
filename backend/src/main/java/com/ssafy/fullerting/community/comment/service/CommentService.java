@@ -44,7 +44,7 @@ public class CommentService {
                 .localDateTime(LocalDateTime.now())
                 .build());
 
-        eventAlarmService.notifyCommentCreated(commenter, targetArticle, "/example");
+        eventAlarmService.notifyCommentCreated(commenter, targetArticle, registerCommentRequest.getRedirectURL());
 
 //        article.addcomment(comment);
 //        articleRepository.save(article);
