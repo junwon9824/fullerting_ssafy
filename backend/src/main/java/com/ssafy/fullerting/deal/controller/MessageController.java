@@ -77,6 +77,7 @@ public class MessageController {
 
             // bid_log에서 distinct로 유일한 user_id 갯수 추출한 값 현재 입찰 참여자 수로 보내기
             int bidderCount = bidService.getBidderCount(exArticle);
+            log.info("bidCount {}", bidderCount);
 
             //
 
