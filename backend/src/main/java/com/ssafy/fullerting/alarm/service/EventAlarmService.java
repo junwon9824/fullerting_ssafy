@@ -128,12 +128,13 @@ public class EventAlarmService {
         // 내가 가격제안 게시물을 올렸는데
         // 누군가가 입찰을 했을 때 알림
 
+
         EventAlarm alarm = EventAlarm.builder()
                 .receiveUser(exArticle.getUser())
                 .sendUser(bidUser)
                 .type(EventAlarmType.작물거래)
                 .content(bidUser.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 가격을 제안하셨어요.")
-                .redirect(redirectURL)
+                .redirect(redirectURL.replace("buyer", "seller"))
                 .build();
 
         eventAlarmRepository.save(alarm);
@@ -143,7 +144,7 @@ public class EventAlarmService {
                 .receiveUserId(exArticle.getUser().getId())
                 .alarmType(EventAlarmType.작물거래.toString())
                 .alarmContent(bidUser.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 가격을 제안하셨어요.")
-                .alarmRedirect(redirectURL)
+                .alarmRedirect(redirectURL.replace("buyer", "seller"))
                 .build());
     }
 
