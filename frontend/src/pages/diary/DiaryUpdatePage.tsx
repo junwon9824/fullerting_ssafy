@@ -12,8 +12,8 @@ import { BottomButton } from "../../components/common/Button/LargeButton";
 import StyledTextArea from "../../components/common/Input/StyledTextArea";
 import useInput from "../../hooks/useInput";
 import FileUploadInput from "../../components/common/Input/FileUploadInput";
-import { createDiary, getDiaryData, updateDiary } from "../../apis/DiaryApi";
-import { useNavigate, useParams } from "react-router-dom";
+import { getDiaryData, updateDiary } from "../../apis/DiaryApi";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
 import Loading from "../../components/common/Loading";
@@ -54,13 +54,13 @@ const RegisterBox = styled.div`
 const DiaryUpdatePage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [diaryId, setDiaryId] = useAtom(diaryAtom);
-  const [crop, setCrop] = useAtom(cropAtom);
+  const [diaryId] = useAtom(diaryAtom);
+  const [crop] = useAtom(cropAtom);
   const [selectedFiles, setSelectedFiles] = useAtom(fileAtom);
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().slice(0, 10)
   );
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<ImageType[]>([]);
   const [title, onTitle, setTitle] = useInput("");
   const [content, onContent, setContent] = useInput("");
 

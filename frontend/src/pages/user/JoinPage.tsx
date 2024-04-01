@@ -46,7 +46,7 @@ const JoinPage = () => {
           email: email,
           password: password,
           nickname: name,
-          authProvider: "MYAPP",
+          auth_provider: "MYAPP",
         });
       } else {
         alert("비밀번호를 다시 확인해 주세요!");

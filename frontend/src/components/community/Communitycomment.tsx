@@ -2,13 +2,21 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FormEvent, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { createComment, fetchAllComments } from "../../apis/CommunityApi";
+import {
+  DeleteComment,
+  createComment,
+  fetchAllComments,
+} from "../../apis/CommunityApi";
+
+interface ImgProps {
+  backgroundImage: string;
+}
 
 const CommentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `;
 const Comment = styled.div`
   background-color: #f4f4f4;
@@ -31,12 +39,13 @@ const All = styled.div`
 const Profile = styled.div`
   display: flex;
 `;
-const Img = styled.div`
+const Img = styled.div<ImgProps>`
   width: 1.875rem;
   height: 1.875rem;
   flex-shrink: 0;
   border-radius: 1.6875rem;
-  background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+  background: ${(props) =>
+    `url(${props.backgroundImage}) lightgray 50% / cover no-repeat`};
 `;
 const NickGrade = styled.div`
   margin-left: 0.5rem;
@@ -60,6 +69,7 @@ const Time = styled.span`
   font-size: 12px;
   color: #888;
   display: flex;
+  margin-left: 11rem;
 `;
 const CommentInputContainer = styled.div`
   margin-bottom: 3rem;
@@ -93,10 +103,27 @@ const SubmitButton = styled.button`
 `;
 
 const Delete = styled.div`
-  margin-left: 15rem;
+  margin-top: 0.5rem;
+  margin-left: 14.1rem;
   font-size: 12px;
   color: #888;
 `;
+
+const formatDate = (isoString: string) => {
+  const date = new Date(isoString);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+
+  const paddedMonth = month < 10 ? `0${month}` : month;
+  const paddedDay = day < 10 ? `0${day}` : day;
+  const paddedHour = hour < 10 ? `0${hour}` : hour;
+  const paddedMinute = minute < 10 ? `0${minute}` : minute;
+
+  return `${year}-${paddedMonth}-${paddedDay} ${paddedHour}:${paddedMinute}`;
+};
 
 const CommunityComment = () => {
   const [comment, setComment] = useState("");
@@ -132,18 +159,18 @@ const CommunityComment = () => {
   }
   return (
     <All>
-      {allCommentData?.map((CommontData) => (
-        <CommentContainer key={CommontData.id}>
+      {allCommentData?.map((CommentData) => (
+        <CommentContainer key={CommentData.id}>
           <Profile>
-            <Img />
+            <Img backgroundImage={CommentData.thumbnail} />
             <NickGrade>
-              <Nick>닉네임</Nick>
-              <Grade>등급</Grade>
+              <Nick>{CommentData.nickname}</Nick>
+              <Grade>{CommentData.rank}</Grade>
             </NickGrade>
           </Profile>
           <CommentTime>
-            <Comment>{CommontData.commentcontent}</Comment>
-            <Time>시간</Time>
+            <Comment>{CommentData.commentcontent}</Comment>
+            <Time>{formatDate(CommentData.localDateTime)}</Time>
             <Delete>댓글삭제</Delete>
           </CommentTime>
         </CommentContainer>

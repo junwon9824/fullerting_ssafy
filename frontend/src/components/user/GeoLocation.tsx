@@ -23,7 +23,7 @@ const GeoLocation = () => {
     isPanto: true,
   });
 
-  const [address, setAddress] = useAtom(locationAtom);
+  const [, setAddress] = useAtom(locationAtom);
 
   const getAddress = (lat: number, lng: number) => {
     const geocoder = new kakao.maps.services.Geocoder(); // 좌표 -> 주소로 변환해주는 객체

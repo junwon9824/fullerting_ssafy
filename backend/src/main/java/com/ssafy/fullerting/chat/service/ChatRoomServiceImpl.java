@@ -48,22 +48,20 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     public CreateChatRoomResponse createChatRoom(CreateChatRoomRequest createChatRoomRequest) {
         UserResponse userResponse = userService.getUserInfo();
 
-
         //게시글 존재하는지 확인
         ExArticle exArticle = exArticleRepository.findById(createChatRoomRequest.getExArticleId()).orElseThrow(() -> new ExArticleException(NOT_EXISTS));
         //이미 존재하는 채팅방인지 조회
-        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByExArticleIdAndBuyerId(createChatRoomRequest.getExArticleId(), userResponse.getId());
+        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByExArticleAndBuyer(exArticle, UserResponse.toEntity(userResponse));
         //존재하지 않을 경우 채팅방 생성
         if(chatRoomOptional.isEmpty()){
             ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
-                    .exArticleId(createChatRoomRequest.getExArticleId())
-                    .buyerId(userResponse.getId())
+                    .exArticle(exArticle)
+                    .buyer(UserResponse.toEntity(userResponse))
                     .build());
             log.info("채팅방 첫 생성 : {}", exArticle.toString());
 
             // 채팅방 생성 알림함 전송
-            eventAlarmService.notifyCreateChatRoomAuthor(userService.getUserEntityById(userResponse.getId()), exArticle, "http://localhost:5173/trade/chatroom");
-
+            eventAlarmService.notifyCreateChatRoomAuthor(userService.getUserEntityById(userResponse.getId()), exArticle, createChatRoomRequest.getRedirectURL());
 
             return CreateChatRoomResponse.toResponse(chatRoom);
         }
@@ -79,7 +77,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         UserResponse userResponse = userService.getUserInfo();
 
         //현재 유저가 구매자이거나 판매자인 경우 모든 채팅방 조회
-        List<ChatRoom> chatRoomList = chatRoomRepository.findByBuyerIdOrExArticleUserId(userResponse.getId());
+        List<ChatRoom> chatRoomList = chatRoomRepository.findByBuyerOrExArticleUser(UserResponse.toEntity(userResponse));
 
         return chatRoomList.stream()
                 // 채팅방 리스트를 최신 채팅 메시지가 먼저 오도록 정렬
@@ -100,12 +98,12 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                 })
                 .map(chatRoom -> {
                     //상대방 ID 조회
-                    ExArticle exArticle = exArticleRepository.findById(chatRoom.getExArticleId()).orElseThrow(() -> new ExArticleException(NOT_EXISTS));
+                    ExArticle exArticle = exArticleRepository.findById(chatRoom.getExArticle().getId()).orElseThrow(() -> new ExArticleException(NOT_EXISTS));
                     CustomUser otherUser = null;
                     //현재 유저가 판매자와 동일할 경우
                     if (exArticle.getUser().getId().equals(userResponse.getId())) {
                         //상대방 정보에 구매자 저장
-                        otherUser = userRepository.findById(chatRoom.getBuyerId()).orElseThrow(() -> new UserException(NOT_EXISTS_USER));
+                        otherUser = userRepository.findById(chatRoom.getBuyer().getId()).orElseThrow(() -> new UserException(NOT_EXISTS_USER));
                     }
                     //현재 유저가 구매자와 동일할 경우
                     else {
@@ -130,8 +128,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     @Override
     public GetDetailChatRoomResponse getDetailChatRoom(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(()->new ChatException(NOT_EXISTS_CHAT_ROOM));
-        ExArticle exArticle = exArticleRepository.findById(chatRoom.getExArticleId()).orElseThrow(()->new ExArticleException(NOT_EXISTS));
 
-        return GetDetailChatRoomResponse.toResponse(exArticle);
+        return GetDetailChatRoomResponse.toResponse(chatRoom.getExArticle());
     }
 }

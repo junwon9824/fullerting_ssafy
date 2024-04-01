@@ -35,6 +35,7 @@ interface Deal {
   localDateTime: string;
   thumbnail: string;
   nickname: string;
+  bidcount: number;
 }
 // socket
 interface MessageRes {
@@ -375,7 +376,7 @@ const TradeBuyerDetail = () => {
         const DealstartRequest = {
           exArticleId: postNumber,
           dealCurPrice: messageReq.dealCurPrice,
-          redirectURL: window.location.href,
+          redirectURL: window.location.pathname,
         };
 
         stompClient.send(
@@ -463,7 +464,11 @@ const TradeBuyerDetail = () => {
               >
                 참여자
               </Situation>
-              <TextStyle>{dealListData && dealListData.length | 0}명</TextStyle>
+              <TextStyle>
+                {dealListData &&
+                  dealListData[dealListData.length - 1].bidcount | 0}
+                명
+              </TextStyle>
             </SituationGroup>
           </SituationBox>
           <DealBox>

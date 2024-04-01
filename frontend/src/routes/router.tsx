@@ -43,6 +43,7 @@ import TownCertifyPage from "../pages/user/TownCertifyPage";
 import TradeChatRoomPage from "../pages/trade/TradeChatRoomPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import SearchAddressPage from "../pages/user/SearchAddressPage";
+import DiaryOtherViewPage from "../pages/diary/DiaryOtherViewPage";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -62,6 +63,7 @@ const diaryRoutes = [
   { path: "/crop/:packDiaryId/update", element: <CropUpdatePage /> },
   { path: "/crop/:packDiaryId", element: <DiaryPage /> },
   { path: "/crop/:packDiaryId/ai", element: <RecognizePage /> },
+  { path: "/crop/:packDiaryId/otherview", element: <DiaryOtherViewPage /> },
   { path: "/diary/:diaryId", element: <DiaryDetailPage /> },
   { path: "/diary/create", element: <DiaryCreatePage /> },
   { path: "/diary/water", element: <DiaryWaterPage /> },

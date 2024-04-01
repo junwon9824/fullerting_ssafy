@@ -51,7 +51,7 @@ const LoginForm = () => {
     navigate("/join");
   };
 
-  const { mutate, isError, error, isSuccess } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: userLogin,
     onSuccess: (res) => {
       sessionStorage.setItem("accessToken", res.data_body.accessToken);

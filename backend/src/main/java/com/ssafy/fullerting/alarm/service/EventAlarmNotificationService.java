@@ -26,12 +26,12 @@ public class EventAlarmNotificationService {
 
 
         // FOR 503 ERR
-        sendAsync(AlarmPayload.builder()
-                .receiveUserId(userId)
-                .alarmType("WELCOME!")
-                .alarmContent("SSE CONNECTED!")
-                .alarmRedirect("")
-                .build());
+//        sendAsync(AlarmPayload.builder()
+//                .receiveUserId(userId)
+//                .alarmType("WELCOME!")
+//                .alarmContent("SSE CONNECTED!")
+//                .alarmRedirect("")
+//                .build());
 
         emitter.onCompletion(() -> {
 //            log.info("onCompletion callback");

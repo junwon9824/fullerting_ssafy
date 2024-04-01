@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 import { markerAtom } from "../../stores/garden";
 
 const GardenMarker = ({ farm }: { farm: FarmType }) => {
-  const [selectedMarker, setSelectedMarker] = useAtom(markerAtom);
+  const [, setSelectedMarker] = useAtom(markerAtom);
 
   return (
     <>

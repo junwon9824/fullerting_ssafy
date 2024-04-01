@@ -24,14 +24,21 @@ interface CropFormType {
   packDiaryCulStartAt: string;
 }
 
-interface DiaryFormType {
-  packDiaryId: string;
+interface DiaryUpdateType {
   diaryId: string;
   diarySelectedAt: string;
-  images: File[];
-  originImages: number[];
+  images?: File[];
+  originImages?: number[];
   diaryTitle: string;
   diaryContent: string;
+}
+
+interface DiaryCreateType {
+  packDiaryId: string;
+  diarySelectedAt: string;
+  images?: File[];
+  diaryTitle?: string;
+  diaryContent?: string;
 }
 
 interface ImageType {

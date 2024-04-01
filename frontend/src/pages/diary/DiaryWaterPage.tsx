@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BottomButton } from "../../components/common/Button/LargeButton";
 import StyledInput from "../../components/common/Input/StyledInput";
 import {
@@ -11,20 +11,27 @@ import { useAtom } from "jotai";
 import { cropAtom } from "../../stores/diary";
 import { createWater } from "../../apis/DiaryApi";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const DiaryWaterPage = () => {
-  const [crop, setCrop] = useAtom(cropAtom);
+  const [crop] = useAtom(cropAtom);
   // const { packDiaryId } = useParams();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().slice(0, 10)
   );
 
+  useEffect(() => {
+    if (!crop) {
+      alert("작물일기를 먼저 선택해주세요!");
+      navigate("/crop");
+    }
+  }, []);
+
   const { mutate } = useMutation({
     mutationFn: createWater,
     onSuccess: () => {
-      navigate(`/crop/${crop.packDiaryId}`);
+      if (crop) navigate(`/crop/${crop.packDiaryId}`);
     },
     onError: (error) => {
       console.log(error);
@@ -36,10 +43,10 @@ const DiaryWaterPage = () => {
   };
 
   const handleConfirmClick = () => {
-    // if (crop?.packDiaryId || !selectedDate) return;
+    if (!crop || !selectedDate) return;
 
     const waterData = {
-      packDiaryId: crop.packDiaryId,
+      packDiaryId: crop.packDiaryId.toString(),
       diarySelectedAt: selectedDate,
     };
 

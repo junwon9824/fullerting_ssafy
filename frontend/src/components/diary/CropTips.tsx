@@ -34,7 +34,7 @@ const Content = styled.div`
 `;
 
 const CropTips = () => {
-  const [crop, setCrop] = useAtom(cropAtom);
+  const [crop] = useAtom(cropAtom);
 
   const { isFetching, data: tipList } = useQuery({
     queryKey: ["cropList"],

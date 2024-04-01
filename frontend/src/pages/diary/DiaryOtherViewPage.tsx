@@ -97,7 +97,7 @@ const FixedContainer = styled.div`
   gap: 1.3rem;
 `;
 
-const DiaryPage = () => {
+const DiaryOtherViewPage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [, setCrop] = useAtom(cropAtom);
   const [menu, setMenu] = useAtom(menuAtom);
@@ -120,6 +120,7 @@ const DiaryPage = () => {
   if (isSuccess) {
     setCrop(cropData);
   }
+  console.log("크롭데이터", cropData);
 
   const { mutate: updateMutate } = useMutation({
     mutationFn: updateHarvest,
@@ -162,110 +163,21 @@ const DiaryPage = () => {
 
   return (
     <>
-      <CommonTopBar
-        title="작물일기"
-        backNavigate={"crop"}
-        showEdit={true}
-        deleteFunc={handleDeleteCrop}
-      />
+      <CommonTopBar title="작물일기" />
       <LayoutMainBox>
         <LayoutInnerBox>
           <FixedContainer>
-            <TopBox>
-              {cropData && <CropProfile crop={cropData} />}
-              <ButtonBox>
-                <Button
-                  onClick={() => {
-                    navigate(`ai`);
-                  }}
-                  width={9.5}
-                  height={2.4}
-                  borderRadius={1.28125}
-                  backgroundColor="#A0D8B3"
-                  color="white"
-                  fontSize="0.9"
-                  fontWeight="bold"
-                  text="작물 인식하기"
-                />
-                <Button
-                  onClick={handleHarvestClick}
-                  width={9.5}
-                  height={2.4}
-                  borderRadius={1.28125}
-                  backgroundColor={
-                    cropData?.packDiaryCulEndAt !== null ? "#c8c8c8" : "#A0D8B3"
-                  }
-                  color="white"
-                  fontSize="0.9"
-                  fontWeight="bold"
-                  text="수확하기"
-                />
-              </ButtonBox>
-            </TopBox>
             <MenuBar />
           </FixedContainer>
-          <MiddleBox style={{ marginTop: "13.4rem" }}>
+          <MiddleBox>
             {menu === "작물꿀팁" ? <CropTips /> : <DiaryList />}
           </MiddleBox>
         </LayoutInnerBox>
       </LayoutMainBox>
-      <PlusButtonBox>
-        {isVisible && (
-          <AdditionalButtonsContainer>
-            <StyledPlusButton onClick={() => navigate(`/diary/water`)}>
-              <SVGBox
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="17"
-                viewBox="0 0 14 17"
-                fill="none"
-              >
-                <path
-                  d="M6.66667 0C2.225 3.79167 0 7.06667 0 9.83333C0 13.9833 3.16667 16.6667 6.66667 16.6667C10.1667 16.6667 13.3333 13.9833 13.3333 9.83333C13.3333 7.06667 11.1083 3.79167 6.66667 0ZM6.66667 15C3.875 15 1.66667 12.8583 1.66667 9.83333C1.66667 7.88333 3.29167 5.3 6.66667 2.21667C10.0417 5.3 11.6667 7.875 11.6667 9.83333C11.6667 12.8583 9.45833 15 6.66667 15ZM3.19167 10C3.5 10 3.75 10.2167 3.80833 10.5167C4.15 12.3667 5.70833 13 6.84167 12.9083C7.2 12.8917 7.5 13.175 7.5 13.5333C7.5 13.8667 7.23333 14.1417 6.9 14.1583C5.125 14.2667 3.05 13.25 2.575 10.725C2.50833 10.35 2.80833 10 3.19167 10Z"
-                  fill="black"
-                />
-              </SVGBox>
-            </StyledPlusButton>
-            <StyledPlusButton onClick={() => navigate(`/diary/create`)}>
-              <SVGBox
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <path
-                  d="M10 5.83333C10 4.94928 9.64881 4.10143 9.02369 3.47631C8.39857 2.85119 7.55072 2.5 6.66667 2.5H1.66667V15H7.5C8.16304 15 8.79893 15.2634 9.26777 15.7322C9.73661 16.2011 10 16.837 10 17.5M10 5.83333V17.5M10 5.83333C10 4.94928 10.3512 4.10143 10.9763 3.47631C11.6014 2.85119 12.4493 2.5 13.3333 2.5H18.3333V15H12.5C11.837 15 11.2011 15.2634 10.7322 15.7322C10.2634 16.2011 10 16.837 10 17.5"
-                  stroke="black"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </SVGBox>
-            </StyledPlusButton>
-          </AdditionalButtonsContainer>
-        )}
-        <PlusButton onClick={handleButtonClick}>
-          <SVGBox
-            xmlns="http://www.w3.org/2000/svg"
-            width="26"
-            height="26"
-            viewBox="0 0 26 26"
-            fill="none"
-          >
-            <path
-              d="M5.70834 13H20.2917M13 5.70837V20.2917"
-              stroke="white"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </SVGBox>
-        </PlusButton>
-      </PlusButtonBox>
+
       <NavBar />
     </>
   );
 };
 
-export default DiaryPage;
+export default DiaryOtherViewPage;
