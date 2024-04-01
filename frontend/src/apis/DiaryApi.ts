@@ -107,7 +107,7 @@ export const createCrop = async (cropData: CropFormType) => {
   }
 };
 
-export const createDiary = async (diaryData: DiaryFormType) => {
+export const createDiary = async (diaryData: DiaryCreateType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
     const formData = new FormData();
@@ -140,7 +140,7 @@ export const createDiary = async (diaryData: DiaryFormType) => {
   }
 };
 
-export const createWater = async (waterData: DiaryFormType) => {
+export const createWater = async (waterData: DiaryCreateType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
 
@@ -215,7 +215,7 @@ export const updateHarvest = async (packDiaryId: string) => {
   }
 };
 
-export const updateDiary = async (diaryData: DiaryFormType) => {
+export const updateDiary = async (diaryData: DiaryUpdateType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
     const formData = new FormData();
