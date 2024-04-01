@@ -62,12 +62,10 @@ services:
       - "8080:8080"
     networks:
       - jenkins-network
-#    volumes:
-#     - /var/jenkins_home/workspace/fullerting/back:/app
-
-#    environment:
-#      - USE_PROFILE=dev
-#      - SPRING_PROFILES_ACTIVE=prod
+#    logging:
+#      driver: "json-file"
+#      options:
+#        max-size: "10m"
 
 
 
