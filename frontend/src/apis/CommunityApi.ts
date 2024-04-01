@@ -4,6 +4,11 @@ interface CommentType {
   commentContent?: string;
 }
 
+interface DeleteComment {
+  communityId? : string;
+  commentContent?: string;
+}
+
 
 export const getallcommunities = async () => {
   const accessToken = sessionStorage.getItem("accessToken");
@@ -150,11 +155,11 @@ export const DeleteArticle = async (communityId:string) => {
   }
 }
 
-export const DeleteComment = async (communityId:string, commentId:string) => {
+export const DeleteComment = async (commentData:DeleteComment) => {
   const accessToken = sessionStorage.getItem("accessToken");
   try {
     const response = await api.delete(
-      `/articles/${communityId}/comments/${commentId}`,
+      `/articles/${commentData.communityId}/comments/${commentData.commentId}`,
       {
         headers: { Authorization : `Bearer ${accessToken}`},
       }
