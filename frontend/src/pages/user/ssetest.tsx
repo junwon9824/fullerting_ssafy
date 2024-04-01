@@ -20,7 +20,7 @@ const SSETest: React.FC = () => {
     console.log(accessToken);
     const connectSSE = () => {
       // SSE 연결 URL. 서버 설정에 따라 변경해주세요.
-      const url = "http://localhost:8080/v1/noti/pub";
+      const url = import.meta.env.VITE_REACT_APP_SSE_URL;
       // const url = "https://j10c102.p.ssafy.io/api/v1/noti/pub";
 
       const eventSource = new EventSourcePolyfill(url, {
