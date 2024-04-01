@@ -364,13 +364,13 @@ const TradeDetailDeal = () => {
             // 판매자일 경우
             <BottomButton
             text=" 제안조회"
-            onClick={() => BtnClick(postNumber)}
+            onClick={() => handleSellerClick(postNumber)}
           />
           ) : (
             // 구매자일 경우
             <BottomButton
             text="가격 제안하기"
-            onClick={() => BtnClick(postNumber)}
+            onClick={() => handleBuyerClick(postNumber)}
           />
           )
         )}
