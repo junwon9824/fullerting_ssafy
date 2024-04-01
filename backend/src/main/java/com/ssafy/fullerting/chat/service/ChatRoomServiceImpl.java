@@ -48,7 +48,6 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     public CreateChatRoomResponse createChatRoom(CreateChatRoomRequest createChatRoomRequest) {
         UserResponse userResponse = userService.getUserInfo();
 
-
         //게시글 존재하는지 확인
         ExArticle exArticle = exArticleRepository.findById(createChatRoomRequest.getExArticleId()).orElseThrow(() -> new ExArticleException(NOT_EXISTS));
         //이미 존재하는 채팅방인지 조회
@@ -62,8 +61,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
             log.info("채팅방 첫 생성 : {}", exArticle.toString());
 
             // 채팅방 생성 알림함 전송
-            eventAlarmService.notifyCreateChatRoomAuthor(userService.getUserEntityById(userResponse.getId()), exArticle, "http://localhost:5173/trade/chatroom");
-
+            eventAlarmService.notifyCreateChatRoomAuthor(userService.getUserEntityById(userResponse.getId()), exArticle, createChatRoomRequest.getRedirectURL());
 
             return CreateChatRoomResponse.toResponse(chatRoom);
         }
