@@ -61,7 +61,7 @@ public class Article {
     private List<Love> loves = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Image> images = new ArrayList<>();
 
 

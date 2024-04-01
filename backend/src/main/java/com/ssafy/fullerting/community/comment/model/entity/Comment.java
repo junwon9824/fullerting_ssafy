@@ -5,6 +5,10 @@ import com.ssafy.fullerting.community.comment.model.dto.response.CommentResonse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 
 @NoArgsConstructor
@@ -34,11 +38,17 @@ public class Comment {
 
     private String comment_content;
 
-    public CommentResonse tocommentResonse(){
+    @Column(name = "comment_created_at")
+    private LocalDateTime localDateTime;
+
+    public CommentResonse tocommentResonse(CustomUser customUser) {
         return CommentResonse.builder()
                 .commentcontent(this.comment_content)
+                .rank(customUser.getRank())
+                .thumbnail(customUser.getThumbnail())
+                .nickname(customUser.getNickname())
+                .localDateTime(this.getLocalDateTime())
                 .id(this.id)
-
                 .build();
     }
 }

@@ -19,6 +19,7 @@ import com.ssafy.fullerting.trans.model.dto.response.TransResponse;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,7 @@ public class DealService {
 
     }
 
+    @Transactional
     public List<ExArticleResponse> mybidarticles() {
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);

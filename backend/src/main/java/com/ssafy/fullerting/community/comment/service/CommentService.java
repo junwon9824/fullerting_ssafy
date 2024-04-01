@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.dialect.unique.CreateTableUniqueDelegate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,7 @@ public class CommentService {
                 .article(article)
                 .comment_content(registerCommentRequest.getCommentcontent())
                 .customUser(customUser)
+                .localDateTime(LocalDateTime.now())
                 .build());
 
 //        article.addcomment(comment);
@@ -54,7 +56,10 @@ public class CommentService {
 
         return commentRepository.findAllByArticle_Id(article_id)
                 .stream().map(comment -> {
-                    CommentResonse commentResonse = comment.tocommentResonse();
+
+                    CustomUser customUser = comment.getCustomUser();
+
+                    CommentResonse commentResonse = comment.tocommentResonse(customUser);
                     return commentResonse;
                 }).collect(Collectors.toList());
 
