@@ -149,3 +149,19 @@ export const DeleteArticle = async (communityId:string) => {
     throw error;
   }
 }
+
+export const DeleteComment = async (communityId:string, commentId:string) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+  try {
+    const response = await api.delete(
+      `/articles/${communityId}/comments/${commentId}`,
+      {
+        headers: { Authorization : `Bearer ${accessToken}`},
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error createComment: ", error);
+    throw error;
+  }
+}
