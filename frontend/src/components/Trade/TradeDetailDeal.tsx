@@ -368,7 +368,7 @@ const TradeDetailDeal = () => {
           />
           ) : (
             // 구매자일 경우
-            <BottomButton
+            <BottomButton 
             text="가격 제안하기"
             onClick={() => handleBuyerClick(postNumber)}
           />

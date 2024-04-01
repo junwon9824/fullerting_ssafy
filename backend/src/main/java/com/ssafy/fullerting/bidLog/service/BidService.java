@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -84,6 +85,7 @@ public class BidService {
                             findById(bidLog1.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
                     return bidLog1.toBidLogsuggestionResponse(bidLog1, user,bidLogs.size());
                 })
+//                .sorted(Comparator.comparing(BidLogResponse::getBidLogPrice).reversed())
                 .collect(Collectors.toList());
 
         return bidLogResponses;
