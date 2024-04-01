@@ -38,11 +38,12 @@ public class ChatServiceImpl implements ChatService{
     @Override
     public ChatResponse createChat(Long senderId, ChatRequest chatRequest) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRequest.getChatRoomId()).orElseThrow(()->new ChatException(NOT_EXISTS_CHAT_ROOM));
+        CustomUser sender = userRepository.findById(senderId).orElseThrow(()->new UserException(NOT_EXISTS_USER));
         try {
             //채팅 내역 DB 저장
             Chat chat =chatRepository.save(Chat.builder()
                     .chatRoom(chatRoom)
-                    .senderId(senderId)
+                    .sender(sender)
                     .message(chatRequest.getChatMessage())
                     .sendAt(Timestamp.valueOf(LocalDateTime.now()))
                     .build());
@@ -67,7 +68,7 @@ public class ChatServiceImpl implements ChatService{
 
         return chatList.stream()
                 .map(chat -> {
-                    CustomUser sender = userRepository.findById(chat.getSenderId()).orElseThrow(()->new UserException(NOT_EXISTS_USER)); // senderId로 사용자 조회
+                    CustomUser sender = userRepository.findById(chat.getSender().getId()).orElseThrow(()->new UserException(NOT_EXISTS_USER)); // senderId로 사용자 조회
                     return GetAllChatResponse.builder()
                             .chatId(chat.getId())
                             .chatRoomId(chat.getChatRoom().getId())
