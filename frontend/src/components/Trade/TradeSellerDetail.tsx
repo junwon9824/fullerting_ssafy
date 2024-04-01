@@ -198,7 +198,7 @@ const TradeSellerDetail = () => {
   };
   return (
     <>
-      <TopBar title="가격제안목록" showBack={true} showEdit={true} />
+      <TopBar title="가격제안목록" showBack={true} />
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper
