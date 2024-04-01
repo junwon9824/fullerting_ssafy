@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getGardenList } from "../../apis/GardenApi";
 import GardenMarker from "./GardenMarker";
 import styled from "styled-components";
-import { markerAtom } from "../../stores/garden";
+import { markerAtom, regionAtom } from "../../stores/garden";
 import { useAtom } from "jotai";
 
 const InfoBox = styled.div`
@@ -65,6 +65,8 @@ const ReSettingMapBounds = ({ farmList }: { farmList: FarmType[] }) => {
 
 const GardenMap = () => {
   const [selectedMarker, setSelectedMarker] = useAtom(markerAtom);
+  const [selectedRegion] = useAtom(regionAtom);
+
   // useKakaoLoader();
 
   const [loading, error] = useKakaoLoader({
@@ -72,10 +74,14 @@ const GardenMap = () => {
     libraries: ["clusterer", "drawing", "services"],
   });
 
-  const { data: farmList } = useQuery({
+  const { data: farmList, refetch: refetchFarmList } = useQuery({
     queryKey: ["farmList"],
-    queryFn: () => getGardenList(1),
+    queryFn: () => getGardenList(selectedRegion),
   });
+
+  useEffect(() => {
+    refetchFarmList();
+  }, [selectedRegion]);
 
   const renderOffSite = (offSite: string) => {
     const offSiteList = offSite.split(",").map((item) => item.trim());

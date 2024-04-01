@@ -1,6 +1,6 @@
 import { api } from "./Base";
 
-export const getGardenList = async (regionCode: number) => {
+export const getGardenList = async (regionCode: string) => {
   const accessToken = sessionStorage.getItem("accessToken");
 
   try {
