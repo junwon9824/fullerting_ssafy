@@ -217,7 +217,7 @@ const DealBox = styled.div`
   flex-direction: column;
   gap: 1rem;
   display: flex;
-  justify-content: space-between;
+
   flex-grow: 1;
 `;
 const DealList = styled.div`
