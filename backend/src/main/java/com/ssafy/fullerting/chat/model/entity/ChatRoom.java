@@ -21,7 +21,7 @@ public class ChatRoom { //채팅방
 
     @ManyToOne
     @JoinColumn(name = "ex_article_id")
-    private ExArticle exArticle; //작물거래 게시글 ID
+    private ExArticle exArticle; //작물거래 게시글
 
     @ManyToOne
     @JoinColumn(name = "user_id")
