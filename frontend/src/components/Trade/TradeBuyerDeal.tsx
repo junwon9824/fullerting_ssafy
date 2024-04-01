@@ -12,6 +12,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import useInput from "../../hooks/useInput";
 import Stomp from "stompjs";
+import { userIndividualCheck } from "../../apis/UserApi";
 
 interface ImageResponse {
   imgStoreUrl: string;
@@ -396,7 +397,16 @@ const TradeBuyerDetail = () => {
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
-
+  const {
+    isLoading: isIndividualUserDetail,
+    data: IndividualUserData,
+    error: IndividualUserDetailError,
+  } = useQuery({
+    queryKey: ["individualUserDetail"],
+    queryFn: accessToken
+      ? () => userIndividualCheck(accessToken, data?.exArticleResponse.userId)
+      : undefined,
+  });
   return (
     // <AppContainer>
     <>
@@ -419,11 +429,11 @@ const TradeBuyerDetail = () => {
         <LayoutInnerBox>
           <InfoBox>
             <Profile>
-              <Thumbnail src={data?.userResponse.thumbnail} alt="profile" />
+              <Thumbnail src={IndividualUserData?.thumbnail} alt="profile" />
               <Name>
-                <NameText>{data?.userResponse.nickname}</NameText>
+                <NameText>{IndividualUserData?.nickname}</NameText>
                 <ClassesText>
-                  {data?.userResponse.rank}
+                  {IndividualUserData?.rank}
                   {/* <img src={Sprout} alt="Sprout" /> */}
                 </ClassesText>
               </Name>
