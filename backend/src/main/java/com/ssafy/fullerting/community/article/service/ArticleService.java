@@ -3,6 +3,7 @@ package com.ssafy.fullerting.community.article.service;
 import com.ssafy.fullerting.community.article.exception.ArticleErrorCode;
 import com.ssafy.fullerting.community.article.exception.ArticleException;
 import com.ssafy.fullerting.community.article.model.dto.request.RegistArticleRequest;
+import com.ssafy.fullerting.community.article.model.dto.request.UpdateArticleRequest;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleAllResponse;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.model.entity.Article;
@@ -22,6 +23,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
+import org.hibernate.Hibernate;
+import org.springframework.data.redis.support.collections.RedisList;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,11 +86,10 @@ public class ArticleService {
     }
 
     @Transactional
-    public void update(RegistArticleRequest registArticleRequest, Long articleId, List<MultipartFile> files) {
+    public ArticleResponse update(UpdateArticleRequest updateArticleRequest, Long articleId, List<MultipartFile> files) {
 
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
-
 
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new
                 ArticleException(ArticleErrorCode.NOT_EXISTS));
@@ -99,25 +101,43 @@ public class ArticleService {
         S3ManyFilesResponse response =
                 amazonS3Service.uploadFiles(files);
 
-        log.info("imaggggggg"+article.getImages().size());
-//        List<Image> imagesCopy = new ArrayList<>(article.getImages());
+        log.info("imaggggggg" + article.getImages().size());
 
-//        for (Image image : imagesCopy ) {
-//            log.info("ddddddddddddd"+image.getId());
-//
-//            amazonS3Service.deleteFile(image.getImgStoreUrl());
-//            imageRepository.delete(image);
-//            article.removeimage(image);
-//        }
-        // 기존 이미지 삭제
-        for (Image image : article.getImages()) {
-            amazonS3Service.deleteFile(image.getImgStoreUrl());
-            imageRepository.delete(image);
+        List<Image> saveimages = new ArrayList<>();
+
+
+        List<Image> imageList = imageRepository.findAllByArticleId(articleId);
+
+        for(Image image : imageList){
+            //유지할 이미지가 아닌 경우
+            log.info("imagesss"+image.getId());
+            if(!updateArticleRequest.getImages().contains(image.getId())) {
+                //이미지 삭제
+                amazonS3Service.deleteFile(image.getImgStoreUrl());
+                imageRepository.delete(image);
+
+            }
+
+
         }
+//
+//        // 기존 이미지 삭제
+//        for (Image image : article.getImages()) {
+//
+//            if (updateArticleRequest.getImages().contains(image.getId())) { //살리는이미지
+//                saveimages.add(image);
+//                log.info("save"+image.getId());
+//            } else {
+//                log.info("deeee"+image.getId());
+//
+//                amazonS3Service.deleteFile(image.getImgStoreUrl());
+//                imageRepository.delete(image);
+//            }
+//        }
 
 //        articleRepository.save(article);
 
-        log.info("responseresponse"+response.getUrls().size());
+        log.info("responseresponse" + response.getUrls().size());
 
         List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
             Image image = new Image();
@@ -128,15 +148,22 @@ public class ArticleService {
             return image;
         }).collect(Collectors.toList());
 
-        log.info("iiiiiiiii"+images.size());
+        log.info("iiiiiiiii" + images.size());
 
-        article.setContent(registArticleRequest.getContent());
-        article.setType(registArticleRequest.getType());
-        article.setTitle(registArticleRequest.getTitle());
+        article.setContent(updateArticleRequest.getContent());
+        article.setType(updateArticleRequest.getType());
+        article.setTitle(updateArticleRequest.getTitle());
         article.setImages(images);
-       Article article1= articleRepository.save(article);
-        log.info("resssssssss"+article1.getImages().size());
+        Article article1 = articleRepository.save(article);
+        log.info("resssssssss" + article1.getImages().size());
 
+        boolean mylove = false;
+
+        if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article1.getId()) != null) {
+            mylove = true;
+        }
+
+        return article1.toResponse(article1, mylove, userService.getUserEntityById(article1.getUserId()));
     }
 
     @Transactional
@@ -155,12 +182,12 @@ public class ArticleService {
         UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
         CustomUser user = userResponse1.toEntity(userResponse1);
 
-        return article.toResponse(article, mylove,user);
+        return article.toResponse(article, mylove, user);
 
     }
 
     @Transactional
-     public void deletearticlebyid(Long articleId) {
+    public void deletearticlebyid(Long articleId) {
 
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
@@ -230,7 +257,7 @@ public class ArticleService {
                         UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
                         CustomUser user = userResponse1.toEntity(userResponse1);
 
-                        ArticleResponse articleResponse = article.toResponse(article, mylove,user);
+                        ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -244,7 +271,7 @@ public class ArticleService {
                         UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
                         CustomUser user = userResponse1.toEntity(userResponse1);
 
-                        ArticleResponse articleResponse = article.toResponse(article, mylove,user);
+                        ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -258,7 +285,7 @@ public class ArticleService {
                         UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
                         CustomUser user = userResponse1.toEntity(userResponse1);
 
-                        ArticleResponse articleResponse = article.toResponse(article, mylove,user);
+                        ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
@@ -284,7 +311,7 @@ public class ArticleService {
                     UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
                     CustomUser user = userResponse1.toEntity(userResponse1);
 
-                    ArticleResponse articleResponse = article.toResponse(article, mylove,user);
+                    ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                     return articleResponse;
                 })
                 .collect(Collectors.toList());

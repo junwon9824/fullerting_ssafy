@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.community.article.model.dto.response;
 
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
+import com.ssafy.fullerting.image.model.entity.Image;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,7 +22,8 @@ public class ArticleResponse {
     private ArticleType type;
     private int love;
     private boolean mylove;
-    private List<String> imgurls;
+    private List<Image> imgs;
+
     private String authornickname;
     private String rank;
     private String thumbnail;

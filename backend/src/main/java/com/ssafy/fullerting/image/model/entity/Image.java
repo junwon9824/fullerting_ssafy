@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.image.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
@@ -30,6 +31,7 @@ public class Image {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ex_article_id")
+
     private ExArticle exArticle;
 
     @ManyToOne
@@ -39,6 +41,7 @@ public class Image {
 
     @ManyToOne
     @JoinColumn(name = "article_id")
+    @JsonIgnore
     private Article article;
 
 

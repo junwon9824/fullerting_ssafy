@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.community.article.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleAllResponse;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
 import com.ssafy.fullerting.community.article.model.enums.ArticleType;
@@ -57,11 +58,12 @@ public class Article {
     @Enumerated(EnumType.STRING)
     private ArticleType type;
 
-    @OneToMany(mappedBy = "article",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
     private List<Love> loves = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Image> images = new ArrayList<>();
 
 
@@ -103,6 +105,8 @@ public class Article {
     public ArticleResponse toResponse(Article article, boolean mylove, CustomUser customUser) {
 
         Hibernate.initialize(article.getImages());
+        Hibernate.initialize(article.getLoves());
+
         LocalDateTime currentTime = LocalDateTime.now();
         Duration timeDifference = Duration.between(article.getCreatedAt(), currentTime);
         long minutesDifference = timeDifference.toMinutes(); // 분으로 환산
@@ -120,7 +124,7 @@ public class Article {
                 .thumbnail(customUser.getThumbnail())
                 .time(minutesDifference)
                 .commentsize(article.getComments().size())
-                .imgurls(article.getImages() != null ? article.getImages().stream().map(Image::getImgStoreUrl).collect(Collectors.toList()) : null)
+                .imgs(article.getImages() != null ? article.getImages() : null)
                 .build();
     }
 
