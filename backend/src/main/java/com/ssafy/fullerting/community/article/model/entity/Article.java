@@ -38,7 +38,6 @@ public class Article {
     @Column(name = "article_id", nullable = false)
     private Long id;
 
-
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
@@ -60,7 +59,6 @@ public class Article {
 
     @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
     private List<Love> loves = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

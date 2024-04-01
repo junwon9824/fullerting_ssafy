@@ -168,17 +168,22 @@ const TradeGeneralDetail = () => {
     queryKey: ["userDetail"],
     queryFn: accessToken ? () => userCheck(accessToken) : undefined,
   });
+
+  // 게시글 작성자의 썸네일이나 닉네임이 detail 조회하는 api에 들어있지 않아서 따로 조회해서 사용
   const {
     isLoading: isIndividualUserDetail,
     data: IndividualUserData,
     error: IndividualUserDetailError,
   } = useQuery({
     queryKey: ["individualUserDetail"],
-    queryFn: () => userIndividualCheck(accessToken, data?.exArticleResponse.userId),
+    queryFn: () =>
+      userIndividualCheck(
+        accessToken as string,
+        data?.exArticleResponse.userId
+      ),
     enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
-    });
+  });
 
-  console.log('테스트', IndividualUserData)
   const { mutate: clickChat } = createChatRoom();
   const userId = userData?.id;
 
@@ -218,13 +223,11 @@ const TradeGeneralDetail = () => {
       console.log(err);
     },
   });
-  const handleChatClick = () => {
-    if (data?.exArticleResponse.userId === userData?.id) {
-      alert("본인 게시글 입니다");
-    } else {
-      clickChat(postNumber);
-      console.log(postNumber);
-    }
+  const handleBuyerChatClick = () => {
+    clickChat(postNumber);
+  };
+  const handleSellerChatClick = () => {
+    navigate("/trade/chatroom");
   };
   return (
     <>
@@ -298,7 +301,18 @@ const TradeGeneralDetail = () => {
             </ExplainText>
           </TitleBox>
         </LayoutInnerBox>
-        <BottomButton text="채팅하기" onClick={handleChatClick} />
+        <BottomButton
+          text={
+            data?.userResponse.id === data?.exArticleResponse.userId
+              ? "채팅방으로 이동하기"
+              : "채팅하기"
+          }
+          onClick={
+            data?.userResponse.id === data?.exArticleResponse.userId
+              ? handleSellerChatClick
+              : handleBuyerChatClick
+          }
+        />
       </LayoutMainBox>
     </>
   );

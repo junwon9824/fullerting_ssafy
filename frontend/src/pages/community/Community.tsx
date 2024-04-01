@@ -42,13 +42,13 @@ const Community = () => {
       <TopBar title="커뮤니티" />
       <LayoutMainBox>
         <LayoutInnerBox>
-          <Search
+          {/* <Search
             type="text"
             id="search"
             name="search"
             placeholder="내용 또는 작성자를 입력해주세요"
             onChange={setSearch}
-          />
+          /> */}
           <Button>
             <RadioButton
               name="exampleRadioGroup"

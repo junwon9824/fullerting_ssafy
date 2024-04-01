@@ -24,7 +24,6 @@ public class EventAlarmNotificationService {
         SseEmitter emitter = new SseEmitter(TIMEOUT);
         emitterMap.put(userId.toString(), emitter);
 
-
         // FOR 503 ERR
 //        sendAsync(AlarmPayload.builder()
 //                .receiveUserId(userId)

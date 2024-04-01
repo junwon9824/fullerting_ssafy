@@ -167,9 +167,9 @@ const LayoutMainBox = styled.main`
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 100%;
+  /* height: 100%; */
   padding-top: 3.125rem;
-  padding-bottom: 6rem;
+  padding-bottom: 4rem;
   gap: 1rem;
   height: 100vh;
   overflow: hidden;
@@ -184,6 +184,9 @@ const LayoutInnerBox = styled.div`
   margin-top: 3rem;
   gap: 1.5rem;
   padding: 1.12rem 0;
+  flex-grow: 1;
+  /* height: 100%; */
+  max-height: calc(100vh - 6.25rem - 3rem);
 `;
 const TextStyle = styled.div`
   align-items: center;
@@ -203,11 +206,13 @@ const SituationGroup = styled.div`
 `;
 const DealBox = styled.div`
   width: 100%;
-  height: 8rem;
-  overflow-y: scroll;
+  max-height: 8rem;
+  overflow-y: auto;
   flex-direction: column;
   gap: 1rem;
   display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
 `;
 const DealList = styled.div`
   padding-right: 0.5rem;
@@ -256,21 +261,14 @@ const DealInput = styled.input`
     border: 1px solid var(--gray2, #c8c8c8);
   }
 `;
-const DealListBox = styled.div`
-  width: 100%;
-  height: 8rem;
-  display: flex;
-  overflow-y: scroll;
-  justify-content: space-around;
-  flex-direction: column;
-`;
+
 const SendButton = styled.img`
   width: 2.1875rem;
   height: 2.1875rem;
 `;
 const DealChatBox = styled.div`
   display: flex;
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
   justify-content: center;
   align-items: center;
@@ -318,8 +316,6 @@ const TradeBuyerDetail = () => {
   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
   const wssURL = import.meta.env.VITE_REACT_APP_WSS_URL;
 
-  const [max, setMax] = useState<number>(0);
-  const [bidCount, setBidCount] = useState<number>(0);
   useEffect(() => {
     console.log("데이터", dealListData);
     const socket = new WebSocket(wssURL);
@@ -343,8 +339,6 @@ const TradeBuyerDetail = () => {
         console.log("저는 메세지 입니다", message);
 
         const msg: MessageRes = JSON.parse(message.body);
-        setMax(msg.maxPrice);
-        setBidCount(msg.bidderCount);
         queryClient.invalidateQueries({
           queryKey: ["dealDetail", postNumber],
         });
@@ -404,21 +398,20 @@ const TradeBuyerDetail = () => {
     error: IndividualUserDetailError,
   } = useQuery({
     queryKey: ["individualUserDetail"],
-    queryFn: () => userIndividualCheck(accessToken, data?.exArticleResponse.userId),
+    queryFn: () =>
+      userIndividualCheck(
+        accessToken as string,
+        data?.exArticleResponse.userId
+      ),
     enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
   });
   return (
-    // <AppContainer>
-    <>
+    //  <AppContainer>
+    <AppContainer>
       <TopBar title="작물거래" showBack={true} showEdit={true} />
       <LayoutMainBox>
         <SwiperContainer>
-          <Swiper
-            slidesPerView={1}
-            pagination={true}
-            onSlideChange={() => console.log("slide change")}
-            onSwiper={(swiper) => console.log(swiper)}
-          >
+          <Swiper slidesPerView={1} pagination={true}>
             {data?.imageResponses.map((image: ImageResponse, index: number) => (
               <SwiperSlide key={index}>
                 <ImgBox src={image.imgStoreUrl} alt={"img"} />
@@ -453,7 +446,7 @@ const TradeBuyerDetail = () => {
               <TextStyle>
                 {dealListData && dealListData.length > 0
                   ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
-                  : "0원"}
+                  : `${data?.dealResponse.price}원`}
               </TextStyle>
             </SituationGroup>
             <SituationGroup>
@@ -481,17 +474,16 @@ const TradeBuyerDetail = () => {
               </DealList>
             ))}
           </DealBox>
+          <DealChatBox>
+            <DealInput
+              placeholder="최고가보다 높게 제안해주세요"
+              onChange={(e) => setNewMessage(e.target.value)}
+            />
+            <SendButton src={Send} alt="send" onClick={sendMessage} />
+          </DealChatBox>
         </LayoutInnerBox>
       </LayoutMainBox>
-      <DealChatBox>
-        <DealInput
-          placeholder="최고가보다 높게 제안해주세요"
-          onChange={(e) => setNewMessage(e.target.value)}
-        />
-        <SendButton src={Send} alt="send" onClick={sendMessage} />
-      </DealChatBox>
-      {/* </AppContainer> */}
-    </>
+    </AppContainer>
   );
 };
 

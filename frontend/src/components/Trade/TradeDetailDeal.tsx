@@ -239,16 +239,18 @@ const TradeDetailDeal = () => {
     error: IndividualUserDetailError,
   } = useQuery({
     queryKey: ["individualUserDetail"],
-    queryFn: () => userIndividualCheck(accessToken, data?.exArticleResponse.userId),
+    queryFn: () =>
+      userIndividualCheck(
+        accessToken as string,
+        data?.exArticleResponse.userId
+      ),
     enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
   });
-  const BtnClick = (postId: number) => {
-    if (data?.exArticleResponse?.userId === userData?.id) {
-      navigate(`/trade/${postId}/seller`);
-    } else {
-      navigate(`/trade/${postId}/buyer`);
-    }
-    // console.log("저를 클릭했나요?");
+  const handleSellerClick = (postId: number) => {
+    navigate(`/trade/${postId}/seller`);
+  };
+  const handleBuyerClick = (postId: number) => {
+    navigate(`/trade/${postId}/buyer`);
   };
 
   const handleEdit = () => {
@@ -266,7 +268,6 @@ const TradeDetailDeal = () => {
       },
     });
     // console.log('gettradedetail'+response.data.data_body.exArticleResponse.imageResponses[0].imgStoreUrl)
-
   };
   const { mutate: deleteMutation } = useMutation({
     mutationFn: deletePost,

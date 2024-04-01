@@ -196,7 +196,8 @@ const TradeChat = () => {
     queryKey: ["userInfo"],
     queryFn: accessToken ? () => getUsersInfo() : undefined,
   });
-  // console.log(userData, "유저데이턴");
+
+  console.log(userData, "유저데이턴");
   useEffect(() => {
     const socket = new WebSocket(wssURL);
     const client = Stomp.over(socket);
@@ -266,11 +267,11 @@ const TradeChat = () => {
           </ProductBox>
           <ChatBox>
             {data?.map((item: any) =>
-              item.chatSenderId === detailData?.chatRoomUserId ? (
+              item.chatSenderId === userData?.data.data_body.id ? (
                 <ChattingBox
                   key={item?.chatId}
                   isCurrentUser={
-                    item.chatSenderId === detailData?.chatRoomUserId
+                    item.chatSenderId === userData?.data.data_body.id
                   }
                 >
                   <ContentBox backgroundColor="var(--sub1, #E5F9DB)">
@@ -282,7 +283,7 @@ const TradeChat = () => {
                 <ChattingBox
                   key={item?.chatId}
                   isCurrentUser={
-                    item.chatSenderId === detailData?.chatRoomUserId
+                    item.chatSenderId === userData?.data.data_body.id
                   }
                 >
                   <Thumbnail src={item.chatSenderThumb} />
