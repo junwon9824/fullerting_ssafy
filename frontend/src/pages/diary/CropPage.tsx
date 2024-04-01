@@ -8,6 +8,7 @@ import Search from "../../components/common/Input/Search";
 import CropList from "../../components/diary/CropList";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useSSEConnection } from "../../hooks/useSSEConnection";
 
 const PlusButton = styled.button`
   position: fixed;
@@ -33,6 +34,7 @@ const SearchContainer = styled.div`
 `;
 
 const CropPage = () => {
+  useSSEConnection();
   const [search, onSearch, setSearch] = useInput("");
   const navigate = useNavigate();
 
