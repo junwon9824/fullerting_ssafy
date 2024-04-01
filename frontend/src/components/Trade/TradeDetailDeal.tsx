@@ -277,7 +277,7 @@ const TradeDetailDeal = () => {
 
   return (
     <>
-      {data?.exArticleResponse.userID === data?.userResponse.id ? (
+      {data?.exArticleResponse.userId === data?.userResponse.id ? (
         <TradeTopBar
           title="작물거래"
           showBack={true}

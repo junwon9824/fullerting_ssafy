@@ -229,9 +229,10 @@ const TradeGeneralDetail = () => {
   const handleSellerChatClick = () => {
     navigate("/trade/chatroom");
   };
+  console.log("data", data);
   return (
     <>
-      {data?.exArticleResponse.userID === data?.userResponse.id ? (
+      {data?.exArticleResponse.userId === data?.userResponse.id ? (
         <TradeTopBar
           title="작물거래"
           showBack={true}
