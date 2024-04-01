@@ -5,6 +5,7 @@ import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
 import com.ssafy.fullerting.user.model.dto.request.UserTownRequest;
+import com.ssafy.fullerting.user.model.dto.request.UserUpdateRequest;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.model.entity.enums.UserRank;
@@ -66,6 +67,14 @@ public class UserService {
         return customUser.toResponse();
     }
 
+    public CustomUser getNowUserInfoEntityByToken() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = (String) principal;
+
+        CustomUser customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        return customUser;
+    }
+
 
     @Transactional
     public UserResponse uploadThumbAndSaveDB(MultipartFile multipartFile) {
@@ -104,6 +113,14 @@ public class UserService {
         CustomUser user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         user.setLocation(userTownRequest.getUserLocation());
         userRepository.save(user);
+    }
 
+
+    @Transactional
+    public void updateCurrentUserInfo(UserUpdateRequest userUpdateRequest) {
+        CustomUser currentUser = getNowUserInfoEntityByToken();
+        currentUser.setNickname(userUpdateRequest.getNewNickname());
+        userRepository.save(currentUser);
+        log.info("닉네임 수정 성공 : {}",userUpdateRequest.getNewNickname());
     }
 }
