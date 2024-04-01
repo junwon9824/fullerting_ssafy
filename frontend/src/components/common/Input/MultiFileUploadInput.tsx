@@ -180,9 +180,10 @@ const MultiFileUploadInput: React.FC = () => {
           <InputBox
             id="file"
             type="file"
-            onChange={handleFileChange}
             accept="image/*"
             capture="environment"
+            onChange={handleFileChange}
+            // onClick={handleFileUpload}
             multiple
           />
           {/* <InputBox
