@@ -146,6 +146,7 @@ const ContentBox = styled.div<ContentBoxProps>`
 `;
 
 const TradeChat = () => {
+  const wssURL = import.meta.env.VITE_REACT_APP_WSS_URL;
   const { chatId } = useParams();
   const chatNumber = Number(chatId);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -195,7 +196,7 @@ const TradeChat = () => {
   });
   // console.log(userData, "유저데이턴");
   useEffect(() => {
-    const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+    const socket = new WebSocket(wssURL);
     const client = Stomp.over(socket);
     if (!stompClient) {
       client.connect(

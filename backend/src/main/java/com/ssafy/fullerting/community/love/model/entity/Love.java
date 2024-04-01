@@ -12,7 +12,6 @@ import lombok.*;
 @Setter
 @Builder
 @Entity
-@ToString
 @Table(name = "love")
 
 public class Love {
