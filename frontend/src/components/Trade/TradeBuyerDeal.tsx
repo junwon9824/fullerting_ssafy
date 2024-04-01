@@ -466,7 +466,7 @@ const TradeBuyerDetail = () => {
               </Situation>
               <TextStyle>
                 {dealListData &&
-                  dealListData[dealListData.length - 1].bidcount | 0}
+                  dealListData[dealListData.length - 1]?.bidcount | 0}
                 명
               </TextStyle>
             </SituationGroup>
