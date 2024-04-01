@@ -2,6 +2,7 @@ import { api } from "./Base";
 interface CommentType {
   communityId?: string;
   commentContent?: string;
+  redirectURL?: string;
 }
 
 interface DeleteComment {
@@ -104,12 +105,14 @@ export const toggleLike = async (communityId:string) => {
   }
 };
 
-export const createComment = async (commentData: CommentType)=> {
+export const createComment = async (commentData: CommentType)=> {``
   const accessToken = sessionStorage.getItem("accessToken");
   try {
+    commentData.redirectURL = window.location.pathname;
     const response = await api.post(
       `/articles/${commentData.communityId}/comments`, 
-     {commentcontent:commentData.commentContent} ,
+     {commentcontent: commentData.commentContent,
+      redirectURL: commentData.redirectURL} ,
       {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
