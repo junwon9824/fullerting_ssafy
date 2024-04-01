@@ -57,7 +57,7 @@ public class Article {
     @Enumerated(EnumType.STRING)
     private ArticleType type;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article",fetch = FetchType.LAZY)
     private List<Love> loves = new ArrayList<>();
 
 

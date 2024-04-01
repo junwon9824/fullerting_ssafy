@@ -51,7 +51,7 @@ public class ArticleController {
     public ResponseEntity<MessageUtils> findAllArticle(
     ) {
         List<ArticleAllResponse > articleResponse = articleService.findAllArticle();
-
+        log.info("allarticle"+articleResponse);
         return ResponseEntity.ok(MessageUtils.success(articleResponse));
     }
 
