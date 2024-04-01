@@ -101,14 +101,14 @@ const MultiFileUploadInput: React.FC = () => {
   }, [selectedFiles]);
 
   useEffect(() => {
-    console.log('sssssssssss'+images.length)
+    console.log("sssssssssss" + images.length);
   }, [images]);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const newFiles = Array.from(event.target.files);
       const updatedFiles = [...selectedFiles];
-      console.log(updatedFiles.length)
+      console.log(updatedFiles.length);
 
       newFiles.forEach((newFile) => {
         // 기존 파일 목록에 동일한 파일이 없는 경우에만 추가
@@ -139,7 +139,6 @@ const MultiFileUploadInput: React.FC = () => {
     // Jotai 원자에서 해당 이미지를 제거합니다.
     const deletedImageId = images[index].id;
     setImages(images.filter((img) => img.id !== deletedImageId));
-
   };
 
   return (
@@ -181,7 +180,7 @@ const MultiFileUploadInput: React.FC = () => {
             id="file"
             type="file"
             accept="image/*" // 이미지 파일만 받도록 설정
-            capture="environment" // 카메라 사용 활성화
+            // capture="environment" // 카메라 사용 활성화
             multiple // 필요에 따라 여러 파일을 선택할 수 있도록 합니다. 필요 없다면 이 줄을 제거하세요.
             onChange={handleFileChange}
           />
