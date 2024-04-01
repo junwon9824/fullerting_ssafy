@@ -65,6 +65,8 @@ const GardenPage = () => {
               width: "100%",
               flexWrap: "wrap",
               gap: "0.35rem",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             {Object.entries(regionList).map(([key, value]) =>
