@@ -42,12 +42,8 @@ const FileUploadIcon = styled.svg`
   height: 2rem;
 `;
 
-const InputBox = styled.input.attrs({
-  type: "file",
-  accept: "image/*", // 이미지 파일만 받도록 설정
-  // capture: "environment", // 카메라 사용 활성화
-})`
-  display: none; // 여전히 입력 필드를 숨깁니다.
+const InputBox = styled.input`
+  display: none;
 `;
 
 const PreviewImage = styled.img`
