@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -206,7 +207,7 @@ public class ArticleService {
                     ArticleAllResponse articleResponse = article.toAllResponse(article, mylove, authornickname);
                     return articleResponse;
                 })
-
+                .sorted(Comparator.comparing(ArticleAllResponse::getTime))
                 .collect(Collectors.toList());
     }
 
