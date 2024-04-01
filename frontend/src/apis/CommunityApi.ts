@@ -4,6 +4,11 @@ interface CommentType {
   commentContent?: string;
 }
 
+interface DeleteComment {
+  communityId? : string;
+  commentContent?: string;
+}
+
 
 export const getallcommunities = async () => {
   const accessToken = sessionStorage.getItem("accessToken");
@@ -139,6 +144,22 @@ export const DeleteArticle = async (communityId:string) => {
   try {
     const response = await api.delete(
       `/articles/${communityId}`,
+      {
+        headers: { Authorization : `Bearer ${accessToken}`},
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error createComment: ", error);
+    throw error;
+  }
+}
+
+export const DeleteComment = async (commentData:DeleteComment) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+  try {
+    const response = await api.delete(
+      `/articles/${commentData.communityId}/comments/${commentData.commentId}`,
       {
         headers: { Authorization : `Bearer ${accessToken}`},
       }

@@ -29,6 +29,21 @@ interface FavoriteResponse {
   islike: boolean;
   isLikeCnt: number;
 }
+interface AxiosError {
+  message: string;
+  code: string;
+  config: any; // Axios 요청 구성, 더 상세한 타입을 위해 AxiosRequestConfig 사용 가능
+  request?: XMLHttpRequest;
+  response?: {
+    // 실제 오류 응답 구조에 맞춰 작성
+    data: any; // 응답 본문, 실제 데이터 타입에 맞게 수정 가능
+    status: number;
+    statusText: string;
+    headers: any; // 헤더 정보, 실제 헤더 타입에 맞게 수정 가능
+  };
+  name: string;
+  stack?: string;
+}
 
 export const getTradeList = async (accessToken: string) => {
   try {
@@ -152,9 +167,15 @@ export const usePost = () => {
       navigate("/trade");
       console.log("업로드 성공:", res);
     },
-    onError: (error) => {
-      console.error("업로드 에러:", error);
-      alert("필수 항목을 모두 입력해주세요");
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 400) {
+        alert("알맞은 확장자의 사진을 올려주세요");
+        console.log(error);
+      } else {
+        alert("필수 항목을 모두 입력해주세요");
+      }
+      // console.error("업로드 에러:", error);
+      // // alert("필수 항목을 모두 입력해주세요");
     },
   });
 };

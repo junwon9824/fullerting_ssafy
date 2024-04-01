@@ -27,7 +27,7 @@ public class ChatResponse {
         return ChatResponse.builder()
                 .chatRoomId(chat.getChatRoom().getId())
                 .chatId(chat.getId())
-                .chatSenderId(chat.getSenderId())
+                .chatSenderId(chat.getSender().getId())
                 .chatMessage(chat.getMessage())
                 .chatSendAt(chat.getSendAt())
                 .build();

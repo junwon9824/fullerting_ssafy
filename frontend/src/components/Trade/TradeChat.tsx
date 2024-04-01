@@ -3,7 +3,7 @@ import { TopBar } from "../common/Navigator/navigator";
 import { useEffect, useState } from "react";
 import Send from "/src/assets/images/send.png";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getChatRecord,
   getChatRoomDetail,
@@ -182,8 +182,10 @@ const TradeChat = () => {
   //   queryFn: accessToken ? () => userCheck(accessToken) : undefined,
   // });
   const { mutate: finishClick } = useDealFinish();
+  const navigate = useNavigate();
   const handleFinishClick = () => {
     finishClick(detailData?.chatRoomExArticleId);
+    navigate("/trade");
   };
 
   const {
@@ -241,7 +243,6 @@ const TradeChat = () => {
         const chatRequest = {
           chatRoomId: chatNumber,
           chatMessage: messageReq.chatMessage,
-          // redirectURL: window.location.href,
         };
 
         stompClient.send(`/pub/chat`, {}, JSON.stringify(chatRequest));
@@ -251,6 +252,7 @@ const TradeChat = () => {
       }
     }
   };
+
   return (
     <>
       <TopBar title="채팅" showBack={true} />

@@ -19,14 +19,11 @@ public class ChatRoom { //채팅방
     @Column(name = "chat_room_id")
     private Long id;
 
-    @Column(name = "chat_room_ex_article_id")
-    @NotNull
-    private Long exArticleId; //작물거래 게시글 ID
+    @ManyToOne
+    @JoinColumn(name = "ex_article_id")
+    private ExArticle exArticle; //작물거래 게시글
 
-    @Column(name = "chat_room_buyer_id")
-    @NotNull
-    private Long buyerId; //구매자
-
-    @Column(name = "chat_room_seller_id")
-    private Long sellerId; //판매자
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private CustomUser buyer; //구매자
 }
