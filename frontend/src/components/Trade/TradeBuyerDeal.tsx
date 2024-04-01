@@ -138,7 +138,6 @@ const Title = styled.div`
   font-weight: bold;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #f4f4f4;
 `;
 const SituationBox = styled.div`
   width: 100%;
@@ -147,8 +146,10 @@ const SituationBox = styled.div`
   flex-direction: column;
   gap: 0.69rem;
   padding-bottom: 0.5rem;
+  border-top: 1px solid #f4f4f4;
   border-bottom: 1px solid #f4f4f4;
 `;
+
 const Situation = styled.div<SituationResponse>`
   text-align: center;
   display: flex;
@@ -162,16 +163,22 @@ const Situation = styled.div<SituationResponse>`
   font-weight: bold;
   justify-content: center;
 `;
+const Wall = styled.div`
+  display: flex;
+  gap: 2rem;
+  flex-direction: row;
+`;
 const LayoutMainBox = styled.main`
   width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
-  /* height: 100%; */
-  padding-top: 3.125rem;
-  padding-bottom: 4rem;
-  gap: 1rem;
   height: 100vh;
+  justify-content: flex-start;
+  padding-top: 3.125rem;
+  /* padding-bottom: 4rem; */
+  /* gap: 0.3rem; */
+  /* height: 100vh; */
   overflow: hidden;
 `;
 
@@ -182,11 +189,10 @@ const LayoutInnerBox = styled.div`
   justify-content: center;
   align-items: flex-start;
   margin-top: 3rem;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 1.12rem 0;
   flex-grow: 1;
   /* height: 100%; */
-  max-height: calc(100vh - 6.25rem - 3rem);
 `;
 const TextStyle = styled.div`
   align-items: center;
@@ -206,7 +212,7 @@ const SituationGroup = styled.div`
 `;
 const DealBox = styled.div`
   width: 100%;
-  max-height: 8rem;
+  max-height: 12rem;
   overflow-y: auto;
   flex-direction: column;
   gap: 1rem;
@@ -268,14 +274,13 @@ const SendButton = styled.img`
 `;
 const DealChatBox = styled.div`
   display: flex;
-  /* position: fixed; */
   width: 100%;
   justify-content: center;
   align-items: center;
   /* padding-left: 2rem;
   padding-right: 0.5rem; */
-  gap: 1rem;
-  bottom: 2rem;
+  gap: 0.8rem;
+  margin-top: 0%.5;
 `;
 
 const TradeBuyerDetail = () => {
@@ -285,7 +290,7 @@ const TradeBuyerDetail = () => {
   const handleLike = () => {
     setLike(!like);
   };
-
+  const [deals, setDeals] = useState<Deal[]>([]);
   // const { mutate: handleLikeClick } = useLike();
   const { postId } = useParams<{ postId?: string }>();
   const postNumber = Number(postId);
@@ -378,6 +383,7 @@ const TradeBuyerDetail = () => {
           {},
           JSON.stringify(DealstartRequest)
         );
+
         setNewMessage("");
       } catch (error) {
         console.error("메시지 전송 실패", error);
@@ -385,7 +391,7 @@ const TradeBuyerDetail = () => {
     }
   };
   //socket 끝
-  console.log(dealListData);
+  // console.log(dealListData);
   const formatDateAndTime = (dateString: string) => {
     if (!dateString) return "";
     const [date, time] = dateString.split("T");
@@ -405,9 +411,20 @@ const TradeBuyerDetail = () => {
       ),
     enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
   });
+  // 배열 역순 정렬
+  useEffect(() => {
+    if (dealListData) {
+      const sortedDeals: Deal[] = [...dealListData].sort((a: Deal, b: Deal) => {
+        return b.localDateTime.localeCompare(a.localDateTime);
+      });
+      setDeals(sortedDeals);
+    }
+  }, [dealListData]);
+
   return (
     //  <AppContainer>
-    <AppContainer>
+    // <AppContainer>
+    <>
       <TopBar title="작물거래" showBack={true} showEdit={true} />
       <LayoutMainBox>
         <SwiperContainer>
@@ -434,36 +451,40 @@ const TradeBuyerDetail = () => {
             <Date>{formatDateAndTime(data?.exArticleResponse.time)}</Date>
           </InfoBox>
 
-          <Title>{data?.exArticleResponse.exArticleTitle}</Title>
           <SituationBox>
-            <SituationGroup>
-              <Situation
-                border="2px solid var(--sub3, #FFBFBF)"
-                color="#FFBFBF;"
-              >
-                최고가
-              </Situation>
-              <TextStyle>
-                {dealListData && dealListData.length > 0
-                  ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
-                  : `${data?.dealResponse.price}원`}
-              </TextStyle>
-            </SituationGroup>
-            <SituationGroup>
-              <Situation
-                border="2px solid var(--sub0, #A0D8B3)"
-                color="#A0D8B3;"
-              >
-                참여자
-              </Situation>
-              <TextStyle>
-                {dealListData &&
-                  dealListData[dealListData.length - 1]?.bidcount | 0}
-                명
-              </TextStyle>
-            </SituationGroup>
+            <Wall>
+              <Title>{data?.exArticleResponse.exArticleTitle}</Title>
+            </Wall>
+            <Wall>
+              <SituationGroup>
+                <Situation
+                  border="2px solid var(--sub3, #FFBFBF)"
+                  color="#FFBFBF;"
+                >
+                  최고가
+                </Situation>
+                <TextStyle>
+                  {dealListData && dealListData.length > 0
+                    ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
+                    : `${data?.dealResponse.price}원`}
+                </TextStyle>
+              </SituationGroup>
+              <SituationGroup>
+                <Situation
+                  border="2px solid var(--sub0, #A0D8B3)"
+                  color="#A0D8B3;"
+                >
+                  참여자
+                </Situation>
+                <TextStyle>
+                  {dealListData &&
+                    dealListData[dealListData.length - 1]?.bidcount | 0}
+                  명
+                </TextStyle>
+              </SituationGroup>
+            </Wall>
           </SituationBox>
-          <DealBox>
+          {/* <DealBox>
             {dealListData?.map((item: Deal, index: number) => (
               <DealList>
                 <ProfileBox>
@@ -473,7 +494,19 @@ const TradeBuyerDetail = () => {
                 <CostBox>{item?.bidLogPrice}원</CostBox>
               </DealList>
             ))}
+          </DealBox> */}
+          <DealBox>
+            {deals?.map((item: Deal, index: number) => (
+              <DealList>
+                <ProfileBox>
+                  <PhotoBox src={item?.thumbnail} alt="thumbnail" />
+                  {item?.nickname}
+                </ProfileBox>
+                <CostBox>{item?.bidLogPrice}원</CostBox>
+              </DealList>
+            ))}
           </DealBox>
+
           <DealChatBox>
             <DealInput
               placeholder="최고가보다 높게 제안해주세요"
@@ -483,7 +516,8 @@ const TradeBuyerDetail = () => {
           </DealChatBox>
         </LayoutInnerBox>
       </LayoutMainBox>
-    </AppContainer>
+      {/* </AppContainer> */}
+    </>
   );
 };
 
