@@ -434,7 +434,7 @@ public class ExArticleService {
 //                    .build());
 //        });
 
-        if (!updateArticleRequest.getNewImages().get(0).isEmpty()) {
+//        if (!updateArticleRequest.getNewImages().get(0).isEmpty()) {
             if (!files.get(0).isEmpty()) {
 
                 //이미지 업로드
@@ -457,7 +457,6 @@ public class ExArticleService {
 
                         collect(Collectors.toList());
             }
-        }
 
 //
 //        article.setImage(images.stream().map(multipartFile -> {
