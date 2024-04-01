@@ -102,6 +102,7 @@ const MultiFileUploadInput: React.FC = () => {
     if (event.target.files) {
       const newFiles = Array.from(event.target.files);
       const updatedFiles = [...selectedFiles];
+      console.log(updatedFiles.length)
 
       newFiles.forEach((newFile) => {
         // 기존 파일 목록에 동일한 파일이 없는 경우에만 추가
