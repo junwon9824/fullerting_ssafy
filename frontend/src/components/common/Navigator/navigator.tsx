@@ -24,6 +24,7 @@ const NavBox = styled.nav`
   position: fixed;
   bottom: 0;
   background-color: ${({ theme }) => theme.colors.white};
+  z-index: 10;
 `;
 
 const NavInnerBox = styled.div`
