@@ -77,12 +77,14 @@ const TradePost = () => {
       await create(formData);
 
       setSelectedFiles([]);
-      navigate(-1);
+      // navigate(-1);
+      navigate("/community");
+
     } catch (error) {
       console.error("업로드 실패:", error);
+      window.alert("모든 부분을 등록해주세요.")
     }
 
-    navigate("/community");
   };
 
   const handleRadioButtonChange = (value: string) => {
