@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import StyledInput from "../../common/Input/StyledInput";
 import { BottomButton } from "../../common/Button/LargeButton";
-import { getUsersInfo } from "../../../apis/MyPage";
-import { useQuery } from "@tanstack/react-query";
+import { getUsersInfo, updateProfile } from "../../../apis/MyPage";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const BiddingBox = styled.div`
   background-color: #eee;
@@ -43,21 +44,36 @@ const Name = styled.div`
 
 const Maintop = () => {
   const navigate = useNavigate();
+  const [nickname, setNickname] = useState("");
+
   const { data: profile, error } = useQuery({
     queryKey: ["Edit"],
     queryFn: getUsersInfo,
   });
+
+  const { mutate: editProfile } = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      navigate("/mypage");
+    },
+    onError: (error) => {
+      console.log("닉네임변경실패", error);
+    },
+  });
+
+  const handleChangeNickname = (e) => {
+    setNickname(e.target.value);
+    console.log(nickname);
+  };
+
+  const handleSubmit = async () => {
+    editProfile({ newNickname: nickname });
+  };
+
   if (error) {
     return <div>사용자 데이터를 가져오는데 실패했습니다: {error.message}</div>;
   }
 
-  const setPassword = () => {
-    console.log("비밀번호변경");
-  };
-
-  const editInformation = () => {
-    navigate("/mypage");
-  };
   return (
     <>
       <ProfileContent>
@@ -67,7 +83,7 @@ const Maintop = () => {
           id="nickname"
           name="nickname"
           placeholder={profile?.data.data_body.nickname}
-          onChange={setPassword}
+          onChange={handleChangeNickname}
         />
         <Name>이메일</Name>
         <BiddingBox>
@@ -78,7 +94,7 @@ const Maintop = () => {
           <CashText>******</CashText>
         </BiddingBox>
       </ProfileContent>
-      <BottomButton onClick={editInformation} text="수정" />
+      <BottomButton onClick={handleSubmit} text="수정" />
     </>
   );
 };
