@@ -69,6 +69,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         else{
             return CreateChatRoomResponse.toResponse(chatRoomOptional.get());
         }
+
     }
 
     @Override
