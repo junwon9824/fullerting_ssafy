@@ -3,7 +3,10 @@ import {
   LayoutInnerBox,
   LayoutMainBox,
 } from "../../components/common/Layout/Box";
-import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
+import {
+  CommonTopBar,
+  NavBar,
+} from "../../components/common/Navigator/navigator";
 import CropProfile from "../../components/diary/CropProfile";
 import Button from "../../components/common/Button/primaryButton";
 import DiaryList from "../../components/diary/DiaryList";
@@ -159,9 +162,9 @@ const DiaryPage = () => {
 
   return (
     <>
-      <TopBar
+      <CommonTopBar
         title="작물일기"
-        showBack={false}
+        backNavigate={"crop"}
         showEdit={true}
         deleteFunc={handleDeleteCrop}
       />
