@@ -27,11 +27,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AmazonS3Service amazonS3Service;
+    String defaultThunmail = "https://fullerting-s3-v2.s3.ap-northeast-2.amazonaws.com/default_thumnail.svg";
 
     public CustomUser createUserEntity(UserRegisterRequest userRegisterRequest) {
         return CustomUser.builder()
                 .email(userRegisterRequest.getEmail())
                 .password(passwordEncoder.encode(userRegisterRequest.getPassword()))
+                .thumbnail(defaultThunmail)
                 .nickname(userRegisterRequest.getNickname())
                 .role(String.valueOf(UserRole.ROLE_MEMBER))
                 .rank(String.valueOf(UserRank.새싹))
@@ -82,8 +84,9 @@ public class UserService {
         CustomUser user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
         // 기존에 프로필 사진이 있었으면 지운다.
+        // 기본 사진일 경우 S3에서 지우지 않는다
         String thumbnail = user.getThumbnail();
-        if (thumbnail != null) {
+        if (thumbnail != null && !thumbnail.equals(defaultThunmail)) {
             amazonS3Service.deleteFile(thumbnail);
         }
 
