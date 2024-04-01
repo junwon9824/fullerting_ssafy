@@ -40,7 +40,10 @@ const DiaryCreatePage = () => {
   const { mutate } = useMutation({
     mutationFn: createDiary,
     onSuccess: () => {
-      navigate(`/crop/${crop.packDiaryId}`);
+      if (crop) {
+        navigate(`/crop/${crop.packDiaryId}`);
+      }
+
       setSelectedFiles([]);
     },
     onError: (error) => {
@@ -49,15 +52,17 @@ const DiaryCreatePage = () => {
   });
 
   const handleConfirmClick = () => {
-    const diaryData = {
-      packDiaryId: crop.packDiaryId,
-      diarySelectedAt: selectedDate,
-      images: selectedFiles,
-      diaryTitle: title,
-      diaryContent: content,
-    };
+    if (crop) {
+      const diaryData = {
+        packDiaryId: crop.packDiaryId.toString(),
+        diarySelectedAt: selectedDate,
+        images: selectedFiles,
+        diaryTitle: title,
+        diaryContent: content,
+      };
 
-    mutate(diaryData);
+      mutate(diaryData);
+    }
   };
 
   return (

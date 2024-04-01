@@ -6,11 +6,11 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteDiary, getDiaryData } from "../../apis/DiaryApi";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { diaryAtom } from "../../stores/diary";
-import { useAtom } from "jotai";
 import { BottomButton } from "../../components/common/Button/LargeButton";
+import { useEffect } from "react";
+import { useAtom } from "jotai";
+import { diaryAtom } from "../../stores/diary";
 
 const Title = styled.div`
   font-size: 1.4rem;
@@ -53,12 +53,15 @@ const ImageItem = styled.img`
 const DiaryDetailPage = () => {
   const { diaryId } = useParams();
   const navigate = useNavigate();
-  const [diary, setDiary] = useAtom(diaryAtom);
-  const [packDiaryId, setPackDiaryId] = useState("");
+  const [, setDiary] = useAtom(diaryAtom);
 
   useEffect(() => {
-    setDiary(diaryId);
-    console.log(diary);
+    if (diaryId) {
+      setDiary(diaryId);
+    } else {
+      alert("다이어리를 먼저 선택해주세요");
+      navigate("/crop");
+    }
   }, [diaryId]);
 
   const formatDate = (dateString: string) => {
@@ -124,8 +127,8 @@ const DiaryDetailPage = () => {
 
           {diaryData.imageResponseList.length > 0 && (
             <ImageBox>
-              {diaryData.imageResponseList.map((img: string) => (
-                <ImageItem src={img.imgStoreUrl} />
+              {diaryData.imageResponseList.map((img: ImageType) => (
+                <ImageItem src={img.imgStoreUrl} key={img.id} />
               ))}
             </ImageBox>
           )}

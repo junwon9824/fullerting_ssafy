@@ -99,7 +99,7 @@ const FixedContainer = styled.div`
 
 const DiaryPage = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [crop, setCrop] = useAtom(cropAtom);
+  const [, setCrop] = useAtom(cropAtom);
   const [menu, setMenu] = useAtom(menuAtom);
   const { packDiaryId } = useParams();
   const navigate = useNavigate();
