@@ -215,10 +215,12 @@ const TradeDetailDeal = () => {
         ex_article_location: data?.exArticleResponse?.exLocation,
         packdiaryid: data?.packDiaryResponse?.packDiaryId.toString(),
         deal_cur_price: data?.dealResponse?.price.toString(),
-        imageResponse: data?.imageResponses,
+        imageResponse: data?.exArticleResponse.imageResponses,
         postId: data?.exArticleResponse.exArticleId,
       },
     });
+    // console.log('gettradedetail'+response.data.data_body.exArticleResponse.imageResponses[0].imgStoreUrl)
+
   };
   const { mutate: deleteMutation } = useMutation({
     mutationFn: deletePost,
