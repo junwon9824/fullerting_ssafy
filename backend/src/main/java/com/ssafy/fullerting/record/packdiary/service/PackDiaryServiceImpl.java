@@ -177,7 +177,7 @@ public class PackDiaryServiceImpl implements PackDiaryService {
         if(packDiary.getGrowthStep() < getCropStepRequest.getCropStepGrowth()){
             try {
                 //작물일지 단계 갱신
-                packDiaryRepository.save(packDiary.toBuilder()
+                packDiary = packDiaryRepository.save(packDiary.toBuilder()
                         .growthStep(step.getStep())
                         .build());
 
