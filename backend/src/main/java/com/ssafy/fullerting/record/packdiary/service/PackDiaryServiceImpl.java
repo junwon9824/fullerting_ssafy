@@ -26,7 +26,9 @@ import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
 import com.ssafy.fullerting.record.steplog.model.entity.StepLog;
 import com.ssafy.fullerting.record.steplog.repository.CropStepLogRepository;
+import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,7 @@ import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode
 @Service
 @Slf4j
 public class PackDiaryServiceImpl implements PackDiaryService {
+    private final UserService userService;
     private final PackDiaryRepository packDiaryRepository;
     private final DiaryRepository diaryRepository;
     private final CropTypeRepository cropTypeRepository;
@@ -125,7 +128,9 @@ public class PackDiaryServiceImpl implements PackDiaryService {
 
     @Override
     public List<GetAllPackDiaryResponse> getAllPackDiary() {
-        List<PackDiary> packDiaryList = packDiaryRepository.findAll();
+        UserResponse userResponse = userService.getUserInfo();
+        //본인이 생성한 작물일지 전체조회
+        List<PackDiary> packDiaryList = packDiaryRepository.findByUser(UserResponse.toEntity(userResponse));
         return packDiaryList.stream().map(GetAllPackDiaryResponse::toResponse).collect(Collectors.toList());
     }
 
