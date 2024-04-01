@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ssafy.fullerting.global.s3.exception.S3ErrorCode;
+import com.ssafy.fullerting.global.s3.exception.S3Exception;
 import com.ssafy.fullerting.global.s3.model.entity.response.S3ManyFilesResponse;
 import com.ssafy.fullerting.global.s3.model.entity.response.S3OneFileResponse;
 import io.jsonwebtoken.MalformedJwtException;
@@ -38,22 +40,30 @@ public class AmazonS3Service {
 
     // 썸네일 하나만 받는 경우
     public S3OneFileResponse uploadThunmail(MultipartFile multipartFile) {
+        // Step 1: 파일의 존재와 비어 있지 않은지 먼저 확인
         if (multipartFile == null || multipartFile.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "업로드할 파일이 없습니다.");
+            throw new S3Exception(S3ErrorCode.EMPTY_UPLOAD_FILE);
         }
-
+        // Step 2: 업로드 로직 진행 (확장자 검증 포함)
         return new S3OneFileResponse(uploadToS3ReturnURL(multipartFile, 0));
     }
     
     
     // 여러개의 파일을 받는 경우
     public S3ManyFilesResponse uploadFiles(List<MultipartFile> multipartFiles){
+        // Step 1: 파일의 존재와 비어 있지 않은지 먼저 확인
+        if (multipartFiles.get(0) == null || multipartFiles.get(0).isEmpty()) {
+            throw new S3Exception(S3ErrorCode.EMPTY_UPLOAD_FILE);
+        }
+
+
         S3ManyFilesResponse response = new S3ManyFilesResponse();
 
         // 파일을 순차적으로 처리하고, 각 파일에 대한 URL을 수집
         IntStream.range(0, multipartFiles.size())
                 .forEach(i -> {
                     MultipartFile file = multipartFiles.get(i);
+                    // Step 2: 업로드 로직 진행 (확장자 검증 포함)
                     String url = uploadToS3ReturnURL(file, i); // 파일을 S3에 업로드하고, 생성된 URL을 반환
                     response.addUrl("url" + (i + 1), url); // 맵에 URL 추가
                 });
@@ -64,6 +74,7 @@ public class AmazonS3Service {
     // 인덱스 번호로 구분하여 S3에 업로드
     // 업로드 된 객체에 접근할 수 있는 url 반환
     private String uploadToS3ReturnURL(MultipartFile file, int index) {
+        // 파일명 생성 시 확장자 검증 포함
         String UUIDFileName = createFileName(file.getOriginalFilename());
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(file.getSize());
@@ -80,19 +91,15 @@ public class AmazonS3Service {
         }
     }
 
-
-    
     // S3 저장된 파일명을 통해 S3 객체 url 조회
     public String getS3FileURL(String hashedFileName) {
         return amazonS3.getUrl(bucket, hashedFileName).toString();
     }
 
-
     // 파일명을 난수화하기 위해 UUID 를 활용하여 난수를 돌린다.
     public String createFileName(String originalFileName){
         return UUID.randomUUID().toString().concat(getFileExtension(originalFileName));
     }
-
 
     // 확장자 추출
     private String getFileExtension(String fileName){
@@ -100,12 +107,12 @@ public class AmazonS3Service {
         List<String> allowedExtensions = Arrays.asList(".jpg", ".jpeg", ".png", ".svg");
 
         if (fileName.lastIndexOf("." ) == -1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "파일 확장자가 없습니다.");
+            throw new S3Exception(S3ErrorCode.INVALID_EXTENSION);
         }
 
         String extension = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
         if (!allowedExtensions.contains(extension)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "jpg, jpeg, svg, png 파일만 등록 가능합니다.");
+            throw new S3Exception(S3ErrorCode.INVALID_EXTENSION);
         }
 
         return extension;
@@ -113,7 +120,6 @@ public class AmazonS3Service {
 
 
     public void deleteFile(String fileName){
-
         try {
             String path = new URL(fileName).getPath();
             String S3key = path.substring(1);
