@@ -38,7 +38,7 @@ const LayoutInnerBox = styled.div`
   align-items: flex-start;
   gap: 1.5rem;
   padding: 1.12rem 0;
-  overflow: hidden;
+  overflow: auto;
 `;
 const ProfileImage = styled.img`
   width: 2.5625rem;
