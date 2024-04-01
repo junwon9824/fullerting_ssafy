@@ -266,16 +266,18 @@ const TradeModify = () => {
     } else {
       selectedFiles.forEach((file) => {
         formData.append("images", file);
+        console.log("formapppppppp"+file.name)
       });
     }
+    console.log('selectedFilesselectedFiles'+selectedFiles.length)
 
 
     console.log("ffffffffffffffff")
 
-    // selectedFiles에 있는 각 파일을 FormData에 추가
-    selectedFiles.forEach((file) => {
-      formData.append("images", file);
-    });
+    // // selectedFiles에 있는 각 파일을 FormData에 추가
+    // selectedFiles.forEach((file) => {
+    //   formData.append("images", file);
+    // });
 
 
     // if (selectedFiles.length === 0) { // 없어도 1이라 여기는 안와
@@ -307,7 +309,7 @@ const TradeModify = () => {
     try {
       await handleModified({ postId, formData });
       setSelectedFiles([]);
-      setSelectedDiaryId(null);
+      setImages([]);
       navigate(-1);
       // 요청 성공 후 페이지 이동 또는 상태 업데이트
       // navigate("/trade");

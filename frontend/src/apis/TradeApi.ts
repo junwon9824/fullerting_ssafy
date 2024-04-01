@@ -241,6 +241,7 @@ export const createChatRoom = () => {
       if (!accessToken) {
         throw new Error("로그인이 필요합니다.");
       }
+      
       const response = await api.post(
         "/chat-room",
         {
