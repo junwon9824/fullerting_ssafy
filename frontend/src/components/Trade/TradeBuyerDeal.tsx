@@ -270,7 +270,7 @@ const SendButton = styled.img`
 `;
 const DealChatBox = styled.div`
   display: flex;
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
   justify-content: center;
   align-items: center;
@@ -482,14 +482,15 @@ const TradeBuyerDetail = () => {
             ))}
           </DealBox>
         </LayoutInnerBox>
+        <DealChatBox>
+          <DealInput
+            placeholder="최고가보다 높게 제안해주세요"
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
+          <SendButton src={Send} alt="send" onClick={sendMessage} />
+        </DealChatBox>
       </LayoutMainBox>
-      <DealChatBox>
-        <DealInput
-          placeholder="최고가보다 높게 제안해주세요"
-          onChange={(e) => setNewMessage(e.target.value)}
-        />
-        <SendButton src={Send} alt="send" onClick={sendMessage} />
-      </DealChatBox>
+
       {/* </AppContainer> */}
     </>
   );
