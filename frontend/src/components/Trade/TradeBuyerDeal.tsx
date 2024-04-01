@@ -318,8 +318,6 @@ const TradeBuyerDetail = () => {
   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
   const wssURL = import.meta.env.VITE_REACT_APP_WSS_URL;
 
-  const [max, setMax] = useState<number>(0);
-  const [bidCount, setBidCount] = useState<number>(0);
   useEffect(() => {
     console.log("데이터", dealListData);
     const socket = new WebSocket(wssURL);
@@ -343,8 +341,6 @@ const TradeBuyerDetail = () => {
         console.log("저는 메세지 입니다", message);
 
         const msg: MessageRes = JSON.parse(message.body);
-        setMax(msg.maxPrice);
-        setBidCount(msg.bidderCount);
         queryClient.invalidateQueries({
           queryKey: ["dealDetail", postNumber],
         });
@@ -404,7 +400,11 @@ const TradeBuyerDetail = () => {
     error: IndividualUserDetailError,
   } = useQuery({
     queryKey: ["individualUserDetail"],
-    queryFn: () => userIndividualCheck(accessToken, data?.exArticleResponse.userId),
+    queryFn: () =>
+      userIndividualCheck(
+        accessToken as string,
+        data?.exArticleResponse.userId
+      ),
     enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
   });
   return (
@@ -453,7 +453,7 @@ const TradeBuyerDetail = () => {
               <TextStyle>
                 {dealListData && dealListData.length > 0
                   ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
-                  : "0원"}
+                  : `${data?.dealResponse.price}원`}
               </TextStyle>
             </SituationGroup>
             <SituationGroup>

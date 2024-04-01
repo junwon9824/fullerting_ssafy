@@ -174,11 +174,15 @@ const TradeGeneralDetail = () => {
     error: IndividualUserDetailError,
   } = useQuery({
     queryKey: ["individualUserDetail"],
-    queryFn: () => userIndividualCheck(accessToken, data?.exArticleResponse.userId),
+    queryFn: () =>
+      userIndividualCheck(
+        accessToken as string,
+        data?.exArticleResponse.userId
+      ),
     enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
-    });
+  });
 
-  console.log('테스트', IndividualUserData)
+  console.log("테스트", IndividualUserData);
   const { mutate: clickChat } = createChatRoom();
   const userId = userData?.id;
 

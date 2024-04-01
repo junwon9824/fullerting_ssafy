@@ -193,7 +193,11 @@ const TradeDetailDeal = () => {
     error: IndividualUserDetailError,
   } = useQuery({
     queryKey: ["individualUserDetail"],
-    queryFn: () => userIndividualCheck(accessToken, data?.exArticleResponse.userId),
+    queryFn: () =>
+      userIndividualCheck(
+        accessToken as string,
+        data?.exArticleResponse.userId
+      ),
     enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
   });
   const BtnClick = (postId: number) => {
@@ -220,7 +224,6 @@ const TradeDetailDeal = () => {
       },
     });
     // console.log('gettradedetail'+response.data.data_body.exArticleResponse.imageResponses[0].imgStoreUrl)
-
   };
   const { mutate: deleteMutation } = useMutation({
     mutationFn: deletePost,
