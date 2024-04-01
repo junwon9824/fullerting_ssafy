@@ -98,62 +98,47 @@ public class ArticleService {
             throw new ArticleException(ArticleErrorCode.NOT_MINE);
         }
 
-        S3ManyFilesResponse response =
-                amazonS3Service.uploadFiles(files);
-
-        log.info("imaggggggg" + article.getImages().size());
-
-        List<Image> saveimages = new ArrayList<>();
-
-
         List<Image> imageList = imageRepository.findAllByArticleId(articleId);
 
-        for(Image image : imageList){
+        for (Image image : imageList) {
             //유지할 이미지가 아닌 경우
-            log.info("imagesss"+image.getId());
-            if(!updateArticleRequest.getImages().contains(image.getId())) {
+            log.info("imagesss" + image.getId());
+            if (!updateArticleRequest.getImages().contains(image.getId())) {
                 //이미지 삭제
                 amazonS3Service.deleteFile(image.getImgStoreUrl());
                 imageRepository.delete(image);
 
             }
 
+        }
+
+        if (!files.get(0).isEmpty()) {
+
+            S3ManyFilesResponse response =
+                    amazonS3Service.uploadFiles(files);
+
+//        log.info("imaggggggg" + article.getImages().size());
+//        log.info("responseresponse" + response.getUrls().size());
+
+            List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
+                Image image = new Image();
+                image.setImgStoreUrl(stringStringEntry.getValue());
+                image.setArticle(articleRepository.findById(article.getId()).
+                        orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
+                imageRepository.save(image);
+                return image;
+            }).collect(Collectors.toList());
+
+            log.info("iiiiiiiii" + images.size());
+            article.setImages(images);
 
         }
-//
-//        // 기존 이미지 삭제
-//        for (Image image : article.getImages()) {
-//
-//            if (updateArticleRequest.getImages().contains(image.getId())) { //살리는이미지
-//                saveimages.add(image);
-//                log.info("save"+image.getId());
-//            } else {
-//                log.info("deeee"+image.getId());
-//
-//                amazonS3Service.deleteFile(image.getImgStoreUrl());
-//                imageRepository.delete(image);
-//            }
-//        }
-
-//        articleRepository.save(article);
-
-        log.info("responseresponse" + response.getUrls().size());
-
-        List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
-            Image image = new Image();
-            image.setImgStoreUrl(stringStringEntry.getValue());
-            image.setArticle(articleRepository.findById(article.getId()).
-                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
-            imageRepository.save(image);
-            return image;
-        }).collect(Collectors.toList());
-
-        log.info("iiiiiiiii" + images.size());
 
         article.setContent(updateArticleRequest.getContent());
         article.setType(updateArticleRequest.getType());
         article.setTitle(updateArticleRequest.getTitle());
-        article.setImages(images);
+
+
         Article article1 = articleRepository.save(article);
         log.info("resssssssss" + article1.getImages().size());
 
