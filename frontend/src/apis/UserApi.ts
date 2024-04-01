@@ -9,7 +9,7 @@ interface JoinType {
   email: string;
   password: string;
   nickname: string;
-  authProvider: "MYAPP";
+  auth_provider: "MYAPP";
 }
 
 export const userLogin = async (loginData: LoginType) => {
