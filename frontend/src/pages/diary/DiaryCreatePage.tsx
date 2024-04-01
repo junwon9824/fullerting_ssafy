@@ -7,7 +7,7 @@ import {
 import { TopBar } from "../../components/common/Navigator/navigator";
 import CropProfile from "../../components/diary/CropProfile";
 import { cropAtom, fileAtom } from "../../stores/diary";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BottomButton } from "../../components/common/Button/LargeButton";
 import StyledTextArea from "../../components/common/Input/StyledTextArea";
 import useInput from "../../hooks/useInput";
@@ -25,6 +25,13 @@ const DiaryCreatePage = () => {
   );
   const [title, setTitle] = useInput("");
   const [content, setContent] = useInput("");
+
+  useEffect(() => {
+    if (!crop) {
+      alert("작물을 먼저 선택해주세요!");
+      navigate("/crop");
+    }
+  }, []);
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(event.target.value);

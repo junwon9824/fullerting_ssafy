@@ -24,6 +24,7 @@ const NavBox = styled.nav`
   position: fixed;
   bottom: 0;
   background-color: ${({ theme }) => theme.colors.white};
+  z-index: 10;
 `;
 
 const NavInnerBox = styled.div`
@@ -204,7 +205,7 @@ const TopBar = ({
   };
 
   const { communityId } = useParams<{ communityId: string }>();
-  const { data: community    } = useQuery({
+  const { data: community } = useQuery({
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
   });
@@ -220,20 +221,14 @@ const TopBar = ({
   // });
 
   const onClickEdit = () => {
-    console.log("수정버튼이 클릭됐어여!!");
-    // navigate("update");
-    console.log('title'+title)
     navigate(`update`, {
-      state: {
-        title:  community.title,
-        content:  community.content,
-        imgurls:  community.imgurls,
-        // imageResponse: community?.imageResponses,
-
-
-      },
+      // state: {
+      //   title:  community.title,
+      //   content:  community.content,
+      //   imgurls:  community.imgurls,
+      //   // imageResponse: community?.imageResponses,
+      // },
     });
-
   };
 
   const onClickDelete = () => {

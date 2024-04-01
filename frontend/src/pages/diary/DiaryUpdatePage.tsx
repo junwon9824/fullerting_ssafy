@@ -65,8 +65,11 @@ const DiaryUpdatePage = () => {
   const [content, onContent, setContent] = useInput("");
 
   useEffect(() => {
-    console.log(diaryId);
-  }, [diaryId]);
+    if (!crop) {
+      alert("작물일기를 먼저 선택해주세요!");
+      navigate("/crop");
+    }
+  }, []);
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(event.target.value);

@@ -93,7 +93,7 @@ const SubmitButton = styled.button`
 `;
 
 const Delete = styled.div`
-  margin-left: 17rem;
+  margin-left: 15rem;
   font-size: 12px;
   color: #888;
 `;

@@ -6,12 +6,14 @@ import { notificationAtom } from "../stores/notification";
 export const useSSEConnection = () => {
   const [notification, setNotification] = useAtom(notificationAtom);
   const [messages, setMessages] = useState([]);
+  const wssURL = import.meta.env.VITE_REACT_APP_SSE_URL;
 
   useEffect(() => {
     let isMounted = true; // 컴포넌트 마운트 상태를 추적
 
     const accessToken = sessionStorage.getItem("accessToken") || "";
-    const url = "http://localhost:8080/v1/noti/pub";
+    // const url = "http://localhost:8080/v1/noti/pub";
+    const url = wssURL;
 
     const connectSSE = () => {
       const eventSource = new EventSourcePolyfill(url, {

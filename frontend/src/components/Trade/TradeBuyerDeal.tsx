@@ -12,6 +12,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import useInput from "../../hooks/useInput";
 import Stomp from "stompjs";
+import { userIndividualCheck } from "../../apis/UserApi";
 
 interface ImageResponse {
   imgStoreUrl: string;
@@ -314,12 +315,13 @@ const TradeBuyerDetail = () => {
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [newMessage, setNewMessage] = useState<string>("");
   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
+  const wssURL = import.meta.env.VITE_REACT_APP_WSS_URL;
 
   const [max, setMax] = useState<number>(0);
   const [bidCount, setBidCount] = useState<number>(0);
   useEffect(() => {
     console.log("데이터", dealListData);
-    const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+    const socket = new WebSocket(wssURL);
     const transformedData = dealListData?.map((item: Response) => ({
       bidLogId: item.id,
       exArticleId: item.exarticleid,
@@ -395,7 +397,16 @@ const TradeBuyerDetail = () => {
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
-
+  const {
+    isLoading: isIndividualUserDetail,
+    data: IndividualUserData,
+    error: IndividualUserDetailError,
+  } = useQuery({
+    queryKey: ["individualUserDetail"],
+    queryFn: accessToken
+      ? () => userIndividualCheck(accessToken, data?.exArticleResponse.userId)
+      : undefined,
+  });
   return (
     // <AppContainer>
     <>
@@ -418,11 +429,11 @@ const TradeBuyerDetail = () => {
         <LayoutInnerBox>
           <InfoBox>
             <Profile>
-              <Thumbnail src={data?.userResponse.thumbnail} alt="profile" />
+              <Thumbnail src={IndividualUserData?.thumbnail} alt="profile" />
               <Name>
-                <NameText>{data?.userResponse.nickname}</NameText>
+                <NameText>{IndividualUserData?.nickname}</NameText>
                 <ClassesText>
-                  {data?.userResponse.rank}
+                  {IndividualUserData?.rank}
                   {/* <img src={Sprout} alt="Sprout" /> */}
                 </ClassesText>
               </Name>
