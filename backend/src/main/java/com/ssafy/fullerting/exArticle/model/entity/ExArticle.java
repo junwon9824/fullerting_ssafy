@@ -83,7 +83,7 @@ public class ExArticle {
     @OneToOne(mappedBy = "exArticle")
     private Trans trans;
 
-    @OneToMany(mappedBy = "exArticle", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "exArticle", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Image> image;
 
     @OneToMany(mappedBy = "exArticle", cascade = CascadeType.ALL)
@@ -118,7 +118,8 @@ public class ExArticle {
 
     }
 
-    public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
+    @Transactional
+    public ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
 //        Favorite favorite1 = null;
 
@@ -128,6 +129,7 @@ public class ExArticle {
 
 //        log.info("typetype"+article.getType()+" "+ article.trans.getTrans_sell_price());
         Hibernate.initialize(article.getImage());
+
         exArticleResponse = ExArticleResponse.builder()
                 .exArticleId(article.getId())
                 .exArticleTitle(article.getTitle())

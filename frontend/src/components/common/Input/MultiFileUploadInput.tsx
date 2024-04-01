@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
-import { imageFilesAtom } from "../../../stores/trade";
+import { imageFilesAtom, oldImagesAtom } from "../../../stores/trade";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -90,6 +90,8 @@ const CounterText = styled.div`
 `;
 const MultiFileUploadInput: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
+  const [images, setImages] = useAtom(oldImagesAtom);
+
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
   useEffect(() => {
     const urls = selectedFiles.map((file) =>
@@ -97,6 +99,10 @@ const MultiFileUploadInput: React.FC = () => {
     );
     setPreviewURLs(urls);
   }, [selectedFiles]);
+
+  useEffect(() => {
+    console.log('sssssssssss'+images.length)
+  }, [images]);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -121,11 +127,19 @@ const MultiFileUploadInput: React.FC = () => {
       setSelectedFiles(updatedFiles);
     }
   };
+
   const handleDeleteImage = (index: number) => {
     const newSelectedFiles = selectedFiles.filter((_, i) => i !== index);
     const newPreviewURLs = previewURLs.filter((_, i) => i !== index);
     setSelectedFiles(newSelectedFiles);
     setPreviewURLs(newPreviewURLs);
+
+    // setImages(images.filter((img) => img.id !== id));
+
+    // Jotai 원자에서 해당 이미지를 제거합니다.
+    const deletedImageId = images[index].id;
+    setImages(images.filter((img) => img.id !== deletedImageId));
+
   };
 
   return (
