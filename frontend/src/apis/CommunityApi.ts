@@ -132,3 +132,20 @@ export const fetchAllComments  = async (communityId:string) => {
     throw error;
   }
 };
+
+
+export const DeleteArticle = async (communityId:string) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+  try {
+    const response = await api.delete(
+      `/articles/${communityId}`,
+      {
+        headers: { Authorization : `Bearer ${accessToken}`},
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error createComment: ", error);
+    throw error;
+  }
+}
