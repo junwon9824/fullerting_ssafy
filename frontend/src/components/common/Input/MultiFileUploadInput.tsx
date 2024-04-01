@@ -179,9 +179,8 @@ const MultiFileUploadInput: React.FC = () => {
           <InputBox
             id="file"
             type="file"
-            // accept="image/*" // 이미지 파일만 받도록 설정
-            // capture="user" // 카메라 사용 활성화
-            accept="image/*;capture=camera"
+            accept="image/*" // 이미지 파일만 받도록 설정
+            // capture="environment" // 카메라 사용 활성화
             multiple // 필요에 따라 여러 파일을 선택할 수 있도록 합니다. 필요 없다면 이 줄을 제거하세요.
             onChange={handleFileChange}
           />
