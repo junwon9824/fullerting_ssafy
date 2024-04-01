@@ -121,7 +121,7 @@ public class BidService {
                 ExArticleErrorCode.NOT_EXISTS));
 
         exArticle.getDeal().setDealCurPrice(bidProposeRequest.getDealCurPrice());
-
+        exArticleRepository.save(exArticle);
         if (exArticle.getDeal() == null) {
             throw new BidException(BidErrorCode.NOT_DEAL);
         }
