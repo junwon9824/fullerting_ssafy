@@ -5,6 +5,7 @@ import com.ssafy.fullerting.alarm.model.dto.request.AlarmPayload;
 import com.ssafy.fullerting.alarm.model.dto.response.MyEventAlarmResponse;
 import com.ssafy.fullerting.alarm.model.entity.EventAlarm;
 import com.ssafy.fullerting.alarm.repository.EventAlarmRepository;
+import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
@@ -68,6 +69,28 @@ public class EventAlarmService {
         alarm.markAsRead();
         eventAlarmRepository.save(alarm);
         log.info("알람 읽음 처리됨: {} ", alarmId);
+    }
+
+    // 1. 내가 쓴 게시물에 댓글이 달렸을 때
+    public void notifyCommentCreated(CustomUser commenter, Article article, String redirectURL) {
+        CustomUser author = userService.getUserEntityById(article.getUserId());
+
+        EventAlarm alarm = EventAlarm.builder()
+                .receiveUser(author)
+                .sendUser(commenter)
+                .type(EventAlarmType.커뮤니티)
+                .content(commenter.getNickname() + "님이 " + "#"+article.getTitle()+"#" +"에 댓글을 달았어요!")
+                .redirect(redirectURL)
+                .build();
+
+        eventAlarmRepository.save(alarm);
+
+        eventAlarmNotificationService.sendAsync(AlarmPayload.builder()
+                .receiveUserId(article.getUserId())
+                .alarmType(EventAlarmType.커뮤니티.toString())
+                .alarmContent(commenter.getNickname() + "님이 " + "#"+article.getTitle()+"#" +"에 댓글을 달았어요!")
+                .alarmRedirect(redirectURL)
+                .build());
     }
 
 
