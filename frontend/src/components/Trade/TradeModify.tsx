@@ -201,19 +201,7 @@ const TradeModify = () => {
 
 
 
-  // const { mutate } = useMutation({
-  //   mutationFn: update,
-  //   onSuccess: () => {
-  //     navigate(`/diary/${diaryId}`);
-  //     setIsLoading(false);
-  //     setSelectedFiles([]);
-  //   },
-  //   onError: (error) => {
-  //     console.log(error);
-  //     setIsLoading(false);
-  //   },
 
-  // });
 
 
   useEffect(() => {
@@ -225,7 +213,7 @@ const TradeModify = () => {
       document.body.style.overflow = "unset";
     }
 
-    console.log('lengthhhhhhhhhhhhhhh '+location.state.imageResponse.length)
+    console.log('lengthhhhhhhhhhhhhhh ' + location.state.imageResponse.length)
     setImages(location.state.imageResponse);
     // 컴포넌트가 언마운트 될 때 원래 상태로 복구
     return () => {
@@ -251,6 +239,8 @@ const TradeModify = () => {
   const { mutate: handlePost } = usePost();
   const navigate = useNavigate();
   const { mutate: handleModified } = useUpdateArticle();
+  const [newimage, setnewimage] = useState<File[]>([]);
+
 
   const handleCheckClick = async () => {
 
@@ -258,19 +248,35 @@ const TradeModify = () => {
     const formData = new FormData();
     console.log(location.state.imageResponse[0].imgStoreUrl);
 
-    if (!selectedFiles || selectedFiles.length === 0) {
-      console.log("nullllllllllllllll")
-      formData.append("images", "");
-    }
 
-    else {
-      console.log("ffffffffffffffff")
+    const newFiles: File[] = [];
 
-      // selectedFiles에 있는 각 파일을 FormData에 추가
+    selectedFiles.forEach((file) => {
+      if (file instanceof File) {
+        newFiles.push(file);
+      }
+    });
+
+    console.log('newfile'+newFiles.length)
+    
+    setnewimage(newFiles.length > 0 ? [newFiles[0]] : []);
+
+    if (newFiles.length === 0) { // 새로운 이미지
+      formData.append("images", new Blob([]));
+    } else {
       selectedFiles.forEach((file) => {
         formData.append("images", file);
       });
     }
+
+
+    console.log("ffffffffffffffff")
+
+    // selectedFiles에 있는 각 파일을 FormData에 추가
+    selectedFiles.forEach((file) => {
+      formData.append("images", file);
+    });
+
 
     // if (selectedFiles.length === 0) { // 없어도 1이라 여기는 안와
     //   // 이미지 파일이 없을 경우 빈 문자열을 서버에 보냅니다.
@@ -279,7 +285,7 @@ const TradeModify = () => {
     // }
 
 
-    console.log("imagggggggggggggggg"+images)
+    console.log("imagggggggggggggggg" + images)
 
     const updateInfo = {
       exArticleTitle: title,
@@ -312,15 +318,7 @@ const TradeModify = () => {
   };
 
 
-  // const handleDeleteImage = (index: number) => {
-  //   const updatedFiles = [...selectedFiles];
-  //   updatedFiles.splice(index, 1);
-  //   setSelectedFiles(updatedFiles);
 
-  //   const updatedPreviewURLs = [...previewURLs];
-  //   updatedPreviewURLs.splice(index, 1);
-  //   setPreviewURLs(updatedPreviewURLs);
-  // };
 
 
   const handleDeleteImage = (id: number) => {
