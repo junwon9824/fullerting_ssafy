@@ -17,7 +17,7 @@ const All = styled.div`
   font-family: "GamtanRoad Dotum TTF";
   height: 100%;
   padding-right: 2rem;
-  padding-left: 2rem;
+  padding-left: 2.5rem;
   align-items: center;
 `;
 
@@ -30,7 +30,7 @@ const Content = styled.div`
 `;
 
 const Img = styled.div<ImgProps>`
-  width: 19rem;
+  width: 18rem;
   height: 19rem;
   background-image: ${(props) => `url(${props.backgroundImage})`};
   background-size: cover;
@@ -61,7 +61,7 @@ const Num = styled.div`
 const HeartBox = styled.div`
   display: flex;
   width: 21rem;
-  padding: 0rem 2rem 0rem 0;
+  padding: 0rem 3rem 0rem 0;
   justify-content: flex-end;
   align-items: center;
   gap: 0.375rem;
