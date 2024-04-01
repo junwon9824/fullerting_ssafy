@@ -314,12 +314,13 @@ const TradeBuyerDetail = () => {
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [newMessage, setNewMessage] = useState<string>("");
   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
+  const wssURL = import.meta.env.VITE_REACT_APP_WSS_URL;
 
   const [max, setMax] = useState<number>(0);
   const [bidCount, setBidCount] = useState<number>(0);
   useEffect(() => {
     console.log("데이터", dealListData);
-    const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+    const socket = new WebSocket(wssURL);
     const transformedData = dealListData?.map((item: Response) => ({
       bidLogId: item.id,
       exArticleId: item.exarticleid,

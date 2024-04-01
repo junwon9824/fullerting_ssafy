@@ -5,6 +5,8 @@ interface ImportMetaEnv {
   readonly VITE_SERVER_URL: string;
   readonly __WEBSOCKET_URL__: string;
   readonly VITE_KAKAO_MAP_KEY: string;
+  readonly VITE_REACT_APP_WSS_URL: string;
+  readonly VITE_REACT_APP_SSE_URL: string;
 }
 
 interface ImportMeta {
