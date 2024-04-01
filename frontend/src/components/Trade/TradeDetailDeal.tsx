@@ -200,13 +200,11 @@ const TradeDetailDeal = () => {
       ),
     enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
   });
-  const BtnClick = (postId: number) => {
-    if (data?.exArticleResponse?.userId === userData?.id) {
-      navigate(`/trade/${postId}/seller`);
-    } else {
-      navigate(`/trade/${postId}/buyer`);
-    }
-    // console.log("저를 클릭했나요?");
+  const handleSellerClick = (postId: number) => {
+    navigate(`/trade/${postId}/seller`);
+  };
+  const handleBuyerClick = (postId: number) => {
+    navigate(`/trade/${postId}/buyer`);
   };
 
   const handleEdit = () => {
@@ -312,8 +310,16 @@ const TradeDetailDeal = () => {
           </TitleBox>
         </LayoutInnerBox>
         <BottomButton
-          text="가격 제안하기"
-          onClick={() => BtnClick(postNumber)}
+          text={
+            data?.userResponse.id === data?.exArticleResponse.userId
+              ? "제안목록 확인하기"
+              : "가격 제안하기"
+          }
+          onClick={() => {
+            data?.userResponse.id === data?.exArticleResponse.userId
+              ? handleSellerClick(data?.exArticleResponse.exArticleId)
+              : handleBuyerClick(data?.exArticleResponse.exArticleId);
+          }}
         />
       </LayoutMainBox>
     </>
