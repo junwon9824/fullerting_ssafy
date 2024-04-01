@@ -1,8 +1,10 @@
 package com.ssafy.fullerting.community.article.controller;
 
 import com.ssafy.fullerting.community.article.model.dto.request.RegistArticleRequest;
+import com.ssafy.fullerting.community.article.model.dto.request.UpdateArticleRequest;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleAllResponse;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
+import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.community.article.service.ArticleService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +27,18 @@ public class ArticleController {
     public ResponseEntity<MessageUtils> registarticle(@RequestPart("RegistArticleRequest") RegistArticleRequest registArticleRequest,
                                                       @RequestPart("images") List<MultipartFile> files
     ) {
-        articleService.registerticle(registArticleRequest,files);
+        articleService.registerticle(registArticleRequest, files);
 
         return ResponseEntity.ok(MessageUtils.success());
     }
 
     @PatchMapping("{article_id}")
     public ResponseEntity<MessageUtils> updatearticle(@PathVariable Long article_id,
-                                                      @RequestPart("RegistArticleRequest") RegistArticleRequest registArticleRequest,
+                                                      @RequestPart("RegistArticleRequest") UpdateArticleRequest updateArticleRequest,
                                                       @RequestPart("images") List<MultipartFile> files) {
-        articleService.update(registArticleRequest, article_id,files);
+        ArticleResponse article = articleService.update(updateArticleRequest, article_id, files);
+        return ResponseEntity.ok(MessageUtils.success(article));
 
-        return ResponseEntity.ok(MessageUtils.success());
     }
 
     @GetMapping("{article_id}")
@@ -50,8 +52,8 @@ public class ArticleController {
     @GetMapping("/all")
     public ResponseEntity<MessageUtils> findAllArticle(
     ) {
-        List<ArticleAllResponse > articleResponse = articleService.findAllArticle();
-        log.info("allarticle"+articleResponse);
+        List<ArticleAllResponse> articleResponse = articleService.findAllArticle();
+        log.info("allarticle" + articleResponse);
         return ResponseEntity.ok(MessageUtils.success(articleResponse));
     }
 
