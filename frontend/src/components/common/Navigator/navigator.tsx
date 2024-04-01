@@ -311,7 +311,7 @@ TopBarType) => {
   const navigate = useNavigate();
 
   const onClickBack = () => {
-    navigate("/trade");
+    navigate(-1);
     setSelectedFiles([]);
     setDiary(null);
   };
