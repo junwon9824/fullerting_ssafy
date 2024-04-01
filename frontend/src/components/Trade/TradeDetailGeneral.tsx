@@ -231,15 +231,28 @@ const TradeGeneralDetail = () => {
   };
   return (
     <>
-      <TradeTopBar
-        title="작물거래"
-        showBack={true}
-        showEdit={true}
-        onEdit={handleEdit}
-        onDelete={() => {
-          deleteMutation(data?.exArticleResponse.exArticleId);
-        }}
-      />
+      {data?.exArticleResponse.userID === data?.userResponse.id ? (
+        <TradeTopBar
+          title="작물거래"
+          showBack={true}
+          showEdit={true}
+          onEdit={handleEdit}
+          onDelete={() => {
+            deleteMutation(data?.exArticleResponse.exArticleId);
+          }}
+        />
+      ) : (
+        <TradeTopBar
+          title="작물거래"
+          showBack={true}
+          showEdit={false}
+          // onEdit={handleEdit}
+          // onDelete={() => {
+          //   deleteMutation(data?.exArticleResponse.exArticleId);
+          // }}
+        />
+      )}
+
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper
