@@ -26,9 +26,9 @@ public class Chat {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom; //채팅방
 
-    @Column(name = "chat_sender_id")
-    @NotNull
-    private Long senderId; //보낸 사람
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private CustomUser sender; //보낸 사람
 
     @Column(name = "chat_message", length = 5000)
     @NotNull
