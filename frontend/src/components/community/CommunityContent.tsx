@@ -67,6 +67,7 @@ const HeartBox = styled.div`
   gap: 0.375rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  margin-right: 1rem;
 `;
 
 const CommunityContent = () => {
@@ -76,6 +77,8 @@ const CommunityContent = () => {
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
   });
+
+  console.log(community);
 
   const { mutate } = useMutation({
     mutationFn: () => toggleLike(communityId),
@@ -97,20 +100,18 @@ const CommunityContent = () => {
 
   return (
     <All>
-      {community.imgurls && community.imgurls.length > 0 && (
-        <Swiper
-          modules={[Navigation]}
-          navigation
-          spaceBetween={50}
-          slidesPerView={1}
-        >
-          {community.imgurls.map((url: string, index: number) => (
-            <SwiperSlide key={index}>
-              <Img backgroundImage={url} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      )}
+      <Swiper
+        modules={[Navigation]}
+        navigation
+        spaceBetween={50}
+        slidesPerView={1}
+      >
+        {community.imgs.map((imgObject) => (
+          <SwiperSlide key={imgObject.id}>
+            <Img backgroundImage={imgObject.imgStoreUrl} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
       <Content>{community.content}</Content>
 
       <HeartBox>
