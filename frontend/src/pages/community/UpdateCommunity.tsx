@@ -126,7 +126,9 @@ const TradePost = () => {
       title: title,
       content: content,
       type: tradeType,
+      images: null,
     };
+    
     console.log(updateInfo.type);
     console.log(updateInfo.title);
     formData.append(
