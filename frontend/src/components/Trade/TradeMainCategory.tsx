@@ -98,7 +98,7 @@ const LikeBox = styled.div<ClickLike>`
   position: absolute;
   bottom: 0.38rem;
   right: 0.38rem;
-  z-index: 3;
+  /* z-index: 3; */
   cursor: pointer;
 `;
 
@@ -182,6 +182,7 @@ const WriteBox = styled.img`
   position: fixed;
   right: 1.19rem;
   bottom: 4.75rem;
+  z-index: 10;
 `;
 
 const TradeMainCategory = () => {
@@ -268,16 +269,6 @@ const TradeMainCategory = () => {
                     {item?.dealResponse?.price || 0}원
                   </>
                 )}
-
-                {/* <StateIcon
-              width={1.5}
-              height={0.9375}
-              backgroundColor="#A0D8B3"
-              color="#ffffff"
-            >
-              현재
-            </StateIcon>
-            300원 */}
               </State>
 
               <State
