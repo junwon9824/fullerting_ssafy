@@ -31,8 +31,8 @@ export const useSSEConnection = () => {
               setNotification({
                 show: true,
                 name: newMessage.alarmType,
-                type: newMessage.alarmRedirect,
                 content: newMessage.alarmContent,
+                redirectURL: newMessage.alarmRedirect,
               });
             }
             console.log("데이터정보", newMessage);

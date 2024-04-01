@@ -129,21 +129,29 @@ const NotificationModal: React.FC = () => {
     }
   }, [notification.show]);
 
+  const handleRedirect = () => {
+    if (notification.redirectURL) {
+      window.location.pathname = notification.redirectURL; // pathname을 사용하여 리다이렉트
+    }
+  };
+
   if (!notification.show) {
     return null; // show가 false면 아무 것도 렌더링하지 않음
   }
-
+  
   return (
     <>
-      <ModalContainer isAnimating={isAnimating}>
+      <ModalContainer isAnimating={isAnimating} onClick={handleRedirect}>
       <AlarmBackIcon src={alarmback} alt="Background Icon" />
       <AlarmIcon src={alarmticon} alt="Alarm Icon" />
         <NotificationContent>
         {parseContent(notification.content)}
         <NotiFrame>
           <CloseButton
-            onClick={() =>
+            onClick={(e) => {
+              e.stopPropagation(); // 모달 자체의 클릭 이벤트가 실행되지 않도록 이벤트 전파를 막음
               setNotification((prev) => ({ ...prev, show: false }))
+            }
             }
           >
             확인
