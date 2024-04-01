@@ -16,8 +16,8 @@ const All = styled.div`
   width: 100%;
   font-family: "GamtanRoad Dotum TTF";
   height: 100%;
-  padding-right: 3rem;
-  padding-left: 3rem;
+  padding-right: 2rem;
+  padding-left: 2rem;
   align-items: center;
 `;
 
@@ -30,8 +30,8 @@ const Content = styled.div`
 `;
 
 const Img = styled.div<ImgProps>`
-  width: 20rem;
-  height: 20rem;
+  width: 19rem;
+  height: 19rem;
   background-image: ${(props) => `url(${props.backgroundImage})`};
   background-size: cover;
   background-position: center;
@@ -61,12 +61,13 @@ const Num = styled.div`
 const HeartBox = styled.div`
   display: flex;
   width: 21rem;
-  padding: 0rem 1.125rem 0rem 17.125rem;
+  padding: 0rem 2rem 0rem 0;
   justify-content: flex-end;
   align-items: center;
   gap: 0.375rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  margin-right: 1rem;
 `;
 
 const CommunityContent = () => {
@@ -76,6 +77,8 @@ const CommunityContent = () => {
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
   });
+
+  console.log(community);
 
   const { mutate } = useMutation({
     mutationFn: () => toggleLike(communityId),
@@ -97,20 +100,18 @@ const CommunityContent = () => {
 
   return (
     <All>
-      {community.imgurls && community.imgurls.length > 0 && (
-        <Swiper
-          modules={[Navigation]}
-          navigation
-          spaceBetween={50}
-          slidesPerView={1}
-        >
-          {community.imgurls.map((url: string, index: number) => (
-            <SwiperSlide key={index}>
-              <Img backgroundImage={url} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      )}
+      <Swiper
+        modules={[Navigation]}
+        navigation
+        spaceBetween={50}
+        slidesPerView={1}
+      >
+        {community.imgs.map((imgObject) => (
+          <SwiperSlide key={imgObject.id}>
+            <Img backgroundImage={imgObject.imgStoreUrl} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
       <Content>{community.content}</Content>
 
       <HeartBox>

@@ -130,6 +130,7 @@ const CommunityComment = () => {
   const { communityId } = useParams<{ communityId: string }>();
   const queryClient = useQueryClient();
 
+  // 댓글 생성
   const { mutate, isLoading } = useMutation({
     mutationFn: createComment,
     onSuccess: () => {
@@ -148,6 +149,20 @@ const CommunityComment = () => {
 
     mutate({ commentContent: comment, communityId: communityId });
   };
+  // 댓글 삭제
+
+  const { mutate: deleteCommentMutation } = useMutation({
+    mutationFn: DeleteComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["allCommentData", communityId]);
+      console.log("댓글 삭제 성공");
+    },
+    onError: (error) => {
+      console.error("댓글 삭제 오류:", error);
+    },
+  });
+
+  // 전체 댓글 조회
   const { data: allCommentData, isLoading: Loading } = useQuery({
     queryKey: ["allCommentData", communityId],
     queryFn: communityId ? () => fetchAllComments(communityId) : undefined,
@@ -157,6 +172,7 @@ const CommunityComment = () => {
   if (Loading) {
     return <div>Loading...</div>;
   }
+
   return (
     <All>
       {allCommentData?.map((CommentData) => (
@@ -171,7 +187,16 @@ const CommunityComment = () => {
           <CommentTime>
             <Comment>{CommentData.commentcontent}</Comment>
             <Time>{formatDate(CommentData.localDateTime)}</Time>
-            <Delete>댓글삭제</Delete>
+            <Delete
+              onClick={() =>
+                deleteCommentMutation({
+                  communityId,
+                  commentId: CommentData.id,
+                })
+              }
+            >
+              댓글삭제
+            </Delete>
           </CommentTime>
         </CommentContainer>
       ))}

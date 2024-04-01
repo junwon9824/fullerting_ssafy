@@ -204,12 +204,12 @@ const TopBar = ({
     navigate(-1);
   };
 
-  const { communityId } = useParams<{ communityId: string }>();
-  const { data: community } = useQuery({
-    queryKey: ["CommunityDetail"],
-    queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
-  });
-  console.log(community);
+  // const { communityId } = useParams<{ communityId: string }>();
+  // const { data: community } = useQuery({
+  //   queryKey: ["CommunityDetail"],
+  //   queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
+  // });
+  // console.log(community);
   // const { mutate } = useMutation({
   //   mutationFn: () => toggleLike(communityId),
   //   onSuccess: () => {

@@ -243,7 +243,6 @@ const TradeChat = () => {
         const chatRequest = {
           chatRoomId: chatNumber,
           chatMessage: messageReq.chatMessage,
-          redirectURL: window.location.pathname,
         };
 
         stompClient.send(`/pub/chat`, {}, JSON.stringify(chatRequest));
@@ -253,6 +252,7 @@ const TradeChat = () => {
       }
     }
   };
+
   return (
     <>
       <TopBar title="채팅" showBack={true} />

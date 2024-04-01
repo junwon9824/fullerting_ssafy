@@ -404,9 +404,8 @@ const TradeBuyerDetail = () => {
     error: IndividualUserDetailError,
   } = useQuery({
     queryKey: ["individualUserDetail"],
-    queryFn: accessToken
-      ? () => userIndividualCheck(accessToken, data?.exArticleResponse.userId)
-      : undefined,
+    queryFn: () => userIndividualCheck(accessToken, data?.exArticleResponse.userId),
+    enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
   });
   return (
     // <AppContainer>
@@ -466,7 +465,7 @@ const TradeBuyerDetail = () => {
               </Situation>
               <TextStyle>
                 {dealListData &&
-                  dealListData[dealListData.length - 1].bidcount | 0}
+                  dealListData[dealListData.length - 1]?.bidcount | 0}
                 명
               </TextStyle>
             </SituationGroup>

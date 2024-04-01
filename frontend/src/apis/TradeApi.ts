@@ -243,7 +243,10 @@ export const createChatRoom = () => {
       }
       const response = await api.post(
         "/chat-room",
-        { exArticleId },
+        {
+          exArticleId: exArticleId, // 여기서 exArticleId는 이미 정의된 변수를 가정
+          redirectURL: window.location.pathname
+        },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
