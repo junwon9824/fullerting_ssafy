@@ -151,7 +151,10 @@ export const DeleteArticle = async (communityId:string) => {
     return response.data.data_body;
   } catch (error) {
     console.error("Error createComment: ", error);
+    window.alert("내가 작성한 게시물이 아닙니다."); // 에러 발생 시 알림창 띄우기
+
     throw error;
+
   }
 }
 
