@@ -153,6 +153,7 @@ public class DiaryServiceImpl implements DiaryService{
         diaryRepository.save(diary.toBuilder()
                 .title(updateDiaryRequest.getDiaryTitle())
                 .content(updateDiaryRequest.getDiaryContent())
+                .selectedAt(updateDiaryRequest.getDiarySelectedAt())
                 .build());
     }
 
