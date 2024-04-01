@@ -15,6 +15,7 @@ import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.trans.model.entity.Trans;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.CreatedDate;
@@ -115,7 +116,6 @@ public class ExArticle {
         }
 
     }
-
     public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
 //        Favorite favorite1 = null;

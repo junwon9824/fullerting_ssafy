@@ -23,7 +23,7 @@ const LayoutMainBox = styled.main`
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
+  /* height: 100vh; */
   padding-top: 3.125rem;
   padding-bottom: 6rem;
   gap: 1rem;
@@ -38,7 +38,7 @@ const LayoutInnerBox = styled.div`
   align-items: flex-start;
   gap: 1.5rem;
   padding: 1.12rem 0;
-  overflow: hidden;
+  overflow: auto;
 `;
 const ProfileImage = styled.img`
   width: 2.5625rem;
@@ -88,6 +88,11 @@ const Content = styled.div`
   font-weight: 400;
   display: flex;
 `;
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const TradeChatRoom = () => {
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
@@ -135,7 +140,7 @@ const TradeChatRoom = () => {
     navigate(`/trade/${chatRoomId}/chat`);
   };
   return (
-    <>
+    <PageContainer>
       <TopBar title="채팅 목록" showBack={true} />
 
       <LayoutMainBox>
@@ -159,7 +164,7 @@ const TradeChatRoom = () => {
           ))}
         </LayoutInnerBox>
       </LayoutMainBox>
-    </>
+    </PageContainer>
   );
 };
 

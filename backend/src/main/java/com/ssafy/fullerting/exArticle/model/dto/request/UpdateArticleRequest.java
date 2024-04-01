@@ -28,7 +28,8 @@ public class UpdateArticleRequest {
     private Long packdiaryid = null; // packdiary id
     //    private List<Long> unmodifiedimageid;
     private List<Long> images;
-    private List<MultipartFile> newImages;
+
+//    private List<MultipartFile> newImages;
 
 
 }

@@ -183,6 +183,7 @@ const WriteBox = styled.img`
   position: fixed;
   right: 1.19rem;
   bottom: 4.75rem;
+  z-index: 10;
 `;
 
 const TradeLikeCategory = () => {
