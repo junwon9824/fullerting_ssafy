@@ -201,7 +201,7 @@ public class ExArticleService {
 
     public List<ExArticleAllResponse> allArticle() {
 
-        List<ExArticle> exArticle = exArticleRepository.findAll();
+        List<ExArticle> exArticle = exArticleRepository.findAllByOrderByCreated_atDesc();
         CustomUser user = UserResponse.toEntity(userService.getUserInfo());
 //        log.info("eeeeeeeeeeeee" + exArticle.stream().
 //                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
