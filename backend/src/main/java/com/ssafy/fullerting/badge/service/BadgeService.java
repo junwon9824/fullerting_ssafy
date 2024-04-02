@@ -35,7 +35,9 @@ public class BadgeService {
 
         if (existedBadge.isPresent()) {
             // 이미 뱃지를 소유하고 있으면 예외 처리
-            throw new RuntimeException("사용자가 이미 뱃지를 소유하고 있습니다 : " + targetBadge.getName());
+            log.warn("이미 획득했던 뱃지입니다");
+            return null;
+//            throw new RuntimeException("사용자가 이미 뱃지를 소유하고 있습니다 : " + targetBadge.getName());
         } else {
             // targetBadge를 MyBadge에 저장
             MyBadge myBadge = new MyBadge();
