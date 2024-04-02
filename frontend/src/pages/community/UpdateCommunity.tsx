@@ -51,6 +51,7 @@ const NavVlaue = styled.div`
 const TradePost = () => {
 
   const location = useLocation();
+  
   const [title, setTitle] = useInput(location.state?.title || "");
 
   const [content, setContent] = useInput(location.state?.content || "");
@@ -159,7 +160,13 @@ const TradePost = () => {
       <Create>
         <Nav>
           <NavVlaue>카테고리</NavVlaue>
-
+          
+          <RadioButton
+            name="exampleRadioGroup"
+            value="텃밭요리"
+            checked={tradeType === "텃밭요리"}
+            onChange={() => handleRadioButtonChange("텃밭요리")}
+          />
           <RadioButton
             name="exampleRadioGroup"
             value="자유게시판"
@@ -172,12 +179,7 @@ const TradePost = () => {
             checked={tradeType === "작물소개"}
             onChange={() => handleRadioButtonChange("작물소개")}
           />
-          <RadioButton
-            name="exampleRadioGroup"
-            value="텃밭요리"
-            checked={tradeType === "텃밭요리"}
-            onChange={() => handleRadioButtonChange("텃밭요리")}
-          />
+          
           <RadioButton
             name="exampleRadioGroup"
             value="꿀팁공유"

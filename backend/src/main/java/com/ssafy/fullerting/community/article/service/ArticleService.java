@@ -261,6 +261,18 @@ public class ArticleService {
                         return articleResponse;
                     })
                     .collect(Collectors.toList());
+        } else if (keyword.equals("전체")) {
+            return articleRepository.findAll().stream().map(article -> {
+                        boolean mylove = false;
+                        if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), article.getId()) != null) {
+                            mylove = true;
+                        }
+                        UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
+                        CustomUser user = userResponse1.toEntity(userResponse1);
+                        ArticleResponse articleResponse = article.toResponse(article, mylove, user);
+                        return articleResponse;
+                    })
+                    .collect(Collectors.toList());
         } else {
             return articleRepository.findAllByType((ArticleType.꿀팁공유)).stream().map(article -> {
                         boolean mylove = false;
