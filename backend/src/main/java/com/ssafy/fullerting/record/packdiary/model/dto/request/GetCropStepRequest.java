@@ -10,5 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class GetCropStepRequest {
-    private int cropStepGrowth;
+    private String cropTypeName; //작물 종류
+    private int cropStepGrowth; //작물 단계
+    private Double confidenceScore; //정확도
 }
