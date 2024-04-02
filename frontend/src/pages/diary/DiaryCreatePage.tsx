@@ -79,6 +79,7 @@ const DiaryCreatePage = () => {
             placeholder=""
             value={selectedDate}
             onChange={handleDateChange}
+            min={crop.packDiaryCulStartAt}
             max={new Date().toISOString().slice(0, 10)}
           />
           <StyledInput

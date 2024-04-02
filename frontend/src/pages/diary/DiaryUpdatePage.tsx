@@ -60,7 +60,7 @@ const DiaryUpdatePage = () => {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().slice(0, 10)
   );
-  
+
   const [images, setImages] = useState<ImageType[]>([]);
   const [title, onTitle, setTitle] = useInput("");
   const [content, onContent, setContent] = useInput("");
@@ -117,7 +117,6 @@ const DiaryUpdatePage = () => {
 
   const handleDeleteImage = (id: number) => {
     setImages(images.filter((img) => img.id !== id));
-    
   };
 
   return (
@@ -138,6 +137,7 @@ const DiaryUpdatePage = () => {
                 placeholder=""
                 value={selectedDate}
                 onChange={handleDateChange}
+                min={crop.packDiaryCulStartAt}
                 max={new Date().toISOString().slice(0, 10)}
               />
               <StyledInput
