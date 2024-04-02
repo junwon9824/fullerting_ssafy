@@ -153,6 +153,7 @@ const DiaryUpdatePage = () => {
                 placeholder="제목을 입력해주세요"
                 onChange={onTitle}
                 value={title}
+                maxLength={16}
               />
               <StyledTextArea
                 label="내용"
