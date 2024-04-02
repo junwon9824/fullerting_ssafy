@@ -175,7 +175,7 @@ const TradeChat = () => {
       : undefined,
   });
 
-  console.log("데이터", detailData);
+  console.log("데이터", data);
   // const {
   //   isLoading: userDataIsLoading,
   //   data: userData,
@@ -186,13 +186,13 @@ const TradeChat = () => {
   // });
   const { mutate: finishClick } = useDealFinish();
   const navigate = useNavigate();
-  console.log("이거닷", detailData?.chatRoomExArticleId);
+  console.log("이거닷", detailData);
   const handleFinishClick = () => {
     const isConfirmed = window.confirm("거래를 종료하시겠습니까?");
     if (isConfirmed) {
       finishClick(
         {
-          postId: data?.exArticleResponse.exArticleId,
+          postId: detailData?.chatRoomExArticleId,
           exArticlePurchaserId: detailData?.chatRoomBuyerId,
         },
         {
