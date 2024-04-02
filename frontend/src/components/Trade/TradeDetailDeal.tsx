@@ -306,14 +306,7 @@ const TradeDetailDeal = () => {
   //   navigate("/trade");
   // };
   const { mutate: finishClick } = useDealFinish();
-  const handleFinishClick = () => {
-    const isConfirmed = window.confirm("거래를 종료하시겠습니까?");
-    if (isConfirmed) {
-      finishClick(data?.exArticleResponse.exArticleId, {
-        onSuccess: () => navigate("/trade"),
-      });
-    }
-  };
+
   return (
     <>
       {data?.exArticleResponse.userId === data?.userResponse.id ? (
@@ -365,7 +358,7 @@ const TradeDetailDeal = () => {
                 </ClassesText>
               </Name>
             </Profile>
-            <DoneBtn onClick={handleFinishClick}>거래 종료</DoneBtn>
+
             <Date>{formatDateAndTime(data?.exArticleResponse.time)}</Date>
           </InfoBox>
           <TitleBox>
