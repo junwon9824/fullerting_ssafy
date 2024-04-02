@@ -286,12 +286,12 @@ const TradeModify = () => {
     //   formData.append("images", file);
     // });
 
-
-    if (selectedFiles.length === 0) { // 없어도 1이라 여기는 안와
+    if (selectedFiles.length === 0) {
+      // 없어도 1이라 여기는 안와
       // 이미지 파일이 없을 경우 빈 문자열을 서버에 보냅니다.
-      console.log("no imaggggggggggggg")
+      console.log("no imaggggggggggggg");
       formData.append("images", new Blob([], { type: "application/json" }));
-      window.alert('0')
+      window.alert("0");
     }
 
     console.log("imagggggggggggggggg" + images);
