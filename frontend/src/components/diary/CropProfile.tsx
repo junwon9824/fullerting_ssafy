@@ -36,6 +36,12 @@ const CropImageBox = styled.div`
   margin: 0.6rem;
 `;
 
+const CropImg = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+`;
+
 const CropInfoBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -98,7 +104,7 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
     <CropProfileBox>
       <Box>
         <CropImageBox>
-          <img src={crop.cropTypeImgUrl} alt="" />
+          <CropImg src={crop.cropTypeImgUrl} alt="" />
         </CropImageBox>
         <Align>
           <CropTitle>
