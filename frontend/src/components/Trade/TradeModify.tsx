@@ -202,8 +202,6 @@ const TradeModify = () => {
 
 
 
-
-
   useEffect(() => {
     console.log(document.body);
     // 모달이 열리면 body의 overflow를 hidden으로 설정
@@ -213,7 +211,7 @@ const TradeModify = () => {
       document.body.style.overflow = "unset";
     }
 
-    console.log('lengthhhhhhhhhhhhhhh ' + location.state.imageResponse.length)
+    console.log('lengthhhhhhhhhhhhhhh ' + JSON.stringify( location.state.imageResponse[0]))
     setImages(location.state.imageResponse);
     // 컴포넌트가 언마운트 될 때 원래 상태로 복구
     return () => {
@@ -322,11 +320,7 @@ const TradeModify = () => {
 
 
 
-
-  const handleDeleteImage = (id: number) => {
-    setImages(images.filter((img) => img.id !== id));
-  };
-
+ 
 
   return (
     <>
