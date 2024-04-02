@@ -221,6 +221,7 @@ const TradeDetailDeal = () => {
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
   });
+  console.log("디테일 데이터", data);
 
   const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
   const {
