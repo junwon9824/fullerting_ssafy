@@ -158,7 +158,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     @Override
     public GetDetailChatRoomResponse getDetailChatRoom(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(()->new ChatException(NOT_EXISTS_CHAT_ROOM));
+        GetDetailChatRoomResponse getDetailChatRoomResponse = GetDetailChatRoomResponse.toResponse(chatRoom.getExArticle());
+        getDetailChatRoomResponse = getDetailChatRoomResponse.toBuilder()
+                .chatRoomBuyerId(chatRoom.getBuyer().getId()).build();
 
-        return GetDetailChatRoomResponse.toResponse(chatRoom.getExArticle());
+        return getDetailChatRoomResponse;
     }
 }
