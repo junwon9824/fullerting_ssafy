@@ -20,6 +20,8 @@ import TradeSharingCategory from "../../components/Trade/TradeSharingCategory";
 import TradeLikeCategory from "../../components/Trade/TradeLikeCategory";
 import { useSSEConnection } from "../../hooks/useSSEConnection";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { userCheck } from "../../apis/UserApi";
 
 const TownBox = styled.div`
   display: flex;
@@ -47,6 +49,15 @@ const TradePage = () => {
     flex-grow: 1;
     /* z-index: -1; */
   `;
+  const accessToken = sessionStorage.getItem("accessToken");
+  const {
+    isLoading: isLoadingUserDetail,
+    data: userData,
+    error: userDetailError,
+  } = useQuery({
+    queryKey: ["userDetail"],
+    queryFn: accessToken ? () => userCheck(accessToken) : undefined,
+  });
   const renderSelectedComponent = () => {
     switch (selectButton) {
       case 0:
@@ -91,6 +102,7 @@ const TradePage = () => {
               />
             </SvgBox>
           </TownBox>
+          {userData?.location ? null : <p>동네인증을 해주세요</p>}
           {renderSelectedComponent()}
           <NavBar />
         </LayoutInnerBox>

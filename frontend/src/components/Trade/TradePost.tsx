@@ -11,16 +11,27 @@ import SelectModal from "../../components/Trade/SelectModal";
 import Diary from "/src/assets/svg/plus-diary.svg";
 import Camera from "/src/assets/svg/camera.svg";
 import MultiFileUploadInput from "../../components/common/Input/MultiFileUploadInput";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { usePost } from "../../apis/TradeApi";
 import { useAtom } from "jotai";
 import { imageFilesAtom, selectedDiaryIdAtom } from "../../stores/trade";
 import { BottomButton } from "../common/Button/LargeButton";
 import { useNavigate } from "react-router-dom";
+import { getCropList } from "../../apis/DiaryApi";
 
 interface BackGround {
   backgroundColor?: string;
   zIndex?: number;
+}
+interface Response {
+  packDiaryId: number;
+  packDiaryTitle: string;
+  packDiaryCulStartAt: string;
+  packDiaryCulEndAt: string;
+  packDiaryGrowthStep: number;
+  packDiaryCreatedAt: string;
+  cropTypeName: string;
+  cropTypeImgUrl: string;
 }
 const RadioBox = styled.div`
   width: 100%;
@@ -170,7 +181,6 @@ const TradePost = () => {
     { title: "일반 거래", value: "GENERAL_TRANSACTION" },
     { title: "나눔", value: "SHARING" },
   ];
-
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   // console.log("타입을 알려주세요", typeof selectedFiles);
   const { mutate: handlePost } = usePost();
@@ -214,7 +224,19 @@ const TradePost = () => {
       console.error("업로드 실패:", error);
     }
   };
-  console.log("전 다이어리에요", diary);
+  const accessToken = sessionStorage.getItem("accessToken");
+  const {
+    isLoading: cropIsLoading,
+    data: cropData,
+    error: cropError,
+  } = useQuery({
+    queryKey: ["cropList"],
+    queryFn: accessToken ? () => getCropList(accessToken) : undefined,
+  });
+  const selectedDiary: Response = cropData?.find(
+    (res: Response) => res.packDiaryId === diary
+  );
+
   return (
     <>
       {modal && (
@@ -324,7 +346,11 @@ const TradePost = () => {
           <DiarySquare onClick={openModal}>
             <img src={Diary} alt="diary" />
           </DiarySquare>
-          {diary && <DiarySelectedText>선택되었습니다</DiarySelectedText>}
+          {diary && (
+            <DiarySelectedText>
+              <p>{selectedDiary.packDiaryTitle}가(이) 선택되었습니다</p>
+            </DiarySelectedText>
+          )}
         </DiaryBox>
         <DiaryBox>
           <MultiFileUploadInput />

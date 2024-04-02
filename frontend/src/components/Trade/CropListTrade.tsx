@@ -62,9 +62,9 @@ const CropListTrade: React.FC<CropListTradeProps> = ({ onDiarySelect }) => {
   }
 
   const handleCardClick = (cropData: CropType) => {
-    navigate(`/trade/post`);
+    // navigate(`/trade/post`);
     onDiarySelect(cropData.packDiaryId);
-    console.log(cropData);
+    // console.log(cropData);
   };
 
   return (

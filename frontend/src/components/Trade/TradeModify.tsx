@@ -11,13 +11,18 @@ import SelectModal from "../../components/Trade/SelectModal";
 import Diary from "/src/assets/svg/plus-diary.svg";
 import Camera from "/src/assets/svg/camera.svg";
 import MultiFileUploadInput from "../../components/common/Input/MultiFileUploadInput";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { usePost, useUpdateArticle } from "../../apis/TradeApi";
 import { useAtom } from "jotai";
-import { imageFilesAtom, oldImagesAtom, selectedDiaryIdAtom } from "../../stores/trade";
+import {
+  imageFilesAtom,
+  oldImagesAtom,
+  selectedDiaryIdAtom,
+} from "../../stores/trade";
 import { BottomButton } from "../common/Button/LargeButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import FileUploadInput from "../common/Input/FileUploadInput";
+import { getCropList } from "../../apis/DiaryApi";
 
 interface BackGround {
   backgroundColor?: string;
@@ -26,6 +31,16 @@ interface BackGround {
 interface ImageInfo {
   id: number;
   imgStoreUrl: string;
+}
+interface Response {
+  packDiaryId: number;
+  packDiaryTitle: string;
+  packDiaryCulStartAt: string;
+  packDiaryCulEndAt: string;
+  packDiaryGrowthStep: number;
+  packDiaryCreatedAt: string;
+  cropTypeName: string;
+  cropTypeImgUrl: string;
 }
 const DiarySelectedText = styled.span`
   display: flex;
@@ -153,9 +168,7 @@ const RegisterBox = styled.div`
   flex-wrap: wrap;
 `;
 
-
 const TradeModify = () => {
-
   const location = useLocation();
   const isEditMode = Boolean(location.state);
   const [title, setTitle] = useInput(location.state?.exArticleTitle || "");
@@ -199,9 +212,6 @@ const TradeModify = () => {
   };
   const [isLoading, setIsLoading] = useState(false);
 
-
-
-
   useEffect(() => {
     console.log(document.body);
     // 모달이 열리면 body의 overflow를 hidden으로 설정
@@ -211,7 +221,9 @@ const TradeModify = () => {
       document.body.style.overflow = "unset";
     }
 
-    console.log('lengthhhhhhhhhhhhhhh ' + JSON.stringify( location.state.imageResponse[0]))
+    console.log(
+      "lengthhhhhhhhhhhhhhh " + JSON.stringify(location.state.imageResponse[0])
+    );
     setImages(location.state.imageResponse);
     // 컴포넌트가 언마운트 될 때 원래 상태로 복구
     return () => {
@@ -239,90 +251,97 @@ const TradeModify = () => {
   const { mutate: handleModified } = useUpdateArticle();
   const [newimage, setnewimage] = useState<File[]>([]);
 
-
   const handleCheckClick = async () => {
-
-    console.log("저 여기 왔어요", 111111);
-    const formData = new FormData();
-    console.log(location.state.imageResponse[0].imgStoreUrl);
-
-
-    const newFiles: File[] = [];
-
-    selectedFiles.forEach((file) => {
-      if (file instanceof File) {
-        newFiles.push(file);
-      }
-    });
-
-    console.log('newfile'+newFiles.length)
-    
-    setnewimage(newFiles.length > 0 ? [newFiles[0]] : []);
-
-    if (newFiles.length === 0) { // 새로운 이미지
-      formData.append("images", new Blob([]));
+    if (selectedFiles.length === 0) {
+      alert("사진을 등록하세요");
     } else {
+      console.log("저 여기 왔어요", 111111);
+      const formData = new FormData();
+      console.log(location.state.imageResponse[0].imgStoreUrl);
+
+      const newFiles: File[] = [];
+
       selectedFiles.forEach((file) => {
-        formData.append("images", file);
-        console.log("formapppppppp"+file.name)
+        if (file instanceof File) {
+          newFiles.push(file);
+        }
       });
-    }
-    console.log('selectedFilesselectedFiles'+selectedFiles.length)
 
+      console.log("newfile" + newFiles.length);
 
-    console.log("ffffffffffffffff")
+      setnewimage(newFiles.length > 0 ? [newFiles[0]] : []);
 
-    // // selectedFiles에 있는 각 파일을 FormData에 추가
-    // selectedFiles.forEach((file) => {
-    //   formData.append("images", file);
-    // });
+      if (newFiles.length === 0) {
+        // 새로운 이미지
+        formData.append("images", new Blob([]));
+      } else {
+        selectedFiles.forEach((file) => {
+          formData.append("images", file);
+          console.log("formapppppppp" + file.name);
+        });
+      }
+      console.log("selectedFilesselectedFiles" + selectedFiles.length);
 
+      console.log("ffffffffffffffff");
 
-    if (selectedFiles.length === 0) { // 없어도 1이라 여기는 안와
-      // 이미지 파일이 없을 경우 빈 문자열을 서버에 보냅니다.
-      console.log("no imaggggggggggggg")
-      formData.append("images", new Blob([], { type: "application/json" }));
-      window.alert('0')
-    }
+      // // selectedFiles에 있는 각 파일을 FormData에 추가
+      // selectedFiles.forEach((file) => {
+      //   formData.append("images", file);
+      // });
 
+      if (selectedFiles.length === 0) {
+        // 없어도 1이라 여기는 안와
+        // 이미지 파일이 없을 경우 빈 문자열을 서버에 보냅니다.
+        console.log("no imaggggggggggggg");
+        formData.append("images", new Blob([], { type: "application/json" }));
+        window.alert("0");
+      }
 
-    console.log("imagggggggggggggggg" + images)
+      console.log("imagggggggggggggggg" + images);
 
-    const updateInfo = {
-      exArticleTitle: title,
-      exArticleContent: content,
-      ex_article_location: place,
-      exArticleType: tradeType,
-      packdiaryid: showDiary,
-      dealCurPrice: cash,
-      // unmodifiedimageid: [],
-      images: images.map((img) => img.id),
+      const updateInfo = {
+        exArticleTitle: title,
+        exArticleContent: content,
+        ex_article_location: place,
+        exArticleType: tradeType,
+        packdiaryid: showDiary,
+        dealCurPrice: cash,
+        // unmodifiedimageid: [],
+        images: images.map((img) => img.id),
 
-      // 이곳에 수정할 다른 필드 정보를 추가합니다.
-    };
+        // 이곳에 수정할 다른 필드 정보를 추가합니다.
+      };
 
-    formData.append(
-      "updateInfo",
-      new Blob([JSON.stringify(updateInfo)], { type: "application/json" })
-    );
-    try {
-      await handleModified({ postId, formData });
-      setSelectedFiles([]);
-      setImages([]);
-      navigate(-1);
-      // 요청 성공 후 페이지 이동 또는 상태 업데이트
-      // navigate("/trade");
-    } catch (error) {
-      // 오류 처리
-      console.error("업로드 실패:", error);
+      formData.append(
+        "updateInfo",
+        new Blob([JSON.stringify(updateInfo)], { type: "application/json" })
+      );
+      try {
+        await handleModified({ postId, formData });
+        setSelectedFiles([]);
+        setImages([]);
+        navigate(-1);
+        // 요청 성공 후 페이지 이동 또는 상태 업데이트
+        // navigate("/trade");
+      } catch (error) {
+        // 오류 처리
+        console.error("업로드 실패:", error);
+      }
     }
   };
-
-
-
-
- 
-
+  // 작물일지 불러오기
+  const accessToken = sessionStorage.getItem("accessToken");
+  const {
+    isLoading: cropIsLoading,
+    data: cropData,
+    error: cropError,
+  } = useQuery({
+    queryKey: ["cropList"],
+    queryFn: accessToken ? () => getCropList(accessToken) : undefined,
+  });
+  const selectedDiary: Response = cropData?.find(
+    (res: Response) => res.packDiaryId === diary
+  );
   return (
     <>
       {modal && (
@@ -429,13 +448,16 @@ const TradeModify = () => {
           <DiarySquare onClick={openModal}>
             <img src={Diary} alt="diary" />
           </DiarySquare>
-          {diary && <DiarySelectedText>선택되었습니다</DiarySelectedText>}
+          {diary && (
+            <DiarySelectedText>
+              {selectedDiary.packDiaryTitle}가(이) 선택되었습니다
+            </DiarySelectedText>
+          )}
         </DiaryBox>
 
         <DiaryBox>
           <MultiFileUploadInput />
         </DiaryBox>
-
 
         {/* <RegisterBox>
           {images.map((image) => (
@@ -467,7 +489,6 @@ const TradeModify = () => {
           ))}
 
         </RegisterBox> */}
-
       </TradePostLayout>
       <BottomButton
         onClick={handleCheckClick}
