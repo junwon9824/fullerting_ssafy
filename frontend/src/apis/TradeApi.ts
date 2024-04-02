@@ -425,6 +425,7 @@ export const useDealFinish = () => {
       const response = await api.patch(`/exchanges/${postId}/done`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
+      console.log(response);
       return response;
     },
     onSuccess: (res) => {
