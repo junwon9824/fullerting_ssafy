@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { TopBar } from "../common/Navigator/navigator";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Send from "/src/assets/images/send.png";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
@@ -234,6 +234,14 @@ const TradeChat = () => {
     };
     // accessToken, chatNumber가 변경될 때만 연결 및 해제 로직 실행
   }, [accessToken, chatNumber, queryClient]);
+  // 스크롤 가장 아래로 내리기
+  const messageEndRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollTop = messageEndRef.current.scrollHeight;
+    }
+    // messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [data]);
   const sendMessage = async () => {
     if (stompClient && newMessage.trim() !== "") {
       try {
@@ -265,7 +273,7 @@ const TradeChat = () => {
               <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
             ) : null}
           </ProductBox>
-          <ChatBox>
+          <ChatBox ref={messageEndRef}>
             {data?.map((item: any) =>
               item.chatSenderId === userData?.data.data_body.id ? (
                 <ChattingBox
