@@ -17,6 +17,7 @@ import java.util.List;
 @Builder
 public class ExArticleRegisterRequest {
 
+
     private Long id;
     private String exArticleTitle;
     private String exArticleContent;
