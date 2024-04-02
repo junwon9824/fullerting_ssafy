@@ -11,6 +11,7 @@ interface StyledInputType {
   value?: string;
   min?: string;
   max?: string;
+  maxLength?: number;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
 }
@@ -68,6 +69,7 @@ const StyledInput = ({
   max,
   onChange,
   disabled,
+  maxLength,
 }: StyledInputType) => {
   return (
     <>
@@ -82,6 +84,7 @@ const StyledInput = ({
           onChange={onChange}
           value={value}
           disabled={disabled}
+          maxLength={maxLength}
         />
       )}
       {label && (
@@ -100,6 +103,7 @@ const StyledInput = ({
             onChange={onChange}
             value={value}
             disabled={disabled}
+            maxLength={maxLength}
           />
         </InputBox>
       )}
