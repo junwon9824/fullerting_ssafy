@@ -305,7 +305,7 @@ const TradeModify = () => {
         ex_article_location: place,
         exArticleType: tradeType,
         packdiaryid: showDiary,
-        dealcurprice: location.state?.deal_cur_price,
+        price: location.state?.deal_cur_price,
         // unmodifiedimageid: [],
         images: images.map((img) => img),
 
