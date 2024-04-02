@@ -81,10 +81,16 @@ const FileUploadInput: React.FC = () => {
       const newFiles = Array.from(files);
       setSelectedFiles([...selectedFiles, ...newFiles]);
 
-      const newPreviewURLs = Array.from(files).map((file: File) =>
-        URL.createObjectURL(file)
-      );
-      setPreviewURLs([...previewURLs, ...newPreviewURLs]);
+      if (selectedFiles.length >= 5) {
+        alert("최대 5개의 파일까지만 선택할 수 있습니다.");
+        const limitedFiles = Array.from(selectedFiles).slice(0, 5);
+        setSelectedFiles(limitedFiles);
+      } else {
+        const newPreviewURLs = Array.from(files).map((file: File) =>
+          URL.createObjectURL(file)
+        );
+        setPreviewURLs([...previewURLs, ...newPreviewURLs]);
+      }
     }
   };
 
@@ -105,7 +111,7 @@ const FileUploadInput: React.FC = () => {
   return (
     <FlexColumn>
       <div>
-        <LabelSpan>사진 등록</LabelSpan>
+        <LabelSpan>사진 등록(최대 5장)</LabelSpan>
       </div>
 
       <RegisterBox>
@@ -143,6 +149,7 @@ const FileUploadInput: React.FC = () => {
           onClick={handleFileUpload}
           accept="image/*"
           multiple
+          disabled={selectedFiles.length >= 5}
         />
 
         {previewURLs.map((previewURL, index) => (
