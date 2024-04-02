@@ -1,23 +1,18 @@
-package com.ssafy.fullerting.exArticle.model.dto.response;
+package com.ssafy.fullerting.deal.model.dto.response;
 
-import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
-import com.ssafy.fullerting.favorite.model.dto.response.FavoriteResponse;
-import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.image.model.dto.response.ImageResponse;
-import com.ssafy.fullerting.image.model.entity.Image;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 @ToString
-public class ExArticleResponse {
+public class MyExArticleResponse {
 
     private String exLocation;
     private Long exArticleId;
@@ -25,7 +20,7 @@ public class ExArticleResponse {
     private String exArticleTitle;
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
     private List<ImageResponse> imageResponses; //
-//    private int price;
+    //    private int price;
     private LocalDateTime time;
     private String content;
     private boolean isdone;
