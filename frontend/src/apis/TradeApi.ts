@@ -69,7 +69,6 @@ export const getTradeList = async (accessToken: string) => {
 };
 export const getTradeDetail = async (accessToken: string, postId: number) => {
   try {
-    console.log("postid" + postId);
     const response = await api.get(`/exchanges/${postId}/detail`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
@@ -428,7 +427,7 @@ export const useDealFinish = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      return response.data;
+      return response.data.data_body;
     },
     onSuccess: (res) => {
       console.log("거래 종료", res);

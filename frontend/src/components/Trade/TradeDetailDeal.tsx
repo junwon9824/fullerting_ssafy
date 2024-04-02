@@ -298,6 +298,7 @@ const TradeDetailDeal = () => {
       deleteMutation(postId); // 삭제 함수 실행
     }
   };
+  console.log("머임", data?.exArticleResponse.exArticleId);
   // 거래 종료
   const { mutate: finishClick } = useDealFinish();
   const handleFinishClick = () => {

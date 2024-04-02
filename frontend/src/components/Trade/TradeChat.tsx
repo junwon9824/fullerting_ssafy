@@ -185,6 +185,7 @@ const TradeChat = () => {
   // });
   const { mutate: finishClick } = useDealFinish();
   const navigate = useNavigate();
+  console.log("이거닷", detailData?.chatRoomExArticleId);
   const handleFinishClick = () => {
     finishClick(detailData?.chatRoomExArticleId);
     navigate("/trade");
