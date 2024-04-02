@@ -274,6 +274,7 @@ const TradeChat = () => {
             {/* {detailData?.chatRoomExArticleId === userData?.data.data_body.id ? (
               <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
             ) : null} */}
+            <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
           </ProductBox>
           <ChatBox ref={messageEndRef}>
             {data?.map((item: any) =>
