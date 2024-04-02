@@ -11,6 +11,7 @@ const CropType = styled.div`
 `;
 
 const TipsBox = styled.div`
+  margin-top: 17px;
   display: flex;
   flex-direction: column;
   gap: 2rem;

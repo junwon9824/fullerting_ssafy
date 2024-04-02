@@ -215,6 +215,8 @@ const TradeDetailDeal = () => {
 
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
+  const [diary,setDiary]=useState<number>();
+
   const { isLoading, data, error } = useQuery({
     queryKey: ["tradeDetail", postNumber],
     queryFn: accessToken
@@ -222,6 +224,13 @@ const TradeDetailDeal = () => {
       : undefined,
   });
   console.log("디테일 데이터", data);
+  console.log("디테일 데이터", data?.packDiaryResponse);
+
+  // setDiary(data?.packDiaryResponse)
+
+  // console.log("디테일 데이터", data?.dealResponse);
+
+  // console.log("디테일 데이터", data.data.packDiaryResponse);
 
   const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
   const {
@@ -397,6 +406,9 @@ const TradeDetailDeal = () => {
 
             <DiaryBox>
               <img src={Tree} alt="tree" />
+
+              
+
               <NavigateText
                 onClick={() => {
                   DiaryId ? handleDiary(Number(DiaryId)) : null;
@@ -404,6 +416,7 @@ const TradeDetailDeal = () => {
               >
                 작물일지 이동하기
               </NavigateText>
+
             </DiaryBox>
             <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>
