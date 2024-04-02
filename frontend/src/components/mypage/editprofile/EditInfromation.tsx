@@ -67,7 +67,12 @@ const Maintop = () => {
   };
 
   const handleSubmit = async () => {
+      if(nickname==""){
+        window.alert("닉네임을 입력해주세요")
+      }
+
     editProfile({ newNickname: nickname });
+
   };
 
   if (error) {
