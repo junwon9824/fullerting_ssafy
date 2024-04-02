@@ -363,6 +363,13 @@ const TradeBuyerDetail = () => {
   const sendMessage = async () => {
     if (stompClient && newMessage.trim() !== "") {
       try {
+        if (
+          Number(newMessage) <=
+          dealListData[dealListData.length - 1]?.bidLogPrice
+        ) {
+          alert("최고가보다 더 높은 가격을 제안해주세요");
+          return;
+        }
         const messageReq = {
           dealCurPrice: newMessage,
         };
