@@ -152,6 +152,7 @@ public class ExArticle {
                 .isdone(article.isDone)
                 .content(article.getContent())
                 .userId(article.getUser().getId())
+                .price(article.getDeal().getDealCurPrice())
                 .build();
 
 
