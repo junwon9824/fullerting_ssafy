@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.exArticle.service;
 
+import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import com.ssafy.fullerting.deal.exception.DealErrorCode;
 import com.ssafy.fullerting.deal.exception.DealException;
 import com.ssafy.fullerting.deal.model.entity.Deal;
@@ -516,6 +517,7 @@ public class ExArticleService {
                         .build();
 
                 transRepository.save(trans);
+
                 article.setTrans(trans);
             }
 
@@ -533,6 +535,7 @@ public class ExArticleService {
 
                 transRepository.save(trans);
                 article.setTrans(trans);
+
             }
 
 //            Trans trans1 = transRepository.findById(article.getTrans().getId()).orElseThrow(() ->
@@ -556,7 +559,6 @@ public class ExArticleService {
             Optional<Integer> priceOptional = Optional.ofNullable(updateArticleRequest.getPrice());
             priceOptional.ifPresent(price -> {
                 trans.setTrans_sell_price(price);
-                article.setTrans(trans);
             });
 
             if (updateArticleRequest.getExArticleType().equals(ExArticleType.DEAL)) {
@@ -579,6 +581,10 @@ public class ExArticleService {
         }
 
 
+        article.setType(updateArticleRequest.getExArticleType());
+
+        log.info("updateinfo"+ updateArticleRequest.getExArticleType());
+        log.info("modified"+article.getType());
         ExArticle modifiedexArticle = exArticleRepository.save(article);
 
 //        log.info("modifff" + modifiedexArticle.getImage().get(0).getId());
