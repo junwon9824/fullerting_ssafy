@@ -23,7 +23,7 @@ const DiaryCreatePage = () => {
   const [crop] = useAtom(cropAtom);
   const [selectedFiles, setSelectedFiles] = useAtom(fileAtom);
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().slice(0, 10)
+    new Date(Date.now() + 1000 * 60 * 60 * 9).toISOString().slice(0, 10)
   );
   const [title, onTitle] = useInput("");
   const [content, onContent] = useInput("");
@@ -91,7 +91,9 @@ const DiaryCreatePage = () => {
                   value={selectedDate}
                   onChange={handleDateChange}
                   min={crop.packDiaryCulStartAt}
-                  max={new Date().toISOString().slice(0, 10)}
+                  max={new Date(Date.now() + 1000 * 60 * 60 * 9)
+                    .toISOString()
+                    .slice(0, 10)}
                 />
               )}
               <StyledInput
