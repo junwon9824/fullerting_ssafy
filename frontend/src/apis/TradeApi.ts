@@ -418,14 +418,35 @@ export const getChatRoomDetail = async (
   }
 };
 
+// export const useDealFinish = () => {
+//   return useMutation({
+//     mutationFn: async (postId: number) => {
+//       const accessToken = sessionStorage.getItem("accessToken");
+//       const response = await api.patch(`/exchanges/${postId}/done`, {
+//         headers: { Authorization: `Bearer ${accessToken}` },
+//       });
+//       return response;
+//     },
+//     onSuccess: (res) => {
+//       console.log("거래 종료", res);
+//     },
+//     onError: (error) => {
+//       console.log("거래 종료 실패", error);
+//     },
+//   });
+// };
 export const useDealFinish = () => {
   return useMutation({
     mutationFn: async (postId: number) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const response = await api.patch(`/exchanges/${postId}/done`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      console.log(response);
+      // headers를 요청의 세번째 파라미터인 옵션 객체 내에 포함
+      const response = await api.patch(
+        `/exchanges/${postId}/done`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
       return response;
     },
     onSuccess: (res) => {
