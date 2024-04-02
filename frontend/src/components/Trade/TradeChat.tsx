@@ -132,6 +132,7 @@ const Thumbnail = styled.img`
   width: 2.1875rem;
   height: 2.1875rem;
   border-radius: 50%;
+  flex-shrink: 0;
 `;
 const ContentBox = styled.div<ContentBoxProps>`
   word-break: break-word; /* 넘치는 텍스트를 줄바꿈 */
@@ -143,6 +144,7 @@ const ContentBox = styled.div<ContentBoxProps>`
   height: auto;
   border-radius: 0rem 0.625rem 0.625rem 0.625rem;
   background-color: ${(props) => props.backgroundColor};
+  flex-grow: 1;
 `;
 
 const TradeChat = () => {
