@@ -206,7 +206,12 @@ public class ExArticleService {
 //                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
 
         log.info(user.getLocation());
-        List<ExArticle> exArticle = exArticleRepository.findAllByOrderByCreated_atDescandlocation(user.getLocation());
+        StringBuilder sb = new StringBuilder();
+        String[] str = user.getLocation().split(" ");
+        sb.append(str[0] + " ");
+        sb.append(str[1]);
+
+        List<ExArticle> exArticle = exArticleRepository.findAllByOrderByCreated_atDescandlocation(sb.toString());
 
         for (ExArticle article : exArticle)
             log.info(article.getLocation());
