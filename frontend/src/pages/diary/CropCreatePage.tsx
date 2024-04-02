@@ -116,11 +116,20 @@ const CropCreatePage = () => {
                 작물을 선택해주세요
               </option>
               {types &&
-                types.map((type: CropTypeType) => (
-                  <option key={type.cropTypeId} value={type.cropTypeId}>
-                    {type.cropTypeName}
-                  </option>
-                ))}
+                types.map((type: CropTypeType) => {
+                  if (
+                    type.cropTypeId === 1 ||
+                    type.cropTypeId === 3 ||
+                    type.cropTypeId === 5
+                  ) {
+                    return (
+                      <option key={type.cropTypeId} value={type.cropTypeId}>
+                        {type.cropTypeName}
+                      </option>
+                    );
+                  }
+                  return null;
+                })}
             </Select>
           </SelectBox>
           <StyledInput
