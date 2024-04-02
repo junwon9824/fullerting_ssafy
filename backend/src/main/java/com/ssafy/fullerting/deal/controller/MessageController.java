@@ -75,11 +75,11 @@ public class MessageController {
                             .userId(bidUserId)
                             .build());
 
+
             // bid_log에서 distinct로 유일한 user_id 갯수 추출한 값 현재 입찰 참여자 수로 보내기
             int bidderCount = bidService.getBidderCount(exArticle);
             log.info("bidCount {}", bidderCount);
 
-            //
 
             // 구독할 때 -> 서버에서 어떤 이벤트나 데이터의 변경이 생기는 경우
             // 서버가 해당 sub를 구독하고 있는 유저들에게 메시지 전달

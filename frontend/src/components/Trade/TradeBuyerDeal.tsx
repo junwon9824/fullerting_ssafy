@@ -466,7 +466,7 @@ const TradeBuyerDetail = () => {
                 <TextStyle>
                   {dealListData && dealListData.length > 0
                     ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
-                    : `${data?.dealResponse.price}원`}
+                    : `${data?.dealResponse?.price}원`}
                 </TextStyle>
               </SituationGroup>
               <SituationGroup>
