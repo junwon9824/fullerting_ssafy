@@ -6,7 +6,7 @@ import {
 } from "../../components/common/Layout/Box";
 import { TopBar } from "../../components/common/Navigator/navigator";
 import CropProfile from "../../components/diary/CropProfile";
-import { cropAtom, diaryAtom, fileAtom } from "../../stores/diary";
+import { cropAtom, diaryAtom, fileAtom, imageAtom } from "../../stores/diary";
 import { useEffect, useState } from "react";
 import { BottomButton } from "../../components/common/Button/LargeButton";
 import StyledTextArea from "../../components/common/Input/StyledTextArea";
@@ -61,7 +61,7 @@ const DiaryUpdatePage = () => {
     new Date().toISOString().slice(0, 10)
   );
 
-  const [images, setImages] = useState<ImageType[]>([]);
+  const [images, setImages] = useAtom(imageAtom);
   const [title, onTitle, setTitle] = useInput("");
   const [content, onContent, setContent] = useInput("");
 
@@ -82,6 +82,7 @@ const DiaryUpdatePage = () => {
       navigate(`/diary/${diaryId}`);
       setIsLoading(false);
       setSelectedFiles([]);
+      setImages([]);
     },
     onError: (error) => {
       console.log(error);

@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
-import { fileAtom } from "../../../stores/diary";
+import { fileAtom, imageAtom } from "../../../stores/diary";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -73,6 +73,7 @@ const DeleteImageButton = styled.div`
 
 const FileUploadInput: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useAtom(fileAtom);
+  const [images] = useAtom(imageAtom);
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +82,7 @@ const FileUploadInput: React.FC = () => {
       const newFiles = Array.from(files);
       setSelectedFiles([...selectedFiles, ...newFiles]);
 
-      if (selectedFiles.length >= 5) {
+      if (selectedFiles.length + images.length >= 5) {
         alert("최대 5개의 파일까지만 선택할 수 있습니다.");
         const limitedFiles = Array.from(selectedFiles).slice(0, 5);
         setSelectedFiles(limitedFiles);
@@ -149,7 +150,7 @@ const FileUploadInput: React.FC = () => {
           onClick={handleFileUpload}
           accept="image/*"
           multiple
-          disabled={selectedFiles.length >= 5}
+          disabled={selectedFiles.length + images.length >= 5}
         />
 
         {previewURLs.map((previewURL, index) => (
