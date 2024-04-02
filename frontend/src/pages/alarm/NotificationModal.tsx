@@ -121,7 +121,7 @@ const NotificationModal: React.FC = () => {
       // 모달을 보여준 후 3초 뒤에 자동으로 닫힘
       const timer = setTimeout(() => {
         setNotification((prev) => ({ ...prev, show: false }));
-      }, 600000000);
+      }, 5000);
 
       return () => {
         clearTimeout(timer); // 컴포넌트가 언마운트될 때 타이머 정리
