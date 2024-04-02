@@ -14,7 +14,7 @@ public interface ExArticleRepository extends JpaRepository<ExArticle, Long> {
 
     List<ExArticle> findAllByType(ExArticleType type);
 
-    @Query("SELECT e FROM ExArticle e WHERE :location = e.location order by e.created_at  desc")
+    @Query("SELECT e FROM ExArticle e WHERE  e.location like concat('%', :location , '%')   order by e.created_at  desc")
     List<ExArticle> findAllByOrderByCreated_atDescandlocation(String location); //:location 이 로그인한 유저 현재 위치
 
 
