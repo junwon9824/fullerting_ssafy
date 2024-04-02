@@ -180,7 +180,7 @@ export const usePost = () => {
     },
     onError: (error: AxiosError) => {
       if (error.response?.status === 400) {
-        alert("알맞은 확장자의 사진을 올려주세요");
+        alert("파일 확장자 및 필수 항목을 확인해주세요");
         console.log(error);
       } else {
         alert("필수 항목을 모두 입력해주세요");

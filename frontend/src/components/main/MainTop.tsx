@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCropList } from "../../apis/DiaryApi";
 import styled from "styled-components";
+import Chat from "/src/assets/svg/chat.svg";
 import bell from "../../assets/svg/bell-ring.svg";
 
 const MainContainer = styled.div`
@@ -61,6 +62,12 @@ const BellIcon = styled.img`
   height: 1.6rem;
 `;
 
+const ChatIcon = styled.img`
+  position: absolute;
+  top: 15px;
+  right: 53px;
+  height: 1.6rem;
+`;
 const DiaryBox = styled.button`
   display: flex;
   padding: 0.5rem 1rem;
@@ -97,7 +104,6 @@ const CropImage = styled.img`
 `;
 
 const DiaryText = styled.span`
-  margin-left: 4rem;
   font-size: 0%.8rem;
   font-weight: bold;
   color: #ffffff;
@@ -156,6 +162,9 @@ const Maintop = () => {
   const handleViewAlarm = () => {
     window.location.href = "/alarm";
   };
+  const handleChat = () => {
+    navigate("/trade/chatroom");
+  };
 
   return (
     <MainContainer>
@@ -166,6 +175,7 @@ const Maintop = () => {
           alt="Notification bell"
           onClick={handleViewAlarm}
         />
+        <ChatIcon src={Chat} alt="Notification bell" onClick={handleChat} />
       </MainText>
       <TextBox>"{cropList?.length || 0}개의 작물을 가꾸고 계시군요"</TextBox>
       {accessToken ? (

@@ -17,7 +17,7 @@ const CropUpdatePage = () => {
   const navigate = useNavigate();
   const { packDiaryId } = useParams();
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().slice(0, 10)
+    new Date(Date.now() + 1000 * 60 * 60 * 9).toISOString().slice(0, 10)
   );
   const [cropTypeName, setCropTypeName] = useState<string>("");
   const [cropName, onChangeName, setCropName] = useInput("");
@@ -87,7 +87,9 @@ const CropUpdatePage = () => {
             placeholder=""
             value={selectedDate}
             onChange={handleDateChange}
-            max={new Date().toISOString().slice(0, 10)}
+            max={new Date(Date.now() + 1000 * 60 * 60 * 9)
+              .toISOString()
+              .slice(0, 10)}
           />
           <StyledInput
             label="작물 닉네임"
