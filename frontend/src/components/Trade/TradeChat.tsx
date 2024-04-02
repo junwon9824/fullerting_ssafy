@@ -122,7 +122,7 @@ const SendButton = styled.img`
 const ChattingBox = styled.div<ChattingBoxProps>`
   display: flex;
   flex-direction: row;
-  width: 100%;
+  width: auto;
   justify-content: ${(props) =>
     props.isCurrentUser ? "flex-end" : "flex-start"};
   gap: 0.25rem;
@@ -144,7 +144,7 @@ const ContentBox = styled.div<ContentBoxProps>`
   height: auto;
   border-radius: 0rem 0.625rem 0.625rem 0.625rem;
   background-color: ${(props) => props.backgroundColor};
-  flex-grow: 1;
+  /* flex-grow: 1; */
 `;
 
 const TradeChat = () => {
@@ -199,7 +199,6 @@ const TradeChat = () => {
     queryFn: accessToken ? () => getUsersInfo() : undefined,
   });
 
-  console.log(userData, "유저데이턴");
   useEffect(() => {
     const socket = new WebSocket(wssURL);
     const client = Stomp.over(socket);

@@ -3,6 +3,8 @@ import { api } from "./Base";
 import { imageFilesAtom } from "../stores/trade";
 import { atom } from "jotai";
 import { useNavigate } from "react-router-dom";
+import Stomp, { client } from "stompjs";
+import { useState } from "react";
 interface DataItem {
   exArticleResponse: ExArticleResponse;
   packDiaryResponse: PackDiaryResponse | null; // JSON 예제에는 객체가 있지만, 여기서는 null일 수도 있음을 표현
@@ -44,7 +46,16 @@ interface AxiosError {
   name: string;
   stack?: string;
 }
-
+interface ChatResponse {
+  // id: number;
+  chatRoomId: number;
+  chatSenderThumb: string;
+  chatSenderNick: string;
+  chatSenderId: number; //전송자 ID
+  chatMessage: string; //채팅 내용
+  chatSendAt: Date; // 전송일자
+  chatId: number;
+}
 export const getTradeList = async (accessToken: string) => {
   try {
     const response = await api.get("/exchanges/all", {
@@ -230,7 +241,6 @@ export const deletePost = async (postId: number) => {
     throw error;
   }
 };
-
 export const createChatRoom = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -267,6 +277,81 @@ export const createChatRoom = () => {
     },
   });
 };
+
+// export const createChatRoom = () => {
+//   const navigate = useNavigate();
+//   const queryClient = useQueryClient();
+//   const wssURL = import.meta.env.VITE_REACT_APP_WSS_URL;
+//   const socket = new WebSocket(wssURL);
+//   const client = Stomp.over(socket);
+//   const accessToken = sessionStorage.getItem("accessToken");
+//   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
+//   const [messages, setMessages] = useState("");
+//   const [newMessage, setNewMessage] = useState<string>("");
+//   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
+//   return useMutation({
+//     mutationFn: async (exArticleId: number) => {
+//       if (!accessToken) {
+//         throw new Error("로그인이 필요합니다.");
+//       }
+
+//       const response = await api.post(
+//         "/chat-room",
+//         {
+//           exArticleId: exArticleId, // 여기서 exArticleId는 이미 정의된 변수를 가정
+//           redirectURL: window.location.pathname,
+//           buyerId: null,
+//         },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${accessToken}`,
+//           },
+//         }
+//       );
+//       return response.data.data_body;
+//     },
+//     onSuccess: (res) => {
+//       const chatRoomId = res.chatRoomId;
+//       console.log("방 만들기 성공", res);
+
+//       // WebSocket 연결 및 채팅방 구독 설정
+//       const socket = new WebSocket(wssURL);
+//       const client = Stomp.over(socket);
+
+//       client.connect(
+//         { Authorization: `Bearer ${accessToken}` },
+//         () => {
+//           console.log("WebSocket 연결됨");
+
+//           // 채팅방 구독 설정
+//           client.subscribe(`/sub/chat/${chatRoomId}`, (message) => {
+//             const msg = JSON.parse(message.body);
+//             // 새로운 메시지를 상태에 추가하는 로직
+//             console.log("Received message:", msg);
+//           });
+
+//           // "안녕하세요" 메시지 전송
+//           const initialMessage = { chatMessage: "안녕하세요" };
+//           client.send(
+//             `/pub/chat/${chatRoomId}`,
+//             {},
+//             JSON.stringify(initialMessage)
+//           );
+//           console.log("초기 메시지 발송 성공");
+//         },
+//         (error) => {
+//           console.error("WebSocket 연결 실패", error);
+//         }
+//       );
+//       queryClient.invalidateQueries({ queryKey: ["chatList", chatRoomId] });
+
+//       navigate(`/trade/${chatRoomId}/chat`);
+//     },
+//     onError: (error) => {
+//       console.error("방 만들기 실패", error);
+//     },
+//   });
+// };
 export const createDealChatRoom = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
