@@ -226,7 +226,7 @@ const TradeDetailDeal = () => {
   console.log("디테일 데이터", data);
   console.log("디테일 데이터", data?.packDiaryResponse);
 
-  setDiary(data?.packDiaryResponse)
+  // setDiary(data?.packDiaryResponse)
 
   // console.log("디테일 데이터", data?.dealResponse);
 
