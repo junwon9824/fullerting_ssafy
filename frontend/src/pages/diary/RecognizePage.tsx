@@ -34,7 +34,9 @@ const RecognizePage = () => {
       if (confirmed) {
         mutate({
           packDiaryId: packDiaryId,
+          cropTypeName: res.crop_type,
           cropStepGrowth: res.grade,
+          confidenceScore: res.confidence_score,
         });
         navigate(`/crop/${packDiaryId}`);
         setSelectedFiles([]);
