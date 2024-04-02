@@ -274,6 +274,13 @@ const TradeDetailDeal = () => {
       console.log(err);
     },
   });
+  const handleDeleteConfirmation = (postId: number) => {
+    const isConfirmed = window.confirm("삭제하시겠습니까?"); // 사용자에게 삭제 확인 요청
+    if (isConfirmed) {
+      // 사용자가 '확인'을 클릭한 경우
+      deleteMutation(postId); // 삭제 함수 실행
+    }
+  };
 
   return (
     <>
@@ -284,7 +291,7 @@ const TradeDetailDeal = () => {
           showEdit={true}
           onEdit={handleEdit}
           onDelete={() => {
-            deleteMutation(data?.exArticleResponse.exArticleId);
+            handleDeleteConfirmation(data?.exArticleResponse.exArticleId);
           }}
         />
       ) : (
