@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Cart from "/src/assets/svg/cart.svg";
-import Chat from "/src/assets/svg/chat.svg";
+import Chat from "/src/assets/svg/textsms.svg";
 import Diary from "/src/assets/svg/diary.svg";
 import Home from "/src/assets/svg/home.svg";
 import Mypage from "/src/assets/svg/mypage.svg";
@@ -482,7 +482,7 @@ TradeTopBarType) => {
 const navItems: NavItem[] = [
   { Icon: Home, path: "/" },
   { Icon: Cart, path: "/trade" },
-  { Icon: Chat, path: "/trade/chatroom" },
+  { Icon: Chat, path: "/community" },
   { Icon: Diary, path: "/crop" },
   { Icon: Mypage, path: "/mypage" },
 ];
