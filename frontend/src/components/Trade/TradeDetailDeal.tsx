@@ -149,6 +149,15 @@ const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
   align-items: center;
   font-size: 0.5625rem; /* 텍스트 크기 */
 `;
+
+const DoneBtn = styled.button`
+  width: 3.9375rem;
+  height: 1.75rem;
+  border-radius: 0.625rem;
+  background: var(--a-0-d-8-b-3, #2a7f00);
+  text-align: center;
+  display: flex;
+`;
 const TradeDetailDeal = () => {
   const navigate = useNavigate();
   const [tradeDetail, setTradeDetail] = useState(null); // 상태를 초기화합니다.

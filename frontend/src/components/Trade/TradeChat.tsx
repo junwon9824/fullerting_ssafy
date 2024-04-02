@@ -174,7 +174,7 @@ const TradeChat = () => {
       ? () => getChatRoomDetail(accessToken, chatNumber)
       : undefined,
   });
-  // console.log("디테일 데이터", detailData);
+  console.log("데이터", detailData);
   // const {
   //   isLoading: userDataIsLoading,
   //   data: userData,
@@ -270,9 +270,9 @@ const TradeChat = () => {
         <LayoutInnerBox>
           <ProductBox>
             <TitleBox>{detailData?.chatRoomExArticleTitle}</TitleBox>
-            {detailData?.chatRoomExArticleId === userData?.data.data_body.id ? (
+            {/* {detailData?.chatRoomExArticleId === userData?.data.data_body.id ? (
               <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
-            ) : null}
+            ) : null} */}
           </ProductBox>
           <ChatBox ref={messageEndRef}>
             {data?.map((item: any) =>
