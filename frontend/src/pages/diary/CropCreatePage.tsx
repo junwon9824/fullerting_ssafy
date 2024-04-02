@@ -82,7 +82,10 @@ const CropCreatePage = () => {
   };
 
   const handleConfirmClick = () => {
-    if (!cropTypeId || !selectedDate || !cropName) return;
+    if (!cropTypeId || !selectedDate || !cropName) {
+      alert("모든 필수 정보를 입력해주세요");
+      return;
+    }
 
     const packDiaryData = {
       cropTypeId: cropTypeId,
@@ -137,6 +140,7 @@ const CropCreatePage = () => {
             name="nickname"
             placeholder="닉네임을 입력해주세요"
             onChange={setCropName}
+            maxLength={8}
           />
         </LayoutInnerBox>
       </LayoutMainBox>
