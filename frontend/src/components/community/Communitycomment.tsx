@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import Modal from "react-modal";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FormEvent } from "react";
 import { useParams } from "react-router-dom";
@@ -9,8 +8,13 @@ import {
   createComment,
   fetchAllComments,
 } from "../../apis/CommunityApi";
-import { useAtom } from "jotai";
-
+import { getUsersInfo } from "../../apis/MyPage";
+interface ImgTypes {
+  diary: number;
+  exArticle: number;
+  id: number;
+  imgStoreUrl: string;
+}
 interface ImgProps {
   backgroundImage: string;
 }
@@ -110,28 +114,49 @@ const DeleteButton = styled.button`
   background: var(--sub0, #a0d8b3);
   border: none;
   color: white;
-  padding: 10px 12px;
+  padding: 5px 10px;
   text-align: center;
-  font-size: 12px;
-  margin: 5px 8px;
+  font-size: 10px;
+  margin-top: 0.5rem;
+  margin-left: 13rem;
   cursor: pointer;
   border-radius: 0.5rem;
 `;
 
-const ModalContainer = styled.div`
+const ModalText = styled.p`
+  margin-bottom: 20px;
+`;
+const ModalOverlay = styled.div`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  height: 20%;
-  width: 20%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+const ModalContent = styled.div`
   background-color: white;
   padding: 20px;
   border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
 `;
 
-const ModalText = styled.p`
-  margin-bottom: 20px;
+const CloseButton = styled.button`
+  font-family: "GamtanRoad Dotum TTF";
+  background: var(--sub0, #b9bbba);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  font-size: 10px;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  margin-left: 0.3rem;
 `;
 
 const formatDate = (isoString: string) => {
@@ -176,7 +201,7 @@ const CommunityComment = () => {
 
     mutate({
       commentContent: comment,
-      communityId: communityId
+      communityId: communityId,
     });
   };
 
@@ -209,39 +234,55 @@ const CommunityComment = () => {
     enabled: !!communityId,
   });
 
+  // 댓글남긴 사용자 조회
+  const { data: userData } = useQuery({
+    queryKey: ["UserData"],
+    queryFn: getUsersInfo,
+    enabled: !!communityId,
+  });
+
   if (Loading) {
     return <div>Loading...</div>;
   }
 
   if (showModal) {
-    document.body.style.overflow = 'hidden';
-  } 
-  else{
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
   }
 
-
+  console.log(userData);
+  console.log("커뮤니티 아이디 타입", communityId);
+  console.log(typeof communityId);
+  console.log(allCommentData);
   return (
     <All>
+      {allCommentData?.map((CommentData) => {
+        if (!CommentData) return null;
+        return (
+          <CommentContainer key={CommentData.id}>
+            <Profile>
+              <Img backgroundImage={CommentData.thumbnail} />
+              <NickGrade>
+                <Nick>{CommentData.nickname}</Nick>
+                <Grade>{CommentData.rank}</Grade>
+              </NickGrade>
+            </Profile>
 
-      {allCommentData?.map((CommentData) => (
-        <CommentContainer key={CommentData.id}>
-          <Profile>
-            <Img backgroundImage={CommentData.thumbnail} />
-            <NickGrade>
-              <Nick>{CommentData.nickname}</Nick>
-              <Grade>{CommentData.rank}</Grade>
-            </NickGrade>
-          </Profile>
-          <CommentTime>
-            <Comment>{CommentData.commentcontent}</Comment>
-            <Time>{formatDate(CommentData.localDateTime)}</Time>
-            <DeleteButton onClick={() => handleDeleteClick(CommentData.id)}>
-              댓글삭제
-            </DeleteButton>
-          </CommentTime>
-        </CommentContainer>
-      ))}
+            <CommentTime>
+              <Comment>{CommentData.commentcontent}</Comment>
+              <Time>{formatDate(CommentData.localDateTime)}</Time>
+              {CommentData?.authorid === userData?.data.data_body.id && (
+                <DeleteButton
+                  onClick={() => handleDeleteClick(CommentData?.id)}
+                >
+                  댓글 삭제
+                </DeleteButton>
+              )}
+            </CommentTime>
+          </CommentContainer>
+        );
+      })}
 
       <CommentInputContainer as="form" onSubmit={handleSubmit}>
         <CommentInput
@@ -254,18 +295,15 @@ const CommunityComment = () => {
       </CommentInputContainer>
 
       {/* 삭제 모달 */}
-      <Modal
-        isOpen={showModal}
-        onRequestClose={() => setShowModal(false)}
-        contentLabel="Delete Modal"
-      >
-        <ModalContainer>
-          <ModalText>정말로 삭제하시겠습니까?</ModalText>
-          <DeleteButton onClick={confirmDelete}>확인</DeleteButton>
-          <DeleteButton onClick={() => setShowModal(false)}>취소</DeleteButton>
-        </ModalContainer>
-      </Modal>
-
+      {showModal && (
+        <ModalOverlay onClick={() => setShowModal(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalText>정말로 삭제하시겠습니까?</ModalText>
+            <DeleteButton onClick={confirmDelete}>확인</DeleteButton>
+            <CloseButton onClick={() => setShowModal(false)}>취소</CloseButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </All>
   );
 };

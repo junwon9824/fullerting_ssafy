@@ -174,9 +174,10 @@ const TradeModify = () => {
   const [title, setTitle] = useInput(location.state?.exArticleTitle || "");
   const [check, setCheck] = useState([true, false, false]);
   const [cashCheck, setCashCheck] = useState<boolean>(false);
-  const [cash, setCash] = useInput(location.state?.deal_cur_price || "");
+  const cash = location.state?.deal_cur_price || "";
   const [place, setPlace] = useInput(location.state?.ex_article_location || "");
   const [imageFiles, setImageFiles] = useAtom(imageFilesAtom);
+  const DiaryId = useAtom(selectedDiaryIdAtom);
   const postId = location.state?.postId;
   const [imageArray, setImageArray] = useState(
     location.state?.imageResponse || ""
@@ -185,9 +186,9 @@ const TradeModify = () => {
   const [images, setImages] = useAtom(oldImagesAtom);
   // console.log("타입을 알려주세요", typeof imageArray);
 
-  const [showDiary, setShowDiary] = useState(
-    location.state?.packdiaryid || null
-  );
+  // const [showDiary, setShowDiary] = useState(
+  //   location.state?.packdiaryid || null
+  // );
   const [content, setContent] = useInput(
     location.state?.exArticleContent || ""
   );
@@ -251,6 +252,7 @@ const TradeModify = () => {
   const { mutate: handleModified } = useUpdateArticle();
   const [newimage, setnewimage] = useState<File[]>([]);
   console.log("이미지스", images);
+  console.log("현재가격", location.state?.deal_cur_price);
   const handleCheckClick = async () => {
     if (selectedFiles.length === 0) {
       alert("사진을 등록하세요");
@@ -303,8 +305,8 @@ const TradeModify = () => {
         exArticleContent: content,
         ex_article_location: place,
         exArticleType: tradeType,
-        packdiaryid: showDiary,
-        dealCurPrice: location.state?.deal_cur_price,
+        packdiaryid: DiaryId,
+        price: location.state?.deal_cur_price,
         // unmodifiedimageid: [],
         images: images.map((img) => img),
 
