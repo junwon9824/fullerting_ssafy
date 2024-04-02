@@ -437,16 +437,19 @@ export const getChatRoomDetail = async (
 // };
 export const useDealFinish = () => {
   return useMutation({
-    mutationFn: async (postId: number) => {
+    mutationFn: async ({
+      postId,
+      exArticlePurchaserId,
+    }: {
+      postId: number;
+      exArticlePurchaserId: number;
+    }) => {
       const accessToken = sessionStorage.getItem("accessToken");
+      const body = { exArticlePurchaserId };
       // headers를 요청의 세번째 파라미터인 옵션 객체 내에 포함
-      const response = await api.patch(
-        `/exchanges/${postId}/done`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      const response = await api.patch(`/exchanges/${postId}/done`, body, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       return response;
     },
     onSuccess: (res) => {

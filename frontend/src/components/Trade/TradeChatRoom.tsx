@@ -98,8 +98,8 @@ const TradeChatRoom = () => {
   const { isLoading, data, error } = useQuery({
     queryKey: ["chatRoomList"],
     queryFn: accessToken ? () => getChatRoomList() : undefined,
-  }); 
-  console.log(data);
+  });
+  console.log("데이터", data);
   const renderContentText = (text: string) => {
     // 먼저 `text`가 정의되어 있는지 확인합니다.
     if (text === undefined || text === null) {

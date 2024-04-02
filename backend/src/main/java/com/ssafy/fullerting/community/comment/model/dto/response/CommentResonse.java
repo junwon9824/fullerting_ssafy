@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class CommentResonse {
 
     private  Long id;
+    private  Long authorid;
 
     private String commentcontent;
 

@@ -22,8 +22,11 @@ import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.m;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +43,7 @@ public class DealService {
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
 
-        List<Deal> deals = dealRepository.findAllDeal( );
+        List<Deal> deals = dealRepository.findAllDeal();
 
         return deals.stream().map(deal -> {
             ExArticleAllResponse exArticleAllResponse = ExArticleAllResponse.builder()
@@ -60,13 +63,28 @@ public class DealService {
 
         List<BidLog> bidLogs = bidRepository.findAllByuserId(customUser.getId());
 
+        HashSet<MyExArticleResponse> hs = new HashSet<>();
+
+
         List<MyExArticleResponse> exArticleResponses = bidLogs.stream().map(bidLog -> {
                     ExArticle article = bidLog.getDeal().getExArticle();
-                    return article.toMyResponse( article, customUser);
+                    MyExArticleResponse myExArticleResponse = article.toMyResponse(article, customUser);
+                    hs.add(myExArticleResponse);
+
+                    return myExArticleResponse;
+
                 }).
                 collect(Collectors.toList());
 
-        return exArticleResponses;
+
+//        List<MyExArticleResponse> myExArticleResponses = hs.stream().
+//                map(myExArticleResponse -> {
+//                    return myExArticleResponse;
+//                })
+//                .collect(Collectors.toList());
+
+
+        return new ArrayList<>(hs);
     }
 
 }

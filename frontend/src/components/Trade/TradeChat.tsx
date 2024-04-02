@@ -174,6 +174,7 @@ const TradeChat = () => {
       ? () => getChatRoomDetail(accessToken, chatNumber)
       : undefined,
   });
+
   console.log("데이터", detailData);
   // const {
   //   isLoading: userDataIsLoading,
@@ -187,8 +188,18 @@ const TradeChat = () => {
   const navigate = useNavigate();
   console.log("이거닷", detailData?.chatRoomExArticleId);
   const handleFinishClick = () => {
-    finishClick(detailData?.chatRoomExArticleId);
-    navigate("/trade");
+    const isConfirmed = window.confirm("거래를 종료하시겠습니까?");
+    if (isConfirmed) {
+      finishClick(
+        {
+          postId: data?.exArticleResponse.exArticleId,
+          exArticlePurchaserId: detailData?.chatRoomBuyerId,
+        },
+        {
+          onSuccess: () => navigate("/trade"),
+        }
+      );
+    }
   };
 
   const {
@@ -274,7 +285,9 @@ const TradeChat = () => {
             {/* {detailData?.chatRoomExArticleId === userData?.data.data_body.id ? (
               <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
             ) : null} */}
-            <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
+            {detailData?.chatRoomUserId === userData?.data.data_body.id ? (
+              <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
+            ) : null}
           </ProductBox>
           <ChatBox ref={messageEndRef}>
             {data?.map((item: any) =>
