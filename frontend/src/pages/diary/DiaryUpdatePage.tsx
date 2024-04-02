@@ -129,17 +129,19 @@ const DiaryUpdatePage = () => {
           ) : (
             <>
               {crop && <CropProfile crop={crop} />}
-              <StyledInput
-                label="날짜 선택하기"
-                type="date"
-                id="date"
-                name="date"
-                placeholder=""
-                value={selectedDate}
-                onChange={handleDateChange}
-                min={crop.packDiaryCulStartAt}
-                max={new Date().toISOString().slice(0, 10)}
-              />
+              {crop && (
+                <StyledInput
+                  label="날짜 선택하기"
+                  type="date"
+                  id="date"
+                  name="date"
+                  placeholder=""
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  min={crop.packDiaryCulStartAt}
+                  max={new Date().toISOString().slice(0, 10)}
+                />
+              )}
               <StyledInput
                 label="제목"
                 type="title"
