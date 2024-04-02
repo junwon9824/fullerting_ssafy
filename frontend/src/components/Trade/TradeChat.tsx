@@ -190,9 +190,15 @@ const TradeChat = () => {
   const handleFinishClick = () => {
     const isConfirmed = window.confirm("거래를 종료하시겠습니까?");
     if (isConfirmed) {
-      finishClick(data?.exArticleResponse.exArticleId, {
-        onSuccess: () => navigate("/trade"),
-      });
+      finishClick(
+        {
+          postId: data?.exArticleResponse.exArticleId,
+          exArticlePurchaserId: detailData?.chatRoomBuyerId,
+        },
+        {
+          onSuccess: () => navigate("/trade"),
+        }
+      );
     }
   };
 
