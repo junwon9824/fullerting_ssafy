@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import CommunityAll from "./CommunityAll";
 import { selectedTypeAtom } from "../../stores/community";
 import { useAtom } from "jotai";
+import { useEffect } from "react";
 
 const LayoutInnerBox = styled.div`
   padding: 1.25rem 0rem;
@@ -27,10 +28,16 @@ const Community = () => {
   const [selectedType, setSelectedType] = useAtom(selectedTypeAtom);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // 컴포넌트가 처음 렌더링될 때 "전체" 라디오 버튼을 선택합니다.
+    setSelectedType("전체");
+  }, []); // 빈 배열을 전달하여 컴포넌트가 처음 렌더링될 때만 실행되도록 설정합니다.
+
   const handleRadioButtonChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSelectedType(event.target.value);
+    
   };
 
   const handelWriteClick = () => {
