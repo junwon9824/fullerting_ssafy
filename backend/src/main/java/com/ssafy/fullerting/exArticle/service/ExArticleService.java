@@ -207,7 +207,7 @@ public class ExArticleService {
 //        log.info("eeeeeeeeeeeee" + exArticle.stream().
 //                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
 
-        log.info(user.getLocation());
+//        log.info(user.getLocation());
         StringBuilder sb = new StringBuilder();
         String[] str = user.getLocation().split(" ");
         sb.append(str[0] + " ");
@@ -215,8 +215,8 @@ public class ExArticleService {
 
         List<ExArticle> exArticle = exArticleRepository.findAllByOrderByCreated_atDescandlocation(sb.toString());
 
-        for (ExArticle article : exArticle)
-            log.info(article.getLocation());
+//        for (ExArticle article : exArticle)
+//            log.info(article.getLocation());
 
         List<ExArticleAllResponse> exArticleResponses =
                 exArticle.stream().map(exArticle1 -> exArticle1.toAllResponse(exArticle1, user)).
