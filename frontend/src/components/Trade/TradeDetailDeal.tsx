@@ -301,10 +301,18 @@ const TradeDetailDeal = () => {
   console.log("머임", data?.exArticleResponse.exArticleId);
   // 거래 종료
   const { mutate: finishClick } = useDealFinish();
+  // const handleFinishClick = () => {
+  //   window.confirm("거래를 종료하시겠습니까?");
+  //   finishClick(data?.exArticleResponse.exArticleId);
+  //   navigate("/trade");
+  // };
   const handleFinishClick = () => {
-    window.confirm();
-    finishClick(data?.exArticleResponse.exArticleId);
-    navigate("/trade");
+    const isConfirmed = window.confirm("거래를 종료하시겠습니까?");
+    if (isConfirmed) {
+      finishClick(data?.exArticleResponse.exArticleId, {
+        onSuccess: () => navigate("/trade"),
+      });
+    }
   };
   return (
     <>
