@@ -97,7 +97,8 @@ const CropImage = styled.img`
 `;
 
 const DiaryText = styled.span`
-  font-size: 0.8rem;
+  margin-left: 4rem;
+  font-size: 0%.8rem;
   font-weight: bold;
   color: #ffffff;
 `;
@@ -194,7 +195,7 @@ const Maintop = () => {
         <DiaryBox onClick={goToLogin}>
           <Content>
             <TextContent>
-              <DiaryText>로그인을 해주세요</DiaryText>
+              <DiaryText>작물일지를 작성해주세요</DiaryText>
             </TextContent>
           </Content>
         </DiaryBox>
