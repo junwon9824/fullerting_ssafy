@@ -312,7 +312,7 @@ const TradeBuyerDetail = () => {
       ? () => getDealList(accessToken, postNumber)
       : undefined,
   });
-  console.log("딜데이터", dealListData);
+  // console.log("딜데이터", dealListData);
   //socket
   const queryClient = useQueryClient();
   const [messages, setMessages] = useState<MessageRes[]>([]);
