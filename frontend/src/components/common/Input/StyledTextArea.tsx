@@ -11,7 +11,7 @@ interface StyledTextAreaType {
   disabled?: boolean;
   cols?: number;
   rows?: number;
-  maxLength?: number;
+  maxLength: number;
 }
 
 const TextArea = styled.textarea`
@@ -99,7 +99,7 @@ const StyledTextArea = ({
         disabled={disabled}
         cols={cols}
         rows={rows}
-        maxLength={maxLength}
+        maxLength={maxLength - 1}
       />
       {maxLength && (
         <ValueCnt>
