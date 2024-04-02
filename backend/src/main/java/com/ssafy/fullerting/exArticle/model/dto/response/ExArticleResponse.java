@@ -29,7 +29,7 @@ public class ExArticleResponse {
     private LocalDateTime time;
     private String content;
     private boolean isdone;
-
+    private int price;
 //    private  FavoriteResponse favoriteResponse;
 
 //    public ExArticle toEntity(ExArticleResponse exArticleResponse) {

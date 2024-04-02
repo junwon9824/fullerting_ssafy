@@ -1,6 +1,7 @@
 package com.ssafy.fullerting.exArticle.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
@@ -89,6 +90,11 @@ public class ExArticle {
     @OneToMany(mappedBy = "exArticle", cascade = CascadeType.ALL)
     private List<Favorite> favorite = new ArrayList<>();
 
+
+
+
+
+
     public void setdeal(Deal deal) {
         this.deal = deal;
     }
@@ -146,6 +152,7 @@ public class ExArticle {
                 .isdone(article.isDone)
                 .content(article.getContent())
                 .userId(article.getUser().getId())
+                .price(article.getDeal().getDealCurPrice())
                 .build();
 
 
