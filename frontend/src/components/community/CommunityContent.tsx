@@ -7,6 +7,10 @@ import like from "../../assets/svg/greenheart.svg";
 import Speech from "../../assets/svg/Speech Bubble.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
+import { content, files, images, oldfiles } from "../../stores/community";
+import { useAtom } from "jotai";
+import { imageFilesAtom, oldImagesAtom } from "../../stores/trade";
+import { useEffect } from "react";
 
 interface ImgProps {
   backgroundImage: string;
@@ -69,16 +73,76 @@ const HeartBox = styled.div`
   margin-bottom: 1rem;
   margin-right: 1rem;
 `;
+interface ImageInfo {
+  id: number;
+  imgStoreUrl: string;
+  exArticle: number;
+  diary: number;
+}
 
 const CommunityContent = () => {
+  const [curcontent, setCurContent] = useAtom(content);
+  const [curimgs, setCurImgs] = useAtom(oldfiles);
+  const [imageFiles, setImageFiles] = useAtom(imageFilesAtom);
+  const [images, setImages] = useAtom(oldImagesAtom);
+
   const queryClient = useQueryClient();
+
   const { communityId } = useParams<{ communityId: string }>();
+
+
+
   const { data: community, isLoading } = useQuery({
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
   });
 
   console.log(community);
+  console.log(community?.content);
+  console.log(community?.imgs);
+  console.log(community?.imgs[0].imgStoreUrl);
+
+
+  // if (community?.imgs) {
+  //   //   // 실행할 작업들
+
+  //   const initialImages = community?.imgs?.map(
+  //     (img: ImageInfo) => img
+
+  //   ); // 예시 코드, 실제 구조에 맞게 조정 필요
+  //   console.log(initialImages)
+  //   setImages(initialImages);
+
+  // }
+
+
+  // setImages(community?.imgs);
+
+  setCurContent(community?.content)
+
+
+  // // URL 파라미터가 변경될 때만 실행되도록 설정
+  // if ( community.imgs) {
+  //   // 실행할 작업들
+
+  //   const initialImages = community?.imgs?.map(
+  //     (img: ImageInfo) => img.imgStoreUrl
+
+  //     ); // 예시 코드, 실제 구조에 맞게 조정 필요
+  //     console.log(initialImages)
+  //     setImageFiles(initialImages);
+
+  // }
+
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때와 community.imgs가 변경될 때만 실행
+    if (community?.imgs) {
+      const initialImages = community.imgs.map((img: ImageInfo) => img.imgStoreUrl);
+      setImageFiles(initialImages);
+      setImages (community?.imgs);
+    }
+  }, [community?.imgs]); // community.imgs가 변경될 때만 useEffect 실행
+
 
   const { mutate } = useMutation({
     mutationFn: () => toggleLike(communityId),
@@ -111,6 +175,7 @@ const CommunityContent = () => {
             <Img backgroundImage={imgObject.imgStoreUrl} />
           </SwiperSlide>
         ))}
+
       </Swiper>
       <Content>{community.content}</Content>
 

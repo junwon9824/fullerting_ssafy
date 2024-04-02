@@ -3,10 +3,11 @@ import { TopBar } from "../common/Navigator/navigator";
 import Coli from "/src/assets/images/브로콜리.png";
 import { LayoutInnerBox, LayoutMainBox } from "../common/Layout/Box";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createChatRoom,
+  createDealChatRoom,
   getDealList,
   getTradeDetail,
   useLike,
@@ -29,9 +30,18 @@ interface DealListResponse {
   nickname: string;
   thumbnail: string;
   userId: number;
-  localDateTIme: string;
+  localDateTime: string;
   bidLogPrice: number;
   exarticleid: number;
+}
+interface Deal {
+  bidLogPrice: number;
+  exarticleid: number;
+  id: number;
+  localDateTime: string;
+  thumbnail: string;
+  nickname: string;
+  bidcount: number;
 }
 const ImgBox = styled.img`
   width: 100%;
@@ -86,8 +96,9 @@ const TextStyle = styled.div`
 `;
 const DealList = styled.div`
   width: 100%;
+  padding: 1rem;
   justify-content: space-between;
-  height: 2.0625rem;
+  height: auto;
   border-radius: 0.625rem;
   background: var(--sub1, #e5f9db);
   display: flex;
@@ -112,6 +123,7 @@ const PhotoBox = styled.img`
   height: 2.0625rem;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 `;
 const DealBox = styled.div`
   width: 100%;
@@ -128,26 +140,36 @@ const BottomText = styled.div`
   font-style: normal;
   font-weight: 400;
 `;
+const DealContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.2rem;
+`;
 const PriceText = styled.span<{ color: string }>`
   color: ${(props) => props.color};
 `;
+const Sentense = styled.div`
+  color: #000;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 150%;
+`;
 const TradeSellerDetail = () => {
   const navigate = useNavigate();
-  const BtnClick = () => {
-    navigate("/trade/chat");
-  };
+  const [userClick, setUserClick] = useState<number>(0);
   const [like, setLike] = useState<boolean>(false);
+  const queryClient = useQueryClient();
   const handleLike = () => {
     setLike(!like);
   };
 
   const { postId } = useParams<{ postId?: string }>();
-  const postNumber = Number(postId);
+  const exArticleId = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
-    queryKey: ["tradeDetail", postNumber],
+    queryKey: ["tradeDetail", exArticleId],
     queryFn: accessToken
-      ? () => getTradeDetail(accessToken, postNumber)
+      ? () => getTradeDetail(accessToken, exArticleId)
       : undefined,
   });
   const {
@@ -155,9 +177,9 @@ const TradeSellerDetail = () => {
     data: dealListData,
     error: ealListError,
   } = useQuery({
-    queryKey: ["dealDetail", postNumber],
+    queryKey: ["dealDetail", exArticleId],
     queryFn: accessToken
-      ? () => getDealList(accessToken, postNumber)
+      ? () => getDealList(accessToken, exArticleId)
       : undefined,
   });
   // const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
@@ -191,11 +213,23 @@ const TradeSellerDetail = () => {
     return sentences[randomIndex].replace("${price}", price);
   };
   //채팅 연결
-  const { mutate: clickChat } = createChatRoom();
-  const handleChatClick = () => {
-    clickChat(postNumber);
-    console.log(postNumber);
+  const { mutate: clickChat } = createDealChatRoom();
+  const handleChatClick = (buyerId: number) => {
+    clickChat({ exArticleId, buyerId });
+    console.log(exArticleId);
   };
+  // 배열 역순 정렬
+  const [deals, setDeals] = useState<DealListResponse[]>([]);
+  useEffect(() => {
+    if (dealListData) {
+      const sortedDeals: DealListResponse[] = [...dealListData].sort(
+        (a: DealListResponse, b: DealListResponse) => {
+          return b.localDateTime.localeCompare(a.localDateTime);
+        }
+      );
+      setDeals(sortedDeals);
+    }
+  }, [dealListData]);
   return (
     <>
       <TopBar title="가격제안목록" showBack={true} />
@@ -233,13 +267,17 @@ const TradeSellerDetail = () => {
 
           <DealBox>
             {dealListData && dealListData.length > 0 ? (
-              dealListData.map((item: DealListResponse, index: number) => (
-                <DealList key={index}>
-                  <ProfileBox onClick={() => handleChatClick()}>
-                    <PhotoBox src={item.thumbnail} alt="img" />
-                    <div>{getRandomSentence(String(item.bidLogPrice))}</div>
-                  </ProfileBox>
-                </DealList>
+              deals.map((item: DealListResponse, index: number) => (
+                <DealContainer>
+                  <PhotoBox src={item.thumbnail} alt="img" />
+                  <DealList key={index}>
+                    <ProfileBox onClick={() => handleChatClick(item.userId)}>
+                      <Sentense>
+                        {getRandomSentence(String(item.bidLogPrice))}
+                      </Sentense>
+                    </ProfileBox>
+                  </DealList>
+                </DealContainer>
               ))
             ) : (
               <div>제안된 가격이 없습니다.</div>

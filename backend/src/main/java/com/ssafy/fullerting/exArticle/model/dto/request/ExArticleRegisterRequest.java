@@ -17,12 +17,14 @@ import java.util.List;
 @Builder
 public class ExArticleRegisterRequest {
 
+
     private Long id;
     private String exArticleTitle;
     private String exArticleContent;
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
 
-    private String ex_article_location;
+//    private String ex_article_location; //현재 마을
+    private String place; //상세주소
     private int dealCurPrice;
 
     @Builder.Default

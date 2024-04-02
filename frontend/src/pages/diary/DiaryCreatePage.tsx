@@ -70,35 +70,39 @@ const DiaryCreatePage = () => {
       <TopBar title="작물일기" />
       <LayoutMainBox>
         <LayoutInnerBox>
-          {crop && <CropProfile crop={crop} />}
-          <StyledInput
-            label="날짜 선택하기"
-            type="date"
-            id="date"
-            name="date"
-            placeholder=""
-            value={selectedDate}
-            onChange={handleDateChange}
-            max={new Date().toISOString().slice(0, 10)}
-          />
-          <StyledInput
-            label="제목"
-            type="title"
-            id="title"
-            name="title"
-            placeholder="제목을 입력해주세요"
-            onChange={setTitle}
-          />
-          <StyledTextArea
-            label="내용"
-            name="content"
-            placeholder="내용을 입력해주세요."
-            value={content}
-            onChange={setContent}
-            maxLength={300}
-          />
-
-          <FileUploadInput />
+          {crop && (
+            <>
+              <CropProfile crop={crop} />
+              <StyledInput
+                label="날짜 선택하기"
+                type="date"
+                id="date"
+                name="date"
+                placeholder=""
+                value={selectedDate}
+                onChange={handleDateChange}
+                min={crop.packDiaryCulStartAt}
+                max={new Date().toISOString().slice(0, 10)}
+              />
+              <StyledInput
+                label="제목"
+                type="title"
+                id="title"
+                name="title"
+                placeholder="제목을 입력해주세요"
+                onChange={setTitle}
+              />
+              <StyledTextArea
+                label="내용"
+                name="content"
+                placeholder="내용을 입력해주세요."
+                value={content}
+                onChange={setContent}
+                maxLength={300}
+              />
+              <FileUploadInput />
+            </>
+          )}
         </LayoutInnerBox>
       </LayoutMainBox>
       <BottomButton onClick={handleConfirmClick} text="확인" />

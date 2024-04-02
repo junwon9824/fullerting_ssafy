@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 const CommunityDetail = () => {
   const { communityId } = useParams();
   const navigate = useNavigate();
+  
   const { mutate: deleteMutate } = useMutation({
     mutationFn: DeleteArticle,
     onSuccess: () => {

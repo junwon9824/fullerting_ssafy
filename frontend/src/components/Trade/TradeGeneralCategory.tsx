@@ -211,7 +211,7 @@ const TradeGeneralCategory = () => {
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
-  console.log("좋아요", data?.[0].favoriteResponse?.islike);
+  // console.log("좋아요", data?.[0].favoriteResponse?.islike);
   return (
     <>
       <ContentBox>
@@ -301,7 +301,7 @@ const TradeGeneralCategory = () => {
                     alt="gray"
                     style={{ marginRight: "0.19rem" }}
                   />
-                  {/* {item.favoriteResponse.isLikeCnt} */}
+                  {item.favoriteResponse.isLikeCnt}
                 </HeartBox>
                 <ExplainBox>
                   <StateIcon

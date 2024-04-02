@@ -8,8 +8,8 @@ import { TopBar } from "../../components/common/Navigator/navigator";
 import { BottomButton } from "../../components/common/Button/LargeButton";
 import { create, update } from "../../apis/CommunityApi";
 import { useAtom } from "jotai";
-import { imageFilesAtom } from "../../stores/trade";
-import { selectedTypeAtom } from "../../stores/community";
+import { imageFilesAtom, oldImagesAtom } from "../../stores/trade";
+import { content, files,   selectedTypeAtom, title } from "../../stores/community";
 import { useParams } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -51,10 +51,18 @@ const NavVlaue = styled.div`
 const TradePost = () => {
 
   const location = useLocation();
-  const [title, setTitle] = useInput(location.state?.title || "");
 
-  const [content, setContent] = useInput(location.state?.content || "");
+  // const [data, setData] = useAtom(title) // jotai 에서 제목 불러오기 
 
+  const [curtitle, setCurTitle] = useAtom(title)
+
+  const [curcontent, setCurContent] = useAtom(content);
+  // const [curimages, setCurImages] = useAtom(files);
+
+  const [images, setImages] = useAtom(oldImagesAtom);
+  // const [oldimages, setOldImages] = useAtom();
+
+  // setImages(oldimages);
 
   const navigate = useNavigate();
   const { communityId } = useParams();
@@ -69,7 +77,7 @@ const TradePost = () => {
       .then(blob => {
         // Blob을 사용하여 파일 생성
         const file = new File([blob], "image.jpg", { type: "image/jpeg" });
-        
+
         // 생성된 파일을 저장하거나 다른 작업 수행
         // 예를 들어, 다운로드 링크 생성
         const downloadLink = document.createElement("a");
@@ -83,6 +91,8 @@ const TradePost = () => {
   }
 
   useEffect(() => {
+    // setImages();
+
     if (location.state?.imgurls) {
       const initialImages = location.state.imgurls
       console.log(initialImages);
@@ -106,31 +116,51 @@ const TradePost = () => {
     // }
 
   }, [location.state, setSelectedFiles]);
+  const [newimage, setnewimage] = useState<File[]>([]);
 
-  const handleConfirmClick = async () => {
+  const handleCheckClick = async () => {
     const formData = new FormData();
 
     console.log('image등록등록등록등록' + selectedFiles.length)
+    const newFiles: File[] = [];
 
     selectedFiles.forEach((file) => {
-      console.log(file)
-
-      formData.append("images", file);
+      if (file instanceof File) {
+        newFiles.push(file);
+      }
     });
-
-    if (selectedFiles.length === 0) {
-      console.log("00000000000000")
-      formData.append("images", new Blob([], { type: "application/json" }));
-    }
-    const updateInfo = {
-      title: title,
-      content: content,
-      type: tradeType,
-      images: null,
-    };
     
+    setnewimage(newFiles.length > 0 ? [newFiles[0]] : []);
+
+
+    if (newFiles.length === 0) { // 새로운 이미지
+      formData.append("images", new Blob([]));
+    } else {
+      selectedFiles.forEach((file) => {
+        formData.append("images", file);
+        console.log("formapppppppp"+file.name)
+      });
+    }
+
+
+    // if (selectedFiles.length === 0) {
+    //   console.log("00000000000000")
+    //   formData.append("images", new Blob([], { type: "application/json" }));
+    // }
+    console.log( title);
+
+    const updateInfo = {
+      title: curtitle,
+      content: curcontent,
+      type: tradeType,
+      images: images.map((img) => img.id),
+    };
+
     console.log(updateInfo.type);
     console.log(updateInfo.title);
+    console.log(updateInfo.images);
+    console.log(updateInfo.content);
+
     formData.append(
       "RegistArticleRequest",
       new Blob([JSON.stringify(updateInfo)], { type: "application/json" })
@@ -162,6 +192,12 @@ const TradePost = () => {
 
           <RadioButton
             name="exampleRadioGroup"
+            value="텃밭요리"
+            checked={tradeType === "텃밭요리"}
+            onChange={() => handleRadioButtonChange("텃밭요리")}
+          />
+          <RadioButton
+            name="exampleRadioGroup"
             value="자유게시판"
             checked={tradeType === "자유게시판"}
             onChange={() => handleRadioButtonChange("자유게시판")}
@@ -172,12 +208,7 @@ const TradePost = () => {
             checked={tradeType === "작물소개"}
             onChange={() => handleRadioButtonChange("작물소개")}
           />
-          <RadioButton
-            name="exampleRadioGroup"
-            value="텃밭요리"
-            checked={tradeType === "텃밭요리"}
-            onChange={() => handleRadioButtonChange("텃밭요리")}
-          />
+
           <RadioButton
             name="exampleRadioGroup"
             value="꿀팁공유"
@@ -192,10 +223,9 @@ const TradePost = () => {
             id="title"
             name="title"
             placeholder="제목을 입력해주세요"
-            onChange={setTitle}
+            onChange={(event) => setCurTitle(event.target.value)}
             isRequired={false}
-            value={title}
-
+            value={curtitle}
           />
         </Nav>
         <Nav>
@@ -203,8 +233,8 @@ const TradePost = () => {
             label="본문"
             name="content"
             placeholder="내용을 입력해주세요."
-            value={content}
-            onChange={setContent}
+            value={curcontent}
+            onChange={(event) => setCurContent(event.target.value)}
             maxLength={500}
             isRequired={false}
           />
@@ -212,8 +242,8 @@ const TradePost = () => {
         <DiaryBox>
           <MultiFileUploadInput />
         </DiaryBox>
-        
-        <BottomButton onClick={handleConfirmClick} text="확인" />
+
+        <BottomButton onClick={handleCheckClick} text="수정하기" />
       </Create>
     </>
   );

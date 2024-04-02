@@ -128,10 +128,10 @@ public class ExArticleService {
                 .id(exArticleRegisterRequest.getId())
                 .title(exArticleRegisterRequest.getExArticleTitle())
                 .content(exArticleRegisterRequest.getExArticleContent())
-//                .place(exArticleRegisterRequest.getExArticlePlace())
+                .place(exArticleRegisterRequest.getPlace())
                 .type(exArticleRegisterRequest.getExArticleType())
                 .created_at(createdAt)
-                .location(exArticleRegisterRequest.getEx_article_location())
+                .location(customUser.getLocation())
                 .user(customUser)
                 .favorite(exArticleRegisterRequest.getFavorite())
                 .packDiary(packDiary != null ? packDiary.orElse(null) : null)
@@ -201,11 +201,20 @@ public class ExArticleService {
 
     public List<ExArticleAllResponse> allArticle() {
 
-        List<ExArticle> exArticle = exArticleRepository.findAllByOrderByCreated_atDesc();
         CustomUser user = UserResponse.toEntity(userService.getUserInfo());
 //        log.info("eeeeeeeeeeeee" + exArticle.stream().
 //                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
 
+        log.info(user.getLocation());
+        StringBuilder sb = new StringBuilder();
+        String[] str = user.getLocation().split(" ");
+        sb.append(str[0] + " ");
+        sb.append(str[1]);
+
+        List<ExArticle> exArticle = exArticleRepository.findAllByOrderByCreated_atDescandlocation(sb.toString());
+
+        for (ExArticle article : exArticle)
+            log.info(article.getLocation());
 
         List<ExArticleAllResponse> exArticleResponses =
                 exArticle.stream().map(exArticle1 -> exArticle1.toAllResponse(exArticle1, user)).
@@ -402,7 +411,7 @@ public class ExArticleService {
 
 
 //        updateArticleRequest.getImages().forEach(
-                updateArticleRequest.getImages().forEach(
+        updateArticleRequest.getImages().forEach(
                 aLong -> {
                     Image image = imageRepository.findById(aLong).orElseThrow(() -> new ImageException(ImageErrorCode.NOT_EXISTS));
                     unmodifiedimageList.add(image);
@@ -435,28 +444,28 @@ public class ExArticleService {
 //        });
 
 //        if (!updateArticleRequest.getNewImages().get(0).isEmpty()) {
-            if (!files.get(0).isEmpty()) {
+        if (!files.get(0).isEmpty()) {
 
-                //이미지 업로드
+            //이미지 업로드
 //                S3ManyFilesResponse response = amazonS3Service.uploadFiles(updateArticleRequest.getNewImages());
-                S3ManyFilesResponse response = amazonS3Service.uploadFiles(files);
-                //이미지 DB 저장
-                response.getUrls().
-                        entrySet().
-                        stream().
-                        map(stringStringEntry ->
-                        {
-                            Image image = imageRepository.save(Image.builder()
-                                    .imgStoreUrl(stringStringEntry.getValue())
-                                    .exArticle(article)
-                                    .build());
-                            images1.add(image);
-                            article.addimage(image);
-                            return image;
-                        }).
+            S3ManyFilesResponse response = amazonS3Service.uploadFiles(files);
+            //이미지 DB 저장
+            response.getUrls().
+                    entrySet().
+                    stream().
+                    map(stringStringEntry ->
+                    {
+                        Image image = imageRepository.save(Image.builder()
+                                .imgStoreUrl(stringStringEntry.getValue())
+                                .exArticle(article)
+                                .build());
+                        images1.add(image);
+                        article.addimage(image);
+                        return image;
+                    }).
 
-                        collect(Collectors.toList());
-            }
+                    collect(Collectors.toList());
+        }
 
 //
 //        article.setImage(images.stream().map(multipartFile -> {

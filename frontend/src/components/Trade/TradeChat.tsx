@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { TopBar } from "../common/Navigator/navigator";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Send from "/src/assets/images/send.png";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
@@ -122,7 +122,7 @@ const SendButton = styled.img`
 const ChattingBox = styled.div<ChattingBoxProps>`
   display: flex;
   flex-direction: row;
-  width: 100%;
+  width: auto;
   justify-content: ${(props) =>
     props.isCurrentUser ? "flex-end" : "flex-start"};
   gap: 0.25rem;
@@ -132,6 +132,7 @@ const Thumbnail = styled.img`
   width: 2.1875rem;
   height: 2.1875rem;
   border-radius: 50%;
+  flex-shrink: 0;
 `;
 const ContentBox = styled.div<ContentBoxProps>`
   word-break: break-word; /* 넘치는 텍스트를 줄바꿈 */
@@ -143,6 +144,7 @@ const ContentBox = styled.div<ContentBoxProps>`
   height: auto;
   border-radius: 0rem 0.625rem 0.625rem 0.625rem;
   background-color: ${(props) => props.backgroundColor};
+  /* flex-grow: 1; */
 `;
 
 const TradeChat = () => {
@@ -197,7 +199,6 @@ const TradeChat = () => {
     queryFn: accessToken ? () => getUsersInfo() : undefined,
   });
 
-  console.log(userData, "유저데이턴");
   useEffect(() => {
     const socket = new WebSocket(wssURL);
     const client = Stomp.over(socket);
@@ -234,6 +235,14 @@ const TradeChat = () => {
     };
     // accessToken, chatNumber가 변경될 때만 연결 및 해제 로직 실행
   }, [accessToken, chatNumber, queryClient]);
+  // 스크롤 가장 아래로 내리기
+  const messageEndRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollTop = messageEndRef.current.scrollHeight;
+    }
+    // messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [data]);
   const sendMessage = async () => {
     if (stompClient && newMessage.trim() !== "") {
       try {
@@ -265,7 +274,7 @@ const TradeChat = () => {
               <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
             ) : null}
           </ProductBox>
-          <ChatBox>
+          <ChatBox ref={messageEndRef}>
             {data?.map((item: any) =>
               item.chatSenderId === userData?.data.data_body.id ? (
                 <ChattingBox

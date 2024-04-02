@@ -202,8 +202,6 @@ const TradeModify = () => {
 
 
 
-
-
   useEffect(() => {
     console.log(document.body);
     // 모달이 열리면 body의 overflow를 hidden으로 설정
@@ -213,7 +211,7 @@ const TradeModify = () => {
       document.body.style.overflow = "unset";
     }
 
-    console.log('lengthhhhhhhhhhhhhhh ' + location.state.imageResponse.length)
+    console.log('lengthhhhhhhhhhhhhhh ' + JSON.stringify( location.state.imageResponse[0]))
     setImages(location.state.imageResponse);
     // 컴포넌트가 언마운트 될 때 원래 상태로 복구
     return () => {
@@ -280,11 +278,12 @@ const TradeModify = () => {
     // });
 
 
-    // if (selectedFiles.length === 0) { // 없어도 1이라 여기는 안와
-    //   // 이미지 파일이 없을 경우 빈 문자열을 서버에 보냅니다.
-    //   console.log("no imaggggggggggggg")
-    //   formData.append("images", new Blob([], { type: "application/json" }));
-    // }
+    if (selectedFiles.length === 0) { // 없어도 1이라 여기는 안와
+      // 이미지 파일이 없을 경우 빈 문자열을 서버에 보냅니다.
+      console.log("no imaggggggggggggg")
+      formData.append("images", new Blob([], { type: "application/json" }));
+      window.alert('0')
+    }
 
 
     console.log("imagggggggggggggggg" + images)
@@ -322,11 +321,7 @@ const TradeModify = () => {
 
 
 
-
-  const handleDeleteImage = (id: number) => {
-    setImages(images.filter((img) => img.id !== id));
-  };
-
+ 
 
   return (
     <>
