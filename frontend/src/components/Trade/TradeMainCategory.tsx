@@ -283,7 +283,7 @@ const TradeMainCategory = () => {
                     alt="gray"
                     style={{ marginRight: "0.19rem" }}
                   />
-                  {/* {item.favoriteResponse.isLikeCnt} */}
+                  {item.favoriteResponse.isLikeCnt}
                 </HeartBox>
                 <ExplainBox>
                   <StateIcon
