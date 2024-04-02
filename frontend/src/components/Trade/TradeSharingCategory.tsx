@@ -14,6 +14,7 @@ import { useAtom } from "jotai";
 import { likeAtom } from "../../stores/trade";
 import Like from "../../assets/svg/like.svg";
 import NonLike from "../../assets/svg/notlike.svg";
+import { userCheck } from "../../apis/UserApi";
 interface ClickLike {
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
@@ -210,6 +211,15 @@ const TradeSharingCategory = () => {
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
+  //유저 데이터
+  const {
+    isLoading: isLoadingUserDetail,
+    data: userData,
+    error: userDetailError,
+  } = useQuery({
+    queryKey: ["userDetail"],
+    queryFn: accessToken ? () => userCheck(accessToken) : undefined,
+  });
   return (
     <>
       <ContentBox>
@@ -326,7 +336,9 @@ const TradeSharingCategory = () => {
           </PostBox>
         ))}
       </ContentBox>
-      <WriteBox src={Write} onClick={handelWriteClick} />
+      {userData?.location ? (
+        <WriteBox src={Write} onClick={handelWriteClick} />
+      ) : null}
     </>
   );
 };
