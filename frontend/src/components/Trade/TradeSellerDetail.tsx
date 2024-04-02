@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   createChatRoom,
+  createDealChatRoom,
   getDealList,
   getTradeDetail,
   useLike,
@@ -133,21 +134,19 @@ const PriceText = styled.span<{ color: string }>`
 `;
 const TradeSellerDetail = () => {
   const navigate = useNavigate();
-  const BtnClick = () => {
-    navigate("/trade/chat");
-  };
+  const [userClick, setUserClick] = useState<number>(0);
   const [like, setLike] = useState<boolean>(false);
   const handleLike = () => {
     setLike(!like);
   };
 
   const { postId } = useParams<{ postId?: string }>();
-  const postNumber = Number(postId);
+  const exArticleId = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
-    queryKey: ["tradeDetail", postNumber],
+    queryKey: ["tradeDetail", exArticleId],
     queryFn: accessToken
-      ? () => getTradeDetail(accessToken, postNumber)
+      ? () => getTradeDetail(accessToken, exArticleId)
       : undefined,
   });
   const {
@@ -155,9 +154,9 @@ const TradeSellerDetail = () => {
     data: dealListData,
     error: ealListError,
   } = useQuery({
-    queryKey: ["dealDetail", postNumber],
+    queryKey: ["dealDetail", exArticleId],
     queryFn: accessToken
-      ? () => getDealList(accessToken, postNumber)
+      ? () => getDealList(accessToken, exArticleId)
       : undefined,
   });
   // const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
@@ -191,10 +190,10 @@ const TradeSellerDetail = () => {
     return sentences[randomIndex].replace("${price}", price);
   };
   //채팅 연결
-  const { mutate: clickChat } = createChatRoom();
-  const handleChatClick = () => {
-    clickChat(postNumber);
-    console.log(postNumber);
+  const { mutate: clickChat } = createDealChatRoom();
+  const handleChatClick = (buyerId: number) => {
+    clickChat({ exArticleId, buyerId });
+    console.log(exArticleId);
   };
   return (
     <>
@@ -235,7 +234,7 @@ const TradeSellerDetail = () => {
             {dealListData && dealListData.length > 0 ? (
               dealListData.map((item: DealListResponse, index: number) => (
                 <DealList key={index}>
-                  <ProfileBox onClick={() => handleChatClick()}>
+                  <ProfileBox onClick={() => handleChatClick(item.userId)}>
                     <PhotoBox src={item.thumbnail} alt="img" />
                     <div>{getRandomSentence(String(item.bidLogPrice))}</div>
                   </ProfileBox>
