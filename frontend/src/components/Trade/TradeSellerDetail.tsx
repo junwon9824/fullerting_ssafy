@@ -175,13 +175,21 @@ const TradeSellerDetail = () => {
   const {
     isLoading: dealListLoading,
     data: dealListData,
-    error: ealListError,
+    error: dealListError,
   } = useQuery({
     queryKey: ["dealDetail", exArticleId],
     queryFn: accessToken
       ? () => getDealList(accessToken, exArticleId)
       : undefined,
   });
+  useEffect(() => {
+    if (data) {
+      // 데이터가 성공적으로 로드되었을 때 실행할 로직을 여기에 작성하세요.
+      // 예: 특정 쿼리의 캐시를 무효화하고 싶은 경우
+      queryClient.invalidateQueries({ queryKey: ["tradeDetail", exArticleId] });
+    }
+  }, [data, queryClient]);
+
   // const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
   //가격 제안
   const sentences = [
@@ -230,6 +238,7 @@ const TradeSellerDetail = () => {
       setDeals(sortedDeals);
     }
   }, [dealListData]);
+  console.log("데이터jjjjjjjj", dealListData);
   return (
     <>
       <TopBar title="가격제안목록" showBack={true} />
@@ -257,12 +266,17 @@ const TradeSellerDetail = () => {
             <TextStyle>
               {dealListData && dealListData.length > 0
                 ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
-                : "0원"}
+                : data?.dealResponse.price}
+              {/* {data?.dealResponse.price} */}
             </TextStyle>
             <Situation border="2px solid var(--sub0, #A0D8B3)" color="#A0D8B3;">
               참여자
             </Situation>
-            <TextStyle>{dealListData && dealListData.length | 0}명</TextStyle>
+            <TextStyle>
+              {dealListData &&
+                dealListData[dealListData.length - 1].bidcount | 0}
+              명
+            </TextStyle>
           </SituationBox>
 
           <DealBox>
