@@ -73,7 +73,6 @@ export const getDealList = async (accessToken: string, postId: number) => {
     const response = await api.get(`/exchanges/${postId}/suggestion`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-
     return response.data.data_body;
   } catch (e) {
     console.log("에러났어요", e);
