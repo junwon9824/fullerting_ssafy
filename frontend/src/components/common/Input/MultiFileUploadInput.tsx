@@ -105,30 +105,41 @@ const MultiFileUploadInput: React.FC = () => {
     console.log("sssssssssss" + images.length);
   }, [images]);
 
+  // const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.files) {
+  //   const newFiles = Array.from(event.target.files);
+  //   const updatedFiles = [...selectedFiles, ...newFiles];
+  //   console.log("업데이트 파일 길이", updatedFiles.length);
+
+  //   // newFiles.forEach((newFile) => {
+  //   //   // 기존 파일 목록에 동일한 파일이 없는 경우에만 추가
+  //   //   if (
+  //   //     !updatedFiles.some(
+  //   //       (file) =>
+  //   //         typeof file !== "string" &&
+  //   //         file.name === newFile.name &&
+  //   //         file.size === newFile.size
+  //   //     )
+  //   //   ) {
+  //   //     updatedFiles.push(newFile);
+  //   //   }
+  //   // });
+
+  //   setSelectedFiles(updatedFiles);
+  //   }
+  // };
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const newFiles = Array.from(event.target.files);
-      const updatedFiles = [...selectedFiles];
-      console.log(updatedFiles.length);
-
-      newFiles.forEach((newFile) => {
-        // 기존 파일 목록에 동일한 파일이 없는 경우에만 추가
-        if (
-          !updatedFiles.some(
-            (file) =>
-              typeof file !== "string" &&
-              file.name === newFile.name &&
-              file.size === newFile.size
-          )
-        ) {
-          updatedFiles.push(newFile);
-        }
-      });
+      // 중복 파일을 허용하므로, 기존 파일 목록에 새로운 파일을 단순히 추가합니다.
+      const updatedFiles = [...selectedFiles, ...newFiles];
 
       setSelectedFiles(updatedFiles);
+
+      // 파일을 선택한 후 input의 value를 초기화하여 같은 파일을 다시 선택할 수 있도록 합니다.
+      event.target.value = "";
     }
   };
-
   const handleDeleteImage = (index: number) => {
     const newSelectedFiles = selectedFiles.filter((_, i) => i !== index);
     const newPreviewURLs = previewURLs.filter((_, i) => i !== index);
@@ -138,8 +149,8 @@ const MultiFileUploadInput: React.FC = () => {
     // setImages(images.filter((img) => img.id !== id));
 
     // Jotai 원자에서 해당 이미지를 제거합니다.
-    const deletedImageId = images[index].id;
-    setImages(images.filter((img) => img.id !== deletedImageId));
+    const deletedImageId = images[index];
+    setImages(images.filter((img) => img !== deletedImageId));
   };
 
   return (
