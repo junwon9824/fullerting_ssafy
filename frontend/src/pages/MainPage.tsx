@@ -11,12 +11,15 @@ const MainBox = styled.main`
   flex-direction: column;
   margin: 8px;
 `;
-
+const SvgBox = styled.svg`
+  height: 1.3rem;
+`;
 const MainPage = () => {
   useSSEConnection();
   return (
     <>
       <MainTop />
+       
       <MainBox>
         <MainExchange />
         <MainTip />
