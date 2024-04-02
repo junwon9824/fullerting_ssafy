@@ -177,6 +177,7 @@ const TradeModify = () => {
   const cash = location.state?.deal_cur_price || "";
   const [place, setPlace] = useInput(location.state?.ex_article_location || "");
   const [imageFiles, setImageFiles] = useAtom(imageFilesAtom);
+  const DiaryId = useAtom(selectedDiaryIdAtom);
   const postId = location.state?.postId;
   const [imageArray, setImageArray] = useState(
     location.state?.imageResponse || ""
@@ -185,9 +186,9 @@ const TradeModify = () => {
   const [images, setImages] = useAtom(oldImagesAtom);
   // console.log("타입을 알려주세요", typeof imageArray);
 
-  const [showDiary, setShowDiary] = useState(
-    location.state?.packdiaryid || null
-  );
+  // const [showDiary, setShowDiary] = useState(
+  //   location.state?.packdiaryid || null
+  // );
   const [content, setContent] = useInput(
     location.state?.exArticleContent || ""
   );
@@ -304,7 +305,7 @@ const TradeModify = () => {
         exArticleContent: content,
         ex_article_location: place,
         exArticleType: tradeType,
-        packdiaryid: showDiary,
+        packdiaryid: DiaryId,
         price: location.state?.deal_cur_price,
         // unmodifiedimageid: [],
         images: images.map((img) => img),
