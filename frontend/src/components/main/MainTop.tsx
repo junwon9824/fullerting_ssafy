@@ -97,7 +97,6 @@ const CropImage = styled.img`
 `;
 
 const DiaryText = styled.span`
-  margin-left: 4rem;
   font-size: 0%.8rem;
   font-weight: bold;
   color: #ffffff;
