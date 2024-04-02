@@ -67,6 +67,7 @@ public class CommentService {
 
 
     public void deletecommentbyid(Long articleId, Long commentId) {
+
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new
                 ArticleException(ArticleErrorCode.NOT_EXISTS));
 
@@ -80,10 +81,12 @@ public class CommentService {
             throw new CommentException(CommentErrorCode.NOT_MINE);
         }
 
+
+
 //        article.removecomment(comment);
 //        articleRepository.save(article);
 
         commentRepository.delete(comment);
-
     }
+
 }

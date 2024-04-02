@@ -53,6 +53,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -121,7 +122,7 @@ public class ExArticleService {
             packDiary = packDiaryRepository.findById(exArticleRegisterRequest.getPackdiaryid());
 
 
-        LocalDateTime createdAt = LocalDateTime.now(); // 현재 시각 설정
+        LocalDateTime createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")); // 현재 시각 설정
 
 
         ExArticle exArticle = ExArticle.builder()
