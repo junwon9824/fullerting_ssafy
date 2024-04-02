@@ -2,6 +2,7 @@ package com.ssafy.fullerting.exArticle.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
+import com.ssafy.fullerting.deal.model.dto.response.MyExArticleResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
@@ -47,7 +48,7 @@ public class ExArticle {
     @JoinColumn(name = "user_id")
     private CustomUser user;
 
-//    @CreatedDate
+    //    @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime created_at;
 
@@ -89,10 +90,6 @@ public class ExArticle {
 
     @OneToMany(mappedBy = "exArticle", cascade = CascadeType.ALL)
     private List<Favorite> favorite = new ArrayList<>();
-
-
-
-
 
 
     public void setdeal(Deal deal) {
@@ -152,7 +149,43 @@ public class ExArticle {
                 .isdone(article.isDone)
                 .content(article.getContent())
                 .userId(article.getUser().getId())
-                .price(article.getDeal().getDealCurPrice())
+//                .price(article.getDeal() == null ? null : article.getDeal().getDealCurPrice())
+                .build();
+
+
+        return exArticleResponse;
+    }
+
+
+    @Transactional
+    public MyExArticleResponse  toMyResponse(ExArticle article, CustomUser customUser) {
+        MyExArticleResponse exArticleResponse = null;
+//        Favorite favorite1 = null;
+
+//        if (!article.getFavorite().isEmpty()) {
+//            favorite1 = article.getFavorite().get(0);
+//        }
+
+//        log.info("typetype"+article.getType()+" "+ article.trans.getTrans_sell_price());
+        Hibernate.initialize(article.getImage());
+
+        exArticleResponse = MyExArticleResponse.builder()
+                .exArticleId(article.getId())
+                .exArticleTitle(article.getTitle())
+                .exArticleType(article.getType())
+                .exLocation(article.getLocation())
+//                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDealCurPrice() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
+                .imageResponses(article.getImage().stream().map(Image::toResponse)
+                        .collect(Collectors.toList()))
+//                .favoriteResponse(
+//                        favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
+//                                .builder().islike(false).isLikeCnt(0).build()
+//                )
+                .time(article.created_at)
+                .isdone(article.isDone)
+                .content(article.getContent())
+                .userId(article.getUser().getId())
+                .price(article.getDeal() == null ? null : article.getDeal().getDealCurPrice())
                 .build();
 
 

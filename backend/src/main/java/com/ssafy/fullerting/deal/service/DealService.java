@@ -5,6 +5,7 @@ import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.repository.BidRepository;
 import com.ssafy.fullerting.deal.model.dto.request.DealProposeRequest;
 import com.ssafy.fullerting.deal.model.dto.response.DealResponse;
+import com.ssafy.fullerting.deal.model.dto.response.MyExArticleResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
@@ -53,15 +54,15 @@ public class DealService {
     }
 
     @Transactional
-    public List<ExArticleResponse> mybidarticles() {
+    public List<MyExArticleResponse> mybidarticles() {
         UserResponse userResponse = userService.getUserInfo();
         CustomUser customUser = userResponse.toEntity(userResponse);
 
         List<BidLog> bidLogs = bidRepository.findAllByuserId(customUser.getId());
 
-        List<ExArticleResponse> exArticleResponses = bidLogs.stream().map(bidLog -> {
+        List<MyExArticleResponse> exArticleResponses = bidLogs.stream().map(bidLog -> {
                     ExArticle article = bidLog.getDeal().getExArticle();
-                    return article.toResponse(article, customUser);
+                    return article.toMyResponse( article, customUser);
                 }).
                 collect(Collectors.toList());
 
