@@ -223,6 +223,7 @@ const TradePost = () => {
       // 오류 처리
       console.error("업로드 실패:", error);
     }
+    setSelectedDiaryId(null);
   };
   const accessToken = sessionStorage.getItem("accessToken");
   const {
