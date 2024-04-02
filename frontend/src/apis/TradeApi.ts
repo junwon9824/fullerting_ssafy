@@ -58,11 +58,11 @@ export const getTradeList = async (accessToken: string) => {
 };
 export const getTradeDetail = async (accessToken: string, postId: number) => {
   try {
-    console.log('postid'+postId)
+    console.log("postid" + postId);
     const response = await api.get(`/exchanges/${postId}/detail`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    console.log('gettradedetail'+JSON.stringify( response.data)   )
+    console.log("gettradedetail" + JSON.stringify(response.data));
     return response.data.data_body;
   } catch (e) {
     console.log("에러났어요", e);
@@ -242,12 +242,55 @@ export const createChatRoom = () => {
       if (!accessToken) {
         throw new Error("로그인이 필요합니다.");
       }
-      
+
       const response = await api.post(
         "/chat-room",
         {
           exArticleId: exArticleId, // 여기서 exArticleId는 이미 정의된 변수를 가정
-          redirectURL: window.location.pathname
+          redirectURL: window.location.pathname,
+          buyerId: null,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      return response.data.data_body;
+    },
+    onSuccess: (res) => {
+      const chatRoomId = res.chatRoomId;
+      console.log("방 만들기 성공", res);
+      navigate(`/trade/${chatRoomId}/chat`);
+    },
+    onError: (res) => {
+      console.log("방 만들기 실패", res);
+    },
+  });
+};
+export const createDealChatRoom = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      exArticleId,
+      buyerId,
+    }: {
+      exArticleId: number;
+      buyerId: number;
+    }) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        throw new Error("로그인이 필요합니다.");
+      }
+
+      const response = await api.post(
+        "/chat-room",
+        {
+          exArticleId: exArticleId, // 여기서 exArticleId는 이미 정의된 변수를 가정
+          redirectURL: window.location.pathname,
+          buyerId: buyerId,
         },
         {
           headers: {
