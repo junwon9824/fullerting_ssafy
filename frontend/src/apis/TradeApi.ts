@@ -217,7 +217,7 @@ export const useUpdateArticle = () => {
   });
 };
 
-export const deletePost = async (postId: string) => {
+export const deletePost = async (postId: number) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
     const response = await api.delete(`/exchanges/${postId}`, {
