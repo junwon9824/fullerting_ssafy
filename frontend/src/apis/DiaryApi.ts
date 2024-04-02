@@ -162,10 +162,14 @@ export const createWater = async (waterData: DiaryCreateType) => {
 
 export const changeStep = async (cropData: {
   packDiaryId: string;
+  cropTypeName: string;
   cropStepGrowth: number;
+  confidenceScore: number;
 }) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
+
+    console.log(cropData);
 
     const response = await api.post(
       `/pack-diaries/${cropData.packDiaryId}/crop-step`,

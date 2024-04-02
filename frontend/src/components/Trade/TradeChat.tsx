@@ -122,7 +122,7 @@ const SendButton = styled.img`
 const ChattingBox = styled.div<ChattingBoxProps>`
   display: flex;
   flex-direction: row;
-  width: 100%;
+  width: auto;
   justify-content: ${(props) =>
     props.isCurrentUser ? "flex-end" : "flex-start"};
   gap: 0.25rem;
@@ -144,7 +144,7 @@ const ContentBox = styled.div<ContentBoxProps>`
   height: auto;
   border-radius: 0rem 0.625rem 0.625rem 0.625rem;
   background-color: ${(props) => props.backgroundColor};
-  flex-grow: 1;
+  /* flex-grow: 1; */
 `;
 
 const TradeChat = () => {
@@ -174,7 +174,7 @@ const TradeChat = () => {
       ? () => getChatRoomDetail(accessToken, chatNumber)
       : undefined,
   });
-  // console.log("디테일 데이터", detailData);
+  console.log("데이터", detailData);
   // const {
   //   isLoading: userDataIsLoading,
   //   data: userData,
@@ -185,6 +185,7 @@ const TradeChat = () => {
   // });
   const { mutate: finishClick } = useDealFinish();
   const navigate = useNavigate();
+  console.log("이거닷", detailData?.chatRoomExArticleId);
   const handleFinishClick = () => {
     finishClick(detailData?.chatRoomExArticleId);
     navigate("/trade");
@@ -199,7 +200,6 @@ const TradeChat = () => {
     queryFn: accessToken ? () => getUsersInfo() : undefined,
   });
 
-  console.log(userData, "유저데이턴");
   useEffect(() => {
     const socket = new WebSocket(wssURL);
     const client = Stomp.over(socket);
@@ -271,9 +271,10 @@ const TradeChat = () => {
         <LayoutInnerBox>
           <ProductBox>
             <TitleBox>{detailData?.chatRoomExArticleTitle}</TitleBox>
-            {detailData?.chatRoomExArticleId === userData?.data.data_body.id ? (
+            {/* {detailData?.chatRoomExArticleId === userData?.data.data_body.id ? (
               <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
-            ) : null}
+            ) : null} */}
+            <FisishButton onClick={handleFinishClick}>거래종료</FisishButton>
           </ProductBox>
           <ChatBox ref={messageEndRef}>
             {data?.map((item: any) =>

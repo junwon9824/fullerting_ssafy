@@ -91,7 +91,7 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
     const differenceMillis = Math.abs(endMillis - startMillis);
     const differenceDays = Math.ceil(differenceMillis / (1000 * 60 * 60 * 24));
 
-    return differenceDays;
+    return differenceDays + 1;
   };
 
   return (

@@ -45,8 +45,6 @@ public class ExArticleController {
         Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, files);
 //        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email);
 
-//        log.info("[register article ]: {}", exArticleRegisterRequest.toString());
-
         return ResponseEntity.ok().body(MessageUtils.success(exarticleid));
     }
 
@@ -116,6 +114,7 @@ public class ExArticleController {
     }
 
     @PatchMapping("/{ex_article_id}/done")
+    @CrossOrigin("*")
     @Operation(summary = "작물거래 완료   ", description = "작물거래 완료   ")
     public ResponseEntity<MessageUtils> done(@PathVariable Long ex_article_id, @RequestBody ExArticleDoneRequest exArticleDoneRequest) {
 

@@ -207,7 +207,7 @@ const TradeLikeCategory = () => {
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
-  console.log("딜 데이터 입니다", data);
+  // console.log("딜 데이터 입니다", data);
   return (
     <>
       <ContentBox>

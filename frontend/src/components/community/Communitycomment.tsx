@@ -9,6 +9,7 @@ import {
   createComment,
   fetchAllComments,
 } from "../../apis/CommunityApi";
+import { useAtom } from "jotai";
 
 interface ImgProps {
   backgroundImage: string;
@@ -121,6 +122,8 @@ const ModalContainer = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
+  height: 20%;
+  width: 20%;
   transform: translate(-50%, -50%);
   background-color: white;
   padding: 20px;
@@ -171,9 +174,10 @@ const CommunityComment = () => {
     if (!comment.trim()) return;
     if (isLoading) return;
 
-    mutate({ 
-      commentContent: comment, 
-      communityId: communityId});
+    mutate({
+      commentContent: comment,
+      communityId: communityId
+    });
   };
 
   // 댓글 삭제
@@ -208,6 +212,14 @@ const CommunityComment = () => {
   if (Loading) {
     return <div>Loading...</div>;
   }
+
+  if (showModal) {
+    document.body.style.overflow = 'hidden';
+  } 
+  else{
+    document.body.style.overflow = 'auto';
+  }
+
 
   return (
     <All>

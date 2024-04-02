@@ -24,6 +24,7 @@ import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BidService {
     private final BidRepository bidRepository;
     private final DealRepository dealRepository;
@@ -83,7 +85,7 @@ public class BidService {
         List<BidLogResponse> bidLogResponses = bidLog.stream().map(bidLog1 -> {
                     CustomUser user = userRepository.
                             findById(bidLog1.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-                    return bidLog1.toBidLogsuggestionResponse(bidLog1, user,bidLogs.size());
+                    return bidLog1.toBidLogsuggestionResponse(bidLog1, user, bidLogs.size());
                 })
 //                .sorted(Comparator.comparing(BidLogResponse::getBidLogPrice).reversed())
                 .collect(Collectors.toList());
@@ -111,6 +113,18 @@ public class BidService {
                 .localDateTime(LocalDateTime.now())
                 .build());
 
+//        exArticle.setdeal(deal);
+
+        log.info("price" + bidLog.getBidLogPrice());
+        Deal deal1 = exArticle.getDeal();
+
+//        deal1.setDealCurPrice( );
+        deal.setDealCurPrice(bidProposeRequest.getDealCurPrice());
+        dealRepository.save(deal1);
+
+        ExArticle article = exArticleRepository.save(exArticle);
+
+
         return bidLog;
     }
 
@@ -137,6 +151,8 @@ public class BidService {
                 .userId(customUser.getId())
                 .localDateTime(LocalDateTime.now())
                 .build());
+
+//        bidRepository.save(bidLog);
 
         return bidLog;
     }

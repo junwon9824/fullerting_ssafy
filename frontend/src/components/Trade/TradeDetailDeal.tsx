@@ -11,7 +11,12 @@ import Like from "/src/assets/svg/like.svg";
 import { useState } from "react";
 import Tree from "/src/assets/svg/diarytree.svg";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { deletePost, getTradeDetail, useLike } from "../../apis/TradeApi";
+import {
+  deletePost,
+  getTradeDetail,
+  useDealFinish,
+  useLike,
+} from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -37,7 +42,7 @@ const ImgBox = styled.img`
 `;
 const InfoBox = styled.div`
   width: 100%;
-  height: 2.125rem;
+  height: 3.125rem;
   display: flex;
   justify-content: space-between;
   gap: 8.81rem;
@@ -48,7 +53,7 @@ const Profile = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.6rem;
 `;
 const Name = styled.div`
   width: auto;
@@ -126,6 +131,7 @@ const SwiperContainer = styled.div`
 const Thumbnail = styled.img`
   width: 1.875rem;
   height: 1.875rem;
+  border-radius: 50%;
 `;
 const PriceBox = styled.div`
   width: auto;
@@ -147,6 +153,17 @@ const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
   justify-content: center;
   align-items: center;
   font-size: 0.5625rem; /* 텍스트 크기 */
+`;
+
+const DoneBtn = styled.button`
+  width: 3.9375rem;
+  height: 1.75rem;
+  border-radius: 0.625rem;
+  background: var(--a-0-d-8-b-3, #2a7f00);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const TradeDetailDeal = () => {
   const navigate = useNavigate();
@@ -215,7 +232,7 @@ const TradeDetailDeal = () => {
     queryFn: accessToken ? () => userCheck(accessToken) : undefined,
   });
   const userId = userData?.id;
-
+  console.log(data, "데이터입니다");
   const DiaryId = data?.packDiaryResponse?.packDiaryId;
   const handleDiary = (DiaryId: number) => {
     navigate(`/crop/${DiaryId}/otherview`);
@@ -274,7 +291,29 @@ const TradeDetailDeal = () => {
       console.log(err);
     },
   });
-
+  const handleDeleteConfirmation = (postId: number) => {
+    const isConfirmed = window.confirm("삭제하시겠습니까?"); // 사용자에게 삭제 확인 요청
+    if (isConfirmed) {
+      // 사용자가 '확인'을 클릭한 경우
+      deleteMutation(postId); // 삭제 함수 실행
+    }
+  };
+  console.log("머임", typeof data?.exArticleResponse.exArticleId);
+  // 거래 종료
+  const { mutate: finishClick } = useDealFinish();
+  // const handleFinishClick = () => {
+  //   window.confirm("거래를 종료하시겠습니까?");
+  //   finishClick(data?.exArticleResponse.exArticleId);
+  //   navigate("/trade");
+  // };
+  const handleFinishClick = () => {
+    const isConfirmed = window.confirm("거래를 종료하시겠습니까?");
+    if (isConfirmed) {
+      finishClick(data?.exArticleResponse.exArticleId, {
+        onSuccess: () => navigate("/trade"),
+      });
+    }
+  };
   return (
     <>
       {data?.exArticleResponse.userId === data?.userResponse.id ? (
@@ -284,7 +323,7 @@ const TradeDetailDeal = () => {
           showEdit={true}
           onEdit={handleEdit}
           onDelete={() => {
-            deleteMutation(data?.exArticleResponse.exArticleId);
+            handleDeleteConfirmation(data?.exArticleResponse.exArticleId);
           }}
         />
       ) : (
@@ -326,6 +365,7 @@ const TradeDetailDeal = () => {
                 </ClassesText>
               </Name>
             </Profile>
+            <DoneBtn onClick={handleFinishClick}>거래 종료</DoneBtn>
             <Date>{formatDateAndTime(data?.exArticleResponse.time)}</Date>
           </InfoBox>
           <TitleBox>

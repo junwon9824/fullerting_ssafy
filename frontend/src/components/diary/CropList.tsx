@@ -54,34 +54,38 @@ const CropList = () => {
 
   return (
     <CardListBox>
-      {cropList.map((crop: CropType) => (
-        <CardItemBox
-          key={crop.packDiaryId}
-          onClick={() => handleCardClick(crop)}
-        >
-          <CardItemDecoBox>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="106"
-              height="27"
-              viewBox="0 0 106 27"
-              fill="none"
-            >
-              <circle cx="5" cy="22" r="5" fill="#A8A9AD" />
-              <circle cx="53" cy="22" r="5" fill="#A8A9AD" />
-              <circle cx="77" cy="22" r="5" fill="#A8A9AD" />
-              <circle cx="101" cy="22" r="5" fill="#A8A9AD" />
-              <circle cx="29" cy="22" r="5" fill="#A8A9AD" />
-              <rect x="2" width="6" height="22" rx="2" fill="#575759" />
-              <rect x="26" width="6" height="22" rx="2" fill="#575759" />
-              <rect x="50" width="6" height="22" rx="2" fill="#575759" />
-              <rect x="74" width="6" height="22" rx="2" fill="#575759" />
-              <rect x="98" width="6" height="22" rx="2" fill="#575759" />
-            </svg>
-          </CardItemDecoBox>
-          <CropProfile crop={crop} direction="column" />
-        </CardItemBox>
-      ))}
+      {cropList.length === 0 ? (
+        <div>작물을 등록해주세요.</div>
+      ) : (
+        cropList.map((crop: CropType) => (
+          <CardItemBox
+            key={crop.packDiaryId}
+            onClick={() => handleCardClick(crop)}
+          >
+            <CardItemDecoBox>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="106"
+                height="27"
+                viewBox="0 0 106 27"
+                fill="none"
+              >
+                <circle cx="5" cy="22" r="5" fill="#A8A9AD" />
+                <circle cx="53" cy="22" r="5" fill="#A8A9AD" />
+                <circle cx="77" cy="22" r="5" fill="#A8A9AD" />
+                <circle cx="101" cy="22" r="5" fill="#A8A9AD" />
+                <circle cx="29" cy="22" r="5" fill="#A8A9AD" />
+                <rect x="2" width="6" height="22" rx="2" fill="#575759" />
+                <rect x="26" width="6" height="22" rx="2" fill="#575759" />
+                <rect x="50" width="6" height="22" rx="2" fill="#575759" />
+                <rect x="74" width="6" height="22" rx="2" fill="#575759" />
+                <rect x="98" width="6" height="22" rx="2" fill="#575759" />
+              </svg>
+            </CardItemDecoBox>
+            <CropProfile crop={crop} direction="column" />
+          </CardItemBox>
+        ))
+      )}
     </CardListBox>
   );
 };
