@@ -92,6 +92,11 @@ const StyledTextArea = ({
     }
   }, [value]);
 
+  function maxLengthCheck(object) {
+    if (object.value.length > object.max.length)
+      object.value = object.value.slice(0, object.max.length);
+  }
+
   return (
     <TextAreaBox>
       <Label>
@@ -107,6 +112,7 @@ const StyledTextArea = ({
         cols={cols}
         rows={rows}
         maxLength={maxLength}
+        onInput={maxLengthCheck}
       />
       {maxLength && (
         <ValueCnt>

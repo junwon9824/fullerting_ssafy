@@ -80,6 +80,11 @@ const StyledInput = ({
     }
   }, [value]);
 
+  function maxLengthCheck(object) {
+    if (object.value.length > object.max.length)
+      object.value = object.value.slice(0, object.max.length);
+  }
+
   return (
     <>
       {!label && (
@@ -94,6 +99,7 @@ const StyledInput = ({
           value={value}
           disabled={disabled}
           maxLength={maxLength}
+          onInput={maxLengthCheck}
         />
       )}
       {label && (
@@ -113,6 +119,7 @@ const StyledInput = ({
             value={value}
             disabled={disabled}
             maxLength={maxLength}
+            onInput={maxLengthCheck}
           />
         </InputBox>
       )}
