@@ -149,4 +149,27 @@ public class EventAlarmService {
     }
 
 
+    // 4. 제안 온 가격을 판매자가 선택했을 때
+    // 선택받은 입찰자에게 알람을 보낸다
+    public void notifyCreateChatRoomBidder(CustomUser buyer, ExArticle exArticle, String redirectURL) {
+
+        EventAlarm alarm = EventAlarm.builder()
+                .receiveUser(buyer)
+                .sendUser(exArticle.getUser())
+                .type(EventAlarmType.작물거래)
+                .content(exArticle.getUser().getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" + "에 입찰한 당신의 제안에 관심을 보였어요!")
+                .redirect(redirectURL)
+                .build();
+
+        eventAlarmRepository.save(alarm);
+        log.info("이벤트 알람 도착 : {} ", alarm);
+
+        eventAlarmNotificationService.sendAsync(AlarmPayload.builder()
+                .receiveUserId(buyer.getId())
+                .alarmType(EventAlarmType.작물거래.toString())
+                .alarmContent(exArticle.getUser().getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 입찰한 당신의 제안에 관심을 보였어요!")
+                .alarmRedirect(redirectURL)
+                .build());
+    }
+
 }
