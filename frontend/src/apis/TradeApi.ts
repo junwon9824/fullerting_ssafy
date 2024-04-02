@@ -422,7 +422,7 @@ export const useDealFinish = () => {
   return useMutation({
     mutationFn: async (postId: number) => {
       const accessToken = sessionStorage.getItem("accessToken");
-      const response = await api.patch(`exchanges/${postId}/done`, {
+      const response = await api.patch(`/exchanges/${postId}/done`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       return response;
