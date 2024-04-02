@@ -50,6 +50,13 @@ const Community = () => {
             onChange={setSearch}
           /> */}
           <Button>
+
+            <RadioButton
+              name="exampleRadioGroup"
+              value="전체"
+              onChange={handleRadioButtonChange}
+            />
+
             <RadioButton
               name="exampleRadioGroup"
               value="자유게시판"
@@ -60,14 +67,16 @@ const Community = () => {
               value="작물소개"
               onChange={handleRadioButtonChange}
             />
-            <RadioButton
-              name="exampleRadioGroup"
-              value="텃밭요리"
-              onChange={handleRadioButtonChange}
-            />
+
             <RadioButton
               name="exampleRadioGroup"
               value="꿀팁공유"
+              onChange={handleRadioButtonChange}
+            />
+            
+            <RadioButton
+              name="exampleRadioGroup"
+              value="텃밭요리"
               onChange={handleRadioButtonChange}
             />
           </Button>
