@@ -142,7 +142,7 @@ const ContentBox = styled.div<ContentBoxProps>`
   padding-right: 0.2rem;
   width: auto;
   height: auto;
-  border-radius: 0rem 0.625rem 0.625rem 0.625rem;
+  border-radius: 0.625rem;
   background-color: ${(props) => props.backgroundColor};
   /* flex-grow: 1; */
 `;
