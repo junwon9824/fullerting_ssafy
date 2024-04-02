@@ -48,7 +48,7 @@ const Profile = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.6rem;
 `;
 const Name = styled.div`
   width: auto;
@@ -126,6 +126,7 @@ const SwiperContainer = styled.div`
 const Thumbnail = styled.img`
   width: 1.875rem;
   height: 1.875rem;
+  border-radius: 50%;
 `;
 const PriceBox = styled.div`
   width: auto;
