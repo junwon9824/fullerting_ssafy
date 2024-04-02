@@ -140,7 +140,7 @@ const Maintop = () => {
   const { mutate: performLogout } = useMutation({
     mutationFn: logoutUser,
     onSuccess: () => {
-      navigate("/");
+      navigate("/login");
     },
 
     onError: (error) => {
