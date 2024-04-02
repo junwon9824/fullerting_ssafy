@@ -274,6 +274,7 @@ const TopBar = ({
                 />
               </svg>
             </EditButton>
+            
             <DeleteButton onClick={onClickDelete}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
