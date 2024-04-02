@@ -27,7 +27,7 @@ const RecognizePage = () => {
 
       if (!packDiaryId) return;
 
-      alert(`${res.crop_type} ${res.grade}단계 입니다.`);
+      // alert(`${res.crop_type} ${res.grade}단계 입니다.`);
 
       stepMutate({
         packDiaryId: packDiaryId,
