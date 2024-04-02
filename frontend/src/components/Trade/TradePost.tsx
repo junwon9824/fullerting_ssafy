@@ -187,7 +187,8 @@ const TradePost = () => {
     const exArticleRegisterRequest = JSON.stringify({
       exArticleTitle: title,
       exArticleContent: content,
-      ex_article_location: place,
+      // ex_article_location: place,
+      place: place,
       exArticleType: tradeType,
       packdiaryid: diary,
       dealCurPrice: cash,
