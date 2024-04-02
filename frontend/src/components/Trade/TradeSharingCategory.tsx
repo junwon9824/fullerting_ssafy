@@ -200,7 +200,7 @@ const TradeSharingCategory = () => {
     queryKey: ["tradeList"],
     queryFn: accessToken ? () => getTradeList(accessToken) : undefined,
   });
-
+  console.log("전 데이터에요", data);
   const { mutate: handleLikeClick } = useLike({
     queryKeys: ["tradeList"],
   });
