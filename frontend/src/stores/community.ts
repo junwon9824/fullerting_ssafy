@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-export const selectedTypeAtom = atom('자유게시판');
+export const selectedTypeAtom = atom('전체');
 
 export const title = atom<string>("");
 export const content = atom<string>("");
