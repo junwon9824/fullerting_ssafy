@@ -260,7 +260,7 @@ const TopBar = ({
         <TitleBox>{showTitle && title}</TitleBox>
         {showEdit && (
           <EditBox>
-            <EditButton onClick={onClickEdit}>
+            {/* <EditButton onClick={onClickEdit}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -273,8 +273,8 @@ const TopBar = ({
                   fill="black"
                 />
               </svg>
-            </EditButton>
-            
+            </EditButton> */}
+
             <DeleteButton onClick={onClickDelete}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

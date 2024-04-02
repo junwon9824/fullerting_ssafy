@@ -1,4 +1,4 @@
-import { TopBar } from "../../components/common/Navigator/navigator";
+import { CommonTopBar } from "../../components/common/Navigator/navigator";
 import {
   LayoutInnerBox,
   LayoutMainBox,
@@ -101,7 +101,7 @@ const DiaryDetailPage = () => {
 
   return (
     <>
-      <TopBar
+      <CommonTopBar
         title="다이어리"
         showBack={false}
         showEdit={true}
