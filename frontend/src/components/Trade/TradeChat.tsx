@@ -91,7 +91,7 @@ const SendBox = styled.div`
   gap: 1rem;
   bottom: 2rem;
 `;
-const SendInput = styled.input`
+const SendInput = styled.textarea`
   display: flex;
   justify-content: flex-start;
   padding-left: 1rem;
