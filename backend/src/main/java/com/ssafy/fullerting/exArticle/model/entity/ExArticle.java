@@ -60,11 +60,11 @@ public class ExArticle {
     @Column(name = "ex_article_content", nullable = false, length = 2000)
     private String content;
 
-    @Column(name = "ex_article_location", nullable = false)
+    @Column(name = "ex_article_location", nullable = false) //동네
     private String location;
 
     @Column(name = "ex_article_place", length = 100)
-    private String place;
+    private String place; //상세주소
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ex_article_type", nullable = false)
