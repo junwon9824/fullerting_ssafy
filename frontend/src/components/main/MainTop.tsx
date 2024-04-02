@@ -162,6 +162,9 @@ const Maintop = () => {
   const handleViewAlarm = () => {
     window.location.href = "/alarm";
   };
+  const handleChat = () => {
+    navigate("/trade/chatroom");
+  };
 
   return (
     <MainContainer>
@@ -172,11 +175,7 @@ const Maintop = () => {
           alt="Notification bell"
           onClick={handleViewAlarm}
         />
-        <ChatIcon
-          src={Chat}
-          alt="Notification bell"
-          onClick={handleViewAlarm}
-        />
+        <ChatIcon src={Chat} alt="Notification bell" onClick={handleChat} />
       </MainText>
       <TextBox>"{cropList?.length || 0}개의 작물을 가꾸고 계시군요"</TextBox>
       {accessToken ? (
