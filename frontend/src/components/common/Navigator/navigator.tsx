@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Cart from "/src/assets/svg/cart.svg";
-import Chat from "/src/assets/svg/chat.svg";
+import Chat from "/src/assets/svg/textsms.svg";
 import Diary from "/src/assets/svg/diary.svg";
 import Home from "/src/assets/svg/home.svg";
 import Mypage from "/src/assets/svg/mypage.svg";
@@ -478,11 +478,86 @@ TradeTopBarType) => {
     </TopBox>
   );
 };
+const DealTopBar = ({
+  title,
+  showEdit = false,
+  showBack = true,
+  showTitle = true,
+  onEdit,
+  onDelete,
+}: // onDelete
+// onEdit,
+// onDelete,
+TradeTopBarType) => {
+  const navigate = useNavigate();
+
+  const onClickBack = () => {
+    navigate(-1);
+  };
+
+  const onClickEdit = () => {
+    console.log("수정버튼이 클릭됐어여!!");
+    navigate("update");
+  };
+
+  const onClickDelete = () => {
+    const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
+    console.log("삭제 버튼이 클릭됐어요!!");
+    // if (isConfirmed) {
+    //   deleteFunc();
+    // }
+  };
+
+  return (
+    <TopBox>
+      <TopInnerBox>
+        {showBack && (
+          <BackSvgBox onClick={onClickBack}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <path
+                d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z"
+                fill="black"
+              />
+            </svg>
+          </BackSvgBox>
+        )}
+        <TitleBox>{showTitle && title}</TitleBox>
+        {showEdit && (
+          <EditBox>
+            <DeleteButton onClick={onDelete}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M3 6H21M19 6V20C19 21 18 22 17 22H7C6 22 5 21 5 20V6M8 6V4C8 3 9 2 10 2H14C15 2 16 3 16 4V6M10 11V17M14 11V17"
+                  stroke="black"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </DeleteButton>
+          </EditBox>
+        )}
+      </TopInnerBox>
+    </TopBox>
+  );
+};
 
 const navItems: NavItem[] = [
   { Icon: Home, path: "/" },
   { Icon: Cart, path: "/trade" },
-  { Icon: Chat, path: "/trade/chatroom" },
+  { Icon: Chat, path: "/community" },
   { Icon: Diary, path: "/crop" },
   { Icon: Mypage, path: "/mypage" },
 ];
@@ -510,4 +585,4 @@ const NavBar = (): JSX.Element => {
   );
 };
 
-export { CommonTopBar, TopBar, NavBar, TradeTopBar, PostTopBar };
+export { CommonTopBar, TopBar, NavBar, TradeTopBar, PostTopBar, DealTopBar };

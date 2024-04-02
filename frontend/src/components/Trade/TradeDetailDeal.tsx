@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { TopBar, TradeTopBar } from "../common/Navigator/navigator";
+import { DealTopBar, TopBar, TradeTopBar } from "../common/Navigator/navigator";
 import Coli from "/src/assets/images/브로콜리.png";
 import { LayoutInnerBox, LayoutMainBox } from "../common/Layout/Box";
 import { BottomButton } from "../common/Button/LargeButton";
@@ -310,7 +310,7 @@ const TradeDetailDeal = () => {
 
   return (
     <>
-      {data?.exArticleResponse.userId === data?.userResponse.id ? (
+      {/* {data?.exArticleResponse.userId === data?.userResponse.id ? (
         <TradeTopBar
           title="작물거래"
           showBack={true}
@@ -330,8 +330,18 @@ const TradeDetailDeal = () => {
           //   deleteMutation(data?.exArticleResponse.exArticleId);
           // }}
         />
-      )}
-
+      )} */}
+      <DealTopBar
+        showBack={true}
+        title="작물거래"
+        showEdit={true}
+        onDelete={() => {
+          const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
+          if (isConfirmed) {
+            deleteMutation(data?.exArticleResponse.exArticleId);
+          }
+        }}
+      />
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper
