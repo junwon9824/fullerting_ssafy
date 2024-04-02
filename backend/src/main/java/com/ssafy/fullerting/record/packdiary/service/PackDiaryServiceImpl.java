@@ -24,6 +24,8 @@ import com.ssafy.fullerting.record.packdiary.model.dto.response.GetCropStepRespo
 import com.ssafy.fullerting.record.packdiary.model.dto.response.GetDetailPackDiaryResponse;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
+import com.ssafy.fullerting.record.steplog.exception.StepLogErrorCode;
+import com.ssafy.fullerting.record.steplog.exception.StepLogException;
 import com.ssafy.fullerting.record.steplog.model.entity.StepLog;
 import com.ssafy.fullerting.record.steplog.repository.CropStepLogRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
@@ -36,11 +38,14 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ssafy.fullerting.crop.step.exception.CropStepErrorCode.NOT_EXISTS_CROP_STEP;
 import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode.*;
+import static com.ssafy.fullerting.record.steplog.exception.StepLogErrorCode.NOT_EXISTS_STEP_LOG;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @RequiredArgsConstructor
 @Service
@@ -141,7 +146,12 @@ public class PackDiaryServiceImpl implements PackDiaryService {
         //작물 재배일
         if(packDiary.getGrowthStep()!=0){
             Step step = cropStepRepository.findByCropIdAndStep(packDiary.getCrop().getId(), packDiary.getGrowthStep()).orElseThrow(()->new CropStepException(NOT_EXISTS_CROP_STEP));
-            getDetailPackDiaryResponse = getDetailPackDiaryResponse.toBuilder().cropGrowDay(step.getHarvestDay()).build();
+            StepLog stepLog = cropStepLogRepository.findByPackDiaryAndStep(packDiary, step).orElseThrow(()->new StepLogException(NOT_EXISTS_STEP_LOG));
+            //단계별 수확날짜 - (오늘 날짜 - 갱신일)
+            Integer dif = Math.toIntExact(DAYS.between(stepLog.getUpdatedAt().toLocalDateTime().toLocalDate(), LocalDate.now()));
+            //수확일이 지나지 않았을 경우 계산한 디데이 그대로, 지났을 경우 0 반환
+            Integer cropGrowDay = (step.getHarvestDay()-dif >= 0) ? step.getHarvestDay()-dif : 0;
+            getDetailPackDiaryResponse = getDetailPackDiaryResponse.toBuilder().cropGrowDay(cropGrowDay).build();
         }
 
         return getDetailPackDiaryResponse;
