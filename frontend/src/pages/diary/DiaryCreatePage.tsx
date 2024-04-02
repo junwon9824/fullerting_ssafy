@@ -15,9 +15,11 @@ import FileUploadInput from "../../components/common/Input/FileUploadInput";
 import { createDiary } from "../../apis/DiaryApi";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
+import Loading from "../../components/common/Loading";
 
 const DiaryCreatePage = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [crop, setCrop] = useAtom(cropAtom);
   const [selectedFiles, setSelectedFiles] = useAtom(fileAtom);
   const [selectedDate, setSelectedDate] = useState<string>(
@@ -43,16 +45,19 @@ const DiaryCreatePage = () => {
       if (crop) {
         navigate(`/crop/${crop.packDiaryId}`);
       }
-
+      setIsLoading(false);
       setSelectedFiles([]);
     },
     onError: (error) => {
       console.log(error);
+      setIsLoading(false);
     },
   });
 
   const handleConfirmClick = () => {
     if (crop) {
+      setIsLoading(true);
+
       const diaryData = {
         packDiaryId: crop.packDiaryId.toString(),
         diarySelectedAt: selectedDate,
@@ -70,7 +75,9 @@ const DiaryCreatePage = () => {
       <TopBar title="작물일기" />
       <LayoutMainBox>
         <LayoutInnerBox>
-          {crop && (
+          {isLoading ? (
+            <Loading />
+          ) : (
             <>
               <CropProfile crop={crop} />
               <StyledInput
