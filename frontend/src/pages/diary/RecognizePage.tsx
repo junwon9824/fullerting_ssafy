@@ -25,45 +25,43 @@ const RecognizePage = () => {
     onSuccess: (res) => {
       setIsLoading(false);
 
-      const confirmed = window.confirm(
-        `${res.crop_type} ${res.grade}단계 입니다.\n작물 단계를 바꿀까요?`
-      );
-
       if (!packDiaryId) return;
 
-      if (confirmed) {
-        mutate({
-          packDiaryId: packDiaryId,
-          cropTypeName: res.crop_type,
-          cropStepGrowth: res.grade,
-          confidenceScore: res.confidence_score,
-        });
-        navigate(`/crop/${packDiaryId}`);
-        setSelectedFiles([]);
-      }
+      stepMutate({
+        packDiaryId: packDiaryId,
+        cropTypeName: res.crop_type,
+        cropStepGrowth: res.grade,
+        confidenceScore: res.confidence_score,
+      });
+      navigate(`/crop/${packDiaryId}`);
+      setSelectedFiles([]);
     },
     onError: (error) => {
       setIsLoading(false);
       setSelectedFiles([]);
       console.log(error);
+      alert("[Error]작물 인식에 실패ㅜㅜ");
     },
   });
 
-  const { mutate } = useMutation({
+  const { mutate: stepMutate } = useMutation({
     mutationFn: changeStep,
     onSuccess: (res) => {
-      console.log(res);
-      // if (res.cropRenewal === true) {
-      // if (res.myBadgeResponse) {
-      //   alert(`${res.myBadgeResponse.badgeName} 뱃지를 획득하였습니다!`);
-      // }
-      // } else {
-      //   alert("작물 단계 변경에 실패하였습니다.\n다시 시도해주세요.");
-      // }
+      if (res.cropRenewal === true) {
+        if (res.myBadgeResponse) {
+          alert(
+            `${res.cropTypeName} ${res.cropStepGrowth}단계!!\n${res.myBadgeResponse.badgeName} 뱃지를 획득하였습니다!`
+          );
+        } else {
+          alert(`${res.cropTypeName} ${res.cropStepGrowth}단계 입니다.`);
+        }
+      } else {
+        alert("해당 작물이 맞으신가요? 다시 촬영해 주세요.");
+      }
     },
     onError: (e) => {
       console.log(e);
-      // alert("작물 단계 변경에 실패ㅜㅜ");
+      alert("[Error]작물 단계 변경에 실패ㅜㅜ");
     },
   });
 

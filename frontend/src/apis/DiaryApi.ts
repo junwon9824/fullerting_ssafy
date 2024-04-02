@@ -173,7 +173,11 @@ export const changeStep = async (cropData: {
 
     const response = await api.post(
       `/pack-diaries/${cropData.packDiaryId}/crop-step`,
-      { cropStepGrowth: cropData.cropStepGrowth },
+      {
+        cropStepGrowth: cropData.cropStepGrowth,
+        cropTypeName: cropData.cropTypeName,
+        confidenceScore: cropData.confidenceScore,
+      },
       {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
