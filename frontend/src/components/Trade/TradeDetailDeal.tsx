@@ -11,7 +11,12 @@ import Like from "/src/assets/svg/like.svg";
 import { useState } from "react";
 import Tree from "/src/assets/svg/diarytree.svg";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { deletePost, getTradeDetail, useLike } from "../../apis/TradeApi";
+import {
+  deletePost,
+  getTradeDetail,
+  useDealFinish,
+  useLike,
+} from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -37,7 +42,7 @@ const ImgBox = styled.img`
 `;
 const InfoBox = styled.div`
   width: 100%;
-  height: 2.125rem;
+  height: 3.125rem;
   display: flex;
   justify-content: space-between;
   gap: 8.81rem;
@@ -157,6 +162,8 @@ const DoneBtn = styled.button`
   background: var(--a-0-d-8-b-3, #2a7f00);
   text-align: center;
   display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const TradeDetailDeal = () => {
   const navigate = useNavigate();
@@ -225,7 +232,7 @@ const TradeDetailDeal = () => {
     queryFn: accessToken ? () => userCheck(accessToken) : undefined,
   });
   const userId = userData?.id;
-
+  console.log(data, "데이터입니다");
   const DiaryId = data?.packDiaryResponse?.packDiaryId;
   const handleDiary = (DiaryId: number) => {
     navigate(`/crop/${DiaryId}/otherview`);
@@ -291,7 +298,13 @@ const TradeDetailDeal = () => {
       deleteMutation(postId); // 삭제 함수 실행
     }
   };
-
+  // 거래 종료
+  const { mutate: finishClick } = useDealFinish();
+  const handleFinishClick = () => {
+    window.confirm();
+    finishClick(data?.exArticleResponse.exArticleId);
+    navigate("/trade");
+  };
   return (
     <>
       {data?.exArticleResponse.userId === data?.userResponse.id ? (
@@ -343,6 +356,7 @@ const TradeDetailDeal = () => {
                 </ClassesText>
               </Name>
             </Profile>
+            <DoneBtn onClick={handleFinishClick}>거래 종료</DoneBtn>
             <Date>{formatDateAndTime(data?.exArticleResponse.time)}</Date>
           </InfoBox>
           <TitleBox>
