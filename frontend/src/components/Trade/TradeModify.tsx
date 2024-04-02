@@ -250,12 +250,11 @@ const TradeModify = () => {
   const navigate = useNavigate();
   const { mutate: handleModified } = useUpdateArticle();
   const [newimage, setnewimage] = useState<File[]>([]);
-
+  console.log("이미지스", images);
   const handleCheckClick = async () => {
     if (selectedFiles.length === 0) {
       alert("사진을 등록하세요");
     } else {
-      console.log("저 여기 왔어요", 111111);
       const formData = new FormData();
       console.log(location.state.imageResponse[0].imgStoreUrl);
 
@@ -307,7 +306,7 @@ const TradeModify = () => {
         packdiaryid: showDiary,
         dealCurPrice: cash,
         // unmodifiedimageid: [],
-        images: images.map((img) => img.id),
+        images: images.map((img) => img),
 
         // 이곳에 수정할 다른 필드 정보를 추가합니다.
       };
