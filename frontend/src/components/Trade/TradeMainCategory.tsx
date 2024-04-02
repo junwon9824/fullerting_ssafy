@@ -204,7 +204,7 @@ const TradeMainCategory = () => {
   const handleTradeClick = (index: number) => {
     navigate(`/trade/${index}/DealDetail`);
   };
-  console.log("좋아요", data?.[0].favoriteResponse?.islike);
+  // console.log("좋아요", data?.[0].favoriteResponse?.islike);
   return (
     <>
       <ContentBox>

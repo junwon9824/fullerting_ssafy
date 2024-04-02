@@ -13,8 +13,8 @@ public interface ExArticleRepository extends JpaRepository<ExArticle,Long > {
     Optional<List<ExArticle>> findAllByTitleContaining(String keyword);
     List<ExArticle> findAllByType(ExArticleType type);
 
-    @Query("select  e from  ExArticle e  order by e.created_at  desc")
-    List<ExArticle> findAllByOrderByCreated_atDesc();
+    @Query("select  e from  ExArticle e  where e.location=:location order by e.created_at  desc")
+    List<ExArticle> findAllByOrderByCreated_atDescandlocation(String location);
     List<ExArticle> findAllByUserIdAndFavoriteIsNotEmpty(Long userid);
     @Query("select e from ExArticle e  where e.user.id = :userid and e.isDone = true ")
     List<ExArticle> findAllByUserIDAndDone(Long userid);
