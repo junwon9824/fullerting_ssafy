@@ -427,7 +427,7 @@ export const useDealFinish = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      return response.data.data_body;
+      return response;
     },
     onSuccess: (res) => {
       console.log("거래 종료", res);
