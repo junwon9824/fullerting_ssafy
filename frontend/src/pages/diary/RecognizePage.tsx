@@ -49,9 +49,19 @@ const RecognizePage = () => {
 
   const { mutate } = useMutation({
     mutationFn: changeStep,
-    onSuccess: () => {},
-    onError: () => {
-      alert("작물 단계 변경에 실패하였습니다.\n다시 시도해주세요.");
+    onSuccess: (res) => {
+      console.log(res);
+      // if (res.cropRenewal === true) {
+      // if (res.myBadgeResponse) {
+      //   alert(`${res.myBadgeResponse.badgeName} 뱃지를 획득하였습니다!`);
+      // }
+      // } else {
+      //   alert("작물 단계 변경에 실패하였습니다.\n다시 시도해주세요.");
+      // }
+    },
+    onError: (e) => {
+      console.log(e);
+      // alert("작물 단계 변경에 실패ㅜㅜ");
     },
   });
 
