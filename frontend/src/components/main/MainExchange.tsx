@@ -109,10 +109,12 @@ const MainExchange = () => {
     navigate(`/trade`);
   };
 
+  const goToTrade = () => {
+    navigate("/trade");
+  };
   const goToLogin = () => {
     navigate("/login");
   };
-
   const handleNextClick = () => {
     if (data) {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
@@ -133,7 +135,7 @@ const MainExchange = () => {
         </LogoContent>
       </LogoAndTextContainer>
       {!data || data.length === 0 ? (
-        <ExchangeBox onClick={goToLogin}>
+        <ExchangeBox onClick={goToTrade}>
           <TokenBox>동네인증을 해주세요</TokenBox>
         </ExchangeBox>
       ) : accessToken ? (
