@@ -20,13 +20,13 @@ import Loading from "../../components/common/Loading";
 const DiaryCreatePage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [crop, setCrop] = useAtom(cropAtom);
+  const [crop] = useAtom(cropAtom);
   const [selectedFiles, setSelectedFiles] = useAtom(fileAtom);
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().slice(0, 10)
   );
-  const [title, setTitle] = useInput("");
-  const [content, setContent] = useInput("");
+  const [title, onTitle] = useInput("");
+  const [content, onContent] = useInput("");
 
   useEffect(() => {
     if (!crop) {
@@ -100,14 +100,14 @@ const DiaryCreatePage = () => {
                 id="title"
                 name="title"
                 placeholder="제목을 입력해주세요"
-                onChange={setTitle}
+                onChange={onTitle}
               />
               <StyledTextArea
                 label="내용"
                 name="content"
                 placeholder="내용을 입력해주세요."
                 value={content}
-                onChange={setContent}
+                onChange={onContent}
                 maxLength={300}
               />
               <FileUploadInput />
