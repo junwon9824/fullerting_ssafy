@@ -257,6 +257,7 @@ const TradePost = () => {
           placeholder="제목을 입력해주세요"
           onChange={setTitle}
           isRequired={true}
+          maxLength={30}
         />
         <RadioBox>
           <TitleText>
@@ -321,6 +322,7 @@ const TradePost = () => {
             placeholder="₩ 가격을 입력해주세요."
             onChange={setCash}
             isRequired={true}
+            maxLength={10}
           ></StyledInput>
         )}
 
@@ -332,6 +334,7 @@ const TradePost = () => {
           placeholder="거래 장소를 입력해주세요."
           onChange={setPlace}
           isRequired={true}
+          maxLength={30}
         />
         <StyledTextArea
           label="내용"

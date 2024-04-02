@@ -79,12 +79,10 @@ const TradePost = () => {
       setSelectedFiles([]);
       // navigate(-1);
       navigate("/community");
-
     } catch (error) {
       console.error("업로드 실패:", error);
-      window.alert("모든 부분을 등록해주세요.")
+      window.alert("모든 부분을 등록해주세요.");
     }
-
   };
 
   const handleRadioButtonChange = (value: string) => {
@@ -132,6 +130,7 @@ const TradePost = () => {
             placeholder="제목을 입력해주세요"
             onChange={setTitle}
             isRequired={false}
+            maxLength={30}
           />
         </Nav>
         <Nav>
