@@ -100,16 +100,39 @@ const BasicText = styled.div`
   -webkit-box-orient: vertical;
   overflow: hidden;
 `;
+
+const ExchangeBox = styled.div`
+  height: 5.2rem;
+  display: flex;
+  padding: 0.4375rem 0.5rem;
+  width: 18rem;
+  border-radius: 0.9375rem 0rem 0.9375rem 0.9375rem;
+  border: 1.5px solid var(--sub0, #a0d8b3);
+`;
+
+const TokenBox = styled.div`
+  font-family: "GamtanRoad Dotum TTF";
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-left: 3rem;
+  font-weight: bold;
+  color: #a0d8b3;
+`;
+
 const MainTip = () => {
+  const accessToken = sessionStorage.getItem("accessToken");
   const navigate = useNavigate();
-  
+
   const { data: posts } = useQuery<Post[]>({
     queryKey: ["communityList"],
     queryFn: getallcommunities,
   });
-
+  const goToLogin = () => {
+    navigate("/login");
+  };
   const goCommunity = () => {
-    console.log('comm')
+    console.log("comm");
     navigate("community");
   };
   return (
@@ -124,18 +147,24 @@ const MainTip = () => {
         </Character>
       </LogoAndTextContainer>
 
-      <SliderContainer onClick={goCommunity}>
-        <DiarySlider>
-          {posts?.map((post) => (
-            <DiaryBox key={post.id}>
-              <TextContent>
-                <DiaryText>{post.title}</DiaryText>
-                <BasicText>{post.content}</BasicText>
-              </TextContent>
-            </DiaryBox>
-          ))}
-        </DiarySlider>
-      </SliderContainer>
+      {accessToken ? ( // 로그인 상태일 때만 SliderContainer 렌더링
+        <SliderContainer onClick={goCommunity}>
+          <DiarySlider>
+            {posts?.map((post) => (
+              <DiaryBox key={post.id}>
+                <TextContent>
+                  <DiaryText>{post.title}</DiaryText>
+                  <BasicText>{post.content}</BasicText>
+                </TextContent>
+              </DiaryBox>
+            ))}
+          </DiarySlider>
+        </SliderContainer>
+      ) : (
+        <ExchangeBox onClick={goToLogin}>
+          <TokenBox>커뮤니티를 작성 해주세요</TokenBox>
+        </ExchangeBox>
+      )}
     </MainBox>
   );
 };
