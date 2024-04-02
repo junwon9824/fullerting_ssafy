@@ -128,10 +128,10 @@ public class ExArticleService {
                 .id(exArticleRegisterRequest.getId())
                 .title(exArticleRegisterRequest.getExArticleTitle())
                 .content(exArticleRegisterRequest.getExArticleContent())
-//                .place(exArticleRegisterRequest.getExArticlePlace())
+                .place(exArticleRegisterRequest.getPlace())
                 .type(exArticleRegisterRequest.getExArticleType())
                 .created_at(createdAt)
-                .location(exArticleRegisterRequest.getEx_article_location())
+                .location(customUser.getLocation())
                 .user(customUser)
                 .favorite(exArticleRegisterRequest.getFavorite())
                 .packDiary(packDiary != null ? packDiary.orElse(null) : null)
@@ -205,7 +205,11 @@ public class ExArticleService {
 //        log.info("eeeeeeeeeeeee" + exArticle.stream().
 //                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
 
+        log.info(user.getLocation());
         List<ExArticle> exArticle = exArticleRepository.findAllByOrderByCreated_atDescandlocation(user.getLocation());
+
+        for (ExArticle article : exArticle)
+            log.info(article.getLocation());
 
         List<ExArticleAllResponse> exArticleResponses =
                 exArticle.stream().map(exArticle1 -> exArticle1.toAllResponse(exArticle1, user)).

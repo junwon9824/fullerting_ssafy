@@ -45,8 +45,6 @@ public class ExArticleController {
         Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, files);
 //        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email);
 
-//        log.info("[register article ]: {}", exArticleRegisterRequest.toString());
-
         return ResponseEntity.ok().body(MessageUtils.success(exarticleid));
     }
 
