@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getDetailCommunities } from "../../apis/CommunityApi";
 import styled from "styled-components";
+import { useAtom } from "jotai";
+import { title  } from "../../stores/community";
 
 interface ImgProps {
   backgroundImage: string;
@@ -80,10 +82,18 @@ const getTimeDifference = (minutes: number) => {
 
 const CommunityTitle = () => {
   const { communityId } = useParams();
+  const [curtitle, setCurTitle] = useAtom(title);
+
+  console.log(communityId)
+
   const { data: community, isLoading: isCommunityDetailLoading } = useQuery({
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
   });
+
+  console.log(community)
+  console.log(community?.title)
+  setCurTitle(community?.title)
 
   if (isCommunityDetailLoading) {
     return <div>Loading..</div>;

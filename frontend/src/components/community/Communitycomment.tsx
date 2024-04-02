@@ -9,6 +9,7 @@ import {
   createComment,
   fetchAllComments,
 } from "../../apis/CommunityApi";
+import { useAtom } from "jotai";
 
 interface ImgProps {
   backgroundImage: string;
@@ -153,7 +154,7 @@ const CommunityComment = () => {
   const [commentIdToDelete, setCommentIdToDelete] = useState("");
   const { communityId } = useParams<{ communityId: string }>();
   const queryClient = useQueryClient();
-
+  
   // 댓글 생성
   const { mutate, isLoading } = useMutation({
     mutationFn: createComment,
