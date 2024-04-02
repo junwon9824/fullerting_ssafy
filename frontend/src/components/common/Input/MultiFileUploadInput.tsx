@@ -203,6 +203,7 @@ const MultiFileUploadInput: React.FC = () => {
             onChange={handleFileChange}
             accept="image/*"
             multiple
+            disabled={selectedFiles.length >= 5}
           />
         </RegisterBox>
         {previewURLs.map((previewURL, index) => (
@@ -229,7 +230,7 @@ const MultiFileUploadInput: React.FC = () => {
         ))}
       </FlexColumn>
       {previewURLs.length > 0 && (
-        <CounterText>{`${previewURLs.length}/10`}</CounterText>
+        <CounterText>{`${previewURLs.length}/5`}</CounterText>
       )}
     </>
   );
