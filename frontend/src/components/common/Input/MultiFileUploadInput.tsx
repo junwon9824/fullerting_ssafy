@@ -177,7 +177,7 @@ const MultiFileUploadInput: React.FC = () => {
               </FileUploadIcon>
             </FileUploadBox>
           </label>
-          <InputBox
+          {/* <InputBox
             id="file"
             type="file"
             accept="image/*"
@@ -185,14 +185,14 @@ const MultiFileUploadInput: React.FC = () => {
             onChange={handleFileChange}
             // onClick={handleFileUpload}
             multiple
-          />
-          {/* <InputBox
+          /> */}
+          <InputBox
             id="file"
             type="file"
             onChange={handleFileChange}
             accept="image/*"
             multiple
-          /> */}
+          />
         </RegisterBox>
         {previewURLs.map((previewURL, index) => (
           <div key={index} style={{ position: "relative" }}>

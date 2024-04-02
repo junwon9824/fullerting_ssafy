@@ -327,6 +327,7 @@ const TradeModify = () => {
         // 오류 처리
         console.error("업로드 실패:", error);
       }
+      setSelectedDiaryId(null);
     }
   };
   // 작물일지 불러오기
