@@ -27,6 +27,8 @@ const RecognizePage = () => {
 
       if (!packDiaryId) return;
 
+      alert(`${res.crop_type} ${res.grade}단계 입니다.`);
+
       stepMutate({
         packDiaryId: packDiaryId,
         cropTypeName: res.crop_type,
@@ -50,13 +52,17 @@ const RecognizePage = () => {
       if (res.cropRenewal === true) {
         if (res.myBadgeResponse) {
           alert(
-            `${res.cropTypeName} ${res.cropStepGrowth}단계!!\n${res.myBadgeResponse.badgeName} 뱃지를 획득하였습니다!`
+            `${res.cropTypeName} ${res.cropStepGrowth}단계!!\n[${res.myBadgeResponse.badgeName}] 뱃지를 획득하였습니다!`
           );
         } else {
-          alert(`${res.cropTypeName} ${res.cropStepGrowth}단계 입니다.`);
+          alert(
+            `${res.cropTypeName} ${res.cropStepGrowth}단계로 업그레이드 완료!!!!`
+          );
         }
       } else {
-        alert("해당 작물이 맞으신가요? 다시 촬영해 주세요.");
+        alert(
+          `해당 작물이 아니거나 단계 및 정확도가 낮습니다. 다시 촬영해 주세요.`
+        );
       }
     },
     onError: (e) => {
