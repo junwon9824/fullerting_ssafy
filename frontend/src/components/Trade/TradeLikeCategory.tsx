@@ -221,7 +221,7 @@ const TradeLikeCategory = () => {
   return (
     <>
       <ContentBox>
-        {data.map((item: DataItem, index: number) => (
+        {data?.map((item: DataItem, index: number) => (
           <PostBox
             onClick={() => {
               item.exArticleResponse.exArticleType == "DEAL"

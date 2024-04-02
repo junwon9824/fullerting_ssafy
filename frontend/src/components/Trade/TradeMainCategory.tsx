@@ -219,7 +219,7 @@ const TradeMainCategory = () => {
   return (
     <>
       <ContentBox>
-        {data.map((item: DataItem, index: number) => (
+        {data?.map((item: DataItem, index: number) => (
           <PostBox
             key={index}
             onClick={() => {
