@@ -112,7 +112,9 @@ const MainExchange = () => {
   const goToTrade = () => {
     navigate("/trade");
   };
-
+  const goToLogin = () => {
+    navigate("/login");
+  };
   const handleNextClick = () => {
     if (data) {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
