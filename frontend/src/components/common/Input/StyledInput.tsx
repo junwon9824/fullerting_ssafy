@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import styled from "styled-components";
 
 interface StyledInputType {
@@ -71,6 +71,15 @@ const StyledInput = ({
   disabled,
   maxLength,
 }: StyledInputType) => {
+  useEffect(() => {
+    if (value && maxLength && onChange) {
+      if (value.length > maxLength) {
+        const newValue = value.slice(0, maxLength);
+        onChange({ target: { value: newValue, name } });
+      }
+    }
+  }, [value]);
+
   return (
     <>
       {!label && (
