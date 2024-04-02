@@ -46,20 +46,44 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 
     @Override
     public CreateChatRoomResponse createChatRoom(CreateChatRoomRequest createChatRoomRequest) {
-        UserResponse userResponse = userService.getUserInfo();
-
         //게시글 존재하는지 확인
         ExArticle exArticle = exArticleRepository.findById(createChatRoomRequest.getExArticleId()).orElseThrow(() -> new ExArticleException(NOT_EXISTS));
-        //이미 존재하는 채팅방인지 조회
-        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByExArticleAndBuyer(exArticle, UserResponse.toEntity(userResponse));
+
+        Optional<ChatRoom> chatRoomOptional; //채팅방 조회
+        UserResponse userResponse = null; //일반거래, 나눔 유저 정보
+        CustomUser customUser = null; //제안 유저 정보
+        
+        //일반거래, 나눔일 경우
+        if(createChatRoomRequest.getBuyerId() == null){
+            userResponse = userService.getUserInfo();
+            //이미 존재하는 채팅방인지 조회
+            chatRoomOptional = chatRoomRepository.findByExArticleAndBuyer(exArticle, UserResponse.toEntity(userResponse));
+        }
+        //제안일 경우
+        else {
+            customUser = userRepository.findById(createChatRoomRequest.getBuyerId()).orElseThrow(()->new UserException(NOT_EXISTS_USER));
+            chatRoomOptional = chatRoomRepository.findByExArticleAndBuyer(exArticle, customUser);
+        }
+
         //존재하지 않을 경우 채팅방 생성
         if(chatRoomOptional.isEmpty()){
-            ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
-                    .exArticle(exArticle)
-                    .buyer(UserResponse.toEntity(userResponse))
-                    .build());
-            log.info("채팅방 첫 생성 : {}", exArticle.toString());
+            ChatRoom chatRoom;
+            //일반거래, 나눔일 경우
+            if(createChatRoomRequest.getBuyerId() == null){
+                chatRoom = chatRoomRepository.save(ChatRoom.builder()
+                        .exArticle(exArticle)
+                        .buyer(UserResponse.toEntity(userResponse))
+                        .build());
+            }
+            //제안일 경우
+            else {
+                chatRoom = chatRoomRepository.save(ChatRoom.builder()
+                        .exArticle(exArticle)
+                        .buyer(customUser)
+                        .build());
+            }
 
+            log.info("채팅방 첫 생성 : {}", exArticle.toString());
             String redirectURL = "/trade/" + chatRoom.getId() + "/chat";
             // 채팅방 생성 알림함 전송
             eventAlarmService.notifyCreateChatRoomAuthor(userService.getUserEntityById(userResponse.getId()), exArticle, redirectURL);
