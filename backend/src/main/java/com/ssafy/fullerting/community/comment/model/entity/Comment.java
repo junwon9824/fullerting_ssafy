@@ -49,6 +49,7 @@ public class Comment {
                 .nickname(customUser.getNickname())
                 .localDateTime(this.getLocalDateTime())
                 .id(this.id)
+                .authorid(this.customUser.getId())
                 .build();
     }
 }
