@@ -89,8 +89,8 @@ const TokenBox = styled.div`
   font-family: "GamtanRoad Dotum TTF";
   display: flex;
   align-items: center;
-  font-size: 0.8rem;
-  margin-left: 0.5rem;
+  font-size: 0.9rem;
+  margin-left: 4.3rem;
   font-weight: bold;
   color: #a0d8b3;
 `;
@@ -118,7 +118,7 @@ const MainExchange = () => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
     }
   };
-  if (!data || data.length === 0) return <div>거래 데이터 없음</div>;
+  // if (!data || data.length === 0) return <div>거래 데이터 없음</div>;
 
   return (
     <MainBox>
@@ -132,7 +132,11 @@ const MainExchange = () => {
           <LogoText>작물 거래하기</LogoText>
         </LogoContent>
       </LogoAndTextContainer>
-      {accessToken ? (
+      {!data || data.length === 0 ? (
+        <ExchangeBox onClick={goToLogin}>
+          <TokenBox>동네인증을 해주세요</TokenBox>
+        </ExchangeBox>
+      ) : accessToken ? (
         <ExchangeContainer>
           <ExchangeBox>
             <ScrollExchange

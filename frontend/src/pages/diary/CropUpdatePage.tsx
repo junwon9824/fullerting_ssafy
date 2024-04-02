@@ -10,8 +10,10 @@ import { useEffect, useState } from "react";
 import useInput from "../../hooks/useInput";
 import { getCropData, updateCrop } from "../../apis/DiaryApi";
 import StyledInput from "../../components/common/Input/StyledInput";
+import { useSSEConnection } from "../../hooks/useSSEConnection";
 
 const CropUpdatePage = () => {
+  useSSEConnection();
   const navigate = useNavigate();
   const { packDiaryId } = useParams();
   const [selectedDate, setSelectedDate] = useState<string>(

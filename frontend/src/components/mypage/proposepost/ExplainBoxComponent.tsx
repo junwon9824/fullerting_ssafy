@@ -51,12 +51,12 @@ const ExplainBoxComponent: React.FC<Props> = ({ item }) => (
   <ExplainBox>
     {item ? (
       <StateIcon
-        width={4}
+        width={2.5}
         height={1.3}
         backgroundColor="#0c560f"
         color="#ffffff"
       >
-        {item === "DEAL" ? "제안한 게시물" : "기타 게시물"}
+        {item === "DEAL" ? "제안" : "기타"}
       </StateIcon>
     ) : null}
   </ExplainBox>
