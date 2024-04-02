@@ -174,7 +174,7 @@ const TradeModify = () => {
   const [title, setTitle] = useInput(location.state?.exArticleTitle || "");
   const [check, setCheck] = useState([true, false, false]);
   const [cashCheck, setCashCheck] = useState<boolean>(false);
-  const [cash, setCash] = useInput(location.state?.deal_cur_price || "");
+  const cash = location.state?.deal_cur_price || "";
   const [place, setPlace] = useInput(location.state?.ex_article_location || "");
   const [imageFiles, setImageFiles] = useAtom(imageFilesAtom);
   const postId = location.state?.postId;
@@ -251,6 +251,7 @@ const TradeModify = () => {
   const { mutate: handleModified } = useUpdateArticle();
   const [newimage, setnewimage] = useState<File[]>([]);
   console.log("이미지스", images);
+  console.log("현재가격", location.state?.deal_cur_price);
   const handleCheckClick = async () => {
     if (selectedFiles.length === 0) {
       alert("사진을 등록하세요");
