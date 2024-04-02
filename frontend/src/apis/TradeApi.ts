@@ -58,9 +58,11 @@ export const getTradeList = async (accessToken: string) => {
 };
 export const getTradeDetail = async (accessToken: string, postId: number) => {
   try {
+    console.log('postid'+postId)
     const response = await api.get(`/exchanges/${postId}/detail`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
+    console.log('gettradedetail'+JSON.stringify( response.data)   )
     return response.data.data_body;
   } catch (e) {
     console.log("에러났어요", e);
@@ -215,6 +217,7 @@ export const useUpdateArticle = () => {
     },
   });
 };
+
 export const deletePost = async (postId: string) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -239,6 +242,7 @@ export const createChatRoom = () => {
       if (!accessToken) {
         throw new Error("로그인이 필요합니다.");
       }
+      
       const response = await api.post(
         "/chat-room",
         {

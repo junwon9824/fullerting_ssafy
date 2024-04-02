@@ -18,7 +18,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import SwiperCore, { Navigation, Pagination } from "swiper/modules";
 import { userCheck, userIndividualCheck } from "../../apis/UserApi";
-import TradePostLayout from "../common/Layout/TradePostLayout";
+import React, { ChangeEvent, useEffect } from "react";
+import { getUsersInfo } from "../../apis/MyPage";
 interface ImageResponse {
   imgStoreUrl: string;
 }
@@ -135,6 +136,7 @@ const PriceBox = styled.div`
   font-size: 1.25rem;
   font-weight: bold;
 `;
+
 const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
   width: ${(props) => `${props.width}rem`};
   height: ${(props) => `${props.height}rem`};
@@ -148,13 +150,52 @@ const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
 `;
 const TradeDetailDeal = () => {
   const navigate = useNavigate();
+  const [tradeDetail, setTradeDetail] = useState(null); // 상태를 초기화합니다.
+  const [authorId, setAuthorId] = useState(null); // 상태를 초기화합니다.
+  const [loginid, setLoginId] = useState(null); // 상태를 초기화합니다.
+
+  const { postId } = useParams<{ postId: string }>();
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const accessToken = sessionStorage.getItem("accessToken"); // 세션 스토리지에서 accessToken을 가져옵니다.
+
+  //       const userinfo = await getUsersInfo();
+
+  //       console.log("userinfo" + JSON.stringify(userinfo));
+
+  //       console.log("userinfo" + userinfo.data.data_body.id);
+  //       setLoginId(userinfo.data.data_body.id);
+
+  //       console.log("postid:" + postId);
+  //       const postIdNumber = postId ? parseInt(postId) : undefined;
+
+  //       if (accessToken !== null) {
+  //         // accessToken이 null이 아닌 경우에만 실행합니다.
+
+  //         if (postIdNumber) {
+  //           const data = await getTradeDetail(accessToken, postIdNumber); // 비동기 함수를 호출합니다.
+  //           console.log("dettttttttttttt", JSON.stringify(data)); // data 객체를 직렬화하여 출력합니다.
+  //           console.log("dettttttttttttt", data.exArticleResponse.userId); // data 객체를 직렬화하여 출력합니다.
+  //           setAuthorId(data.exArticleResponse.userId);
+  // g        }
+
+  //         setTradeDetail(data); // 데이터를 상태에 저장합니다.
+  //       }
+  //     } catch (error) {
+  //       console.error("에러 발생:", error);
+  //     }
+  //   };
+
+  // fetchData(); // 함수를 호출합니다.
+  // }, []); // 빈 배열을 전달하여 컴포넌트가 처음 렌더링될 때 한 번만 호출되도록 설정합니다.
 
   const [like, setLike] = useState<boolean>(false);
   const handleLike = () => {
     setLike(!like);
   };
 
-  const { postId } = useParams<{ postId: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
   const { isLoading, data, error } = useQuery({
@@ -193,16 +234,18 @@ const TradeDetailDeal = () => {
     error: IndividualUserDetailError,
   } = useQuery({
     queryKey: ["individualUserDetail"],
-    queryFn: () => userIndividualCheck(accessToken, data?.exArticleResponse.userId),
+    queryFn: () =>
+      userIndividualCheck(
+        accessToken as string,
+        data?.exArticleResponse.userId
+      ),
     enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
   });
-  const BtnClick = (postId: number) => {
-    if (data?.exArticleResponse?.userId === userData?.id) {
-      navigate(`/trade/${postId}/seller`);
-    } else {
-      navigate(`/trade/${postId}/buyer`);
-    }
-    // console.log("저를 클릭했나요?");
+  const handleSellerClick = (postId: number) => {
+    navigate(`/trade/${postId}/seller`);
+  };
+  const handleBuyerClick = (postId: number) => {
+    navigate(`/trade/${postId}/buyer`);
   };
 
   const handleEdit = () => {
@@ -215,10 +258,11 @@ const TradeDetailDeal = () => {
         ex_article_location: data?.exArticleResponse?.exLocation,
         packdiaryid: data?.packDiaryResponse?.packDiaryId.toString(),
         deal_cur_price: data?.dealResponse?.price.toString(),
-        imageResponse: data?.imageResponses,
+        imageResponse: data?.exArticleResponse.imageResponses,
         postId: data?.exArticleResponse.exArticleId,
       },
     });
+    // console.log('gettradedetail'+response.data.data_body.exArticleResponse.imageResponses[0].imgStoreUrl)
   };
   const { mutate: deleteMutation } = useMutation({
     mutationFn: deletePost,
@@ -230,17 +274,31 @@ const TradeDetailDeal = () => {
       console.log(err);
     },
   });
+
   return (
     <>
-      <TradeTopBar
-        title="작물거래"
-        showBack={true}
-        showEdit={true}
-        onEdit={handleEdit}
-        onDelete={() => {
-          deleteMutation(data?.exArticleResponse.exArticleId);
-        }}
-      />
+      {data?.exArticleResponse.userId === data?.userResponse.id ? (
+        <TradeTopBar
+          title="작물거래"
+          showBack={true}
+          showEdit={true}
+          onEdit={handleEdit}
+          onDelete={() => {
+            deleteMutation(data?.exArticleResponse.exArticleId);
+          }}
+        />
+      ) : (
+        <TradeTopBar
+          title="작물거래"
+          showBack={true}
+          showEdit={false}
+          // onEdit={handleEdit}
+          // onDelete={() => {
+          //   deleteMutation(data?.exArticleResponse.exArticleId);
+          // }}
+        />
+      )}
+
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper
@@ -306,9 +364,19 @@ const TradeDetailDeal = () => {
             <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>
         </LayoutInnerBox>
+
+        {/* 구매자면 가격 제안조회 고 판매자면 가격 제안하기. */}
         <BottomButton
-          text="가격 제안하기"
-          onClick={() => BtnClick(postNumber)}
+          text={
+            data?.userResponse.id === data?.exArticleResponse.userId
+              ? "제안목록 확인"
+              : "제안하기"
+          }
+          onClick={() =>
+            data?.userResponse.id === data?.exArticleResponse.userId
+              ? handleSellerClick(data?.exArticleResponse.exArticleId)
+              : handleBuyerClick(data?.exArticleResponse.exArticleId)
+          }
         />
       </LayoutMainBox>
     </>

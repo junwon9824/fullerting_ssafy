@@ -1,5 +1,7 @@
+import React, { useState } from "react";
+import Modal from "react-modal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FormEvent, useState } from "react";
+import { FormEvent } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import {
@@ -102,11 +104,31 @@ const SubmitButton = styled.button`
   border-radius: 0.5rem;
 `;
 
-const Delete = styled.div`
-  margin-top: 0.5rem;
-  margin-left: 14.1rem;
+const DeleteButton = styled.button`
+  font-family: "GamtanRoad Dotum TTF";
+  background: var(--sub0, #a0d8b3);
+  border: none;
+  color: white;
+  padding: 10px 12px;
+  text-align: center;
   font-size: 12px;
-  color: #888;
+  margin: 5px 8px;
+  cursor: pointer;
+  border-radius: 0.5rem;
+`;
+
+const ModalContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+`;
+
+const ModalText = styled.p`
+  margin-bottom: 20px;
 `;
 
 const formatDate = (isoString: string) => {
@@ -127,6 +149,8 @@ const formatDate = (isoString: string) => {
 
 const CommunityComment = () => {
   const [comment, setComment] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [commentIdToDelete, setCommentIdToDelete] = useState("");
   const { communityId } = useParams<{ communityId: string }>();
   const queryClient = useQueryClient();
 
@@ -147,10 +171,12 @@ const CommunityComment = () => {
     if (!comment.trim()) return;
     if (isLoading) return;
 
-    mutate({ commentContent: comment, communityId: communityId });
+    mutate({ 
+      commentContent: comment, 
+      communityId: communityId});
   };
-  // 댓글 삭제
 
+  // 댓글 삭제
   const { mutate: deleteCommentMutation } = useMutation({
     mutationFn: DeleteComment,
     onSuccess: () => {
@@ -161,6 +187,16 @@ const CommunityComment = () => {
       console.error("댓글 삭제 오류:", error);
     },
   });
+
+  const handleDeleteClick = (commentId: string) => {
+    setCommentIdToDelete(commentId);
+    setShowModal(true);
+  };
+
+  const confirmDelete = () => {
+    deleteCommentMutation({ communityId, commentId: commentIdToDelete });
+    setShowModal(false);
+  };
 
   // 전체 댓글 조회
   const { data: allCommentData, isLoading: Loading } = useQuery({
@@ -175,6 +211,7 @@ const CommunityComment = () => {
 
   return (
     <All>
+
       {allCommentData?.map((CommentData) => (
         <CommentContainer key={CommentData.id}>
           <Profile>
@@ -187,19 +224,13 @@ const CommunityComment = () => {
           <CommentTime>
             <Comment>{CommentData.commentcontent}</Comment>
             <Time>{formatDate(CommentData.localDateTime)}</Time>
-            <Delete
-              onClick={() =>
-                deleteCommentMutation({
-                  communityId,
-                  commentId: CommentData.id,
-                })
-              }
-            >
+            <DeleteButton onClick={() => handleDeleteClick(CommentData.id)}>
               댓글삭제
-            </Delete>
+            </DeleteButton>
           </CommentTime>
         </CommentContainer>
       ))}
+
       <CommentInputContainer as="form" onSubmit={handleSubmit}>
         <CommentInput
           type="text"
@@ -209,6 +240,20 @@ const CommunityComment = () => {
         />
         <SubmitButton type="submit">등록</SubmitButton>
       </CommentInputContainer>
+
+      {/* 삭제 모달 */}
+      <Modal
+        isOpen={showModal}
+        onRequestClose={() => setShowModal(false)}
+        contentLabel="Delete Modal"
+      >
+        <ModalContainer>
+          <ModalText>정말로 삭제하시겠습니까?</ModalText>
+          <DeleteButton onClick={confirmDelete}>확인</DeleteButton>
+          <DeleteButton onClick={() => setShowModal(false)}>취소</DeleteButton>
+        </ModalContainer>
+      </Modal>
+
     </All>
   );
 };

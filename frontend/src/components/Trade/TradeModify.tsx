@@ -14,9 +14,10 @@ import MultiFileUploadInput from "../../components/common/Input/MultiFileUploadI
 import { useMutation } from "@tanstack/react-query";
 import { usePost, useUpdateArticle } from "../../apis/TradeApi";
 import { useAtom } from "jotai";
-import { imageFilesAtom, selectedDiaryIdAtom } from "../../stores/trade";
+import { imageFilesAtom, oldImagesAtom, selectedDiaryIdAtom } from "../../stores/trade";
 import { BottomButton } from "../common/Button/LargeButton";
 import { useLocation, useNavigate } from "react-router-dom";
+import FileUploadInput from "../common/Input/FileUploadInput";
 
 interface BackGround {
   backgroundColor?: string;
@@ -32,7 +33,12 @@ const DiarySelectedText = styled.span`
   color: #2a7f00;
   margin-left: 0.5rem;
 `;
-
+const PreviewImage = styled.img`
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 1rem;
+  background: ${({ theme }) => theme.colors.white};
+`;
 const RadioBox = styled.div`
   width: 100%;
   height: auto;
@@ -64,6 +70,25 @@ const TitleText = styled.div`
   font-weight: bold;
 `;
 
+const DeleteImageButton = styled.div`
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: rgba(59, 59, 59, 0.804);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+
+  svg {
+    width: 0.7rem;
+    height: 0.7rem;
+    fill: #ffffff;
+  }
+`;
 const BiddingBox = styled.div`
   background-color: #eee;
   width: 100%;
@@ -122,7 +147,15 @@ const DiarySquare = styled.div`
   background: ${({ theme }) => theme.colors.white};
 `;
 
+const RegisterBox = styled.div`
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+`;
+
+
 const TradeModify = () => {
+
   const location = useLocation();
   const isEditMode = Boolean(location.state);
   const [title, setTitle] = useInput(location.state?.exArticleTitle || "");
@@ -135,7 +168,10 @@ const TradeModify = () => {
   const [imageArray, setImageArray] = useState(
     location.state?.imageResponse || ""
   );
+
+  const [images, setImages] = useAtom(oldImagesAtom);
   // console.log("타입을 알려주세요", typeof imageArray);
+
   const [showDiary, setShowDiary] = useState(
     location.state?.packdiaryid || null
   );
@@ -145,7 +181,9 @@ const TradeModify = () => {
   const [tradeType, setTradeType] = useState(
     location.state?.exArticleType || ""
   );
+
   console.log(location?.state);
+
   let test: Array<number> = [];
   const [diary, setSelectedDiaryId] = useAtom(selectedDiaryIdAtom);
   const [modal, setModal] = useState<boolean>(false);
@@ -159,6 +197,13 @@ const TradeModify = () => {
   const openModal = () => {
     setModal(true);
   };
+  const [isLoading, setIsLoading] = useState(false);
+
+
+
+
+
+
   useEffect(() => {
     console.log(document.body);
     // 모달이 열리면 body의 overflow를 hidden으로 설정
@@ -168,6 +213,8 @@ const TradeModify = () => {
       document.body.style.overflow = "unset";
     }
 
+    console.log('lengthhhhhhhhhhhhhhh ' + location.state.imageResponse.length)
+    setImages(location.state.imageResponse);
     // 컴포넌트가 언마운트 될 때 원래 상태로 복구
     return () => {
       document.body.style.overflow = "unset";
@@ -192,17 +239,56 @@ const TradeModify = () => {
   const { mutate: handlePost } = usePost();
   const navigate = useNavigate();
   const { mutate: handleModified } = useUpdateArticle();
+  const [newimage, setnewimage] = useState<File[]>([]);
+
+
   const handleCheckClick = async () => {
+
     console.log("저 여기 왔어요", 111111);
     const formData = new FormData();
+    console.log(location.state.imageResponse[0].imgStoreUrl);
+
+
+    const newFiles: File[] = [];
 
     selectedFiles.forEach((file) => {
-      formData.append("images", file);
+      if (file instanceof File) {
+        newFiles.push(file);
+      }
     });
-    if (selectedFiles.length === 0) {
-      // 이미지 파일이 없을 경우 빈 문자열을 서버에 보냅니다.
-      formData.append("images", new Blob([], { type: "application/json" }));
+
+    console.log('newfile'+newFiles.length)
+    
+    setnewimage(newFiles.length > 0 ? [newFiles[0]] : []);
+
+    if (newFiles.length === 0) { // 새로운 이미지
+      formData.append("images", new Blob([]));
+    } else {
+      selectedFiles.forEach((file) => {
+        formData.append("images", file);
+        console.log("formapppppppp"+file.name)
+      });
     }
+    console.log('selectedFilesselectedFiles'+selectedFiles.length)
+
+
+    console.log("ffffffffffffffff")
+
+    // // selectedFiles에 있는 각 파일을 FormData에 추가
+    // selectedFiles.forEach((file) => {
+    //   formData.append("images", file);
+    // });
+
+
+    // if (selectedFiles.length === 0) { // 없어도 1이라 여기는 안와
+    //   // 이미지 파일이 없을 경우 빈 문자열을 서버에 보냅니다.
+    //   console.log("no imaggggggggggggg")
+    //   formData.append("images", new Blob([], { type: "application/json" }));
+    // }
+
+
+    console.log("imagggggggggggggggg" + images)
+
     const updateInfo = {
       exArticleTitle: title,
       exArticleContent: content,
@@ -210,9 +296,12 @@ const TradeModify = () => {
       exArticleType: tradeType,
       packdiaryid: showDiary,
       dealCurPrice: cash,
-      unmodifiedimageid: [],
+      // unmodifiedimageid: [],
+      images: images.map((img) => img.id),
+
       // 이곳에 수정할 다른 필드 정보를 추가합니다.
     };
+
     formData.append(
       "updateInfo",
       new Blob([JSON.stringify(updateInfo)], { type: "application/json" })
@@ -220,7 +309,7 @@ const TradeModify = () => {
     try {
       await handleModified({ postId, formData });
       setSelectedFiles([]);
-      setSelectedDiaryId(null);
+      setImages([]);
       navigate(-1);
       // 요청 성공 후 페이지 이동 또는 상태 업데이트
       // navigate("/trade");
@@ -229,6 +318,16 @@ const TradeModify = () => {
       console.error("업로드 실패:", error);
     }
   };
+
+
+
+
+
+  const handleDeleteImage = (id: number) => {
+    setImages(images.filter((img) => img.id !== id));
+  };
+
+
   return (
     <>
       {modal && (
@@ -337,9 +436,43 @@ const TradeModify = () => {
           </DiarySquare>
           {diary && <DiarySelectedText>선택되었습니다</DiarySelectedText>}
         </DiaryBox>
+
         <DiaryBox>
           <MultiFileUploadInput />
         </DiaryBox>
+
+
+        {/* <RegisterBox>
+          {images.map((image) => (
+            <div key={image.id} style={{ position: "relative" }}>
+              <PreviewImage
+                src={image.imgStoreUrl}
+                alt={`Preview ${image.id}`}
+              />
+              <DeleteImageButton
+                onClick={() => handleDeleteImage(image.id)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    d="M3 3L21 21M21 3L3 21"
+                    stroke="white"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </DeleteImageButton>
+            </div>
+          ))}
+
+        </RegisterBox> */}
+
       </TradePostLayout>
       <BottomButton
         onClick={handleCheckClick}

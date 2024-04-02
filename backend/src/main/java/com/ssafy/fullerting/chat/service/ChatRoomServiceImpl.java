@@ -60,8 +60,9 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                     .build());
             log.info("채팅방 첫 생성 : {}", exArticle.toString());
 
+            String redirectURL = "/trade/" + chatRoom.getId() + "/chat";
             // 채팅방 생성 알림함 전송
-            eventAlarmService.notifyCreateChatRoomAuthor(userService.getUserEntityById(userResponse.getId()), exArticle, createChatRoomRequest.getRedirectURL());
+            eventAlarmService.notifyCreateChatRoomAuthor(userService.getUserEntityById(userResponse.getId()), exArticle, redirectURL);
 
             return CreateChatRoomResponse.toResponse(chatRoom);
         }
@@ -69,6 +70,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         else{
             return CreateChatRoomResponse.toResponse(chatRoomOptional.get());
         }
+
     }
 
     @Override

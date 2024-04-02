@@ -1,7 +1,7 @@
 import { useAtom } from "jotai";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import styled from "styled-components";
-import { imageFilesAtom } from "../../../stores/trade";
+import { imageFilesAtom, oldImagesAtom } from "../../../stores/trade";
 
 const FlexColumn = styled.div`
   display: flex;
@@ -41,7 +41,9 @@ const FileUploadIcon = styled.svg`
   width: 2rem;
   height: 2rem;
 `;
-
+// const InputBox = styled.input`
+//   display: none;
+// `;
 const InputBox = styled.input.attrs({
   type: "file",
   accept: "image/*", // 이미지 파일만 받도록 설정
@@ -49,7 +51,6 @@ const InputBox = styled.input.attrs({
 })`
   display: none; // 여전히 입력 필드를 숨깁니다.
 `;
-
 const PreviewImage = styled.img`
   width: 4.2rem;
   height: 4.2rem;
@@ -90,6 +91,8 @@ const CounterText = styled.div`
 `;
 const MultiFileUploadInput: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
+  const [images, setImages] = useAtom(oldImagesAtom);
+
   const [previewURLs, setPreviewURLs] = useState<string[]>([]);
   useEffect(() => {
     const urls = selectedFiles.map((file) =>
@@ -98,11 +101,15 @@ const MultiFileUploadInput: React.FC = () => {
     setPreviewURLs(urls);
   }, [selectedFiles]);
 
+  useEffect(() => {
+    console.log("sssssssssss" + images.length);
+  }, [images]);
+
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const newFiles = Array.from(event.target.files);
       const updatedFiles = [...selectedFiles];
-      console.log(updatedFiles.length)
+      console.log(updatedFiles.length);
 
       newFiles.forEach((newFile) => {
         // 기존 파일 목록에 동일한 파일이 없는 경우에만 추가
@@ -121,11 +128,18 @@ const MultiFileUploadInput: React.FC = () => {
       setSelectedFiles(updatedFiles);
     }
   };
+
   const handleDeleteImage = (index: number) => {
     const newSelectedFiles = selectedFiles.filter((_, i) => i !== index);
     const newPreviewURLs = previewURLs.filter((_, i) => i !== index);
     setSelectedFiles(newSelectedFiles);
     setPreviewURLs(newPreviewURLs);
+
+    // setImages(images.filter((img) => img.id !== id));
+
+    // Jotai 원자에서 해당 이미지를 제거합니다.
+    const deletedImageId = images[index].id;
+    setImages(images.filter((img) => img.id !== deletedImageId));
   };
 
   return (
@@ -166,11 +180,19 @@ const MultiFileUploadInput: React.FC = () => {
           <InputBox
             id="file"
             type="file"
-            accept="image/*" // 이미지 파일만 받도록 설정
-            capture="environment" // 카메라 사용 활성화
-            multiple // 필요에 따라 여러 파일을 선택할 수 있도록 합니다. 필요 없다면 이 줄을 제거하세요.
+            accept="image/*"
+            capture="environment"
             onChange={handleFileChange}
+            // onClick={handleFileUpload}
+            multiple
           />
+          {/* <InputBox
+            id="file"
+            type="file"
+            onChange={handleFileChange}
+            accept="image/*"
+            multiple
+          /> */}
         </RegisterBox>
         {previewURLs.map((previewURL, index) => (
           <div key={index} style={{ position: "relative" }}>

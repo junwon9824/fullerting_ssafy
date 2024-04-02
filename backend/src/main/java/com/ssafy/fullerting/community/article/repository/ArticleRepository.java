@@ -17,4 +17,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     List<Article> findAllByContentandtitle(String keyword);
 
+
+
 }

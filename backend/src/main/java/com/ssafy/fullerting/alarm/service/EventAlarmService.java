@@ -5,6 +5,7 @@ import com.ssafy.fullerting.alarm.model.dto.request.AlarmPayload;
 import com.ssafy.fullerting.alarm.model.dto.response.MyEventAlarmResponse;
 import com.ssafy.fullerting.alarm.model.entity.EventAlarm;
 import com.ssafy.fullerting.alarm.repository.EventAlarmRepository;
+import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.service.UserService;
@@ -70,6 +71,28 @@ public class EventAlarmService {
         log.info("알람 읽음 처리됨: {} ", alarmId);
     }
 
+    // 1. 내가 쓴 게시물에 댓글이 달렸을 때
+    public void notifyCommentCreated(CustomUser commenter, Article article, String redirectURL) {
+        CustomUser author = userService.getUserEntityById(article.getUserId());
+
+        EventAlarm alarm = EventAlarm.builder()
+                .receiveUser(author)
+                .sendUser(commenter)
+                .type(EventAlarmType.커뮤니티)
+                .content(commenter.getNickname() + "님이 " + "#"+article.getTitle()+"#" +"에 댓글을 달았어요!")
+                .redirect(redirectURL)
+                .build();
+
+        eventAlarmRepository.save(alarm);
+
+        eventAlarmNotificationService.sendAsync(AlarmPayload.builder()
+                .receiveUserId(article.getUserId())
+                .alarmType(EventAlarmType.커뮤니티.toString())
+                .alarmContent(commenter.getNickname() + "님이 " + "#"+article.getTitle()+"#" +"에 댓글을 달았어요!")
+                .alarmRedirect(redirectURL)
+                .build());
+    }
+
 
     // 2.채팅이 왔을 때 ( 채팅방 생성됐을 때 )
     // 누군가에게 첫 채팅이 오면 알림함에 저장하고 푸쉬 알람을 띄운다
@@ -105,12 +128,13 @@ public class EventAlarmService {
         // 내가 가격제안 게시물을 올렸는데
         // 누군가가 입찰을 했을 때 알림
 
+
         EventAlarm alarm = EventAlarm.builder()
                 .receiveUser(exArticle.getUser())
                 .sendUser(bidUser)
                 .type(EventAlarmType.작물거래)
                 .content(bidUser.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 가격을 제안하셨어요.")
-                .redirect(redirectURL)
+                .redirect(redirectURL.replace("buyer", "seller"))
                 .build();
 
         eventAlarmRepository.save(alarm);
@@ -120,7 +144,7 @@ public class EventAlarmService {
                 .receiveUserId(exArticle.getUser().getId())
                 .alarmType(EventAlarmType.작물거래.toString())
                 .alarmContent(bidUser.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 가격을 제안하셨어요.")
-                .alarmRedirect(redirectURL)
+                .alarmRedirect(redirectURL.replace("buyer", "seller"))
                 .build());
     }
 

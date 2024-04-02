@@ -311,7 +311,8 @@ TopBarType) => {
   const navigate = useNavigate();
 
   const onClickBack = () => {
-    navigate("/trade");
+    //이전페이지로 이동
+    navigate(-1);
     setSelectedFiles([]);
     setDiary(null);
   };

@@ -9,18 +9,18 @@ import { regionAtom } from "../../stores/garden";
 import { useAtom } from "jotai";
 
 const RegionButton = styled.button`
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: ${({ theme }) => theme.colors.gray1};
-  padding: 0.5rem 0.67rem;
+  padding: 0.5rem 0.62rem;
   border-radius: 1rem;
   border: 1px solid ${({ theme }) => theme.colors.gray1};
   background-color: ${({ theme }) => theme.colors.white};
 `;
 
 const SelectedRegionButton = styled.button`
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: ${({ theme }) => theme.colors.white};
-  padding: 0.5rem 0.67rem;
+  padding: 0.5rem 0.62rem;
   border-radius: 1rem;
   border: 1px solid ${({ theme }) => theme.colors.primary};
   background-color: ${({ theme }) => theme.colors.primary};
@@ -58,7 +58,7 @@ const GardenPage = () => {
       <TopBar title="텃밭정보" showBack={false} />
       <GardenMap />
       <LayoutMainBox>
-        <LayoutInnerBox>
+        <div style={{ width: "100%", padding: "0rem 0.3rem" }}>
           <div
             style={{
               display: "flex",
@@ -89,7 +89,7 @@ const GardenPage = () => {
               )
             )}
           </div>
-        </LayoutInnerBox>
+        </div>
       </LayoutMainBox>
       <NavBar />
     </>

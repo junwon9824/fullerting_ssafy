@@ -168,17 +168,22 @@ const TradeGeneralDetail = () => {
     queryKey: ["userDetail"],
     queryFn: accessToken ? () => userCheck(accessToken) : undefined,
   });
+
+  // 게시글 작성자의 썸네일이나 닉네임이 detail 조회하는 api에 들어있지 않아서 따로 조회해서 사용
   const {
     isLoading: isIndividualUserDetail,
     data: IndividualUserData,
     error: IndividualUserDetailError,
   } = useQuery({
     queryKey: ["individualUserDetail"],
-    queryFn: () => userIndividualCheck(accessToken, data?.exArticleResponse.userId),
+    queryFn: () =>
+      userIndividualCheck(
+        accessToken as string,
+        data?.exArticleResponse.userId
+      ),
     enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
-    });
+  });
 
-  console.log('테스트', IndividualUserData)
   const { mutate: clickChat } = createChatRoom();
   const userId = userData?.id;
 
@@ -218,25 +223,37 @@ const TradeGeneralDetail = () => {
       console.log(err);
     },
   });
-  const handleChatClick = () => {
-    if (data?.exArticleResponse.userId === userData?.id) {
-      alert("본인 게시글 입니다");
-    } else {
-      clickChat(postNumber);
-      console.log(postNumber);
-    }
+  const handleBuyerChatClick = () => {
+    clickChat(postNumber);
   };
+  const handleSellerChatClick = () => {
+    navigate("/trade/chatroom");
+  };
+  console.log("data", data);
   return (
     <>
-      <TradeTopBar
-        title="작물거래"
-        showBack={true}
-        showEdit={true}
-        onEdit={handleEdit}
-        onDelete={() => {
-          deleteMutation(data?.exArticleResponse.exArticleId);
-        }}
-      />
+      {data?.exArticleResponse.userId === data?.userResponse.id ? (
+        <TradeTopBar
+          title="작물거래"
+          showBack={true}
+          showEdit={true}
+          onEdit={handleEdit}
+          onDelete={() => {
+            deleteMutation(data?.exArticleResponse.exArticleId);
+          }}
+        />
+      ) : (
+        <TradeTopBar
+          title="작물거래"
+          showBack={true}
+          showEdit={false}
+          // onEdit={handleEdit}
+          // onDelete={() => {
+          //   deleteMutation(data?.exArticleResponse.exArticleId);
+          // }}
+        />
+      )}
+
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper
@@ -288,17 +305,21 @@ const TradeGeneralDetail = () => {
                 작물일지 이동하기
               </NavigateText>
             </DiaryBox>
-            <ExplainText>
-              심우석의 머리를 브로콜리에 비유하는 것은 그의 독특하고 특이한 헤어
-              스타일을 묘사하기 위한 창의적인 방법입니다. 이 비유는 특히 그의
-              머리카락이 풍성하고 볼륨감이 많으며, 위로 솟아 오른 모양이 마치
-              브로콜리의 녹색 송이와 유사하다는 점에서 온 것일 수 있습니다.
-              브로콜리의 작은 꽃송이들이 모여 있는 모양은, 심우석의 머리카락이
-              여러 방향으로 풍성하게 서 있는 것과 비슷하다고 할 수 있습니다.
-            </ExplainText>
+            <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>
         </LayoutInnerBox>
-        <BottomButton text="채팅하기" onClick={handleChatClick} />
+        <BottomButton
+          text={
+            data?.userResponse.id === data?.exArticleResponse.userId
+              ? "채팅방으로 이동하기"
+              : "채팅하기"
+          }
+          onClick={
+            data?.userResponse.id === data?.exArticleResponse.userId
+              ? handleSellerChatClick
+              : handleBuyerChatClick
+          }
+        />
       </LayoutMainBox>
     </>
   );

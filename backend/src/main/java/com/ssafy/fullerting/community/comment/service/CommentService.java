@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.community.comment.service;
 
+import com.ssafy.fullerting.alarm.service.EventAlarmService;
 import com.ssafy.fullerting.community.article.exception.ArticleErrorCode;
 import com.ssafy.fullerting.community.article.exception.ArticleException;
 import com.ssafy.fullerting.community.article.model.entity.Article;
@@ -27,24 +28,23 @@ public class CommentService {
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
     private final UserService userService;
+    private final EventAlarmService eventAlarmService;
 
 
-    public void registcomment(Long article_id, RegisterCommentRequest registerCommentRequest) {
-
-
-        Article article = articleRepository.findById(article_id).orElseThrow(() -> new
+    public void registcomment(Long targetArticleId, RegisterCommentRequest registerCommentRequest) {
+        Article targetArticle = articleRepository.findById(targetArticleId).orElseThrow(() -> new
                 ArticleException(ArticleErrorCode.NOT_EXISTS));
 
-
-        UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        CustomUser commenter = userService.getNowUserInfoEntityByToken();
 
         Comment comment = commentRepository.save(Comment.builder()
-                .article(article)
+                .article(targetArticle)
                 .comment_content(registerCommentRequest.getCommentcontent())
-                .customUser(customUser)
+                .customUser(commenter)
                 .localDateTime(LocalDateTime.now())
                 .build());
+
+        eventAlarmService.notifyCommentCreated(commenter, targetArticle, registerCommentRequest.getRedirectURL());
 
 //        article.addcomment(comment);
 //        articleRepository.save(article);
