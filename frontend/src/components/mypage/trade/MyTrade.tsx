@@ -144,14 +144,22 @@ const MyTrade = () => {
   }
   console.log("작물거래 데이터", data);
 
-  const goToTrade = (exArticleId: number) => {
-    navigate(`/trade/${exArticleId}/generaldetail`);
+  const goToTrade = (exArticleId: number, exArticleType: string) => {
+    const path =
+      exArticleType === "DEAL"
+        ? `/trade/${exArticleId}/DealDetail`
+        : `/trade/${exArticleId}/generaldetail`;
+    navigate(path);
+    console.log();
   };
 
   return (
     <ContentBox>
       {data?.map((item: DataItem, index: number) => (
-        <PostBox key={index} onClick={() => goToTrade(item.exArticleId)}>
+        <PostBox
+          key={index}
+          onClick={() => goToTrade(item.exArticleId, item.exArticleType)}
+        >
           <ImgBox>
             <StyledImg src={item.imageResponses[0]?.imgStoreUrl} alt="image" />
           </ImgBox>
@@ -180,7 +188,6 @@ const MyTrade = () => {
                 거래종료
               </StateIcon>
             )}
-            {item.price}원
           </State>
         </PostBox>
       ))}
