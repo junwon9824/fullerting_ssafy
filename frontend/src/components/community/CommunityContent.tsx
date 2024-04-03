@@ -90,18 +90,15 @@ const CommunityContent = () => {
 
   const { communityId } = useParams<{ communityId: string }>();
 
-
-
   const { data: community, isLoading } = useQuery({
     queryKey: ["CommunityDetail"],
     queryFn: communityId ? () => getDetailCommunities(communityId) : undefined,
   });
 
-  console.log(community);
+  console.log("커뮤니티", community);
   console.log(community?.content);
-  console.log(community?.imgs);
+  console.log("커뮤니티 이미지", community?.imgs);
   console.log(community?.imgs[0].imgStoreUrl);
-
 
   // if (community?.imgs) {
   //   //   // 실행할 작업들
@@ -115,11 +112,9 @@ const CommunityContent = () => {
 
   // }
 
-
   // setImages(community?.imgs);
 
-  setCurContent(community?.content)
-
+  setCurContent(community?.content);
 
   // // URL 파라미터가 변경될 때만 실행되도록 설정
   // if ( community.imgs) {
@@ -134,15 +129,16 @@ const CommunityContent = () => {
 
   // }
 
-  useEffect(() => {
-    // 컴포넌트가 마운트될 때와 community.imgs가 변경될 때만 실행
-    if (community?.imgs) {
-      const initialImages = community.imgs.map((img: ImageInfo) => img.imgStoreUrl);
-      setImageFiles(initialImages);
-      setImages (community?.imgs);
-    }
-  }, [community?.imgs]); // community.imgs가 변경될 때만 useEffect 실행
-
+  // useEffect(() => {
+  //   // 컴포넌트가 마운트될 때와 community.imgs가 변경될 때만 실행
+  //   if (community?.imgs) {
+  //     const initialImages = community.imgs.map(
+  //       (img: ImageInfo) => img.imgStoreUrl
+  //     );
+  //     setImageFiles(initialImages);
+  //     setImages(community?.imgs);
+  //   }
+  // }, [community?.imgs]); // community.imgs가 변경될 때만 useEffect 실행
 
   const { mutate } = useMutation({
     mutationFn: () => toggleLike(communityId),
@@ -175,7 +171,6 @@ const CommunityContent = () => {
             <Img backgroundImage={imgObject.imgStoreUrl} />
           </SwiperSlide>
         ))}
-
       </Swiper>
       <Content>{community.content}</Content>
 
