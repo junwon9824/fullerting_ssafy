@@ -37,7 +37,6 @@ const Community = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSelectedType(event.target.value);
-    
   };
 
   const handelWriteClick = () => {
@@ -57,11 +56,11 @@ const Community = () => {
             onChange={setSearch}
           /> */}
           <Button>
-
             <RadioButton
               name="exampleRadioGroup"
               value="전체"
               onChange={handleRadioButtonChange}
+              checked={selectedType === "전체"}
             />
 
             <RadioButton
@@ -80,7 +79,7 @@ const Community = () => {
               value="꿀팁공유"
               onChange={handleRadioButtonChange}
             />
-            
+
             <RadioButton
               name="exampleRadioGroup"
               value="텃밭요리"
