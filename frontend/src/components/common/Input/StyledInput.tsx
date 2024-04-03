@@ -72,11 +72,9 @@ const StyledInput = ({
   maxLength,
 }: StyledInputType) => {
   useEffect(() => {
-    if (value && maxLength && onChange) {
-      if (value.length > maxLength) {
-        const newValue = value.slice(0, maxLength);
-        onChange({ target: { value: newValue, name } });
-      }
+    if (value?.length > maxLength) {
+      const newValue = value.slice(0, maxLength);
+      onChange({ target: { value: newValue, name } });
     }
   }, [value]);
 
