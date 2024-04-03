@@ -118,7 +118,7 @@ const NavigateText = styled.div`
 `;
 const ExplainText = styled.div`
   color: #000;
-  font-size: 0.875rem;
+  font-size: 1.2rem;
   font-weight: 400;
   width: 100%;
   height: auto;
@@ -215,7 +215,7 @@ const TradeDetailDeal = () => {
 
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
-  const [diary,setDiary]=useState<number>();
+  const [diary, setDiary] = useState<number>();
 
   const { isLoading, data, error } = useQuery({
     queryKey: ["tradeDetail", postNumber],
@@ -224,7 +224,7 @@ const TradeDetailDeal = () => {
       : undefined,
   });
   console.log("디테일 데이터", data);
-  console.log("디테일 데이터", data?.packDiaryResponse);
+  // console.log("디테일 데이터", data?.packDiaryResponse);
 
   // setDiary(data?.packDiaryResponse)
 
@@ -301,13 +301,13 @@ const TradeDetailDeal = () => {
       console.log(err);
     },
   });
-  const handleDeleteConfirmation = (postId: number) => {
-    const isConfirmed = window.confirm("삭제하시겠습니까?"); // 사용자에게 삭제 확인 요청
-    if (isConfirmed) {
-      // 사용자가 '확인'을 클릭한 경우
-      deleteMutation(postId); // 삭제 함수 실행
-    }
-  };
+  // const handleDeleteConfirmation = (postId: number) => {
+  //   const isConfirmed = window.confirm("삭제하시겠습니까?"); // 사용자에게 삭제 확인 요청
+  //   if (isConfirmed) {
+  //     // 사용자가 '확인'을 클릭한 경우
+  //     deleteMutation(postId); // 삭제 함수 실행
+  //   }
+  // };
   console.log("머임", typeof data?.exArticleResponse.exArticleId);
   // 거래 종료
   // const handleFinishClick = () => {
@@ -315,7 +315,6 @@ const TradeDetailDeal = () => {
   //   finishClick(data?.exArticleResponse.exArticleId);
   //   navigate("/trade");
   // };
-  const { mutate: finishClick } = useDealFinish();
 
   return (
     <>
@@ -405,18 +404,18 @@ const TradeDetailDeal = () => {
             </PriceBox>
 
             <DiaryBox>
-              <img src={Tree} alt="tree" />
-
-              
-
-              <NavigateText
-                onClick={() => {
-                  DiaryId ? handleDiary(Number(DiaryId)) : null;
-                }}
-              >
-                작물일지 이동하기
-              </NavigateText>
-
+              {data?.packDiaryResponse ? (
+                <>
+                  <img src={Tree} alt="tree" />
+                  <NavigateText
+                    onClick={() => {
+                      DiaryId ? handleDiary(Number(DiaryId)) : null;
+                    }}
+                  >
+                    작물일지 이동하기
+                  </NavigateText>
+                </>
+              ) : null}
             </DiaryBox>
             <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>

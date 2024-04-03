@@ -307,14 +307,18 @@ const TradeGeneralDetail = () => {
             </Title>
             <Price>{data?.transResponse.price}원</Price>
             <DiaryBox>
-              <img src={Tree} alt="tree" />
-              <NavigateText
-                onClick={() => {
-                  DiaryId ? handleDiary(Number(DiaryId)) : null;
-                }}
-              >
-                작물일지 이동하기
-              </NavigateText>
+              {data?.packDiaryResponse ? (
+                <>
+                  <img src={Tree} alt="tree" />
+                  <NavigateText
+                    onClick={() => {
+                      DiaryId ? handleDiary(Number(DiaryId)) : null;
+                    }}
+                  >
+                    작물일지 이동하기
+                  </NavigateText>
+                </>
+              ) : null}
             </DiaryBox>
             <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>
