@@ -20,9 +20,11 @@ import Airplane from "/src/assets/images/airplane.png";
 interface ImageResponse {
   imgStoreUrl: string;
 }
-
-interface SituationResponse {
-  border: string;
+//test
+interface Icon {
+  width?: number;
+  height: number;
+  backgroundColor: string;
   color: string;
 }
 interface DealListResponse {
@@ -258,48 +260,59 @@ const TradeSellerDetail = () => {
           </Swiper>
         </SwiperContainer>
         <LayoutInnerBox>
-          <Title>{data?.exArticleResponse.exArticleTitle}</Title>
-          <SituationBox>
-            <Situation border="2px solid var(--sub3, #FFBFBF)" color="#FFBFBF;">
-              최고가
-            </Situation>
-            <TextStyle>
-              {dealListData && dealListData.length > 0
-                ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
-                : data?.dealResponse.price}
-              {/* {data?.dealResponse.price} */}
-            </TextStyle>
-            <Situation border="2px solid var(--sub0, #A0D8B3)" color="#A0D8B3;">
-              참여자
-            </Situation>
-            <TextStyle>
-              {dealListData &&
-                dealListData[dealListData.length - 1]?.bidcount | 0}
-              명
-            </TextStyle>
-          </SituationBox>
+          <InfoBox>
+            <Profile>
+              <Thumbnail src={IndividualUserData?.thumbnail} alt="profile" />
+              <Name>
+                <NameText>{IndividualUserData?.nickname}</NameText>
+                <ClassesText>
+                  {IndividualUserData?.rank}
+                  {/* <img src={Sprout} alt="Sprout" /> */}
+                </ClassesText>
+              </Name>
+            </Profile>
 
-          <DealBox>
-            {dealListData && dealListData.length > 0 ? (
-              deals.map((item: DealListResponse, index: number) => (
-                <DealContainer>
-                  <PhotoBox src={item.thumbnail} alt="img" />
-                  <DealList key={index}>
-                    <ProfileBox onClick={() => handleChatClick(item.userId)}>
-                      <Sentense>
-                        {getRandomSentence(String(item.bidLogPrice))}
-                      </Sentense>
-                    </ProfileBox>
-                  </DealList>
-                </DealContainer>
-              ))
-            ) : (
-              <div>제안된 가격이 없습니다.</div>
-            )}
-          </DealBox>
-          <BottomText>
-            마음에 드는 제안을 선택하고 채팅을 보내보세요!
-          </BottomText>
+            <Date>{formatDateAndTime(data?.exArticleResponse.time)}</Date>
+          </InfoBox>
+          <TitleBox>
+            <Title>
+              {data?.exArticleResponse.exArticleTitle}
+              <img
+                src={data?.favoriteResponse.islike === true ? Like : NotLike}
+                alt="like"
+                onClick={() => {
+                  handleLikeClick(data?.exArticleResponse.exArticleId);
+                }}
+              />
+            </Title>
+            <PriceBox>
+              <StateIcon
+                width={1.5}
+                height={0.9375}
+                backgroundColor="#A0D8B3"
+                color="#ffffff"
+              >
+                현재
+              </StateIcon>
+              <Price>{data?.dealResponse?.price}원</Price>
+            </PriceBox>
+
+            <DiaryBox>
+              <img src={Tree} alt="tree" />
+
+              
+
+              <NavigateText
+                onClick={() => {
+                  DiaryId ? handleDiary(Number(DiaryId)) : null;
+                }}
+              >
+                작물일지 이동하기
+              </NavigateText>
+
+            </DiaryBox>
+            <ExplainText>{data?.exArticleResponse.content}</ExplainText>
+          </TitleBox>
         </LayoutInnerBox>
       </LayoutMainBox>
     </>
