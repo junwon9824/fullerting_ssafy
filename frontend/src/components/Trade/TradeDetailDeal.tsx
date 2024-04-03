@@ -378,7 +378,11 @@ const TradeDetailDeal = () => {
                 </ClassesText>
               </Name>
             </Profile>
+<<<<<<< Updated upstream
 
+=======
+            {/* <DoneBtn onClick={handleFinishClick}>거래 종료</DoneBtn> */}
+>>>>>>> Stashed changes
             <Date>{formatDateAndTime(data?.exArticleResponse.time)}</Date>
           </InfoBox>
           <TitleBox>
