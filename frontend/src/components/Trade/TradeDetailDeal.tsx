@@ -158,7 +158,48 @@ const Sentense = styled.div`
 `;
 const TradeSellerDetail = () => {
   const navigate = useNavigate();
-  const [userClick, setUserClick] = useState<number>(0);
+  const [tradeDetail, setTradeDetail] = useState(null); // 상태를 초기화합니다.
+  const [authorId, setAuthorId] = useState(null); // 상태를 초기화합니다.
+  const [loginid, setLoginId] = useState(null); // 상태를 초기화합니다.
+
+  const { postId } = useParams<{ postId: string }>();
+  //
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const accessToken = sessionStorage.getItem("accessToken"); // 세션 스토리지에서 accessToken을 가져옵니다.
+
+  //       const userinfo = await getUsersInfo();
+
+  //       console.log("userinfo" + JSON.stringify(userinfo));
+
+  //       console.log("userinfo" + userinfo.data.data_body.id);
+  //       setLoginId(userinfo.data.data_body.id);
+
+  //       console.log("postid:" + postId);
+  //       const postIdNumber = postId ? parseInt(postId) : undefined;
+
+  //       if (accessToken !== null) {
+  //         // accessToken이 null이 아닌 경우에만 실행합니다.
+
+  //         if (postIdNumber) {
+  //           const data = await getTradeDetail(accessToken, postIdNumber); // 비동기 함수를 호출합니다.
+  //           console.log("dettttttttttttt", JSON.stringify(data)); // data 객체를 직렬화하여 출력합니다.
+  //           console.log("dettttttttttttt", data.exArticleResponse.userId); // data 객체를 직렬화하여 출력합니다.
+  //           setAuthorId(data.exArticleResponse.userId);
+  // g        }
+
+  //         setTradeDetail(data); // 데이터를 상태에 저장합니다.
+  //       }
+  //     } catch (error) {
+  //       console.error("에러 발생:", error);
+  //     }
+  //   };
+
+  // fetchData(); // 함수를 호출합니다.
+  // }, []); // 빈 배열을 전달하여 컴포넌트가 처음 렌더링될 때 한 번만 호출되도록 설정합니다.
+
   const [like, setLike] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const handleLike = () => {
@@ -168,6 +209,8 @@ const TradeSellerDetail = () => {
   const { postId } = useParams<{ postId?: string }>();
   const exArticleId = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
+  const [diary, setDiary] = useState<number>();
+
   const { isLoading, data, error } = useQuery({
     queryKey: ["tradeDetail", exArticleId],
     queryFn: accessToken
@@ -300,8 +343,6 @@ const TradeSellerDetail = () => {
             <DiaryBox>
               <img src={Tree} alt="tree" />
 
-              
-
               <NavigateText
                 onClick={() => {
                   DiaryId ? handleDiary(Number(DiaryId)) : null;
@@ -309,7 +350,6 @@ const TradeSellerDetail = () => {
               >
                 작물일지 이동하기
               </NavigateText>
-
             </DiaryBox>
             <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>
