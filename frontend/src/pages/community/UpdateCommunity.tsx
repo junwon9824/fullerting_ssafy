@@ -1,23 +1,18 @@
 import styled from "styled-components";
 import StyledInput from "../../components/common/Input/StyledInput";
-import useInput from "../../hooks/useInput";
 import StyledTextArea from "../../components/common/Input/StyledTextArea";
 import MultiFileUploadInput from "../../components/common/Input/MultiFileUploadInput";
 import RadioButton from "../../components/common/Button/radioButton";
 import { TopBar } from "../../components/common/Navigator/navigator";
 import { BottomButton } from "../../components/common/Button/LargeButton";
-import { create, update } from "../../apis/CommunityApi";
+import { update } from "../../apis/CommunityApi";
 import { useAtom } from "jotai";
 import { imageFilesAtom, oldImagesAtom } from "../../stores/trade";
-import { content, files,   selectedTypeAtom, title } from "../../stores/community";
+import { content, selectedTypeAtom, title } from "../../stores/community";
 import { useParams } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-interface ImageInfo {
-  id: number;
-  imgStoreUrl: string;
-}
 const DiaryBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -49,32 +44,20 @@ const NavVlaue = styled.div`
   margin-bottom: 0.5rem;
 `;
 const TradePost = () => {
-
   const location = useLocation();
-
-  // const [data, setData] = useAtom(title) // jotai 에서 제목 불러오기 
-
-  const [curtitle, setCurTitle] = useAtom(title)
-
+  const [curtitle, setCurTitle] = useAtom(title);
   const [curcontent, setCurContent] = useAtom(content);
-  // const [curimages, setCurImages] = useAtom(files);
-
   const [images, setImages] = useAtom(oldImagesAtom);
-  // const [oldimages, setOldImages] = useAtom();
-
-  // setImages(oldimages);
-
   const navigate = useNavigate();
   const { communityId } = useParams();
 
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   const [tradeType, setTradeType] = useAtom(selectedTypeAtom);
-  // 문자열을 Blob으로 변환하는 함수
 
   function downloadImageFromS3(url: string) {
     fetch(url)
-      .then(response => response.blob())
-      .then(blob => {
+      .then((response) => response.blob())
+      .then((blob) => {
         // Blob을 사용하여 파일 생성
         const file = new File([blob], "image.jpg", { type: "image/jpeg" });
 
@@ -85,7 +68,7 @@ const TradePost = () => {
         downloadLink.download = "image.jpg";
         downloadLink.click();
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("이미지 다운로드 실패:", error);
       });
   }
@@ -94,7 +77,7 @@ const TradePost = () => {
     // setImages();
 
     if (location.state?.imgurls) {
-      const initialImages = location.state.imgurls
+      const initialImages = location.state.imgurls;
       console.log(initialImages);
 
       const blob = downloadImageFromS3(initialImages);
@@ -103,9 +86,7 @@ const TradePost = () => {
 
       setSelectedFiles(initialImages);
       // setSelectedFiles(blob);
-
     }
-
 
     // if (location.state?.imageResponse) {
     //   // imageResponse 배열에서 필요한 정보만 추출하여 setImageFiles 호출
@@ -114,14 +95,13 @@ const TradePost = () => {
     //   ); // 예시 코드, 실제 구조에 맞게 조정 필요
     //   setSelectedFiles(initialImages);
     // }
-
   }, [location.state, setSelectedFiles]);
   const [newimage, setnewimage] = useState<File[]>([]);
 
   const handleCheckClick = async () => {
     const formData = new FormData();
 
-    console.log('image등록등록등록등록' + selectedFiles.length)
+    console.log("image등록등록등록등록" + selectedFiles.length);
     const newFiles: File[] = [];
 
     selectedFiles.forEach((file) => {
@@ -129,25 +109,24 @@ const TradePost = () => {
         newFiles.push(file);
       }
     });
-    
+
     setnewimage(newFiles.length > 0 ? [newFiles[0]] : []);
 
-
-    if (newFiles.length === 0) { // 새로운 이미지
+    if (newFiles.length === 0) {
+      // 새로운 이미지
       formData.append("images", new Blob([]));
     } else {
       selectedFiles.forEach((file) => {
         formData.append("images", file);
-        console.log("formapppppppp"+file.name)
+        console.log("formapppppppp" + file.name);
       });
     }
-
 
     // if (selectedFiles.length === 0) {
     //   console.log("00000000000000")
     //   formData.append("images", new Blob([], { type: "application/json" }));
     // }
-    console.log( title);
+    console.log(title);
 
     const updateInfo = {
       title: curtitle,
@@ -167,7 +146,7 @@ const TradePost = () => {
     );
 
     try {
-      console.log(communityId)
+      console.log(communityId);
       await update(formData, communityId);
 
       setSelectedFiles([]);
