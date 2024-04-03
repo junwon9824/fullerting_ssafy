@@ -69,7 +69,7 @@ const Maintop = () => {
 
   if (error) {
     console.error("뱃지 데이터를 가져오는데 실패했습니다:", error);
-    return <div>사용자 데이터를 가져오는데 실패했습니다: {error.message}</div>;
+    return <div>로그인을 해주세요~ {error.message}</div>;
   }
 
   return (
