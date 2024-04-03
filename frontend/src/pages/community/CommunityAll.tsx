@@ -49,7 +49,7 @@ const PostContent = styled.p`
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 1rem;
+  line-height: 1.3rem;
 `;
 
 const PostMeta = styled.div`
@@ -106,7 +106,7 @@ const PostImage = styled.img`
 const ContentImage = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 7em;
+  gap: 3em;
 `;
 
 const ImgCon = styled.div``;
@@ -154,82 +154,73 @@ const CommunityAll = () => {
     }
   };
 
-  return (
+  return selectedType === "전체" ? (
+    <div>
+      {posts.map((post) => (
+        <CommunityItem key={post.id} onClick={() => handlePostClick(post.id)}>
+          <PostHeader>
+            <ContentImage>
+              <ContentTitle>
+                <PostTitle>{post.title}</PostTitle>
+                <PostContent>{post.content}</PostContent>
+              </ContentTitle>
+              <ImgCon>
+                <PostImage src={post.imgurls[0]} alt="Post image" />
+              </ImgCon>
+            </ContentImage>
+            <PostMeta>
+              <UserMeta>
+                <NameTime>
+                  <UserName>{post.authornickname} - </UserName>
+                  <PostTime>{getTimeDifference(post.time)}</PostTime>
+                </NameTime>
+              </UserMeta>
+              <InteractionIcons>
+                <Icon src={likeIcon} alt="Likes" />
+                <LikeCommentCount>{post.love}</LikeCommentCount>
+                <Icon src={commentIcon} alt="Comments" />
+                <LikeCommentCount>{post.commentsize}</LikeCommentCount>
+              </InteractionIcons>
+            </PostMeta>
+          </PostHeader>
+        </CommunityItem>
+      ))}
+    </div>
+  ) : (
+    <div>
+      {posts
+        .filter((post) => post.type === selectedType)
 
-    selectedType === "전체" ?
-      (<div>
-        {
-          posts
-
-            .map((post) => (
-              <CommunityItem key={post.id} onClick={() => handlePostClick(post.id)}>
-                <PostHeader>
-                  <ContentImage>
-                    <ContentTitle>
-                      <PostTitle>{post.title}</PostTitle>
-                      <PostContent>{post.content}</PostContent>
-                    </ContentTitle>
-                    <ImgCon>
-                      <PostImage src={post.imgurls[0]} alt="Post image" />
-                    </ImgCon>
-                  </ContentImage>
-                  <PostMeta>
-                    <UserMeta>
-                      <NameTime>
-                        <UserName>{post.authornickname} - </UserName>
-                        <PostTime>{getTimeDifference(post.time)}</PostTime>
-                      </NameTime>
-                    </UserMeta>
-                    <InteractionIcons>
-                      <Icon src={likeIcon} alt="Likes" />
-                      <LikeCommentCount>{post.love}</LikeCommentCount>
-                      <Icon src={commentIcon} alt="Comments" />
-                      <LikeCommentCount>{post.commentsize}</LikeCommentCount>
-                    </InteractionIcons>
-                  </PostMeta>
-                </PostHeader>
-              </CommunityItem>
-            ))}
-      </div>)
-      :
-      (<div>
-        {
-          posts
-            .filter((post) => post.type === selectedType)
-
-
-            .map((post) => (
-              <CommunityItem key={post.id} onClick={() => handlePostClick(post.id)}>
-                <PostHeader>
-                  <ContentImage>
-                    <ContentTitle>
-                      <PostTitle>{post.title}</PostTitle>
-                      <PostContent>{post.content}</PostContent>
-                    </ContentTitle>
-                    <ImgCon>
-                      <PostImage src={post.imgurls[0]} alt="Post image" />
-                    </ImgCon>
-                  </ContentImage>
-                  <PostMeta>
-                    <UserMeta>
-                      <NameTime>
-                        <UserName>{post.authornickname} - </UserName>
-                        <PostTime>{getTimeDifference(post.time)}</PostTime>
-                      </NameTime>
-                    </UserMeta>
-                    <InteractionIcons>
-                      <Icon src={likeIcon} alt="Likes" />
-                      <LikeCommentCount>{post.love}</LikeCommentCount>
-                      <Icon src={commentIcon} alt="Comments" />
-                      <LikeCommentCount>{post.commentsize}</LikeCommentCount>
-                    </InteractionIcons>
-                  </PostMeta>
-                </PostHeader>
-              </CommunityItem>
-            ))}
-      </div>
-      )
-
+        .map((post) => (
+          <CommunityItem key={post.id} onClick={() => handlePostClick(post.id)}>
+            <PostHeader>
+              <ContentImage>
+                <ContentTitle>
+                  <PostTitle>{post.title}</PostTitle>
+                  <PostContent>{post.content}</PostContent>
+                </ContentTitle>
+                <ImgCon>
+                  <PostImage src={post.imgurls[0]} alt="Post image" />
+                </ImgCon>
+              </ContentImage>
+              <PostMeta>
+                <UserMeta>
+                  <NameTime>
+                    <UserName>{post.authornickname} - </UserName>
+                    <PostTime>{getTimeDifference(post.time)}</PostTime>
+                  </NameTime>
+                </UserMeta>
+                <InteractionIcons>
+                  <Icon src={likeIcon} alt="Likes" />
+                  <LikeCommentCount>{post.love}</LikeCommentCount>
+                  <Icon src={commentIcon} alt="Comments" />
+                  <LikeCommentCount>{post.commentsize}</LikeCommentCount>
+                </InteractionIcons>
+              </PostMeta>
+            </PostHeader>
+          </CommunityItem>
+        ))}
+    </div>
   );
 };
 
