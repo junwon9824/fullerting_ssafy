@@ -12,7 +12,11 @@ import { useAtom } from "jotai";
 import { useEffect } from "react";
 
 const LayoutInnerBox = styled.div`
-  padding: 1.25rem 0rem;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1.12rem;
 `;
 const Button = styled.div`
   margin-top: 1rem;
