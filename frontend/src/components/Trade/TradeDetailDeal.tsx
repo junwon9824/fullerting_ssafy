@@ -238,7 +238,7 @@ const TradeSellerDetail = () => {
       setDeals(sortedDeals);
     }
   }, [dealListData]);
-  console.log("데이터jjjjjjjj", dealListData);
+
   return (
     <>
       <TopBar title="가격제안목록" showBack={true} />
