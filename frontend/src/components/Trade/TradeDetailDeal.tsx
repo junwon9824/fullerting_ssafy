@@ -172,6 +172,7 @@ const TradeDetailDeal = () => {
   const [loginid, setLoginId] = useState(null); // 상태를 초기화합니다.
 
   const { postId } = useParams<{ postId: string }>();
+  //
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -215,7 +216,7 @@ const TradeDetailDeal = () => {
 
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
-  const [diary,setDiary]=useState<number>();
+  const [diary, setDiary] = useState<number>();
 
   const { isLoading, data, error } = useQuery({
     queryKey: ["tradeDetail", postNumber],
@@ -407,8 +408,6 @@ const TradeDetailDeal = () => {
             <DiaryBox>
               <img src={Tree} alt="tree" />
 
-              
-
               <NavigateText
                 onClick={() => {
                   DiaryId ? handleDiary(Number(DiaryId)) : null;
@@ -416,7 +415,6 @@ const TradeDetailDeal = () => {
               >
                 작물일지 이동하기
               </NavigateText>
-
             </DiaryBox>
             <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>
