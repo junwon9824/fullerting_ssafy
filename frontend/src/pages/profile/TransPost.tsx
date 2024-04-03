@@ -5,7 +5,6 @@ import {
 import MyTrade from "../../components/mypage/trade/MyTrade";
 import useInput from "../../hooks/useInput";
 import { NavBar, TopBar } from "../../components/common/Navigator/navigator";
-import Search from "../../components/common/Input/Search";
 const TransPost = () => {
   const [search, setSearch] = useInput("");
   return (
