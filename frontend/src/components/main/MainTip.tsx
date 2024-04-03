@@ -66,7 +66,7 @@ const DiaryBox = styled.button`
   height: 5.2rem;
   border-radius: 0.9375rem;
   background: rgba(229, 249, 219, 0.37);
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 1px 1px 1px rgba(161, 161, 161, 0.1);
   justify-content: space-between;
   cursor: pointer;
   transition: transform 0.3s ease;
