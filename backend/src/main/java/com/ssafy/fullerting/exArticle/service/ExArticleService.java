@@ -388,6 +388,7 @@ public class ExArticleService {
 
 
         article.addfavorite(favorite);
+//        exArticleRepository.save(article);
 
         favoriteRepository.save(favorite);
 
@@ -583,8 +584,8 @@ public class ExArticleService {
 
         article.setType(updateArticleRequest.getExArticleType());
 
-        log.info("updateinfo"+ updateArticleRequest.getExArticleType());
-        log.info("modified"+article.getType());
+        log.info("updateinfo" + updateArticleRequest.getExArticleType());
+        log.info("modified" + article.getType());
         ExArticle modifiedexArticle = exArticleRepository.save(article);
 
 //        log.info("modifff" + modifiedexArticle.getImage().get(0).getId());

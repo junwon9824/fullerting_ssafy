@@ -1,171 +1,162 @@
 import styled from "styled-components";
-import { DealTopBar, TopBar, TradeTopBar } from "../common/Navigator/navigator";
+import { TopBar } from "../common/Navigator/navigator";
 import Coli from "/src/assets/images/브로콜리.png";
 import { LayoutInnerBox, LayoutMainBox } from "../common/Layout/Box";
-import { BottomButton } from "../common/Button/LargeButton";
 import { useNavigate } from "react-router-dom";
-import SvgProfile from "/src/assets/images/김진명프로필사진.png";
-import Sprout from "/src/assets/svg/classes.svg";
-import NotLike from "/src/assets/svg/notlike.svg";
-import Like from "/src/assets/svg/like.svg";
-import { useState } from "react";
-import Tree from "/src/assets/svg/diarytree.svg";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  deletePost,
+  createChatRoom,
+  createDealChatRoom,
+  getDealList,
   getTradeDetail,
-  useDealFinish,
   useLike,
 } from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
-import SwiperCore, { Navigation, Pagination } from "swiper/modules";
-import { userCheck, userIndividualCheck } from "../../apis/UserApi";
-import React, { ChangeEvent, useEffect } from "react";
-import { getUsersInfo } from "../../apis/MyPage";
+import Airplane from "/src/assets/images/airplane.png";
 interface ImageResponse {
   imgStoreUrl: string;
 }
+//test
 interface Icon {
   width?: number;
   height: number;
   backgroundColor: string;
   color: string;
-  text?: string;
+}
+interface DealListResponse {
+  id: number;
+  nickname: string;
+  thumbnail: string;
+  userId: number;
+  localDateTime: string;
+  bidLogPrice: number;
+  exarticleid: number;
+}
+interface Deal {
+  bidLogPrice: number;
+  exarticleid: number;
+  id: number;
+  localDateTime: string;
+  thumbnail: string;
+  nickname: string;
+  bidcount: number;
 }
 const ImgBox = styled.img`
   width: 100%;
   height: 15.5625rem;
   object-fit: cover;
 `;
-const InfoBox = styled.div`
-  width: 100%;
-  height: 3.125rem;
-  display: flex;
-  justify-content: space-between;
-  gap: 8.81rem;
-  position: relative;
-`;
-const Profile = styled.div`
-  width: 5.875rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.6rem;
-`;
-const Name = styled.div`
-  width: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-`;
-const NameText = styled.text`
-  font-size: 0.8125rem;
-  font-style: normal;
-  font-weight: bold;
-  color: #000000;
-`;
-const ClassesText = styled.div`
-  color: #4f4f4f;
-  display: flex;
-  font-size: 0.6875rem;
-  font-weight: 400;
-  align-items: center;
-  gap: 0.2rem;
-`;
-const Date = styled.div`
-  width: auto;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  color: "#8C8C8C";
-  font-size: 0.6875rem;
-  font-weight: "400";
-`;
-const Title = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  color: #000;
-  font-size: 1.1rem;
-  font-weight: 400;
-`;
-const TitleBox = styled.div`
-  padding-top: 2.19rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-`;
-const Price = styled.text`
-  color: #000;
-  font-size: 1.25rem;
-  font-weight: bold;
-`;
-const DiaryBox = styled.div`
-  width: 100%;
-  gap: 0.3rem;
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-`;
-const NavigateText = styled.div`
-  color: var(--gray1, #8c8c8c);
-  font-size: 0.75rem;
-  font-weight: bold;
-`;
-const ExplainText = styled.div`
-  color: #000;
-  font-size: 0.875rem;
-  font-weight: 400;
-  width: 100%;
-  height: auto;
-  line-height: 1.375rem;
-`;
+
 const SwiperContainer = styled.div`
   width: 100%;
   height: 15.5625rem;
 `;
-const Thumbnail = styled.img`
-  width: 1.875rem;
-  height: 1.875rem;
-  border-radius: 50%;
-`;
-const PriceBox = styled.div`
-  width: auto;
-  height: 1.375rem;
-
-  gap: 0.37rem;
-  display: flex;
+const Title = styled.div`
+  justify-content: flex-start;
+  color: #000;
+  width: 100%;
+  height: 2.0625rem;
   font-size: 1.25rem;
   font-weight: bold;
-`;
-
-const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
-  width: ${(props) => `${props.width}rem`};
-  height: ${(props) => `${props.height}rem`};
-  border-radius: 0.3125rem;
-  background: ${(props) => props.backgroundColor};
-  color: ${(props) => props.color};
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-size: 0.5625rem; /* 텍스트 크기 */
 `;
 
-const DoneBtn = styled.button`
-  width: 3.9375rem;
-  height: 1.75rem;
-  border-radius: 0.625rem;
-  background: var(--a-0-d-8-b-3, #2a7f00);
+const SituationBox = styled.div`
+  width: 100%;
+  height: auto;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: row;
+`;
+const Situation = styled.div<SituationResponse>`
   text-align: center;
   display: flex;
-  justify-content: center;
+  width: 3.5rem;
+  height: 1.625rem;
+  border-radius: 0.625rem;
+  border: ${(props) => `${props.border}`};
+  color: ${(props) => `${props.color}`};
   align-items: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  justify-content: center;
 `;
-const TradeDetailDeal = () => {
+const TextStyle = styled.div`
+  align-items: center;
+  display: flex;
+  color: #000;
+  font-size: 0.8125rem;
+  font-weight: 400;
+`;
+const DealList = styled.div`
+  width: 100%;
+  padding: 1rem;
+  justify-content: space-between;
+  height: auto;
+  border-radius: 0.625rem;
+  background: var(--sub1, #e5f9db);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 0;
+`;
+const ProfileBox = styled.div`
+  word-break: break-word;
+  width: auto;
+  justify-content: flex-start;
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  align-items: center;
+  color: #000;
+  font-size: 0.8125rem;
+  font-weight: 400;
+`;
+const PhotoBox = styled.img`
+  width: 2.0625rem;
+  height: 2.0625rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+`;
+const DealBox = styled.div`
+  width: 100%;
+  height: 14rem;
+  overflow-y: scroll;
+  flex-direction: column;
+  gap: 1rem;
+  display: flex;
+`;
+const BottomText = styled.div`
+  color: var(--gray1, #8c8c8c);
+  text-align: center;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+`;
+const DealContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.2rem;
+`;
+const PriceText = styled.span<{ color: string }>`
+  color: ${(props) => props.color};
+`;
+const Sentense = styled.div`
+  color: #000;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 150%;
+`;
+const TradeSellerDetail = () => {
   const navigate = useNavigate();
   const [tradeDetail, setTradeDetail] = useState(null); // 상태를 초기화합니다.
   const [authorId, setAuthorId] = useState(null); // 상태를 초기화합니다.
@@ -210,148 +201,92 @@ const TradeDetailDeal = () => {
   // }, []); // 빈 배열을 전달하여 컴포넌트가 처음 렌더링될 때 한 번만 호출되도록 설정합니다.
 
   const [like, setLike] = useState<boolean>(false);
+  const queryClient = useQueryClient();
   const handleLike = () => {
     setLike(!like);
   };
 
-  const postNumber = Number(postId);
+  const { postId } = useParams<{ postId?: string }>();
+  const exArticleId = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
   const [diary, setDiary] = useState<number>();
 
   const { isLoading, data, error } = useQuery({
-    queryKey: ["tradeDetail", postNumber],
+    queryKey: ["tradeDetail", exArticleId],
     queryFn: accessToken
-      ? () => getTradeDetail(accessToken, postNumber)
+      ? () => getTradeDetail(accessToken, exArticleId)
       : undefined,
   });
-  console.log("디테일 데이터", data);
-  console.log("디테일 데이터", data?.packDiaryResponse);
-
-  // setDiary(data?.packDiaryResponse)
-
-  // console.log("디테일 데이터", data?.dealResponse);
-
-  // console.log("디테일 데이터", data.data.packDiaryResponse);
-
-  const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
   const {
-    isLoading: isLoadingUserDetail,
-    data: userData,
-    error: userDetailError,
+    isLoading: dealListLoading,
+    data: dealListData,
+    error: dealListError,
   } = useQuery({
-    queryKey: ["userDetail"],
-    queryFn: accessToken ? () => userCheck(accessToken) : undefined,
+    queryKey: ["dealDetail", exArticleId],
+    queryFn: accessToken
+      ? () => getDealList(accessToken, exArticleId)
+      : undefined,
   });
-  const userId = userData?.id;
-  console.log(data, "데이터입니다");
-  const DiaryId = data?.packDiaryResponse?.packDiaryId;
-  const handleDiary = (DiaryId: number) => {
-    navigate(`/crop/${DiaryId}/otherview`);
-    console.log("나 눌리고 있어!!!", 111);
-  };
-  const formatDateAndTime = (dateString: string) => {
-    if (!dateString) return "";
-    const [date, time] = dateString.split("T");
-    const [hours, minutes, seconds] = time.split(":");
-    return `${date} ${hours}:${minutes}:${seconds}`;
-  };
-
-  const {
-    isLoading: isIndividualUserDetail,
-    data: IndividualUserData,
-    error: IndividualUserDetailError,
-  } = useQuery({
-    queryKey: ["individualUserDetail"],
-    queryFn: () =>
-      userIndividualCheck(
-        accessToken as string,
-        data?.exArticleResponse.userId
-      ),
-    enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
-  });
-  const handleSellerClick = (postId: number) => {
-    navigate(`/trade/${postId}/seller`);
-  };
-  const handleBuyerClick = (postId: number) => {
-    navigate(`/trade/${postId}/buyer`);
-  };
-
-  const handleEdit = () => {
-    console.log("저 클릭됐어요");
-    navigate(`/trade/${postId}/modify`, {
-      state: {
-        exArticleTitle: data?.exArticleResponse?.exArticleTitle,
-        exArticleContent: data?.exArticleResponse?.content,
-        exArticleType: data?.exArticleResponse?.exArticleType,
-        ex_article_location: data?.exArticleResponse?.exLocation,
-        packdiaryid: data?.packDiaryResponse?.packDiaryId.toString(),
-        deal_cur_price: data?.dealResponse?.price.toString(),
-        imageResponse: data?.exArticleResponse.imageResponses,
-        postId: data?.exArticleResponse.exArticleId,
-      },
-    });
-    // console.log('gettradedetail'+response.data.data_body.exArticleResponse.imageResponses[0].imgStoreUrl)
-  };
-  const { mutate: deleteMutation } = useMutation({
-    mutationFn: deletePost,
-    onSuccess: () => {
-      navigate(-1);
-      //   navigate(`/crop/${packDiaryId}`);
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
-  const handleDeleteConfirmation = (postId: number) => {
-    const isConfirmed = window.confirm("삭제하시겠습니까?"); // 사용자에게 삭제 확인 요청
-    if (isConfirmed) {
-      // 사용자가 '확인'을 클릭한 경우
-      deleteMutation(postId); // 삭제 함수 실행
+  useEffect(() => {
+    if (data) {
+      // 데이터가 성공적으로 로드되었을 때 실행할 로직을 여기에 작성하세요.
+      // 예: 특정 쿼리의 캐시를 무효화하고 싶은 경우
+      queryClient.invalidateQueries({ queryKey: ["tradeDetail", exArticleId] });
     }
+  }, [data, queryClient]);
+
+  // const { mutate: handleLikeClick } = useLike({ queryKeys: ["tradeDetail"] });
+  //가격 제안
+  const sentences = [
+    "사랑으로 키운게 느껴져요 ${price}원 어떠심?",
+    "${price}원에 이런 품질이라니, 믿을 수 없어요!",
+    "정성이 가득 담긴 가격, ${price}원에 어떠세요?",
+    "이건 정말 훔쳐오는 거나 다름없는 가격이네요, ${price}원이라니!",
+    "${price}원이라면 저도 바로 결정했을 거예요!",
+    "지금이 바로 그 기회! ${price}원에 가져가세요.",
+    "우리 이웃님들, ${price}원에 이런 기회 놓치지 마세요.",
+    "아직도 고민하시나요? ${price}원이라는 걸 기억하세요!",
+    "가격보고 깜짝 놀랐어요, ${price}원이라니!",
+    "오늘의 행운이 ${price}원에 달려있어요.",
+    "${price}원에 이걸 안 산다면 후회할 거예요.",
+    "장바구니가 외로워하네요, ${price}원으로 채워주세요.",
+    "${price}원, 이 가격에 이걸 살 수 있다니 말도 안 돼요.",
+    "집에 가져가면 가족들이 좋아할 거예요, ${price}원에요.",
+    "제가 본 중에 ${price}원으로 최고의 선택이에요.",
+    "이 가격 실화인가요? ${price}원이라니, 놀랍습니다.",
+    "모든 것이 완벽해요, 가격도 ${price}원이라니까요.",
+    "이런 건 두 번 다시 없어요, ${price}원에 당장 잡으세요.",
+    "세상에, ${price}원이라면 저도 고민 없이 샀을 거예요.",
+    "친구에게도 추천해줘야겠어요, ${price}원에 이런 좋은 거라니!",
+  ];
+
+  // 랜덤 문장 선택 함수
+  const getRandomSentence = (price: string) => {
+    const randomIndex = Math.floor(Math.random() * sentences.length);
+    return sentences[randomIndex].replace("${price}", price);
   };
-  console.log("머임", typeof data?.exArticleResponse.exArticleId);
-  // 거래 종료
-  // const handleFinishClick = () => {
-  //   window.confirm("거래를 종료하시겠습니까?");
-  //   finishClick(data?.exArticleResponse.exArticleId);
-  //   navigate("/trade");
-  // };
-  const { mutate: finishClick } = useDealFinish();
+  //채팅 연결
+  const { mutate: clickChat } = createDealChatRoom();
+  const handleChatClick = (buyerId: number) => {
+    clickChat({ exArticleId, buyerId });
+    console.log(exArticleId);
+  };
+  // 배열 역순 정렬
+  const [deals, setDeals] = useState<DealListResponse[]>([]);
+  useEffect(() => {
+    if (dealListData) {
+      const sortedDeals: DealListResponse[] = [...dealListData].sort(
+        (a: DealListResponse, b: DealListResponse) => {
+          return b.localDateTime.localeCompare(a.localDateTime);
+        }
+      );
+      setDeals(sortedDeals);
+    }
+  }, [dealListData]);
 
   return (
     <>
-      {/* {data?.exArticleResponse.userId === data?.userResponse.id ? (
-        <TradeTopBar
-          title="작물거래"
-          showBack={true}
-          showEdit={true}
-          onEdit={handleEdit}
-          onDelete={() => {
-            handleDeleteConfirmation(data?.exArticleResponse.exArticleId);
-          }}
-        />
-      ) : (
-        <TradeTopBar
-          title="작물거래"
-          showBack={true}
-          showEdit={false}
-          // onEdit={handleEdit}
-          // onDelete={() => {
-          //   deleteMutation(data?.exArticleResponse.exArticleId);
-          // }}
-        />
-      )} */}
-      <DealTopBar
-        showBack={true}
-        title="작물거래"
-        showEdit={true}
-        onDelete={() => {
-          const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
-          if (isConfirmed) {
-            deleteMutation(data?.exArticleResponse.exArticleId);
-          }
-        }}
-      />
+      <TopBar title="가격제안목록" showBack={true} />
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper
@@ -419,23 +354,9 @@ const TradeDetailDeal = () => {
             <ExplainText>{data?.exArticleResponse.content}</ExplainText>
           </TitleBox>
         </LayoutInnerBox>
-
-        {/* 구매자면 가격 제안조회 고 판매자면 가격 제안하기. */}
-        <BottomButton
-          text={
-            data?.userResponse.id === data?.exArticleResponse.userId
-              ? "제안목록 확인"
-              : "제안하기"
-          }
-          onClick={() =>
-            data?.userResponse.id === data?.exArticleResponse.userId
-              ? handleSellerClick(data?.exArticleResponse.exArticleId)
-              : handleBuyerClick(data?.exArticleResponse.exArticleId)
-          }
-        />
       </LayoutMainBox>
     </>
   );
 };
 
-export default TradeDetailDeal;
+export default TradeSellerDetail;

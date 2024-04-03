@@ -274,7 +274,11 @@ const TradeSellerDetail = () => {
             </Situation>
             <TextStyle>
               {dealListData &&
+<<<<<<< Updated upstream
                 dealListData[dealListData.length - 1].bidcount | 0}
+=======
+                dealListData[dealListData.length - 1]?.bidcount | 0}
+>>>>>>> Stashed changes
               명
             </TextStyle>
           </SituationBox>
