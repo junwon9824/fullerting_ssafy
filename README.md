@@ -19,23 +19,23 @@
 
 1. 동네인증
 
-<img src="./img/etc/현재위치.jpg"  width="200" height="400"/>
+<img src="./img/trade/현재위치.jpg"  width="200" height="400"/>
 
-<img src="./img/etc/주소인증.jpg"  width="200" height="400"/>
+<img src="./img/trade/주소인증.jpg"  width="200" height="400"/>
 
 현재위치와 주소 검색으로 동네 인증을 합니다.
 
 2. 작물거래
 
-<img src="./img/etc/거래.jpg"  width="200" height="400"/>
+<img src="./img/trade/거래.jpg"  width="200" height="400"/>
 
-<img src="./img/etc/작물거래생성.jpg"  width="200" height="400"/>
+<img src="./img/trade/작물거래생성.jpg"  width="200" height="400"/>
 
 3. 제안하기
 
-<img src="./img/etc/거래제안목록.jpg"  width="200" height="400"/>
+<img src="./img/trade/거래제안목록.jpg"  width="200" height="400"/>
 
-<img src="./img/etc/거래제안.jpg"  width="200" height="400"/>
+<img src="./img/trade/거래제안.jpg"  width="200" height="400"/>
 
 구매자는 가격을 제안할 수 있고, 판매자는 제안 중 하나를 골라 채팅하고 작물을 판매할 수 있습니다.
 
@@ -45,23 +45,41 @@
 
 5. 채팅
 
-<img src="./img/etc/채팅목록.jpg"  width="200" height="400"/>
+<img src="./img/trade/채팅목록.jpg"  width="200" height="400"/>
 
-<img src="./img/etc/거래채팅제안.jpg"  width="200" height="400"/>
+<img src="./img/trade/거래채팅제안.jpg"  width="200" height="400"/>
 
 채팅을 통해 거래를 이어나갈 수 있습니다. 거래 종료 버튼을 누르면 거래를 종료할 수 있습니다.
 
 ### 작물일지
 
-1. 작물인식하기
+1. 작물일지
 
-작물을 카메라로 인식하면 작물의 종류와 생육단계를 알려주고 작물 일지를 업그레이드 할 수 있습니다. 마지막 단계인 경우 뱃지를 획득할 수 있습니다.
+<img src="./img/diary/작물일지.jpg"  width="200" height="400"/>
+
+<img src="./img/diary/작물일지생성.jpg"  width="200" height="400"/>
 
 2. 작물일기
 
+<img src="./img/diary/작물일기.jpg"  width="200" height="400"/>
+
+<img src="./img/diary/작물꿀팁.jpg"  width="200" height="400"/>
+
+<img src="./img/diary/작물일기생성.jpg"  width="200" height="400"/>
+
+<img src="./img/diary/작물일지수정.jpg"  width="200" height="400"/>
+
 다이어리와 물주기를 작성할 수 있고, 작물 종류 별로 작물꿀팁을 볼 수 있습니다.
 
-3. 수확하기
+3. 작물인식하기
+
+작물을 카메라로 인식하면 작물의 종류와 생육단계를 알려주고 작물 일지를 업그레이드 할 수 있습니다. 마지막 단계인 경우 뱃지를 획득할 수 있습니다.
+
+4. 수확하기
+
+<img src="./img/diary/작물일기수확.jpg"  width="200" height="400"/>
+
+<img src="./img/diary/작물일기수확2.jpg"  width="200" height="400"/>
 
 수확하기 버튼을 클릭해 작물을 수확할 수 있고, 수확하면 수확 표시와 함께 작물 재배 기간이 표시됩니다.
 
