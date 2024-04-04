@@ -2,11 +2,9 @@
 
 <img src="./img/etc/풀러팅.png"/>
 
-서비스 소개
-
 ## 🔧 기술 스택
 
-| 이름     | 사용 기술                                                                          |
+| 역할     | 사용 기술                                                                          |
 | -------- | ---------------------------------------------------------------------------------- |
 | Frontend | React, Typescript, Jotai, Tanstack Query, React router dom, Styled components, PWA |
 | Backend  | Spring Boot, NginX, Spring Security, JWT, Oauth, MySQL, Redis                      |
