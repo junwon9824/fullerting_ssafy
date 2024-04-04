@@ -60,8 +60,11 @@ pipeline {
                         sh 'echo "This is a test submodule script"'
                         sh 'rm .env'
                         sh 'cat  application.yml'
+                        sh 'pwd'
+                        sh 'ls -al'
 
                     }
+
                       sh 'pwd'
                       sh 'ls -al'
                 }
