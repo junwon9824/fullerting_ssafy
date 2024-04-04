@@ -21,6 +21,7 @@ pipeline {
         GITHUB_CREDENTIALS_ID = 'Github-access-token'
         GITLAB_CREDENTIALS_ID = 'GitLab-access-token' // GitLab 크리덴셜 ID 추가
         REPO = 's10-ai-image-sub2/S10P12C102'
+        GIT_REPO = 'https://github.com/junwon9824/fullertingsecretfolder.git'
 
         // Gradle 환경 변수 설정
         ORG_GRADLE_JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
@@ -36,23 +37,24 @@ pipeline {
                         sh 'echo "This is a test shell script"'
 
   // 시크릿 파일 사용
-                        withCredentials([file(credentialsId: 'secret-backend', variable: 'SECRET_FILE')]) {
-                            // 파일을 사용하는 작업 수행
-                            // 예: 파일 내용 출력
-                            sh 'ls -l $SECRET_FILE'
-                            sh 'echo "Secret file path: $SECRET_FILE"'
 
-                            sh 'cat $SECRET_FILE'
-                            sh 'pwd'
-                            sh 'ls -al'
-//                            sh 'cp $SECRET_FILE back/src/main/resources/application.yml'
-
-                        }
 
 
                     }
                 }
             }
+        }
+
+        stages {
+                stage('Checkout') {
+                    steps {
+                        script {
+                            // GitHub access token을 사용하여 submodule을 가져옴
+                            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: true, reference: '', trackingSubmodules: false]], userRemoteConfigs: [[credentialsId: 'Github-access-token', url: GIT_REPO]]])
+                        }
+                    }
+                }
+                // 다른 작업 단계 추가
         }
 
         stage('Build') {
