@@ -10,7 +10,7 @@ def component = [
 // 파일 복사 작업을 수행하는 함수 정의
 def fileCopy() {
     // 파일 복사 작업 수행
-    sh 'cp /var/jenkins_home/workspace/fullerting/submodule/*.yml src/main/resources'
+    sh 'cp /var/jenkins_home/workspace/fullerting/submodule/*.yml /var/jenkins_home/workspace/fullerting/backend/src/main/resources'
 }
 
 pipeline {
