@@ -54,7 +54,7 @@ pipeline {
                     sh 'echo "This is a test submodule script"'
                     sh 'rm .env'
                     sh 'cat  application.yml'
-                    sh 'cat src/main/resources/application.yml'
+                    sh 'cat backend/src/main/resources/application.yml'
                 }
             }
         }
