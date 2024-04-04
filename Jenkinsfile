@@ -7,6 +7,13 @@ def component = [
 
 ]
 
+// 파일 복사 작업을 수행하는 task 정의
+task copyPrivate(type: Copy) {
+    from '/var/jenkins_home/workspace/fullerting/submodule'
+    include "*.yml"
+    into 'src/main/resources'
+}
+
 pipeline {
     agent any
     environment {
@@ -70,6 +77,21 @@ pipeline {
                 }
             }
         }
+
+        stage('Copy Files') {
+                    steps {
+                        script {
+                            // 파일 복사 디버깅 메시지
+                            echo "Copying YAML files from submodule to src/main/resources..."
+
+                            // 파일 복사 작업 수행
+                            copyPrivate()
+
+                            // 파일 복사 완료 디버깅 메시지
+                            echo "Copying completed."
+                        }
+                    }
+                }
 
         stage('Build') {
             steps {
