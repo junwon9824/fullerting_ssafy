@@ -56,7 +56,7 @@ pipeline {
                     sh 'cat  application.yml'
                     sh 'pwd'
                     sh 'ls -al'
-                    sh 'cat ../backend/src/main/resources/application.yml'
+//                     sh 'cat ../backend/src/main/resources/application.yml'
                 }
             }
         }
