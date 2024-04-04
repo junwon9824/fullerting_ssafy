@@ -63,6 +63,8 @@
 
 <img src="./img/diary/작물일기.jpg"  width="200" height="420"/>
 
+<img src="./img/diary/다이어리상세.jpg"  width="200" height="420"/>
+
 <img src="./img/diary/작물꿀팁.jpg"  width="200" height="420"/>
 
 <img src="./img/diary/작물일기생성.jpg"  width="200" height="420"/>
@@ -77,7 +79,7 @@
 
 4. 수확하기
 
-<img src="./img/diary/작물일기수확.jpg"  width="200" height="420"/>
+<img src="./img/diary/작물일지수확.jpg"  width="200" height="420"/>
 
 <img src="./img/diary/작물일기수확2.jpg"  width="200" height="420"/>
 
@@ -101,9 +103,9 @@
 
 1. 텃밭 지도
 
-<img src="./img/community/텃밭지도.jpg"  width="200" height="420"/>
+<img src="./img/farm/텃밭지도.jpg"  width="200" height="420"/>
 
-<img src="./img/community/텃밭상세.jpg"  width="200" height="420"/>
+<img src="./img/farm/텃밭상세.jpg"  width="200" height="420"/>
 
 카카오 지도를 이용해 지역 별 텃밭 정보를 제공해줍니다.
 
