@@ -33,4 +33,5 @@ public class EventAlarmNotificationController {
         eventAlarmNotificationService.sendAsync(alarmPayload);
         return ResponseEntity.ok().build();
     }
+
 }
