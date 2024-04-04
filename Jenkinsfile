@@ -11,6 +11,7 @@ def component = [
 def fileCopy() {
     // 파일 복사 작업 수행
     sh 'cp /var/jenkins_home/workspace/fullerting/submodule/*.yml /var/jenkins_home/workspace/fullerting/backend/src/main/resources'
+//     sh 'cp /var/jenkins_home/workspace/fullerting/submodule/*. /var/jenkins_home/workspace/fullerting/frontend'
 }
 
 pipeline {
@@ -63,6 +64,7 @@ pipeline {
 
                         // GitHub access token을 사용하여 submodule을 가져옴
                         checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: true, reference: '', trackingSubmodules: false]], userRemoteConfigs: [[credentialsId: 'Github-access-token', url: GIT_REPO]]])
+                        sh 'git pull origin main'
                         sh 'echo "This is a test submodule script"'
                         sh 'rm .env'
                         sh 'cat  application.yml'
