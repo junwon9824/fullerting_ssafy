@@ -7,11 +7,9 @@ def component = [
 
 ]
 
-// 파일 복사 작업을 수행하는 task 정의
-task copyPrivate(type: Copy) {
-    from '/var/jenkins_home/workspace/fullerting/submodule'
-    include "*.yml"
-    into 'src/main/resources'
+// 파일 복사 작업을 수행하는 스텝 정의
+def fileCopy() {
+    sh 'cp /var/jenkins_home/workspace/fullerting/submodule/*.yml src/main/resources'
 }
 
 pipeline {
