@@ -28,22 +28,22 @@ pipeline {
     }
 
     stages {
-        stage('Setup Environment') {
-            steps {
-                dir("${env.WORKSPACE}/back") {
-                    script {
-                        sh 'ls . -al'
-                        // 테스트용 쉘 코드 추가
-                        sh 'echo "This is a test shell script"'
-
-  // 시크릿 파일 사용
-
-
-
-                    }
-                }
-            }
-        }
+//         stage('Setup Environment') {
+//             steps {
+//                 dir("${env.WORKSPACE}/back") {
+//                     script {
+//                         sh 'ls . -al'
+//                         // 테스트용 쉘 코드 추가
+//                         sh 'echo "This is a test shell script"'
+//
+//   // 시크릿 파일 사용
+//
+//
+//
+//                     }
+//                 }
+//             }
+//         }
 
 
         stage('Checkout') {
@@ -54,7 +54,7 @@ pipeline {
                     sh 'echo "This is a test submodule script"'
                     sh 'rm .env'
                     sh 'cat  application.yml'
-
+                    sh 'cat src/main/resources/application.yml'
                 }
             }
         }
