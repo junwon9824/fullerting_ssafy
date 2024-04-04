@@ -11,7 +11,7 @@ def component = [
 def fileCopy() {
     // 파일 복사 작업 수행
     sh 'cp /var/jenkins_home/workspace/fullerting/submodule/*.yml /var/jenkins_home/workspace/fullerting/backend/src/main/resources'
-//     sh 'cp /var/jenkins_home/workspace/fullerting/submodule/*. /var/jenkins_home/workspace/fullerting/frontend'
+    sh 'cp /var/jenkins_home/workspace/fullerting/submodule/.env /var/jenkins_home/workspace/fullerting/frontend'
 }
 
 pipeline {
