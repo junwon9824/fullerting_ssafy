@@ -20,7 +20,7 @@ configurations {
 
 task copyPrivate(type: Copy) {
 	copy {
-		from './fullertingsecretfolder'
+		from '/var/jenkins_home/workspace/fullerting/submodule'
 		include "*.yml"
 		into 'src/main/resources'
 	}
