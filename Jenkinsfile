@@ -46,20 +46,22 @@ pipeline {
 //         }
 
 
-//         stage('Checkout') {
-//             steps {
-//                 script {
-//                     // GitHub access token을 사용하여 submodule을 가져옴
-//                     checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: true, reference: '', trackingSubmodules: false]], userRemoteConfigs: [[credentialsId: 'Github-access-token', url: GIT_REPO]]])
-//                     sh 'echo "This is a test submodule script"'
-//                     sh 'rm .env'
-//                     sh 'cat  application.yml'
-//                     sh 'pwd'
-//                     sh 'ls -al'
-// //                     sh 'cat ../backend/src/main/resources/application.yml'
-//                 }
-//             }
-//         }
+        stage('Checkout') {
+            steps {
+                script {
+                    sh 'pwd'
+                    sh 'ls -al'
+
+                    // GitHub access token을 사용하여 submodule을 가져옴
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: true, reference: '', trackingSubmodules: false]], userRemoteConfigs: [[credentialsId: 'Github-access-token', url: GIT_REPO]]])
+                    sh 'echo "This is a test submodule script"'
+                    sh 'rm .env'
+                    sh 'cat  application.yml'
+                    sh 'pwd'
+                    sh 'ls -al'
+                }
+            }
+        }
 
         stage('Build') {
             steps {
