@@ -7,8 +7,9 @@ def component = [
 
 ]
 
-// 파일 복사 작업을 수행하는 스텝 정의
+// 파일 복사 작업을 수행하는 함수 정의
 def fileCopy() {
+    // 파일 복사 작업 수행
     sh 'cp /var/jenkins_home/workspace/fullerting/submodule/*.yml src/main/resources'
 }
 
@@ -83,7 +84,7 @@ pipeline {
                             echo "Copying YAML files from submodule to src/main/resources..."
 
                             // 파일 복사 작업 수행
-                            copyPrivate()
+                            fileCopy()
 
                             // 파일 복사 완료 디버깅 메시지
                             echo "Copying completed."
