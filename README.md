@@ -1,6 +1,6 @@
 ## 🌿 프로젝트 소개
 
-<img src="./img/etc/풀러팅.png"  width="200" height="400"/>
+<img src="./img/etc/풀러팅.png"/>
 
 서비스 소개
 
@@ -19,17 +19,35 @@
 
 1. 동네인증
 
+<img src="./img/etc/현재위치.jpg"  width="200" height="400"/>
+
+<img src="./img/etc/주소인증.jpg"  width="200" height="400"/>
+
 현재위치와 주소 검색으로 동네 인증을 합니다.
 
-2. 제안하기
+2. 작물거래
+
+<img src="./img/etc/거래.jpg"  width="200" height="400"/>
+
+<img src="./img/etc/작물거래생성.jpg"  width="200" height="400"/>
+
+3. 제안하기
+
+<img src="./img/etc/거래제안목록.jpg"  width="200" height="400"/>
+
+<img src="./img/etc/거래제안.jpg"  width="200" height="400"/>
 
 구매자는 가격을 제안할 수 있고, 판매자는 제안 중 하나를 골라 채팅하고 작물을 판매할 수 있습니다.
 
-3. 일반거래
+4. 일반거래
 
 판매자는 가격을 설정해 판매하고 구매자가 작물을 구매할 수 있습니다.
 
-4. 채팅
+5. 채팅
+
+<img src="./img/etc/채팅목록.jpg"  width="200" height="400"/>
+
+<img src="./img/etc/거래채팅제안.jpg"  width="200" height="400"/>
 
 채팅을 통해 거래를 이어나갈 수 있습니다. 거래 종료 버튼을 누르면 거래를 종료할 수 있습니다.
 
