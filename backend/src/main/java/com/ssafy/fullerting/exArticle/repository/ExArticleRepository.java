@@ -9,12 +9,21 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface ExArticleRepository extends JpaRepository<ExArticle,Long > {
+public interface ExArticleRepository extends JpaRepository<ExArticle, Long> {
     Optional<List<ExArticle>> findAllByTitleContaining(String keyword);
+
     List<ExArticle> findAllByType(ExArticleType type);
-    List<ExArticle> findAllByUserIdAndFavoriteIsNotEmpty(Long userid);
+
+    @Query("SELECT e FROM ExArticle e WHERE  e.location like concat('%', :location , '%') and e.isDone=false  order by e.created_at  desc")
+    List<ExArticle> findAllByOrderByCreated_atDescandlocation(String location); //:location 이 로그인한 유저 현재 위치
+
+    @Query("select e from ExArticle e join e.favorite f where e.user.id = :userId and f.user.id = :userId")
+    List<ExArticle> findAllByUserIdAndFavoriteIsNotEmpty(Long userId);
+
+
     @Query("select e from ExArticle e  where e.user.id = :userid and e.isDone = true ")
     List<ExArticle> findAllByUserIDAndDone(Long userid);
+
     List<ExArticle> findAllByPackDiaryId(Long packDiaryId);
 
 }

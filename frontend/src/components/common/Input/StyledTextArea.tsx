@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import styled from "styled-components";
 
 interface StyledTextAreaType {
@@ -6,12 +6,12 @@ interface StyledTextAreaType {
   isRequired?: boolean;
   name: string;
   placeholder: string;
-  value?: string;
+  value: string;
   onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   disabled?: boolean;
   cols?: number;
   rows?: number;
-  maxLength?: number;
+  maxLength: number;
 }
 
 const TextArea = styled.textarea`
@@ -85,6 +85,18 @@ const StyledTextArea = ({
   rows,
   maxLength,
 }: StyledTextAreaType) => {
+  useEffect(() => {
+    if (value?.length > maxLength) {
+      const newValue = value.slice(0, maxLength);
+      onChange({ target: { value: newValue, name } });
+    }
+  }, [value]);
+
+  function maxLengthCheck(object) {
+    if (object.value.length > object.max.length)
+      object.value = object.value.slice(0, object.max.length);
+  }
+
   return (
     <TextAreaBox>
       <Label>
@@ -100,10 +112,13 @@ const StyledTextArea = ({
         cols={cols}
         rows={rows}
         maxLength={maxLength}
+        onInput={maxLengthCheck}
       />
       {maxLength && (
         <ValueCnt>
-          <ColoredSpan>{value?.length}</ColoredSpan>
+          <ColoredSpan>
+            {value?.length <= maxLength ? value?.length : maxLength}
+          </ColoredSpan>
           <Span>/{maxLength}</Span>
         </ValueCnt>
       )}

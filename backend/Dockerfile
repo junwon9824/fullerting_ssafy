@@ -8,7 +8,7 @@ COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
-#COPY secure-settings .
+#COPY fullertingsecretfolder .
 
 
 # 소스 코드를 Docker 이미지 안으로 복사
@@ -28,6 +28,7 @@ WORKDIR /app
 
 # 빌드 결과물을 이전 단계에서 복사
 COPY --from=build /app/build/libs/*.jar /app/back.jar
+
 
 # 서버 실행
 ENTRYPOINT ["java","-jar", "-Djava.security.egd=file:/dev/./urandom","/app/back.jar"]

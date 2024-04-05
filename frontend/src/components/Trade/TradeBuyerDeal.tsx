@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { TopBar } from "../common/Navigator/navigator";
 import Coli from "/src/assets/images/브로콜리.png";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getDealList, getTradeDetail, useLike } from "../../apis/TradeApi";
 import { useParams } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -11,6 +11,8 @@ import Send from "/src/assets/images/send.png";
 import "swiper/css";
 import "swiper/css/navigation";
 import useInput from "../../hooks/useInput";
+import Stomp from "stompjs";
+import { userIndividualCheck } from "../../apis/UserApi";
 
 interface ImageResponse {
   imgStoreUrl: string;
@@ -33,6 +35,34 @@ interface Deal {
   localDateTime: string;
   thumbnail: string;
   nickname: string;
+  bidcount: number;
+}
+// socket
+interface MessageRes {
+  bidLogId: number; // 입찰제안 ID
+  exArticleId: number; // 가격제안 게시물 id
+  userResponse: UserResponse; // 입찰자 ID, 썸네일, 닉네임
+  dealCurPrice: number; // 입찰자가 제안한 금액
+  maxPrice: number; // 현재 이 경매글의 최고가
+  bidderCount: number; //참여자수
+}
+interface UserResponse {
+  id: number;
+  email: string;
+  role: string;
+  nickname: string;
+  thumbnail: string;
+  rank: string;
+  location: string;
+  authProvider: string;
+}
+interface Response {
+  id: number;
+  exarticleid: number;
+  userId: number;
+  nickname: string;
+  thumbnail: string;
+  bidLogPrice: number;
 }
 const AppContainer = styled.div`
   display: flex;
@@ -108,7 +138,6 @@ const Title = styled.div`
   font-weight: bold;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #f4f4f4;
 `;
 const SituationBox = styled.div`
   width: 100%;
@@ -117,8 +146,10 @@ const SituationBox = styled.div`
   flex-direction: column;
   gap: 0.69rem;
   padding-bottom: 0.5rem;
+  border-top: 1px solid #f4f4f4;
   border-bottom: 1px solid #f4f4f4;
 `;
+
 const Situation = styled.div<SituationResponse>`
   text-align: center;
   display: flex;
@@ -132,16 +163,22 @@ const Situation = styled.div<SituationResponse>`
   font-weight: bold;
   justify-content: center;
 `;
+const Wall = styled.div`
+  display: flex;
+  gap: 2rem;
+  flex-direction: row;
+`;
 const LayoutMainBox = styled.main`
   width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 100%;
-  padding-top: 3.125rem;
-  padding-bottom: 6rem;
-  gap: 1rem;
   height: 100vh;
+  justify-content: flex-start;
+  padding-top: 3.125rem;
+  /* padding-bottom: 4rem; */
+  /* gap: 0.3rem; */
+  /* height: 100vh; */
   overflow: hidden;
 `;
 
@@ -152,8 +189,10 @@ const LayoutInnerBox = styled.div`
   justify-content: center;
   align-items: flex-start;
   margin-top: 3rem;
-  gap: 1.5rem;
+  gap: 1rem;
   padding: 1.12rem 0;
+  flex-grow: 1;
+  /* height: 100%; */
 `;
 const TextStyle = styled.div`
   align-items: center;
@@ -173,11 +212,13 @@ const SituationGroup = styled.div`
 `;
 const DealBox = styled.div`
   width: 100%;
-  height: 8rem;
-  overflow-y: scroll;
+  max-height: 12rem;
+  overflow-y: auto;
   flex-direction: column;
   gap: 1rem;
   display: flex;
+
+  flex-grow: 1;
 `;
 const DealList = styled.div`
   padding-right: 0.5rem;
@@ -226,28 +267,20 @@ const DealInput = styled.input`
     border: 1px solid var(--gray2, #c8c8c8);
   }
 `;
-const DealListBox = styled.div`
-  width: 100%;
-  height: 8rem;
-  display: flex;
-  overflow-y: scroll;
-  justify-content: space-around;
-  flex-direction: column;
-`;
+
 const SendButton = styled.img`
   width: 2.1875rem;
   height: 2.1875rem;
 `;
 const DealChatBox = styled.div`
   display: flex;
-  position: fixed;
   width: 100%;
   justify-content: center;
   align-items: center;
   /* padding-left: 2rem;
   padding-right: 0.5rem; */
-  gap: 1rem;
-  bottom: 2rem;
+  gap: 0.8rem;
+  margin-top: 0%.5;
 `;
 
 const TradeBuyerDetail = () => {
@@ -257,8 +290,8 @@ const TradeBuyerDetail = () => {
   const handleLike = () => {
     setLike(!like);
   };
-
-  const { mutate: handleLikeClick } = useLike();
+  const [deals, setDeals] = useState<Deal[]>([]);
+  // const { mutate: handleLikeClick } = useLike();
   const { postId } = useParams<{ postId?: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -279,27 +312,130 @@ const TradeBuyerDetail = () => {
       ? () => getDealList(accessToken, postNumber)
       : undefined,
   });
+  // console.log("딜데이터", dealListData);
+  //socket
+  const queryClient = useQueryClient();
+  const [messages, setMessages] = useState<MessageRes[]>([]);
+  const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
+  const [newMessage, setNewMessage] = useState<string>("");
+  const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
+  const wssURL = import.meta.env.VITE_REACT_APP_WSS_URL;
 
-  console.log("난데이터얌", dealListData);
+  useEffect(() => {
+    console.log("데이터", dealListData);
+    const socket = new WebSocket(wssURL);
+    const transformedData = dealListData?.map((item: Response) => ({
+      bidLogId: item.id,
+      exArticleId: item.exarticleid,
+      userResponse: {
+        id: item.userId,
+        nickname: item.nickname,
+        thumbnail: item.thumbnail,
+      },
+      dealCurPrice: item.bidLogPrice,
+    }));
+    setMessages(transformedData);
+    const client = Stomp.over(socket);
+
+    console.log(socket);
+
+    client.connect({ Authorization: `Bearer ${accessToken}` }, () => {
+      client.subscribe(`/sub/bidding/${postNumber}`, (message) => {
+        console.log("저는 메세지 입니다", message);
+
+        const msg: MessageRes = JSON.parse(message.body);
+        queryClient.invalidateQueries({
+          queryKey: ["dealDetail", postNumber],
+        });
+        setMessageSubscribed(true);
+      });
+    });
+    setStompClient(client);
+    return () => {
+      if (client.connected) {
+        client.disconnect(() => {
+          console.log("Disconnected from WebSocket server");
+        });
+      }
+    };
+  }, [accessToken]);
+
+  const sendMessage = async () => {
+    if (stompClient && newMessage.trim() !== "") {
+      try {
+        if (
+          Number(newMessage) <=
+          dealListData[dealListData.length - 1]?.bidLogPrice
+        ) {
+          alert("최고가보다 더 높은 가격을 제안해주세요");
+          return;
+        }
+        const messageReq = {
+          dealCurPrice: newMessage,
+        };
+
+        const accessToken = sessionStorage.getItem("accessToken");
+        if (!accessToken) {
+          throw new Error("Access token is not available.");
+        }
+
+        const DealstartRequest = {
+          exArticleId: postNumber,
+          dealCurPrice: messageReq.dealCurPrice,
+          redirectURL: window.location.pathname,
+        };
+
+        stompClient.send(
+          `/pub/bidding/${postNumber}/messages`,
+          {},
+          JSON.stringify(DealstartRequest)
+        );
+
+        setNewMessage("");
+      } catch (error) {
+        console.error("메시지 전송 실패", error);
+      }
+    }
+  };
+  //socket 끝
+  // console.log(dealListData);
   const formatDateAndTime = (dateString: string) => {
     if (!dateString) return "";
     const [date, time] = dateString.split("T");
     const [hours, minutes, seconds] = time.split(":");
     return `${date} ${hours}:${minutes}:${seconds}`;
   };
+  const {
+    isLoading: isIndividualUserDetail,
+    data: IndividualUserData,
+    error: IndividualUserDetailError,
+  } = useQuery({
+    queryKey: ["individualUserDetail"],
+    queryFn: () =>
+      userIndividualCheck(
+        accessToken as string,
+        data?.exArticleResponse.userId
+      ),
+    enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
+  });
+  // 배열 역순 정렬
+  useEffect(() => {
+    if (dealListData) {
+      const sortedDeals: Deal[] = [...dealListData].sort((a: Deal, b: Deal) => {
+        return b.localDateTime.localeCompare(a.localDateTime);
+      });
+      setDeals(sortedDeals);
+    }
+  }, [dealListData]);
 
   return (
+    //  <AppContainer>
     // <AppContainer>
     <>
-      <TopBar title="작물거래" showBack={true} showEdit={true} />
+      <TopBar title="작물거래" showBack={true} />
       <LayoutMainBox>
         <SwiperContainer>
-          <Swiper
-            slidesPerView={1}
-            pagination={true}
-            onSlideChange={() => console.log("slide change")}
-            onSwiper={(swiper) => console.log(swiper)}
-          >
+          <Swiper slidesPerView={1} pagination={true}>
             {data?.imageResponses.map((image: ImageResponse, index: number) => (
               <SwiperSlide key={index}>
                 <ImgBox src={image.imgStoreUrl} alt={"img"} />
@@ -310,11 +446,11 @@ const TradeBuyerDetail = () => {
         <LayoutInnerBox>
           <InfoBox>
             <Profile>
-              <Thumbnail src={data?.userResponse.thumbnail} alt="profile" />
+              <Thumbnail src={IndividualUserData?.thumbnail} alt="profile" />
               <Name>
-                <NameText>{data?.userResponse.nickname}</NameText>
+                <NameText>{IndividualUserData?.nickname}</NameText>
                 <ClassesText>
-                  {data?.userResponse.rank}
+                  {IndividualUserData?.rank}
                   {/* <img src={Sprout} alt="Sprout" /> */}
                 </ClassesText>
               </Name>
@@ -322,28 +458,40 @@ const TradeBuyerDetail = () => {
             <Date>{formatDateAndTime(data?.exArticleResponse.time)}</Date>
           </InfoBox>
 
-          <Title>{data?.exArticleResponse.exArticleTitle}</Title>
           <SituationBox>
-            <SituationGroup>
-              <Situation
-                border="2px solid var(--sub3, #FFBFBF)"
-                color="#FFBFBF;"
-              >
-                최고가
-              </Situation>
-              <TextStyle>800원</TextStyle>
-            </SituationGroup>
-            <SituationGroup>
-              <Situation
-                border="2px solid var(--sub0, #A0D8B3)"
-                color="#A0D8B3;"
-              >
-                참여자
-              </Situation>
-              <TextStyle>3명</TextStyle>
-            </SituationGroup>
+            <Wall>
+              <Title>{data?.exArticleResponse.exArticleTitle}</Title>
+            </Wall>
+            <Wall>
+              <SituationGroup>
+                <Situation
+                  border="2px solid var(--sub3, #FFBFBF)"
+                  color="#FFBFBF;"
+                >
+                  최고가
+                </Situation>
+                <TextStyle>
+                  {dealListData && dealListData.length > 0
+                    ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
+                    : `${data?.dealResponse?.price}원`}
+                </TextStyle>
+              </SituationGroup>
+              <SituationGroup>
+                <Situation
+                  border="2px solid var(--sub0, #A0D8B3)"
+                  color="#A0D8B3;"
+                >
+                  참여자
+                </Situation>
+                <TextStyle>
+                  {dealListData &&
+                    dealListData[dealListData.length - 1]?.bidcount | 0}
+                  명
+                </TextStyle>
+              </SituationGroup>
+            </Wall>
           </SituationBox>
-          <DealBox>
+          {/* <DealBox>
             {dealListData?.map((item: Deal, index: number) => (
               <DealList>
                 <ProfileBox>
@@ -353,13 +501,28 @@ const TradeBuyerDetail = () => {
                 <CostBox>{item?.bidLogPrice}원</CostBox>
               </DealList>
             ))}
+          </DealBox> */}
+          <DealBox>
+            {deals?.map((item: Deal, index: number) => (
+              <DealList>
+                <ProfileBox>
+                  <PhotoBox src={item?.thumbnail} alt="thumbnail" />
+                  {item?.nickname}
+                </ProfileBox>
+                <CostBox>{item?.bidLogPrice}원</CostBox>
+              </DealList>
+            ))}
           </DealBox>
+
+          <DealChatBox>
+            <DealInput
+              placeholder="최고가보다 높게 제안해주세요"
+              onChange={(e) => setNewMessage(e.target.value)}
+            />
+            <SendButton src={Send} alt="send" onClick={sendMessage} />
+          </DealChatBox>
         </LayoutInnerBox>
       </LayoutMainBox>
-      <DealChatBox>
-        <DealInput placeholder="최고가보다 높게 제안해주세요" />
-        <SendButton src={Send} alt="send" />
-      </DealChatBox>
       {/* </AppContainer> */}
     </>
   );

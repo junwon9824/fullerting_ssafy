@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.community.comment.service;
 
+import com.ssafy.fullerting.alarm.service.EventAlarmService;
 import com.ssafy.fullerting.community.article.exception.ArticleErrorCode;
 import com.ssafy.fullerting.community.article.exception.ArticleException;
 import com.ssafy.fullerting.community.article.model.entity.Article;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.dialect.unique.CreateTableUniqueDelegate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,35 +28,46 @@ public class CommentService {
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
     private final UserService userService;
+    private final EventAlarmService eventAlarmService;
 
 
-    public void registcomment(Long article_id, RegisterCommentRequest registerCommentRequest) {
-
-
-        Article article = articleRepository.findById(article_id).orElseThrow(() -> new
+    public void registcomment(Long targetArticleId, RegisterCommentRequest registerCommentRequest) {
+        Article targetArticle = articleRepository.findById(targetArticleId).orElseThrow(() -> new
                 ArticleException(ArticleErrorCode.NOT_EXISTS));
 
-        UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        CustomUser commenter = userService.getNowUserInfoEntityByToken();
 
-        commentRepository.save(Comment.builder()
-                .article(article)
+        Comment comment = commentRepository.save(Comment.builder()
+                .article(targetArticle)
                 .comment_content(registerCommentRequest.getCommentcontent())
-                .customUser(customUser)
+                .customUser(commenter)
+                .localDateTime(LocalDateTime.now())
                 .build());
+
+        eventAlarmService.notifyCommentCreated(commenter, targetArticle, registerCommentRequest.getRedirectURL());
+
+//        article.addcomment(comment);
+//        articleRepository.save(article);
+
     }
 
 
-    public List<CommentResonse> allcomment() {
-        return commentRepository.findAll()
+    public List<CommentResonse> allcomment(Long article_id) {
+
+        return commentRepository.findAllByArticle_Id(article_id)
                 .stream().map(comment -> {
-                    CommentResonse commentResonse = comment.tocommentResonse();
+
+                    CustomUser customUser = comment.getCustomUser();
+
+                    CommentResonse commentResonse = comment.tocommentResonse(customUser);
                     return commentResonse;
                 }).collect(Collectors.toList());
+
     }
 
 
     public void deletecommentbyid(Long articleId, Long commentId) {
+
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new
                 ArticleException(ArticleErrorCode.NOT_EXISTS));
 
@@ -68,7 +81,12 @@ public class CommentService {
             throw new CommentException(CommentErrorCode.NOT_MINE);
         }
 
-        commentRepository.delete(comment);
 
+
+//        article.removecomment(comment);
+//        articleRepository.save(article);
+
+        commentRepository.delete(comment);
     }
+
 }

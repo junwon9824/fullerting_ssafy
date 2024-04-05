@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.exArticle.service;
 
+import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import com.ssafy.fullerting.deal.exception.DealErrorCode;
 import com.ssafy.fullerting.deal.exception.DealException;
 import com.ssafy.fullerting.deal.model.entity.Deal;
@@ -46,12 +47,14 @@ import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.repository.UserRepository;
 import com.ssafy.fullerting.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,6 +66,7 @@ import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.TRANSAC
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ExArticleService {
     private final ExArticleRepository exArticleRepository;
     private final DealRepository dealRepository;
@@ -120,17 +124,17 @@ public class ExArticleService {
             packDiary = packDiaryRepository.findById(exArticleRegisterRequest.getPackdiaryid());
 
 
-        LocalDateTime createdAt = LocalDateTime.now(); // 현재 시각 설정
+        LocalDateTime createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")); // 현재 시각 설정
 
 
         ExArticle exArticle = ExArticle.builder()
                 .id(exArticleRegisterRequest.getId())
                 .title(exArticleRegisterRequest.getExArticleTitle())
                 .content(exArticleRegisterRequest.getExArticleContent())
-//                .place(exArticleRegisterRequest.getExArticlePlace())
+                .place(exArticleRegisterRequest.getPlace())
                 .type(exArticleRegisterRequest.getExArticleType())
                 .created_at(createdAt)
-                .location(exArticleRegisterRequest.getEx_article_location())
+                .location(customUser.getLocation())
                 .user(customUser)
                 .favorite(exArticleRegisterRequest.getFavorite())
                 .packDiary(packDiary != null ? packDiary.orElse(null) : null)
@@ -200,11 +204,20 @@ public class ExArticleService {
 
     public List<ExArticleAllResponse> allArticle() {
 
-        List<ExArticle> exArticle = exArticleRepository.findAll();
         CustomUser user = UserResponse.toEntity(userService.getUserInfo());
 //        log.info("eeeeeeeeeeeee" + exArticle.stream().
 //                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
 
+//        log.info(user.getLocation());
+        StringBuilder sb = new StringBuilder();
+        String[] str = user.getLocation().split(" ");
+        sb.append(str[0] + " ");
+        sb.append(str[1]);
+
+        List<ExArticle> exArticle = exArticleRepository.findAllByOrderByCreated_atDescandlocation(sb.toString());
+
+//        for (ExArticle article : exArticle)
+//            log.info(article.getLocation());
 
         List<ExArticleAllResponse> exArticleResponses =
                 exArticle.stream().map(exArticle1 -> exArticle1.toAllResponse(exArticle1, user)).
@@ -264,6 +277,10 @@ public class ExArticleService {
         CustomUser customUser = UserResponse.toEntity(userService.getUserInfo());
         ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
+        if (exArticle.getUser().getId() != customUser.getId()) {
+            throw new ExArticleException(ExArticleErrorCode.NOT_MINE);
+        }
 
         log.info("exxxx" + exArticle.getPurchaserId());
         exArticle.setdone();
@@ -372,13 +389,17 @@ public class ExArticleService {
 
 
         article.addfavorite(favorite);
+//        exArticleRepository.save(article);
 
         favoriteRepository.save(favorite);
 
     }
 
+    //@Transactional
     public ExArticle modifyarticle(Long exArticleId,
                                    UpdateArticleRequest updateArticleRequest, CustomUser customUser, List<MultipartFile> files) {
+//                                   UpdateArticleRequest updateArticleRequest, CustomUser customUser) {
+
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException
                 (ExArticleErrorCode.NOT_EXISTS));
 
@@ -392,9 +413,9 @@ public class ExArticleService {
         List<Image> unmodifiedimageList = new ArrayList<>();
         List<Image> delete_imageList = new ArrayList<>();
 
-        log.info("updateArticleRequest" + updateArticleRequest.getUnmodifiedimageid());
 
-        updateArticleRequest.getUnmodifiedimageid().forEach(
+//        updateArticleRequest.getImages().forEach(
+        updateArticleRequest.getImages().forEach(
                 aLong -> {
                     Image image = imageRepository.findById(aLong).orElseThrow(() -> new ImageException(ImageErrorCode.NOT_EXISTS));
                     unmodifiedimageList.add(image);
@@ -426,10 +447,11 @@ public class ExArticleService {
 //                    .build());
 //        });
 
+//        if (!updateArticleRequest.getNewImages().get(0).isEmpty()) {
         if (!files.get(0).isEmpty()) {
 
-            log.info("size 가 0보다 크다" + files.get(0));
             //이미지 업로드
+//                S3ManyFilesResponse response = amazonS3Service.uploadFiles(updateArticleRequest.getNewImages());
             S3ManyFilesResponse response = amazonS3Service.uploadFiles(files);
             //이미지 DB 저장
             response.getUrls().
@@ -448,7 +470,6 @@ public class ExArticleService {
 
                     collect(Collectors.toList());
         }
-
 
 //
 //        article.setImage(images.stream().map(multipartFile -> {
@@ -498,6 +519,7 @@ public class ExArticleService {
                         .build();
 
                 transRepository.save(trans);
+
                 article.setTrans(trans);
             }
 
@@ -515,6 +537,7 @@ public class ExArticleService {
 
                 transRepository.save(trans);
                 article.setTrans(trans);
+
             }
 
 //            Trans trans1 = transRepository.findById(article.getTrans().getId()).orElseThrow(() ->
@@ -538,7 +561,6 @@ public class ExArticleService {
             Optional<Integer> priceOptional = Optional.ofNullable(updateArticleRequest.getPrice());
             priceOptional.ifPresent(price -> {
                 trans.setTrans_sell_price(price);
-                article.setTrans(trans);
             });
 
             if (updateArticleRequest.getExArticleType().equals(ExArticleType.DEAL)) {
@@ -561,6 +583,10 @@ public class ExArticleService {
         }
 
 
+        article.setType(updateArticleRequest.getExArticleType());
+
+        log.info("updateinfo" + updateArticleRequest.getExArticleType());
+        log.info("modified" + article.getType());
         ExArticle modifiedexArticle = exArticleRepository.save(article);
 
 //        log.info("modifff" + modifiedexArticle.getImage().get(0).getId());

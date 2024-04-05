@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Location from "../../../assets/svg/location.svg";
 import StateIconComponent from "./StateIconComponent";
 import ExplainBoxComponent from "./ExplainBoxComponent";
+import { useNavigate } from "react-router-dom";
 interface ImageResponse {
   id: number;
   imgStoreUrl: string;
@@ -11,6 +12,7 @@ interface DataItem {
   imageResponses: ImageResponse[];
   exLocation: string;
   exArticleTitle: string;
+  exArticleId: number;
   price: number;
   isLikeCnt: number;
   exArticleType: "DEAL" | "SHARING" | "GENERAL_TRANSACTION" | "OTHER";
@@ -59,21 +61,30 @@ const Title = styled.div`
   font-weight: 400;
 `;
 
-const PostBoxComponent: React.FC<{ item: DataItem }> = ({ item }) => (
-  <PostBox>
-    <ImgBox>
-      <StyledImg src={item.imageResponses[0].imgStoreUrl} alt="tomato" />
-    </ImgBox>
-    <Town>
-      <div>
-        <img src={Location} alt="location" />
-        {item.exLocation}
-      </div>
-      <ExplainBoxComponent item={item.exArticleType} />
-    </Town>
-    <Title>{item.exArticleTitle}</Title>
-    <StateIconComponent item={item} />
-  </PostBox>
-);
+const PostBoxComponent: React.FC<{ item: DataItem }> = ({ item }) => {
+  const navigate = useNavigate();
+
+  const goToDetail = () => {
+    navigate(`/trade/${item.exArticleId}/DealDetail`);
+    console.log(item);
+  };
+
+  return (
+    <PostBox onClick={goToDetail}>
+      <ImgBox>
+        <StyledImg src={item.imageResponses[0].imgStoreUrl} alt="tomato" />
+      </ImgBox>
+      <Town>
+        <div>
+          <img src={Location} alt="location" />
+          {item.exLocation}
+        </div>
+        <ExplainBoxComponent item={item.exArticleType} />
+      </Town>
+      <Title>{item.exArticleTitle}</Title>
+      <StateIconComponent item={item} />
+    </PostBox>
+  );
+};
 
 export default PostBoxComponent;

@@ -1,7 +1,7 @@
 {
   "name": "풀러팅",
   "short_name": "풀러팅",
-  "start_url": "",
+  "start_url": "/login",
   "display": "standalone",
   "background_color": "#E5F9DB",
   "theme_color": "#A0D8B3",

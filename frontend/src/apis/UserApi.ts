@@ -9,7 +9,7 @@ interface JoinType {
   email: string;
   password: string;
   nickname: string;
-  authProvider: "MYAPP";
+  auth_provider: "MYAPP";
 }
 
 export const userLogin = async (loginData: LoginType) => {
@@ -54,5 +54,24 @@ export const userIndividualCheck = async (
   } catch (e) {
     console.log("user가 안불러와져요!!", e);
     throw e;
+  }
+};
+
+export const updateTown = async (location: string) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.patch(
+      `/users/town`,
+      {
+        userLocation: location,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error updateTown: ", error);
+    throw error;
   }
 };

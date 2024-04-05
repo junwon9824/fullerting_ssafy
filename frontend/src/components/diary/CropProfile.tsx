@@ -36,6 +36,12 @@ const CropImageBox = styled.div`
   margin: 0.6rem;
 `;
 
+const CropImg = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+`;
+
 const CropInfoBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -91,14 +97,14 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
     const differenceMillis = Math.abs(endMillis - startMillis);
     const differenceDays = Math.ceil(differenceMillis / (1000 * 60 * 60 * 24));
 
-    return differenceDays;
+    return differenceDays + 1;
   };
 
   return (
     <CropProfileBox>
       <Box>
         <CropImageBox>
-          <img src={crop.cropTypeImgUrl} alt="" />
+          <CropImg src={crop.cropTypeImgUrl} alt="" />
         </CropImageBox>
         <Align>
           <CropTitle>
@@ -119,7 +125,7 @@ const CropProfile = ({ crop, direction }: CropProfileType) => {
             <CropEnd>
               {crop.packDiaryCulEndAt === null
                 ? `" 수확까지 ${
-                    crop.cropGrowDay ? crop.cropGrowDay : "?"
+                    crop.cropGrowDay !== null ? crop.cropGrowDay : "?"
                   }일 남았습니다 "`
                 : `${crop.packDiaryCulStartAt} ~ ${
                     crop.packDiaryCulEndAt

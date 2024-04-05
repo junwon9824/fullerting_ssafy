@@ -11,16 +11,27 @@ import SelectModal from "../../components/Trade/SelectModal";
 import Diary from "/src/assets/svg/plus-diary.svg";
 import Camera from "/src/assets/svg/camera.svg";
 import MultiFileUploadInput from "../../components/common/Input/MultiFileUploadInput";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { usePost } from "../../apis/TradeApi";
 import { useAtom } from "jotai";
 import { imageFilesAtom, selectedDiaryIdAtom } from "../../stores/trade";
 import { BottomButton } from "../common/Button/LargeButton";
 import { useNavigate } from "react-router-dom";
+import { getCropList } from "../../apis/DiaryApi";
 
 interface BackGround {
   backgroundColor?: string;
   zIndex?: number;
+}
+interface Response {
+  packDiaryId: number;
+  packDiaryTitle: string;
+  packDiaryCulStartAt: string;
+  packDiaryCulEndAt: string;
+  packDiaryGrowthStep: number;
+  packDiaryCreatedAt: string;
+  cropTypeName: string;
+  cropTypeImgUrl: string;
 }
 const RadioBox = styled.div`
   width: 100%;
@@ -130,7 +141,7 @@ const RedCircle = styled.div`
 const TradePost = () => {
   const [title, setTitle] = useInput("");
   const [check, setCheck] = useState([true, false, false]);
-  const [cashCheck, setCashCheck] = useState<boolean>(false);
+  const [cashCheck, setCashCheck] = useState<boolean>(true);
   const [cash, setCash] = useInput("");
   const [place, setPlace] = useInput("");
   const [content, setContent] = useInput("");
@@ -170,7 +181,6 @@ const TradePost = () => {
     { title: "일반 거래", value: "GENERAL_TRANSACTION" },
     { title: "나눔", value: "SHARING" },
   ];
-
   const [selectedFiles, setSelectedFiles] = useAtom(imageFilesAtom);
   // console.log("타입을 알려주세요", typeof selectedFiles);
   const { mutate: handlePost } = usePost();
@@ -187,7 +197,8 @@ const TradePost = () => {
     const exArticleRegisterRequest = JSON.stringify({
       exArticleTitle: title,
       exArticleContent: content,
-      ex_article_location: place,
+      // ex_article_location: place,
+      place: place,
       exArticleType: tradeType,
       packdiaryid: diary,
       dealCurPrice: cash,
@@ -212,8 +223,21 @@ const TradePost = () => {
       // 오류 처리
       console.error("업로드 실패:", error);
     }
+    setSelectedDiaryId(null);
   };
-  console.log("전 다이어리에요", diary);
+  const accessToken = sessionStorage.getItem("accessToken");
+  const {
+    isLoading: cropIsLoading,
+    data: cropData,
+    error: cropError,
+  } = useQuery({
+    queryKey: ["cropList"],
+    queryFn: accessToken ? () => getCropList(accessToken) : undefined,
+  });
+  const selectedDiary: Response = cropData?.find(
+    (res: Response) => res.packDiaryId === diary
+  );
+
   return (
     <>
       {modal && (
@@ -233,6 +257,7 @@ const TradePost = () => {
           placeholder="제목을 입력해주세요"
           onChange={setTitle}
           isRequired={true}
+          maxLength={30}
         />
         <RadioBox>
           <TitleText>
@@ -297,6 +322,7 @@ const TradePost = () => {
             placeholder="₩ 가격을 입력해주세요."
             onChange={setCash}
             isRequired={true}
+            maxLength={10}
           ></StyledInput>
         )}
 
@@ -308,6 +334,7 @@ const TradePost = () => {
           placeholder="거래 장소를 입력해주세요."
           onChange={setPlace}
           isRequired={true}
+          maxLength={30}
         />
         <StyledTextArea
           label="내용"
@@ -323,7 +350,11 @@ const TradePost = () => {
           <DiarySquare onClick={openModal}>
             <img src={Diary} alt="diary" />
           </DiarySquare>
-          {diary && <DiarySelectedText>선택되었습니다</DiarySelectedText>}
+          {diary && (
+            <DiarySelectedText>
+              <p>{selectedDiary.packDiaryTitle}가(이) 선택되었습니다</p>
+            </DiarySelectedText>
+          )}
         </DiaryBox>
         <DiaryBox>
           <MultiFileUploadInput />

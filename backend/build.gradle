@@ -16,6 +16,17 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 }
+// ex) ./BE/submodule
+
+//task copyPrivate(type: Copy) {
+//	copy {
+//		from '/var/jenkins_home/workspace/fullerting/submodule'
+//		include "*.yml"
+//		into 'src/main/resources'
+//	}
+//}
+//
+//processResources.dependsOn copyPrivate
 
 repositories {
 	mavenCentral()

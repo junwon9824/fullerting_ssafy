@@ -10,12 +10,14 @@ import { useEffect, useState } from "react";
 import useInput from "../../hooks/useInput";
 import { getCropData, updateCrop } from "../../apis/DiaryApi";
 import StyledInput from "../../components/common/Input/StyledInput";
+import { useSSEConnection } from "../../hooks/useSSEConnection";
 
 const CropUpdatePage = () => {
+  useSSEConnection();
   const navigate = useNavigate();
   const { packDiaryId } = useParams();
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().slice(0, 10)
+    new Date(Date.now() + 1000 * 60 * 60 * 9).toISOString().slice(0, 10)
   );
   const [cropTypeName, setCropTypeName] = useState<string>("");
   const [cropName, onChangeName, setCropName] = useInput("");
@@ -48,15 +50,16 @@ const CropUpdatePage = () => {
   });
 
   const handleConfirmClick = () => {
-    if (!packDiaryId || !selectedDate || !cropName) return;
+    if (!packDiaryId || !selectedDate || !cropName) {
+      alert("모든 필수 정보를 입력해주세요");
+      return;
+    }
 
     const packDiaryData = {
       packDiaryId: packDiaryId,
       packDiaryTitle: cropName,
       packDiaryCulStartAt: selectedDate,
     };
-
-    console.log(packDiaryData);
 
     mutate(packDiaryData);
   };
@@ -67,12 +70,14 @@ const CropUpdatePage = () => {
       <LayoutMainBox>
         <LayoutInnerBox>
           <StyledInput
-            label="작물 선택하기"
+            label="작물"
             type="text"
             id="type"
             name="type"
             value={cropTypeName}
+            isRequired={false}
             disabled
+            maxLength={8}
           ></StyledInput>
           <StyledInput
             label="시작일 선택하기"
@@ -82,6 +87,9 @@ const CropUpdatePage = () => {
             placeholder=""
             value={selectedDate}
             onChange={handleDateChange}
+            max={new Date(Date.now() + 1000 * 60 * 60 * 9)
+              .toISOString()
+              .slice(0, 10)}
           />
           <StyledInput
             label="작물 닉네임"
@@ -91,6 +99,7 @@ const CropUpdatePage = () => {
             placeholder="닉네임을 입력해주세요"
             onChange={onChangeName}
             value={cropName}
+            maxLength={8}
           />
         </LayoutInnerBox>
       </LayoutMainBox>

@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import styled from "styled-components";
 
 interface StyledInputType {
@@ -11,6 +11,7 @@ interface StyledInputType {
   value?: string;
   min?: string;
   max?: string;
+  maxLength?: number;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
 }
@@ -68,7 +69,20 @@ const StyledInput = ({
   max,
   onChange,
   disabled,
+  maxLength,
 }: StyledInputType) => {
+  useEffect(() => {
+    if (value?.length > maxLength) {
+      const newValue = value.slice(0, maxLength);
+      onChange({ target: { value: newValue, name } });
+    }
+  }, [value]);
+
+  function maxLengthCheck(object) {
+    if (object.value.length > object.max.length)
+      object.value = object.value.slice(0, object.max.length);
+  }
+
   return (
     <>
       {!label && (
@@ -82,6 +96,8 @@ const StyledInput = ({
           onChange={onChange}
           value={value}
           disabled={disabled}
+          maxLength={maxLength}
+          onInput={maxLengthCheck}
         />
       )}
       {label && (
@@ -100,6 +116,8 @@ const StyledInput = ({
             onChange={onChange}
             value={value}
             disabled={disabled}
+            maxLength={maxLength}
+            onInput={maxLengthCheck}
           />
         </InputBox>
       )}

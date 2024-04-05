@@ -25,6 +25,20 @@ export const getCropData = async (packDiaryId: string) => {
   }
 };
 
+export const getCropSearch = async (keyword: string) => {
+  const accessToken = sessionStorage.getItem("accessToken");
+
+  try {
+    const response = await api.get(`/pack-diaries/search?keyword=${keyword}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.error("Error getCropSearch:", error);
+    throw error;
+  }
+};
+
 export const getDiaryList = async (packDiaryId: string) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -93,16 +107,21 @@ export const createCrop = async (cropData: CropFormType) => {
   }
 };
 
-export const createDiary = async (diaryData: DiaryFormType) => {
+export const createDiary = async (diaryData: DiaryCreateType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
     const formData = new FormData();
     formData.append("diarySelectedAt", diaryData.diarySelectedAt);
     formData.append("diaryTitle", diaryData.diaryTitle);
     formData.append("diaryContent", diaryData.diaryContent);
-    diaryData.images.forEach((image) => {
-      formData.append(`images`, image);
-    });
+
+    if (diaryData.images.length === 0) {
+      formData.append("images", new Blob([]));
+    } else {
+      diaryData.images.forEach((image) => {
+        formData.append(`images`, image);
+      });
+    }
 
     const response = await api.post(
       `/diaries/${diaryData.packDiaryId}`,
@@ -121,7 +140,7 @@ export const createDiary = async (diaryData: DiaryFormType) => {
   }
 };
 
-export const createWater = async (waterData: DiaryFormType) => {
+export const createWater = async (waterData: DiaryCreateType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
 
@@ -143,14 +162,22 @@ export const createWater = async (waterData: DiaryFormType) => {
 
 export const changeStep = async (cropData: {
   packDiaryId: string;
+  cropTypeName: string;
   cropStepGrowth: number;
+  confidenceScore: number;
 }) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
 
+    console.log(cropData);
+
     const response = await api.post(
       `/pack-diaries/${cropData.packDiaryId}/crop-step`,
-      { cropStepGrowth: cropData.cropStepGrowth },
+      {
+        cropStepGrowth: cropData.cropStepGrowth,
+        cropTypeName: cropData.cropTypeName,
+        confidenceScore: cropData.confidenceScore,
+      },
       {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
@@ -196,19 +223,29 @@ export const updateHarvest = async (packDiaryId: string) => {
   }
 };
 
-export const updateDiary = async (diaryData: DiaryFormType) => {
+export const updateDiary = async (diaryData: DiaryUpdateType) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
     const formData = new FormData();
     formData.append("diarySelectedAt", diaryData.diarySelectedAt);
     formData.append("diaryTitle", diaryData.diaryTitle);
     formData.append("diaryContent", diaryData.diaryContent);
-    diaryData.images.forEach((image) => {
-      formData.append(`newImages`, image);
-    });
-    diaryData.originImages.forEach((imageId) => {
-      formData.append(`images`, imageId);
-    });
+
+    if (diaryData.images.length === 0) {
+      formData.append("newImages", new Blob([]));
+    } else {
+      diaryData.images.forEach((image) => {
+        formData.append(`newImages`, image);
+      });
+    }
+
+    if (diaryData.originImages.length === 0) {
+      formData.append("images", "");
+    } else {
+      diaryData.originImages.forEach((image) => {
+        formData.append(`images`, image.toString());
+      });
+    }
 
     const response = await api.patch(
       `/diaries/${diaryData.diaryId}`,
@@ -220,7 +257,6 @@ export const updateDiary = async (diaryData: DiaryFormType) => {
       }
     );
 
-    console.log(response.data);
     return response.data.data_body;
   } catch (error) {
     console.error("Error updateDiary: ", error);

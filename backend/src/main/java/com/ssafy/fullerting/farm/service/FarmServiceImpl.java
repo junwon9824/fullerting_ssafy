@@ -26,7 +26,7 @@ public class FarmServiceImpl implements FarmService {
     private final FarmRepository farmRepository;
     private final WebClient.Builder webClientBuilder;
 
-//    @Value("${api.key}") 
+//    @Value("${api.key}")
     private String apiKey;
 
 //    @PostConstruct //어플리케이션 실행 시 자동으로 호출
@@ -53,10 +53,12 @@ public class FarmServiceImpl implements FarmService {
                         try {
                             //필요없는 데이터 필터링
                             if(!row.getFarmName().contains("[보안점검]") && !row.getFarmName().isEmpty()
+                                    && !row.getAreaLcd().isEmpty() && !row.getAreaLcd().isBlank()
                                     && !row.getFarmName().isBlank() && !row.getPosLat().isEmpty()){
                                 farmRepository.save(Farm.toEntity(row));
                             }
                         } catch(Exception e){
+                            e.printStackTrace();
                             throw new FarmException(TRANSACTION_FAIL);
                         }
                     }
@@ -67,8 +69,18 @@ public class FarmServiceImpl implements FarmService {
     }
 
     @Override
-    public List<GetAllFarmResponse> getAllFarm() {
-        List<Farm> farmList = farmRepository.findAll();
+    public List<GetAllFarmResponse> searchFarm(Integer region) {
+        List<Farm> farmList = null;
+
+        //전체조회
+        if(region == 0) {
+            farmList = farmRepository.findAll();
+        }
+        //지역별 검색
+        else {
+            farmList = farmRepository.findByAreaLcd(region);
+        }
+
         return farmList.stream().map(GetAllFarmResponse::toResponse).collect(Collectors.toList());
     }
 }

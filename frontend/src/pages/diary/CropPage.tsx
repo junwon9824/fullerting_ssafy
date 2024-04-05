@@ -8,6 +8,7 @@ import Search from "../../components/common/Input/Search";
 import CropList from "../../components/diary/CropList";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useSSEConnection } from "../../hooks/useSSEConnection";
 
 const PlusButton = styled.button`
   position: fixed;
@@ -33,7 +34,8 @@ const SearchContainer = styled.div`
 `;
 
 const CropPage = () => {
-  const [search, setSearch] = useInput("");
+  useSSEConnection();
+  const [search, onSearch, setSearch] = useInput("");
   const navigate = useNavigate();
 
   const handlePlusButtonClick = () => {
@@ -43,17 +45,18 @@ const CropPage = () => {
   return (
     <>
       <TopBar title="작물일지" showBack={false} />
-      <SearchContainer>
+      {/* <SearchContainer>
         <Search
           type="text"
           id="search"
           name="search"
-          placeholder="작물명 또는 닉네임을 입력해주세요"
-          onChange={setSearch}
+          placeholder="작물명을 입력해주세요"
+          onChange={onSearch}
         />
-      </SearchContainer>
+      </SearchContainer> */}
       <LayoutMainBox>
-        <LayoutInnerBox style={{ marginTop: "3.125rem" }}>
+        {/* <LayoutInnerBox style={{ marginTop: "3.125rem" }}> */}
+        <LayoutInnerBox>
           <CropList />
         </LayoutInnerBox>
       </LayoutMainBox>

@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.community.love.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
@@ -12,7 +13,6 @@ import lombok.*;
 @Setter
 @Builder
 @Entity
-@ToString
 @Table(name = "love")
 
 public class Love {

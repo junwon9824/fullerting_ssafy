@@ -1,5 +1,7 @@
 package com.ssafy.fullerting.record.packdiary.service;
 
+import com.ssafy.fullerting.badge.model.entity.Badge;
+import com.ssafy.fullerting.badge.model.entity.MyBadge;
 import com.ssafy.fullerting.badge.service.BadgeService;
 import com.ssafy.fullerting.crop.step.exception.CropStepException;
 import com.ssafy.fullerting.crop.step.model.entity.Step;
@@ -24,9 +26,13 @@ import com.ssafy.fullerting.record.packdiary.model.dto.response.GetCropStepRespo
 import com.ssafy.fullerting.record.packdiary.model.dto.response.GetDetailPackDiaryResponse;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
+import com.ssafy.fullerting.record.steplog.exception.StepLogErrorCode;
+import com.ssafy.fullerting.record.steplog.exception.StepLogException;
 import com.ssafy.fullerting.record.steplog.model.entity.StepLog;
 import com.ssafy.fullerting.record.steplog.repository.CropStepLogRepository;
+import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,16 +40,21 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.ssafy.fullerting.crop.step.exception.CropStepErrorCode.NOT_EXISTS_CROP_STEP;
 import static com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode.*;
+import static com.ssafy.fullerting.record.steplog.exception.StepLogErrorCode.NOT_EXISTS_STEP_LOG;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class PackDiaryServiceImpl implements PackDiaryService {
+    private final UserService userService;
     private final PackDiaryRepository packDiaryRepository;
     private final DiaryRepository diaryRepository;
     private final CropTypeRepository cropTypeRepository;
@@ -125,7 +136,9 @@ public class PackDiaryServiceImpl implements PackDiaryService {
 
     @Override
     public List<GetAllPackDiaryResponse> getAllPackDiary() {
-        List<PackDiary> packDiaryList = packDiaryRepository.findAll();
+        UserResponse userResponse = userService.getUserInfo();
+        //본인이 생성한 작물일지 전체조회
+        List<PackDiary> packDiaryList = packDiaryRepository.findByUser(UserResponse.toEntity(userResponse));
         return packDiaryList.stream().map(GetAllPackDiaryResponse::toResponse).collect(Collectors.toList());
     }
 
@@ -136,10 +149,21 @@ public class PackDiaryServiceImpl implements PackDiaryService {
         //작물 재배일
         if(packDiary.getGrowthStep()!=0){
             Step step = cropStepRepository.findByCropIdAndStep(packDiary.getCrop().getId(), packDiary.getGrowthStep()).orElseThrow(()->new CropStepException(NOT_EXISTS_CROP_STEP));
-            getDetailPackDiaryResponse = getDetailPackDiaryResponse.toBuilder().cropGrowDay(step.getHarvestDay()).build();
+            StepLog stepLog = cropStepLogRepository.findByPackDiaryAndStep(packDiary, step).orElseThrow(()->new StepLogException(NOT_EXISTS_STEP_LOG));
+            //단계별 수확날짜 - (오늘 날짜 - 갱신일)
+            Integer dif = Math.toIntExact(DAYS.between(stepLog.getUpdatedAt().toLocalDateTime().toLocalDate(), LocalDate.now()));
+            //수확일이 지나지 않았을 경우 계산한 디데이 그대로, 지났을 경우 0 반환
+            Integer cropGrowDay = (step.getHarvestDay()-dif >= 0) ? step.getHarvestDay()-dif : 0;
+            getDetailPackDiaryResponse = getDetailPackDiaryResponse.toBuilder().cropGrowDay(cropGrowDay).build();
         }
 
         return getDetailPackDiaryResponse;
+    }
+
+    @Override
+    public List<GetAllPackDiaryResponse> searchPackDiary(String keyword) {
+        List<PackDiary> packDiaryList = packDiaryRepository.findByTitle(keyword);
+        return packDiaryList.stream().map(GetAllPackDiaryResponse::toResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -162,11 +186,16 @@ public class PackDiaryServiceImpl implements PackDiaryService {
         //갱신할 작물 단계
         Step step = cropStepRepository.findByCropIdAndStep(packDiary.getCrop().getId(), getCropStepRequest.getCropStepGrowth()).orElseThrow(()->new CropStepException(NOT_EXISTS_CROP_STEP));
 
-        //단계가 갱신된 경우
-        if(packDiary.getGrowthStep() < getCropStepRequest.getCropStepGrowth()){
+        //단계 갱신 조건
+        // 1. 현재 다이어리의 작물 종류가 인식한 작물 종류와 일치할 경우
+        // 2. 인식한 작물 및 단계의 정확도가 n% 이상인 경우
+        // 3. 인식한 작물 단계가 현재 다이어리보다 단계가 클 경우
+        if(packDiary.getCrop().getName().equals(getCropStepRequest.getCropTypeName())
+        && getCropStepRequest.getConfidenceScore() > 0.8
+        && packDiary.getGrowthStep() < getCropStepRequest.getCropStepGrowth()){
             try {
                 //작물일지 단계 갱신
-                packDiaryRepository.save(packDiary.toBuilder()
+                packDiary = packDiaryRepository.save(packDiary.toBuilder()
                         .growthStep(step.getStep())
                         .build());
 
@@ -177,25 +206,26 @@ public class PackDiaryServiceImpl implements PackDiaryService {
                         .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
                         .build());
 
-                //마지막 단계일 경우 뱃지 생성
-                if(getCropStepRequest.getCropStepGrowth() == cropStepRepository.findMaxStepByCropId(packDiary.getCrop().getId())){
-                    return GetCropStepResponse.builder()
-                            .cropTypeName(packDiary.getCrop().getName())
-                            .cropStepGrowth(packDiary.getGrowthStep())
-                            .cropRenewal(true)
-                            .myBadgeResponse(badgeService.earnBadge(packDiary))
-                            .build();
-                }
-
-                return GetCropStepResponse.builder()
-                        .cropTypeName(packDiary.getCrop().getName())
-                        .cropStepGrowth(packDiary.getGrowthStep())
-                        .cropRenewal(true)
-                        .build();
             } catch (Exception e){
                 throw new PackDiaryException(TRANSACTION_FAIL);
 
             }
+
+            //마지막 단계일 경우 뱃지 생성
+            if(getCropStepRequest.getCropStepGrowth() == cropStepRepository.findMaxStepByCropId(packDiary.getCrop().getId())){
+                return GetCropStepResponse.builder()
+                        .cropTypeName(packDiary.getCrop().getName())
+                        .cropStepGrowth(packDiary.getGrowthStep())
+                        .cropRenewal(true)
+                        .myBadgeResponse(badgeService.earnBadge(packDiary))
+                        .build();
+            }
+
+            return GetCropStepResponse.builder()
+                    .cropTypeName(packDiary.getCrop().getName())
+                    .cropStepGrowth(packDiary.getGrowthStep())
+                    .cropRenewal(true)
+                    .build();
         }
         //단계가 갱신되지 않은 경우
         else {

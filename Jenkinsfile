@@ -7,6 +7,13 @@ def component = [
 
 ]
 
+// 파일 복사 작업을 수행하는 함수 정의
+def fileCopy() {
+    // 파일 복사 작업 수행
+    sh 'cp /var/jenkins_home/workspace/fullerting/submodule/*.yml /var/jenkins_home/workspace/fullerting/backend/src/main/resources'
+    sh 'cp /var/jenkins_home/workspace/fullerting/submodule/.env /var/jenkins_home/workspace/fullerting/frontend'
+}
+
 pipeline {
     agent any
     environment {
@@ -21,63 +28,94 @@ pipeline {
         GITHUB_CREDENTIALS_ID = 'Github-access-token'
         GITLAB_CREDENTIALS_ID = 'GitLab-access-token' // GitLab 크리덴셜 ID 추가
         REPO = 's10-ai-image-sub2/S10P12C102'
+        GIT_REPO = 'https://github.com/junwon9824/fullertingsecretfolder.git'
 
         // Gradle 환경 변수 설정
         ORG_GRADLE_JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
     }
 
     stages {
-        stage('Setup Environment') {
+//         stage('Setup Environment') {
+//             steps {
+//                 dir("${env.WORKSPACE}/back") {
+//                     script {
+//                         sh 'ls . -al'
+//                         // 테스트용 쉘 코드 추가
+//                         sh 'echo "This is a test shell script"'
+//
+//   // 시크릿 파일 사용
+//
+//
+//
+//                     }
+//                 }
+//             }
+//         }
+
+
+        stage('Checkout') {
             steps {
-                dir("${env.WORKSPACE}/back") {
-                    script {
-                        sh 'ls . -al'
-                        // 테스트용 쉘 코드 추가
-                        sh 'echo "This is a test shell script"'
+                script {
+                    sh 'pwd'
+                    sh 'ls -al'
 
-                        // sh 'chmod +x ./gradlew'
-                        // def version_value = sh(returnStdout: true, script: "./gradlew properties -q | grep 'version:'").trim()
-                        // version = version_value.split(/:/)[1].trim()
-                        // env.TAG = version
+                    dir('submodule')
+                    {
 
-                        // Gradle 설정 추가
-                        // sh "echo 'org.gradle.java.home=${ORG_GRADLE_JAVA_HOME}' > gradle.properties"
+                        // GitHub access token을 사용하여 submodule을 가져옴
+                        checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: true, reference: '', trackingSubmodules: false]], userRemoteConfigs: [[credentialsId: 'Github-access-token', url: GIT_REPO]]])
+//                         sh 'git pull origin main'
+                        sh 'echo "This is a test submodule script"'
+//                         sh 'rm .env'
+                        sh 'cat  application.yml'
+                        sh 'pwd'
+                        sh 'ls -al'
 
-                    //이 명령은 현재 작업 디렉토리에 .env 파일을 생성하고, 그 파일 안에 TAG라는 이름의 변수와 그 값을 씀.
-                    //docker에 동적으로 tag를 지정하기 위해 사용했다.
-                    // sh "echo TAG=$version >> .env"
-                    // sh 'cat .env'
                     }
+
+                      sh 'pwd'
+                      sh 'ls -al'
                 }
             }
         }
 
+        stage('Copy Files') {
+                    steps {
+                        script {
+                            // 파일 복사 디버깅 메시지
+                            echo "Copying YAML files from submodule to src/main/resources..."
+
+                            // 파일 복사 작업 수행
+                            fileCopy()
+
+                            // 파일 복사 완료 디버깅 메시지
+                            echo "Copying completed."
+                        }
+                    }
+                }
+
         stage('Build') {
             steps {
                 script {
-                    // 현재 디렉토리 위치 출력
-                    sh 'pwd'
-                    sh 'ls -al'
-                    // docker-compose가 설치되어 있는지 확인하고, 없으면 설치
-                    sh '''
-                    if ! command -v docker-compose &> /dev/null
-                    then
-                        echo "docker-compose not found, installing..."
-                        sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-                        sudo chmod +x /usr/local/bin/docker-compose
-                    else
-                        echo "docker-compose is already installed."
-                    fi
-                    '''
-                    // Docker Compose를 사용하여 서비스 빌드
-                    // sh 'pwd'
-                    // sh 'docker-compose -f ./backend/docker-compose.yml build'
-
+                    // 현재 디렉토리 위치와 파일 목록 출력을 backend 디렉토리 내에서 실행
                     dir('backend') {
-                        // backend 디렉토리 내에서 명령을 실행합니다.
                         sh 'pwd'  // 현재 디렉토리 위치 출력
                         sh 'ls -al'  // 디렉토리 내의 파일 목록 출력
-                        sh 'docker-compose -f docker-compose.yml build'  // Docker Compose를 사용하여 서비스 빌드
+
+                        // docker-compose가 설치되어 있는지 확인하고, 없으면 설치
+                        sh '''
+                        if ! command -v docker-compose &> /dev/null
+                        then
+                            echo "docker-compose not found, installing..."
+                            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                            sudo chmod +x /usr/local/bin/docker-compose
+                        else
+                            echo "docker-compose is already installed."
+                        fi
+                        '''
+
+                        // Docker Compose를 사용하여 서비스 빌드
+                        sh 'docker-compose -f docker-compose.yml build'
                     }
                 }
             }

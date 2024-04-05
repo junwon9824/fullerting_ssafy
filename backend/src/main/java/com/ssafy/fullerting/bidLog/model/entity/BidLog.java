@@ -54,7 +54,7 @@ public class BidLog {
                 .build();
     }
 
-    public BidLogResponse toBidLogsuggestionResponse(BidLog bidLog,CustomUser user   ) {
+    public BidLogResponse toBidLogsuggestionResponse(BidLog bidLog,CustomUser user ,int size  ) {
 
         return BidLogResponse.builder()
                 .bidLogPrice(bidLog.bidLogPrice)
@@ -64,6 +64,8 @@ public class BidLog {
                 .id(bidLog.id)
                 .thumbnail(user.getThumbnail())
                 .nickname(user.getNickname())
+                .bidcount(size)
+
                 .build();
     }
 

@@ -25,37 +25,8 @@ public class ExArticleResponse {
     private String exArticleTitle;
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
     private List<ImageResponse> imageResponses; //
-//    private int price;
     private LocalDateTime time;
     private String content;
-
-//    private  FavoriteResponse favoriteResponse;
-
-//    public ExArticle toEntity(ExArticleResponse exArticleResponse) {
-//        return ExArticle.builder()
-//                .location(exArticleResponse.exLocation)
-//                .title(exArticleResponse.exArticleTitle)
-//                .type(exArticleResponse.exArticleType)
-//                .favorite(favoriteResponse.toEntity(favoriteResponse))
-//                .build();
-//    }
-
-//    public static ExArticleResponse fromEntity(ExArticle article) {
-//        return ExArticleResponse.builder()
-//                .exLocation(article.getLocation())
-//                .exArticleId(article.getId())
-//                .exArticleTitle(article.getTitle())
-//                .exArticleType(article.getType())
-//                .imageResponses(article.getImage().stream()
-//                        .map(Image::toResponse)
-//                        .collect(Collectors.toList()))
-//
-//                .favoriteResponse(article.getFavorite().stream()
-//                        .map(Favorite::toResponse)
-//                        .collect(Collectors.toList()))
-//
-//                .build();
-//
-//    }
+    private boolean isdone;
 
 }

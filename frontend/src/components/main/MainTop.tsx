@@ -2,8 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCropList } from "../../apis/DiaryApi";
 import styled from "styled-components";
-import { notificationAtom } from "../../stores/notification";
-import { useAtom } from "jotai";
+import Chat from "/src/assets/svg/chat.svg";
+import bell from "../../assets/svg/bell-ring.svg";
+
 const MainContainer = styled.div`
   justify-content: center;
   flex-direction: column;
@@ -54,6 +55,19 @@ const MainText = styled.div`
   ${({ theme }) => theme.fonts.logo}
 `;
 
+const BellIcon = styled.img`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  height: 1.6rem;
+`;
+
+const ChatIcon = styled.img`
+  position: absolute;
+  top: 15px;
+  right: 53px;
+  height: 1.6rem;
+`;
 const DiaryBox = styled.button`
   display: flex;
   padding: 0.5rem 1rem;
@@ -65,7 +79,7 @@ const DiaryBox = styled.button`
   height: 6.7rem;
   border-radius: 0.9375rem;
   background: rgba(255, 255, 255, 0.26);
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 2px 2px rgba(161, 161, 161, 0.1);
 `;
 const Diary = styled.button`
   width: 6.4rem;
@@ -90,7 +104,7 @@ const CropImage = styled.img`
 `;
 
 const DiaryText = styled.span`
-  font-size: 0.8rem;
+  font-size: 0%.8rem;
   font-weight: bold;
   color: #ffffff;
 `;
@@ -122,34 +136,21 @@ const DiarySlider = styled.div`
     flex: 0 0 auto;
   }
 `;
-
+const calculateDDay = (createdAt: string) => {
+  const today = new Date();
+  const createdDate = new Date(createdAt);
+  const diffTime = Math.abs(today.getTime() - createdDate.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return `D+${diffDays}`;
+};
 const Maintop = () => {
   const accessToken = sessionStorage.getItem("accessToken");
   const navigate = useNavigate();
 
-  const [, setNotification] = useAtom(notificationAtom);
-
-  const showNotification = (name, type, content) => {
-    setNotification({ show: true, name, type, content });
-  };
-
-  const handleShowNotification = () => {
-    showNotification("새 알림", "성공", "이것은 테스트 알림입니다.");
-    console.log("알림", setNotification);
-  };
-
-  const { isLoading, data: cropList } = useQuery({
+  const { data: cropList } = useQuery({
     queryKey: ["cropList"],
     queryFn: accessToken ? () => getCropList(accessToken) : undefined,
   });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!cropList) {
-    return <div>작물을 등록해주세요</div>;
-  }
 
   const goToDiary = () => {
     navigate(`/crop`);
@@ -158,11 +159,23 @@ const Maintop = () => {
   const goToLogin = () => {
     navigate("/login");
   };
+  const handleViewAlarm = () => {
+    window.location.href = "/alarm";
+  };
+  const handleChat = () => {
+    navigate("/trade/chatroom");
+  };
 
   return (
     <MainContainer>
       <MainText>
-        풀러팅<button onClick={handleShowNotification}>알림 테스트</button>
+        풀러팅{" "}
+        <BellIcon
+          src={bell}
+          alt="Notification bell"
+          onClick={handleViewAlarm}
+        />
+        <ChatIcon src={Chat} alt="Notification bell" onClick={handleChat} />
       </MainText>
       <TextBox>"{cropList?.length || 0}개의 작물을 가꾸고 계시군요"</TextBox>
       {accessToken ? (
@@ -172,10 +185,12 @@ const Maintop = () => {
               <DiaryBox key={crop.packDiaryId} onClick={goToDiary}>
                 <Content>
                   <TextContent>
-                    <DiaryText>{cropList[index].packDiaryTitle}</DiaryText>
+                    <DiaryText>{crop.packDiaryTitle}</DiaryText>
                     <BasicText>와 함께한 시간</BasicText>
                   </TextContent>
-                  <DDayCounter>더미</DDayCounter>
+                  <DDayCounter>
+                    {calculateDDay(crop.packDiaryCulStartAt)}
+                  </DDayCounter>
                   <Diary>일지 작성하러 가기</Diary>
                 </Content>
                 <CropImage
@@ -190,7 +205,7 @@ const Maintop = () => {
         <DiaryBox onClick={goToLogin}>
           <Content>
             <TextContent>
-              <DiaryText>로그인을 해주세요</DiaryText>
+              <DiaryText>작물일지를 작성해주세요</DiaryText>
             </TextContent>
           </Content>
         </DiaryBox>

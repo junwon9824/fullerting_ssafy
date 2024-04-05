@@ -31,18 +31,18 @@ public class bidLogController {
     private final BidService bidService;
     private final UserService userService;
 
-    @PostMapping("/{ex_article_id}/deal")
-    @Operation(summary = "가격 제안하기 ", description = "가격 제안하기")
-    public ResponseEntity<MessageUtils> register(@RequestBody BidProposeRequest bidProposeRequest,
-                                                 @PathVariable Long ex_article_id, @AuthenticationPrincipal String email) {
-
-        UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
-
-        bidService.deal(bidProposeRequest, customUser, ex_article_id);
-        log.info("[New User]: {}", bidProposeRequest.toString());
-        return ResponseEntity.ok().body(MessageUtils.success());
-    }
+//    @PostMapping("/{ex_article_id}/deal")
+//    @Operation(summary = "가격 제안하기 ", description = "가격 제안하기")
+//    public ResponseEntity<MessageUtils> register(@RequestBody BidProposeRequest bidProposeRequest,
+//                                                 @PathVariable Long ex_article_id, @AuthenticationPrincipal String email) {
+//
+//        UserResponse userResponse = userService.getUserInfo();
+//        CustomUser customUser = userResponse.toEntity(userResponse);
+//
+//        bidService.deal(bidProposeRequest, customUser, ex_article_id);
+//        log.info("[New User]: {}", bidProposeRequest.toString());
+//        return ResponseEntity.ok().body(MessageUtils.success());
+//    }
 
     @GetMapping("/{ex_article_id}/suggestion")
     @Operation(summary = "입찰 제안조회하기 ", description = "특정 게시물의 입찰 제안 조회 하기")
@@ -57,16 +57,13 @@ public class bidLogController {
     @Operation(summary = "입찰 제안하기 ", description = "특정 게시물의 입찰 제안 하기")
     public ResponseEntity<MessageUtils> dealbid(@RequestBody BidProposeRequest bidProposeRequest, @PathVariable Long ex_article_id) {
 
-
         BidLog bidLog = bidService.dealbid(ex_article_id, bidProposeRequest );
         UserResponse userResponse=userService.getUserInfo();
         CustomUser customUser=userResponse.toEntity(userResponse);
 
         BidLogResponse bidLogResponse = bidLog.tobidLogResponse(bidLog,customUser);
-
-        log.info("[dealbid  ]: {}");
-
         return ResponseEntity.ok().body(MessageUtils.success(bidLogResponse));
+
     }
 
     @PostMapping("/{ex_article_id}/select")
@@ -75,7 +72,7 @@ public class bidLogController {
 
         BidLog bidLog = bidService.choosetbid(ex_article_id, bidSelectRequest);
 
-        log.info("[choosetbid  ]: {}");
+//        log.info("[choosetbid  ]: {}");
 
         return ResponseEntity.ok().body(MessageUtils.success(bidLog.getId()));
     }

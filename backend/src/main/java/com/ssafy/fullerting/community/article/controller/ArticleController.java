@@ -1,7 +1,10 @@
 package com.ssafy.fullerting.community.article.controller;
 
 import com.ssafy.fullerting.community.article.model.dto.request.RegistArticleRequest;
+import com.ssafy.fullerting.community.article.model.dto.request.UpdateArticleRequest;
+import com.ssafy.fullerting.community.article.model.dto.response.ArticleAllResponse;
 import com.ssafy.fullerting.community.article.model.dto.response.ArticleResponse;
+import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.community.article.service.ArticleService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,18 +24,21 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @PostMapping("")
-    public ResponseEntity<MessageUtils> registarticle(@RequestBody RegistArticleRequest registArticleRequest) {
-        articleService.registarticle(registArticleRequest);
+    public ResponseEntity<MessageUtils> registarticle(@RequestPart("RegistArticleRequest") RegistArticleRequest registArticleRequest,
+                                                      @RequestPart("images") List<MultipartFile> files
+    ) {
+        articleService.registerticle(registArticleRequest, files);
 
         return ResponseEntity.ok(MessageUtils.success());
     }
 
     @PatchMapping("{article_id}")
     public ResponseEntity<MessageUtils> updatearticle(@PathVariable Long article_id,
-                                                      @RequestBody RegistArticleRequest registArticleRequest) {
-        articleService.update(registArticleRequest, article_id);
+                                                      @RequestPart("RegistArticleRequest") UpdateArticleRequest updateArticleRequest,
+                                                      @RequestPart("images") List<MultipartFile> files) {
+        ArticleResponse article = articleService.update(updateArticleRequest, article_id, files);
+        return ResponseEntity.ok(MessageUtils.success(article));
 
-        return ResponseEntity.ok(MessageUtils.success());
     }
 
     @GetMapping("{article_id}")
@@ -45,8 +52,8 @@ public class ArticleController {
     @GetMapping("/all")
     public ResponseEntity<MessageUtils> findAllArticle(
     ) {
-        List<ArticleResponse> articleResponse = articleService.findAllArticle();
-
+        List<ArticleAllResponse> articleResponse = articleService.findAllArticle();
+        log.info("allarticle" + articleResponse);
         return ResponseEntity.ok(MessageUtils.success(articleResponse));
     }
 

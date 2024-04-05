@@ -64,8 +64,9 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
-                                "/ws"
-
+                                "/ws",
+                                "/v1/noti/send",
+                                "/v1/noti/pub"// 알람
                         ).permitAll().anyRequest().authenticated())
                 // 예외처리
 //                .exceptionHandling(exceptionHandling ->

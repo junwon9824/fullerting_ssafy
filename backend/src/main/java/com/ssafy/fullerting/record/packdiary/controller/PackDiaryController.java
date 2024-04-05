@@ -80,6 +80,17 @@ public class PackDiaryController {
     }
 
     /**
+     * 작물일지 키워드 검색
+     * @param keyword
+     * @return
+     */
+    @GetMapping("/search")
+    public ResponseEntity<MessageUtils> searchPackDiary(@RequestParam String keyword) {
+        // keyword를 사용하여 서비스 레이어에서 검색을 실행하고 결과를 반환합니다.
+        return ResponseEntity.ok().body(MessageUtils.success(packDiaryService.searchPackDiary(keyword)));
+    }
+
+    /**
      * 작물재배 종료
      * @param packDiaryId
      * @return

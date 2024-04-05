@@ -5,6 +5,7 @@ import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
 import com.ssafy.fullerting.user.model.dto.request.UserTownRequest;
+import com.ssafy.fullerting.user.model.dto.request.UserUpdateRequest;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.model.entity.enums.UserRank;
@@ -26,18 +27,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AmazonS3Service amazonS3Service;
+    String defaultThunmail = "https://fullerting-s3-v2.s3.ap-northeast-2.amazonaws.com/default_thumnail.svg";
 
     public CustomUser createUserEntity(UserRegisterRequest userRegisterRequest) {
-        String inputEmail = userRegisterRequest.getEmail();
-        String inputPassword = userRegisterRequest.getPassword();
-        String inputNickname = userRegisterRequest.getNickname();
-
         return CustomUser.builder()
-                .email(inputEmail)
-                .password(passwordEncoder.encode(inputPassword))
-                .nickname(inputNickname)
+                .email(userRegisterRequest.getEmail())
+                .password(passwordEncoder.encode(userRegisterRequest.getPassword()))
+                .thumbnail(defaultThunmail)
+                .nickname(userRegisterRequest.getNickname())
                 .role(String.valueOf(UserRole.ROLE_MEMBER))
                 .rank(String.valueOf(UserRank.새싹))
+                .authProvider(userRegisterRequest.getAuthProvider())
                 .build();
     }
 
@@ -69,6 +69,14 @@ public class UserService {
         return customUser.toResponse();
     }
 
+    public CustomUser getNowUserInfoEntityByToken() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = (String) principal;
+
+        CustomUser customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        return customUser;
+    }
+
 
     @Transactional
     public UserResponse uploadThumbAndSaveDB(MultipartFile multipartFile) {
@@ -76,8 +84,9 @@ public class UserService {
         CustomUser user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
         // 기존에 프로필 사진이 있었으면 지운다.
+        // 기본 사진일 경우 S3에서 지우지 않는다
         String thumbnail = user.getThumbnail();
-        if (thumbnail != null) {
+        if (thumbnail != null && !thumbnail.equals(defaultThunmail)) {
             amazonS3Service.deleteFile(thumbnail);
         }
 
@@ -98,10 +107,23 @@ public class UserService {
         return customUser.toResponse();
     }
 
+    public CustomUser getUserEntityById(Long userId) {
+        CustomUser customUser = userRepository.findById(userId).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        return customUser;
+    }
+
     public void updatetown(UserTownRequest userTownRequest) {
         CustomUser user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         user.setLocation(userTownRequest.getUserLocation());
         userRepository.save(user);
+    }
 
+
+    @Transactional
+    public void updateCurrentUserInfo(UserUpdateRequest userUpdateRequest) {
+        CustomUser currentUser = getNowUserInfoEntityByToken();
+        currentUser.setNickname(userUpdateRequest.getNewNickname());
+        userRepository.save(currentUser);
+        log.info("닉네임 수정 성공 : {}",userUpdateRequest.getNewNickname());
     }
 }

@@ -11,6 +11,7 @@ import styled from "styled-components";
 import { createCrop, getCropType } from "../../apis/DiaryApi";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useSSEConnection } from "../../hooks/useSSEConnection";
 
 const SelectBox = styled.div`
   display: flex;
@@ -48,9 +49,10 @@ const RedCircle = styled.div`
 `;
 
 const CropCreatePage = () => {
+  useSSEConnection();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().slice(0, 10)
+    new Date(Date.now() + 1000 * 60 * 60 * 9).toISOString().slice(0, 10)
   );
   const [cropTypeId, setCropTypeId] = useState<number>(0);
   const [cropName, setCropName] = useInput("");
@@ -80,7 +82,10 @@ const CropCreatePage = () => {
   };
 
   const handleConfirmClick = () => {
-    if (!cropTypeId || !selectedDate || !cropName) return;
+    if (!cropTypeId || !selectedDate || !cropName) {
+      alert("모든 필수 정보를 입력해주세요");
+      return;
+    }
 
     const packDiaryData = {
       cropTypeId: cropTypeId,
@@ -111,11 +116,20 @@ const CropCreatePage = () => {
                 작물을 선택해주세요
               </option>
               {types &&
-                types.map((type: CropTypeType) => (
-                  <option key={type.cropTypeId} value={type.cropTypeId}>
-                    {type.cropTypeName}
-                  </option>
-                ))}
+                types.map((type: CropTypeType) => {
+                  if (
+                    type.cropTypeId === 1 ||
+                    type.cropTypeId === 3 ||
+                    type.cropTypeId === 5
+                  ) {
+                    return (
+                      <option key={type.cropTypeId} value={type.cropTypeId}>
+                        {type.cropTypeName}
+                      </option>
+                    );
+                  }
+                  return null;
+                })}
             </Select>
           </SelectBox>
           <StyledInput
@@ -126,6 +140,9 @@ const CropCreatePage = () => {
             placeholder=""
             value={selectedDate}
             onChange={handleDateChange}
+            max={new Date(Date.now() + 1000 * 60 * 60 * 9)
+              .toISOString()
+              .slice(0, 10)}
           />
           <StyledInput
             label="작물 닉네임"
@@ -134,6 +151,7 @@ const CropCreatePage = () => {
             name="nickname"
             placeholder="닉네임을 입력해주세요"
             onChange={setCropName}
+            maxLength={8}
           />
         </LayoutInnerBox>
       </LayoutMainBox>

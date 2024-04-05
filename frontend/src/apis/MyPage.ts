@@ -119,3 +119,22 @@ export const logoutUser = async () => {
     throw error;
   }
 };
+
+
+
+export const updateProfile = async ( newNickname:JSON ) => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.patch(
+      `/users`,
+      newNickname,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data.data_body;
+  } catch (error) {
+    console.error("editnick error: ", error);
+    throw error;
+  }
+};

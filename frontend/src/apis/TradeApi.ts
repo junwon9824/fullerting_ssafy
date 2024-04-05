@@ -3,6 +3,8 @@ import { api } from "./Base";
 import { imageFilesAtom } from "../stores/trade";
 import { atom } from "jotai";
 import { useNavigate } from "react-router-dom";
+import Stomp, { client } from "stompjs";
+import { useState } from "react";
 interface DataItem {
   exArticleResponse: ExArticleResponse;
   packDiaryResponse: PackDiaryResponse | null; // JSON 예제에는 객체가 있지만, 여기서는 null일 수도 있음을 표현
@@ -29,7 +31,31 @@ interface FavoriteResponse {
   islike: boolean;
   isLikeCnt: number;
 }
-
+interface AxiosError {
+  message: string;
+  code: string;
+  config: any; // Axios 요청 구성, 더 상세한 타입을 위해 AxiosRequestConfig 사용 가능
+  request?: XMLHttpRequest;
+  response?: {
+    // 실제 오류 응답 구조에 맞춰 작성
+    data: any; // 응답 본문, 실제 데이터 타입에 맞게 수정 가능
+    status: number;
+    statusText: string;
+    headers: any; // 헤더 정보, 실제 헤더 타입에 맞게 수정 가능
+  };
+  name: string;
+  stack?: string;
+}
+interface ChatResponse {
+  // id: number;
+  chatRoomId: number;
+  chatSenderThumb: string;
+  chatSenderNick: string;
+  chatSenderId: number; //전송자 ID
+  chatMessage: string; //채팅 내용
+  chatSendAt: Date; // 전송일자
+  chatId: number;
+}
 export const getTradeList = async (accessToken: string) => {
   try {
     const response = await api.get("/exchanges/all", {
@@ -46,6 +72,7 @@ export const getTradeDetail = async (accessToken: string, postId: number) => {
     const response = await api.get(`/exchanges/${postId}/detail`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
+    console.log("gettradedetail" + JSON.stringify(response.data));
     return response.data.data_body;
   } catch (e) {
     console.log("에러났어요", e);
@@ -56,7 +83,6 @@ export const getDealList = async (accessToken: string, postId: number) => {
     const response = await api.get(`/exchanges/${postId}/suggestion`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-
     return response.data.data_body;
   } catch (e) {
     console.log("에러났어요", e);
@@ -93,18 +119,17 @@ export const getSharingCategoryList = async (accessToken: string) => {
     console.log("나눔 카테고리 조회 실패", e);
   }
 };
-export const useLike = () => {
+interface UseLikeArgs {
+  queryKeys: string[]; // 무효화할 쿼리 키 목록
+}
+export const useLike = ({ queryKeys }: UseLikeArgs) => {
   // useMutation 훅은 여기에서 동기적으로 호출됩니다.
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (postId: number) => {
       // 여기서 accessToken을 검색하고, 요청에 포함합니다.
       const accessToken = sessionStorage.getItem("accessToken");
-      console.log("토큰이에요", accessToken);
-      if (!accessToken) {
-        // accessToken이 없는 경우, 오류를 반환하거나 다른 처리를 할 수 있습니다.
-        throw new Error("No access token available");
-      }
+
       return await api.post(
         `/exchanges/${postId}/convert_like`,
         {},
@@ -113,28 +138,9 @@ export const useLike = () => {
         }
       );
     },
-    onSuccess: (data, variables) => {
-      // data: 좋아요 요청에 대한 응답 데이터
-      // variables: 좋아요를 누른 게시글의 ID (여기서는 postId)
-
-      // `tradeList` 쿼리의 캐시된 데이터를 업데이트합니다.
-      queryClient.setQueryData<DataItem[]>(["tradeList"], (oldQueryData) => {
-        return oldQueryData?.map((item) => {
-          if (item.exArticleResponse.exArticleId === variables) {
-            return {
-              ...item,
-              favoriteResponse: {
-                ...item.favoriteResponse,
-                islike: !item.favoriteResponse.islike, // 좋아요 상태를 토글합니다.
-                isLikeCnt: item.favoriteResponse.islike
-                  ? item.favoriteResponse.isLikeCnt - 1
-                  : item.favoriteResponse.isLikeCnt + 1, // 좋아요 개수를 업데이트합니다.
-              },
-            };
-          } else {
-            return item;
-          }
-        });
+    onSuccess: (res) => {
+      queryKeys.forEach((key) => {
+        queryClient.invalidateQueries({ queryKey: [key] });
       });
     },
     onError: (error) => {
@@ -172,9 +178,15 @@ export const usePost = () => {
       navigate("/trade");
       console.log("업로드 성공:", res);
     },
-    onError: (error) => {
-      console.error("업로드 에러:", error);
-      alert("필수 항목을 모두 입력해주세요");
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 400) {
+        alert("파일 확장자 및 필수 항목을 확인해주세요");
+        console.log(error);
+      } else {
+        alert("필수 항목을 모두 입력해주세요");
+      }
+      // console.error("업로드 에러:", error);
+      // // alert("필수 항목을 모두 입력해주세요");
     },
   });
 };
@@ -214,7 +226,8 @@ export const useUpdateArticle = () => {
     },
   });
 };
-export const deletePost = async (postId: string) => {
+
+export const deletePost = async (postId: number) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
     const response = await api.delete(`/exchanges/${postId}`, {
@@ -225,5 +238,237 @@ export const deletePost = async (postId: string) => {
   } catch (error) {
     console.error("Error delete: ", error);
     throw error;
+  }
+};
+export const createChatRoom = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (exArticleId: number) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        throw new Error("로그인이 필요합니다.");
+      }
+
+      const response = await api.post(
+        "/chat-room",
+        {
+          exArticleId: exArticleId, // 여기서 exArticleId는 이미 정의된 변수를 가정
+          redirectURL: window.location.pathname,
+          buyerId: null,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      return response.data.data_body;
+    },
+    onSuccess: (res) => {
+      const chatRoomId = res.chatRoomId;
+      console.log("방 만들기 성공", res);
+      navigate(`/trade/${chatRoomId}/chat`);
+    },
+    onError: (res) => {
+      console.log("방 만들기 실패", res);
+    },
+  });
+};
+
+// export const createChatRoom = () => {
+//   const navigate = useNavigate();
+//   const queryClient = useQueryClient();
+//   const wssURL = import.meta.env.VITE_REACT_APP_WSS_URL;
+//   const socket = new WebSocket(wssURL);
+//   const client = Stomp.over(socket);
+//   const accessToken = sessionStorage.getItem("accessToken");
+//   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
+//   const [messages, setMessages] = useState("");
+//   const [newMessage, setNewMessage] = useState<string>("");
+//   const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
+//   return useMutation({
+//     mutationFn: async (exArticleId: number) => {
+//       if (!accessToken) {
+//         throw new Error("로그인이 필요합니다.");
+//       }
+
+//       const response = await api.post(
+//         "/chat-room",
+//         {
+//           exArticleId: exArticleId, // 여기서 exArticleId는 이미 정의된 변수를 가정
+//           redirectURL: window.location.pathname,
+//           buyerId: null,
+//         },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${accessToken}`,
+//           },
+//         }
+//       );
+//       return response.data.data_body;
+//     },
+//     onSuccess: (res) => {
+//       const chatRoomId = res.chatRoomId;
+//       console.log("방 만들기 성공", res);
+
+//       // WebSocket 연결 및 채팅방 구독 설정
+//       const socket = new WebSocket(wssURL);
+//       const client = Stomp.over(socket);
+
+//       client.connect(
+//         { Authorization: `Bearer ${accessToken}` },
+//         () => {
+//           console.log("WebSocket 연결됨");
+
+//           // 채팅방 구독 설정
+//           client.subscribe(`/sub/chat/${chatRoomId}`, (message) => {
+//             const msg = JSON.parse(message.body);
+//             // 새로운 메시지를 상태에 추가하는 로직
+//             console.log("Received message:", msg);
+//           });
+
+//           // "안녕하세요" 메시지 전송
+//           const initialMessage = { chatMessage: "안녕하세요" };
+//           client.send(
+//             `/pub/chat/${chatRoomId}`,
+//             {},
+//             JSON.stringify(initialMessage)
+//           );
+//           console.log("초기 메시지 발송 성공");
+//         },
+//         (error) => {
+//           console.error("WebSocket 연결 실패", error);
+//         }
+//       );
+//       queryClient.invalidateQueries({ queryKey: ["chatList", chatRoomId] });
+
+//       navigate(`/trade/${chatRoomId}/chat`);
+//     },
+//     onError: (error) => {
+//       console.error("방 만들기 실패", error);
+//     },
+//   });
+// };
+export const createDealChatRoom = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      exArticleId,
+      buyerId,
+    }: {
+      exArticleId: number;
+      buyerId: number;
+    }) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        throw new Error("로그인이 필요합니다.");
+      }
+
+      const response = await api.post(
+        "/chat-room",
+        {
+          exArticleId: exArticleId, // 여기서 exArticleId는 이미 정의된 변수를 가정
+          redirectURL: window.location.pathname,
+          buyerId: buyerId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      return response.data.data_body;
+    },
+    onSuccess: (res) => {
+      const chatRoomId = res.chatRoomId;
+      console.log("방 만들기 성공", res);
+      navigate(`/trade/${chatRoomId}/chat`);
+    },
+    onError: (res) => {
+      console.log("방 만들기 실패", res);
+    },
+  });
+};
+
+export const getChatRecord = async (accessToken: string, postId: number) => {
+  try {
+    const response = await api.get(`/chat/${postId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("채팅방 조회 실패", e);
+  }
+};
+export const getChatRoomDetail = async (
+  accessToken: string,
+  chatRoomId: number
+) => {
+  try {
+    const response = await api.get(`/chat-room/${chatRoomId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("채팅방 상세 조회 실패", e);
+  }
+};
+
+// export const useDealFinish = () => {
+//   return useMutation({
+//     mutationFn: async (postId: number) => {
+//       const accessToken = sessionStorage.getItem("accessToken");
+//       const response = await api.patch(`/exchanges/${postId}/done`, {
+//         headers: { Authorization: `Bearer ${accessToken}` },
+//       });
+//       return response;
+//     },
+//     onSuccess: (res) => {
+//       console.log("거래 종료", res);
+//     },
+//     onError: (error) => {
+//       console.log("거래 종료 실패", error);
+//     },
+//   });
+// };
+export const useDealFinish = () => {
+  return useMutation({
+    mutationFn: async ({
+      postId,
+      exArticlePurchaserId,
+    }: {
+      postId: number;
+      exArticlePurchaserId: number;
+    }) => {
+      const accessToken = sessionStorage.getItem("accessToken");
+      const body = { exArticlePurchaserId };
+      // headers를 요청의 세번째 파라미터인 옵션 객체 내에 포함
+      const response = await api.patch(`/exchanges/${postId}/done`, body, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      return response;
+    },
+    onSuccess: (res) => {
+      console.log("거래 종료", res);
+    },
+    onError: (error) => {
+      console.log("거래 종료 실패", error);
+    },
+  });
+};
+
+export const getChatRoomList = async () => {
+  try {
+    const accessToken = sessionStorage.getItem("accessToken");
+    const response = await api.get("/chat-room", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (e) {
+    console.log("채팅방 전체 조회 실패");
   }
 };

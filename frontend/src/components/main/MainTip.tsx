@@ -1,100 +1,18 @@
 import styled from "styled-components";
 import pullright from "/src/assets/svg/pullright.svg";
 import { useNavigate } from "react-router-dom";
-const posts = [
-  {
-    id: 1,
-    title: "자유게시판이게 무슨 식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "자유게시판",
-  },
-  {
-    id: 2,
-    title: "꿀팁공식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "꿀팁공유",
-  },
-  {
-    id: 3,
-    title: "꿀팁공유이게 무슨 식물이야?",
-    content: "무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "꿀팁공유",
-  },
-  {
-    id: 4,
-    title: "꿀팁공유이게 무슨 식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "꿀팁공유",
-  },
-  {
-    id: 4,
-    title: "꿀팁공유이게 무슨 식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "꿀팁공유",
-  },
-  {
-    id: 4,
-    title: "꿀팁공유이게 무슨 식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "꿀팁공유",
-  },
-  {
-    id: 4,
-    title: "꿀팁공유이게 무슨 식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "꿀팁공유",
-  },
-  {
-    id: 4,
-    title: "꿀팁공유이게 무슨 식물이야?",
-    content: "마리가 풀 삼키려고 하는데 무슨 식물인지 모르겠어...",
-    imageUrl: pullright,
-    name: "작심삼일",
-    time: 13,
-    likes: 17,
-    comments: 3,
-    type: "꿀팁공유",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
+import { getallcommunities } from "../../apis/CommunityApi";
+
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+}
 
 const MainBox = styled.div`
   flex-direction: column;
-  align-items:end
+  align-items: end;
   justify-content: center;
 `;
 const LogoAndTextContainer = styled.div`
@@ -148,7 +66,7 @@ const DiaryBox = styled.button`
   height: 5.2rem;
   border-radius: 0.9375rem;
   background: rgba(229, 249, 219, 0.37);
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 1px 1px 1px rgba(161, 161, 161, 0.1);
   justify-content: space-between;
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -182,10 +100,39 @@ const BasicText = styled.div`
   -webkit-box-orient: vertical;
   overflow: hidden;
 `;
+
+const ExchangeBox = styled.div`
+  height: 5.2rem;
+  display: flex;
+  padding: 0.4375rem 0.5rem;
+  width: 18rem;
+  border-radius: 0.9375rem 0rem 0.9375rem 0.9375rem;
+  border: 1.5px solid var(--sub0, #a0d8b3);
+`;
+
+const TokenBox = styled.div`
+  font-family: "GamtanRoad Dotum TTF";
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-left: 3rem;
+  font-weight: bold;
+  color: #a0d8b3;
+`;
+
 const MainTip = () => {
+  const accessToken = sessionStorage.getItem("accessToken");
   const navigate = useNavigate();
 
+  const { data: posts } = useQuery<Post[]>({
+    queryKey: ["communityList"],
+    queryFn: getallcommunities,
+  });
+  const goToLogin = () => {
+    navigate("/login");
+  };
   const goCommunity = () => {
+    console.log("comm");
     navigate("community");
   };
   return (
@@ -193,25 +140,31 @@ const MainTip = () => {
       <LogoAndTextContainer>
         <LogoContent>
           작물 꿀팁을 공유해보세요
-          <LogoText>커뮤니티 바로가기</LogoText>
+          <LogoText onClick={goCommunity}>커뮤니티 바로가기</LogoText>
         </LogoContent>
         <Character>
           <img src={pullright} alt="" />
         </Character>
       </LogoAndTextContainer>
 
-      <SliderContainer onClick={goCommunity}>
-        <DiarySlider>
-          {posts?.map((post) => (
-            <DiaryBox key={post.id}>
-              <TextContent>
-                <DiaryText>{post.title}</DiaryText>
-                <BasicText>{post.content}</BasicText>
-              </TextContent>
-            </DiaryBox>
-          ))}
-        </DiarySlider>
-      </SliderContainer>
+      {accessToken ? ( // 로그인 상태일 때만 SliderContainer 렌더링
+        <SliderContainer onClick={goCommunity}>
+          <DiarySlider>
+            {posts?.map((post) => (
+              <DiaryBox key={post.id}>
+                <TextContent>
+                  <DiaryText>{post.title}</DiaryText>
+                  <BasicText>{post.content}</BasicText>
+                </TextContent>
+              </DiaryBox>
+            ))}
+          </DiarySlider>
+        </SliderContainer>
+      ) : (
+        <ExchangeBox onClick={goToLogin}>
+          <TokenBox>커뮤니티를 작성 해주세요</TokenBox>
+        </ExchangeBox>
+      )}
     </MainBox>
   );
 };

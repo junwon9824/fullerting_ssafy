@@ -38,11 +38,10 @@ const ExchangeItemInfo = styled.div`
 const Title = styled.span`
   color: #000;
   font-family: "GamtanRoad Dotum TTF";
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-style: normal;
   font-weight: bold;
   line-height: normal;
-  margin: 0.3rem;
 `;
 
 const StateIcon = styled.div<Icon & { children?: React.ReactNode }>`
@@ -60,7 +59,7 @@ const State = styled.div<StateGap>`
   width: 100%;
   height: auto;
   gap: ${(props) => `${props.gap}rem`};
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-style: normal;
   font-weight: bold;
   display: flex;
@@ -82,6 +81,8 @@ const Town = styled.div`
   display: flex;
   align-items: center;
 `;
+
+const Price = styled.div``;
 
 const ScrollExchange: React.FC<ScrollExchangeProps> = ({
   currentIndex,
@@ -109,7 +110,8 @@ const ScrollExchange: React.FC<ScrollExchangeProps> = ({
           ) : (
             <StateIcon backgroundColor="#A0D8B3">현재</StateIcon>
           )}
-          {price}원
+
+          {price ? <Price>{price}원</Price> : <Price>나눔</Price>}
         </State>
 
         <State color="#BEBEBE" justifyContent="space-between"></State>

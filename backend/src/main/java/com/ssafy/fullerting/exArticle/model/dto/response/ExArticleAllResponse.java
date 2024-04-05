@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @Builder
 @ToString
-public class ExArticleAllResponse {
+public class    ExArticleAllResponse {
     private ExArticleResponse exArticleResponse;
     private PackDiaryResponse packDiaryResponse;
     private FavoriteResponse favoriteResponse;

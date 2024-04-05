@@ -51,11 +51,11 @@ const LoginForm = () => {
     navigate("/join");
   };
 
-  const { mutate, isError, error, isSuccess } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: userLogin,
     onSuccess: (res) => {
       sessionStorage.setItem("accessToken", res.data_body.accessToken);
-      
+
       navigate("/");
     },
     onError: (error) => {
@@ -235,7 +235,7 @@ const LoginForm = () => {
           onChange={setPassword}
         />
         <JoinButton onClick={handleJoinClick}>회원가입</JoinButton>
-        <LargeButton onClick={handleConfirmClick} text="확인" />
+        <LargeButton onClick={handleConfirmClick} text="로그인" />
       </LoginInput>
     </LoginBox>
   );
