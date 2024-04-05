@@ -149,7 +149,8 @@
 
 ### 시스템 아키텍처
 
-<img src="./img/etc/시스템아키텍처.png"/>
+<!-- <img src="./img/etc/시스템아키텍처.png"/> -->
+![image.png](./image.png)
 
 ### 기타 산출물
 
