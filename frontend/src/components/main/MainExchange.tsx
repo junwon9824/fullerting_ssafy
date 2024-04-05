@@ -1,10 +1,17 @@
 import styled from "styled-components";
 import pullleft from "/src/assets/svg/pullleft.svg";
+import ScrollExchange from "./Exchange";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { getExchange } from "../../apis/Main";
+import { useNavigate } from "react-router-dom";
+import arrow_forward_ios from "../../assets/svg/arrow_forward_ios.svg";
+import constructWithOptions from "styled-components/dist/constructors/constructWithOptions";
 
 const MainBox = styled.div`
   justify-content: center;
   flex-direction: column;
-  height: 13rem;
+  height: 12.4rem;
   padding: 1%.5rem 0;
 `;
 const LogoAndTextContainer = styled.div`
@@ -15,15 +22,14 @@ const LogoAndTextContainer = styled.div`
 const Text = styled.div`
   color: #2b5f50;
   font-family: "GamtanRoad Dotum TTF";
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1.125rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  line-height: 2.3rem;
 `;
 
 const Character = styled.button`
   display: flex;
   align-items: center;
-  padding-top: 0.5rem;
   margin-right: 0.5rem;
 `;
 
@@ -38,7 +44,7 @@ const LogoContent = styled.div`
 const LogoText = styled.div`
   color: var(--sub0, #a0d8b3);
   font-family: "GamtanRoad Dotum TTF";
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-style: normal;
   font-weight: 800;
   line-height: 1.125rem;
@@ -48,19 +54,60 @@ const LogoText = styled.div`
 const ExchangeBox = styled.div`
   display: flex;
   padding: 0.4375rem 0.5rem;
-  height: 6.5rem;
+  height: 6rem;
   width: 18rem;
   border-radius: 0rem 0.9375rem 0.9375rem 0.9375rem;
   border: 1.5px solid var(--sub0, #a0d8b3);
 `;
 
 const ExchangeContainer = styled.div`
-  margin-top: 0.8rem;
   display: flex;
   gap: 1.0625rem;
 `;
+const NextBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #a0d8b3;
+  border-radius: 50%;
+
+  margin: auto;
+`;
+const NextButton = styled.button`
+  padding: 0;
+  background-color: a0d8b3;
+  background-image: url("${arrow_forward_ios}");
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 1rem;
+  height: 1rem;
+  border: none;
+  cursor: pointer;
+`;
 
 const MainExchange = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
+  const { isLoading, data, error } = useQuery({
+    queryKey: ["Exchange"],
+    queryFn: getExchange,
+  });
+  // console.log(data[0].exArticleResponse.exArticleType);
+  console.log(data);
+  const handleItemClick = () => {
+    navigate(`/trade`);
+  };
+
+  const handleNextClick = () => {
+    if (data) {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
+      console.log();
+    }
+  };
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!data || !data || data.length === 0) return <div>거래 데이터 없음</div>;
   return (
     <MainBox>
       <Text>나의 반려작물의 모든 것, 풀러팅에서 함께</Text>
@@ -74,7 +121,16 @@ const MainExchange = () => {
         </LogoContent>
       </LogoAndTextContainer>
       <ExchangeContainer>
-        <ExchangeBox>작물거래</ExchangeBox>
+        <ExchangeBox>
+          <ScrollExchange
+            onClick={handleItemClick}
+            currentIndex={currentIndex}
+            data={data}
+          />
+        </ExchangeBox>
+        <NextBox>
+          <NextButton onClick={handleNextClick} />
+        </NextBox>
       </ExchangeContainer>
     </MainBox>
   );

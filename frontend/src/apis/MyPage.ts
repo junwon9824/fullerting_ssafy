@@ -1,54 +1,121 @@
+import { useMutation } from "@tanstack/react-query";
 import { api } from "./Base";
 
-// export const getUsersInfo = async (accessToken: string) => {
-//   try {
-//     console.log("dddddddddddddddddd")
-//     const response = await api.get(`/users/info`, {
-//       headers: { Authorization: `Bearer ${accessToken}` },
-//     });
-//     return response.data.data_body;
-//   } catch (error) {
-//     console.error("Error Info:sdddddddddddddddddd", error);
-//     throw error;
-//   }
-// }
-export const fetchBadges = () => {
-  const accessToken = sessionStorage.getItem('accessToken');
+export const useChange = () => {
+  return useMutation({
+    mutationFn: async (imageFile: File) => {
+      const formData = new FormData();
+      formData.append('multipartFile', imageFile);
 
-  if (!accessToken) {
-    console.log("abababababab")
-    return Promise.reject(new Error('Access token is not available.')); 
-  }
-  
-  return api.get(`/badges`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+      const accessToken = sessionStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("No access token available");
+      }
+      
+      return await api.post('/users/profile', formData, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
     },
-  }).then(response => {
-    console.log("ddfdfdfdfdfdfdfd")
-   return response.data.data_body;
-}).catch(error => {
     
-    throw error; 
+    onSuccess: (data) => {
+      console.log("업로드 성공!", data);
+    },
+    onError: (error) => {
+      console.log("에러났어요", error);
+    },
   });
 };
 
-export const getUsersInfo = () => {
-  const accessToken = sessionStorage.getItem('accessToken');
 
-  if (!accessToken) {
-    return Promise.reject(new Error('Access token is not available.')); 
+
+
+export const fetchBadges = async () => {
+  try {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      throw new Error('Access token is not available.');
+    }
+    const response = await api.get(`/badges`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    return response.data.data_body;
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
+};
 
-  return api.get(`/users/info`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  }).then(response => {
+export const getUsersInfo = async () => {
+  try {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      throw new Error('Access token is not available.');
+    }
+
+    const response = await api.get(`/users/info`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
     return response;
-  }).catch(error => {
-    
-    throw error; 
-  });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
+
+export const getExchanges = async () => {
+  try {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      throw new Error('Access token is not available.');
+    }
+
+    const response = await api.get(`/exchanges/done`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.log("거래 완료 API요청 실패", error);
+    throw error;
+  }
+};
+
+export const getPropose = async () => {
+  try {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      throw new Error('Access token is not available.');
+    }
+
+    const response = await api.get(`/exchanges/mybidarticles`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.log("거래 완료 API요청 실패", error);
+    throw error;
+  }
+};
+
+
+export const logoutUser = async () => {
+  try {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      throw new Error('Access token is not available.');
+    }
+
+    const response = await api.post(`/auth/logout`, {}, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    console.log("로그아웃 성공");
+    sessionStorage.removeItem('accessToken');
+    return response.data;
+  } catch (error) {
+    console.log("로그아웃 실패", error);
+    throw error;
+  }
+};

@@ -10,14 +10,22 @@ spring:
       port: 6379
 
   security:
-    user:
-      name: test
-      password: 1234
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 648265936949-kqbendno25msh4hklurcvtpkvem8jkpe.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: https://j10c102.p.ssafy.io/login/oauth2/code/google
+#            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            scope: profile, email
+
+
 
   jwt:
     access: whatwehavetowantinalifeismentalsatisfactionnotmaterialone
     refresh: youforgetthisyoualwaysfeelfailevenifyouwillgeteverything
-    accesstime: 3600000  # 1H
+    accesstime: 36000000  # 1H -> 0하나 더 붙임...
     refreshtime: 604800000 # 7Days
 
   servlet:
@@ -30,6 +38,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
 
 cloud:
   aws:
@@ -55,6 +64,12 @@ logging:
         security:
           web:
           FilterChainProxy: DEBUG
+
+
+fcm:
+  service-account-file: key/fullerting-fcm-firebase-adminsdk-rjmjj-0e19a90e90.json
+  topic-name: alarm
+  project-id: fullerting-fcm
 
 #      hibernate:
 #        type:

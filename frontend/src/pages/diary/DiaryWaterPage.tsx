@@ -9,25 +9,49 @@ import { TopBar } from "../../components/common/Navigator/navigator";
 import CropProfile from "../../components/diary/CropProfile";
 import { useAtom } from "jotai";
 import { cropAtom } from "../../stores/diary";
+import { createWater } from "../../apis/DiaryApi";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 
 const DiaryWaterPage = () => {
   const [crop, setCrop] = useAtom(cropAtom);
+  // const { packDiaryId } = useParams();
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().slice(0, 10)
   );
+
+  const { mutate } = useMutation({
+    mutationFn: createWater,
+    onSuccess: () => {
+      navigate(`/crop/${crop.packDiaryId}`);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(event.target.value);
   };
 
-  const handleConfirmClick = () => {};
+  const handleConfirmClick = () => {
+    // if (crop?.packDiaryId || !selectedDate) return;
+
+    const waterData = {
+      packDiaryId: crop.packDiaryId,
+      diarySelectedAt: selectedDate,
+    };
+
+    mutate(waterData);
+  };
 
   return (
     <>
       <TopBar title="물주기" />
       <LayoutMainBox>
         <LayoutInnerBox>
-          <CropProfile crop={crop} />
+          {crop && <CropProfile crop={crop} />}
           <StyledInput
             label="날짜 선택하기"
             type="date"

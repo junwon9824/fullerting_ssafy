@@ -2,10 +2,12 @@ package com.ssafy.fullerting.exArticle.controller;
 
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleDoneRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
+import com.ssafy.fullerting.exArticle.model.dto.request.UpdateArticleRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleDetailResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleKeywordResponse;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
+import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.service.ExArticleService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 
@@ -35,16 +37,30 @@ public class ExArticleController {
 
     @PostMapping("")
     @Operation(summary = "작물 거래 게시물 등록 ", description = "작물등록진행")
-    public ResponseEntity<MessageUtils> register(@RequestPart(value = "file") List<MultipartFile> file,
-                                                 @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
-                                                 @AuthenticationPrincipal String email) {
+    public ResponseEntity<MessageUtils> register(
+            @RequestPart("files") List<MultipartFile> files,
+            @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
+            @AuthenticationPrincipal String email) {
 
-        exArticleService.register(exArticleRegisterRequest, email, file);
+        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, files);
+//        Long exarticleid = exArticleService.register(exArticleRegisterRequest, email);
+
         log.info("[register article ]: {}", exArticleRegisterRequest.toString());
 
-        return ResponseEntity.ok().body(MessageUtils.success());
+        return ResponseEntity.ok().body(MessageUtils.success(exarticleid));
     }
 
+
+    @PostMapping("/{ex_article_id}/images")
+    @Operation(summary = "작물 거래 게시물 이미지 등록 ", description = "작물 거래 게시물 이미지 등록")
+    public ResponseEntity<MessageUtils> registeriamges(@RequestPart(value = "file") List<MultipartFile> file, @PathVariable Long ex_article_id
+    ) {
+        exArticleService.registeriamges(file, ex_article_id);
+//        log.info("[register article ]: {}", );
+
+        return ResponseEntity.ok().body(MessageUtils.success());
+
+    }
 
     @GetMapping("/all")
     @Operation(summary = "작물거래 전체 조회 ", description = "작물거래 전체 조회")
@@ -66,6 +82,18 @@ public class ExArticleController {
     }
 
 
+    @PostMapping("/{ex_article_id}/convert_like")
+    @Operation(summary = "작물거래 좋아요 등록/삭제  ", description = "작물거래 좋아요 등록")
+    public ResponseEntity<MessageUtils> convert_like(@PathVariable Long ex_article_id) {
+        exArticleService.convert_like(ex_article_id);
+
+        log.info("[like article]: {}", ex_article_id);
+
+        return ResponseEntity.ok().body(MessageUtils.success());
+
+    }
+
+
     @PostMapping("/{ex_article_id}/like")
     @Operation(summary = "작물거래 좋아요 등록  ", description = "작물거래 좋아요 등록")
     public ResponseEntity<MessageUtils> like(@PathVariable Long ex_article_id) {
@@ -77,6 +105,15 @@ public class ExArticleController {
 
     }
 
+
+    @DeleteMapping("/{ex_article_id}/delete")
+    @Operation(summary = "작물거래 좋아요 삭제  ", description = "작물거래 좋아요 삭제 ")
+    public ResponseEntity<MessageUtils> deletelike(@PathVariable Long ex_article_id) {
+        exArticleService.deletelike(ex_article_id);
+
+        log.info("[delete article]: {}", ex_article_id);
+        return ResponseEntity.ok().body(MessageUtils.success());
+    }
 
     @PostMapping("/{ex_article_id}/done")
     @Operation(summary = "작물거래 완료   ", description = "작물거래 완료   ")
@@ -98,6 +135,58 @@ public class ExArticleController {
         log.info("[search article keyword]: {}", exArticleResponses);
 
         return ResponseEntity.ok().body(MessageUtils.success(exArticleResponses));
+    }
+
+
+    @GetMapping("/category/like")
+    @Operation(summary = "관심 조회하기 ", description = "관심 카테고리 조회하기 ")
+    public ResponseEntity<MessageUtils> selectFavorite() {
+
+        log.info("[selectFavorite  ]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(exArticleService.selectFavorite()));
+
+    }
+
+    @GetMapping("/done")
+    @Operation(summary = "나의 종료된 거래 게시물 조회하기 ", description = "나의 종료된 거래 게시물 조회하기 ")
+    public ResponseEntity<MessageUtils> finishedarticles() {
+
+        log.info("[finishedarticles  ]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(exArticleService.finishedarticles()));
+
+    }
+
+    @DeleteMapping("/{ex_article_id}")
+    @Operation(summary = "나의 작물 거래 게시물 삭제 ", description = "나의 작물 거래 게시물 삭제 ")
+    public ResponseEntity<MessageUtils> deletearticle(@PathVariable Long ex_article_id) {
+
+        log.info("[finishedarticles  ]: {}");
+        exArticleService.deletearticle(ex_article_id);
+        return ResponseEntity.ok().body(MessageUtils.success());
+
+    }
+    @CrossOrigin("*")
+    @PatchMapping("/{ex_article_id}/modify")
+    @Operation(summary = "나의 작물 거래 게시물 수정 ", description = "나의 작물 거래 게시물 수정 ")
+    public ResponseEntity<MessageUtils> modifyarticle(@PathVariable Long ex_article_id,
+                                                      @RequestPart(value = "updateInfo") UpdateArticleRequest updateArticleRequest,
+                                                      @RequestPart (value = "images") List<MultipartFile> images
+
+    ) {
+//        @ModelAttribute UpdateArticleRequest updateArticleRequest) {
+
+        log.info("[modifyarticle  ]: {}");
+        UserResponse userResponse = userService.getUserInfo();
+
+        CustomUser customUser = userResponse.toEntity(userResponse);
+
+        ExArticle article = exArticleService.modifyarticle(ex_article_id, updateArticleRequest, customUser,images);
+
+        ExArticleResponse articleResponse = article.toResponse(article, customUser);
+
+        return ResponseEntity.ok().body(MessageUtils.success(articleResponse));
+
+
     }
 
 

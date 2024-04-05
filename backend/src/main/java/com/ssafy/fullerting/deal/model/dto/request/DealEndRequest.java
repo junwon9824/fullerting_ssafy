@@ -4,6 +4,6 @@ import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 
 public class DealEndRequest {
 
-    private int deal_cur_price;
+    private int dealCurPrice;
     private ExArticle exArticle;
 }

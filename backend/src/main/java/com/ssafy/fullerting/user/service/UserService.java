@@ -1,12 +1,10 @@
 package com.ssafy.fullerting.user.service;
 
 import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
-import com.ssafy.fullerting.security.exception.JwtErrorCode;
-import com.ssafy.fullerting.security.exception.JwtException;
-import com.ssafy.fullerting.security.repository.TokenRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
+import com.ssafy.fullerting.user.model.dto.request.UserTownRequest;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.CustomUser;
 import com.ssafy.fullerting.user.model.entity.enums.UserRank;
@@ -20,10 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,7 +25,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenRepository tokenRepository;
     private final AmazonS3Service amazonS3Service;
 
     public CustomUser createUserEntity(UserRegisterRequest userRegisterRequest) {
@@ -48,13 +41,24 @@ public class UserService {
                 .build();
     }
 
-    public void registerUser(UserRegisterRequest request) {
+    public void registUser(UserRegisterRequest request) {
         // 등록하려는 유저정보가 이미 DB에 있으면 예외처리
         userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
             throw new UserException(UserErrorCode.ALREADY_IN_EMAIL);
         });
         // 유저 객체를 DB에 저장
         userRepository.save(createUserEntity(request));
+    }
+
+
+    public void registOauthUser(CustomUser customUser) {
+        try {
+            userRepository.save(customUser);
+        } catch (RuntimeException e) {
+            throw new RuntimeException("오류 발생 : " + e);
+        }
+        log.info("유저 회원가입 성공 : {}", customUser.toString());
+
     }
 
     public UserResponse getUserInfo() {
@@ -88,4 +92,16 @@ public class UserService {
     }
 
 
+    public UserResponse getUserInfobyid(Long userid) {
+
+        CustomUser customUser = userRepository.findById(userid).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        return customUser.toResponse();
+    }
+
+    public void updatetown(UserTownRequest userTownRequest) {
+        CustomUser user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        user.setLocation(userTownRequest.getUserLocation());
+        userRepository.save(user);
+
+    }
 }

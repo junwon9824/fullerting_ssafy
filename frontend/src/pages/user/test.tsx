@@ -1,78 +1,174 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import useInput from "../../hooks/useInput";
-import { Line } from "../../components/common/Line";
-import SockJS from "sockjs-client";
 import Stomp from "stompjs";
-import { LayoutMainBox } from "../../components/common/Layout/Box";
+import { api } from "../../apis/Base";
 
-const TestPage = () => {
-    const [email, setEmail] = useInput("");
-    const [password, setPassword] = useInput("");
-    const [receivedMessages, setReceivedMessages] = useState<string[]>([]);
 
-    const handleClick = () => {
-        // 거래 종료 이벤트를 발행하는 함수
-        const dealEndData = {
-            // 이벤트에 필요한 데이터를 객체로 전달
-            // 예: 거래 ID, 종료 시간 등
-        };
-        publishDealEndEvent();
-    };
+interface MessageRes {
+  id: string; //bidlogid
+  localDateTime: string;
+  userId: number;
+  chattingRoomId: number;
+  bidLogPrice: number;
+}
 
- 
-    useEffect(() => {
-        const socket = new SockJS("https://j10c102.p.ssafy.io/api/ws"); // 또는 다른 HTTPS URL
+function TestPage() {
+  const chattingRoomId = 140;
 
-        const stompClient = Stomp.over(socket);
+  const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
+  const [messages, setMessages] = useState<MessageRes[]>([]);
+  const [newMessage, setNewMessage] = useState<string>("");
+  const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
 
-        stompClient.connect({}, function (frame) {
-            console.log("Connected: " + frame);
-            const subscription = stompClient.subscribe("/sub/chattings/1", function (message) {
-                console.log("Received message: " + message.body);
-                // 이곳에서 메시지를 처리할 수 있습니다.
-                setReceivedMessages(prevMessages => [...prevMessages, message.body]);
-            });
+  const accessToken = sessionStorage.getItem("accessToken") || ""; // accessToken이 null인 경우에는 빈 문자열로 대체
 
-            return () => {
-                // 컴포넌트가 언마운트될 때 구독 해제
-                subscription.unsubscribe();
-                // 연결 해제
-                stompClient.disconnect(() => {
-                    console.log('Disconnected from the server');
-                });
-            };
-            
-        });
-    }, []); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때만 실행되도록 함
+  const loadMessages = async () => {
+    try {
+      const accessToken = sessionStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token is not available.");
+      }
 
-    // 거래 종료 이벤트를 발행하는 함수
-    const publishDealEndEvent = () => {
-        const socket = new SockJS("/ws"); // 웹소켓 엔드포인트에 연결
-        const stompClient = Stomp.over(socket);
+      const response = await api.get(`/exchanges/${chattingRoomId}/suggestion`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
 
-        stompClient.connect({}, function (frame) {
-            console.log("Connected: " + frame);
-            //   stompClient.send("/app/deal-end", {}, JSON.stringify(dealEndData));
-            // 연결 해제
-            stompClient.disconnect(() => {
-                console.log('Disconnected from the server');
-            });
-        });
-    }; 
+      setMessages(response.data.data_body);
 
-    return (
-        <LayoutMainBox>
-            <div>socket</div>
-            <button onClick={handleClick}>거래 종료</button>
-            <Line />
-            <div>
-                {receivedMessages.map((message, index) => (
-                    <div key={index}>{message}</div>
-                ))}
-            </div>
-        </LayoutMainBox>
+    } catch (error) {
+      console.error("채팅 내역 로드 실패", error);
+    }
+  };
+
+
+  useEffect(() => {
+    loadMessages();
+    
+    const accessToken = sessionStorage.getItem("accessToken");
+    if (!accessToken) {
+      throw new Error("Access token is not available.");
+    }
+
+    //  const socket = new WebSocket("ws://localhost:8080/ws");
+    const socket = new WebSocket("wss://j10c102.p.ssafy.io/api/ws");
+
+    const client = Stomp.over(socket);
+
+    console.log(socket);
+
+    client.connect(
+      {
+        "Authorization": `Bearer ${accessToken}`
+      },
+      () => {
+        console.log("WebSocket 연결됨");
+
+        // 백엔드로부터 메시지를 받는 부분
+        // 이전에 구독했던 채널에 대한 구독은 여기서 하도록 수정
+        client.subscribe(
+          `/sub/bidding/${chattingRoomId}`,
+          (message) => {
+            const msg: MessageRes = JSON.parse(message.body);
+            const lastMessageId = msg.id;
+
+            setMessages((prevMessages) => [...prevMessages,
+            { ...msg, id: String(lastMessageId), userId: msg.userId, bidLogPrice: msg.bidLogPrice, localDateTime: msg.localDateTime },
+            ]);
+
+          }
+        );
+        setMessageSubscribed(true); // 한 번만 실행되도록 플래그 설정
+      },
+      (error) => {
+        console.error("WebSocket 연결 실패", error);
+      }
     );
-};
+
+    setStompClient(client);
+
+    return () => {
+      if (client.connected) {
+        client.disconnect(() => {
+          console.log("Disconnected from WebSocket server");
+        });
+      }
+    };
+  }, [chattingRoomId]);
+
+
+  const sendMessage = async () => {
+
+    if (stompClient && newMessage.trim() !== "") {
+
+      try {
+        const messageReq = {
+          dealCurPrice: newMessage,
+        };
+
+        const accessToken = sessionStorage.getItem("accessToken");
+        if (!accessToken) {
+          throw new Error("Access token is not available.");
+        }
+
+        const res = await api.post(
+          `/exchanges/${chattingRoomId}/deal_bid`,
+          messageReq,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+
+        );
+
+        const   DealstartRequest = {
+
+          id: res.data.data_body.id,
+          dealCurPrice: res.data.data_body.dealCurPrice,
+          localDateTime: res.data.data_body.localDateTime,
+          userId: res.data.data_body.userId,
+          chattingRoomId: chattingRoomId,
+          bidLogPrice: messageReq.dealCurPrice,
+
+        }
+
+
+        stompClient.send(`/pub/bidding/${chattingRoomId}/messages`, {}, JSON.stringify(DealstartRequest));
+        setNewMessage("");
+
+      } catch (error) {
+        console.error("메시지 전송 실패", error);
+      }
+    }
+  };
+
+  return (
+    <div>
+      <div>
+        <ul>
+          {messages.map((msg) => (
+            <li key={msg.id}>
+              messageid  {msg.id}입찰희망자 아이디 {msg.userId}: 입찰 제안 가격 {msg.bidLogPrice} 제안 날짜 ({msg.localDateTime})
+              <hr />
+            </li>
+          ))}
+        </ul>
+
+        <input
+          type="text"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            fontSize: "16px",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            boxSizing: "border-box",
+            outline: "none",
+          }}
+        />
+        <button onClick={sendMessage}>전송</button>
+      </div>
+    </div>
+  );
+}
 
 export default TestPage;

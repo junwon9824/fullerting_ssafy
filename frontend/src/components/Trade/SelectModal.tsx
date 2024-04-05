@@ -1,8 +1,12 @@
 import styled from "styled-components";
 import CropList from "../diary/CropList";
 import Close from "/src/assets/svg/close.svg";
-interface Close {
+import CropListTrade from "./CropListTrade";
+import { selectedDiaryIdAtom } from "../../stores/trade";
+
+interface SelectModalProps {
   closeModal: () => void;
+  onDiarySelect: (diaryId: number) => void; // 선택된 다이어리 ID 처리 함수
 }
 const Modal = styled.div`
   width: 100%;
@@ -41,15 +45,17 @@ const SvgBox = styled.img`
   align-items: center;
   position: absolute;
 `;
-const SelectModal = ({ closeModal }: Close) => {
+
+const SelectModal = ({ closeModal, onDiarySelect }: SelectModalProps) => {
   return (
     <Modal>
       <TextBox>
         작물 일지 목록
-        <SvgBox src={Close} onClick={closeModal} />
+        <SvgBox src={Close} onClick={closeModal} alt="닫기" />
       </TextBox>
       <ListBox>
-        <CropList />
+        {/* CropListTrade 컴포넌트에 onDiarySelect 함수를 prop으로 전달 */}
+        <CropListTrade onDiarySelect={onDiarySelect} />
       </ListBox>
     </Modal>
   );

@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import ProfileImage from "/src/assets/svg/profileimage.svg";
+import { getUsersInfo, useChange } from "../../../apis/MyPage";
+import { useQuery } from "@tanstack/react-query";
+
+interface ProfileImageProps {
+  image: string;
+}
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -8,7 +13,7 @@ const ProfileContainer = styled.div`
   justify-content: center;
 `;
 
-const ProfileImageContainer = styled.div`
+const ProfileImageContainer = styled.div<ProfileImageProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -17,6 +22,7 @@ const ProfileImageContainer = styled.div`
   border-radius: 50%;
   overflow: hidden;
   background-image: url(${(props) => props.image});
+  background-color: gray;
   background-size: cover;
   background-position: center;
   cursor: pointer;
@@ -26,31 +32,34 @@ const HiddenFileInput = styled.input`
   display: none;
 `;
 
-const EditImage = () => {
-  const [profileImage, setProfileImage] = useState(
-    localStorage.getItem("profileImage") || ProfileImage
-  );
+const EditImage: React.FC = () => {
+  const [profileImage, setProfileImage] = useState<string>("");
 
-  useEffect(() => {
-    localStorage.setItem("profileImage", profileImage);
-  }, [profileImage]);
+  const { mutate: ChangeImg } = useChange();
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        setProfileImage(e.target.result);
+        const newDataUrl = e.target?.result;
+        setProfileImage(newDataUrl as string);
+        ChangeImg(file);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const { data: Img } = useQuery({
+    queryKey: ["profileImg"],
+    queryFn: getUsersInfo,
+  });
+
   return (
     <ProfileContainer>
       <ProfileImageContainer
-        image={profileImage}
-        onClick={() => document.getElementById("fileInput").click()}
+        image={profileImage || Img?.data.data_body.thumbnail}
+        onClick={() => document.getElementById("fileInput")?.click()}
       >
         <HiddenFileInput
           type="file"

@@ -5,9 +5,9 @@ interface CropType {
   packDiaryCulEndAt: string | null;
   packDiaryGrowthStep: number;
   packDiaryCreatedAt: string;
-  cropTypeId?: number;
+  cropTypeId: number;
   cropTypeName: string;
-  cropTypeImgUrl?: string;
+  cropTypeImgUrl: string;
   cropGrowDay: number | null;
 }
 
@@ -17,14 +17,40 @@ interface CropTypeType {
   cropTypeName: string;
 }
 
-interface DiaryType {
+interface CropFormType {
+  packDiaryId?: string;
+  cropTypeId?: number;
+  packDiaryTitle: string;
+  packDiaryCulStartAt: string;
+}
+
+interface DiaryFormType {
+  packDiaryId: string;
+  diaryId: string;
+  diarySelectedAt: string;
+  images: File[];
+  originImages: number[];
+  diaryTitle: string;
+  diaryContent: string;
+}
+
+interface ImageType {
+  id: number;
+  imgStoreUrl: string;
+}
+
+interface DiaryEntry {
   diaryId: number;
-  packDiaryId: number;
   diaryBehavior: "다이어리" | "물주기";
   diaryTitle: string | null;
   diaryContent: string | null;
-  diarySelectedAt: string;
   diaryCreatedAt: string;
+  imageResponseList: ImageType[];
+}
+
+interface DiaryType {
+  diarySelectedAt: string;
+  getSelectedAtDiaryResponse: DiaryEntry[];
 }
 
 interface TipType {

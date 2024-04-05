@@ -28,9 +28,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @Entity
-@ToString
+//@ToString
 @Table(name = "ex_article")
 @Slf4j
 public class ExArticle {
@@ -74,7 +74,7 @@ public class ExArticle {
     @Column(name = "ex_article_purchaser_id")
     private Long purchaserId;
 
-    @OneToOne(mappedBy = "exArticle")
+    @OneToOne(mappedBy = "exArticle",cascade = CascadeType.ALL)
     private Deal deal;
 
 
@@ -103,12 +103,22 @@ public class ExArticle {
         this.favorite.add(favorite);
     }
 
+    public void deletefavorite(Favorite favorite) {
+        this.favorite.remove(favorite); //favorite remove
+    }
+
+    public void removeimage(Image image) {
+
+        if (this.getImage().contains(image)) {
+            this.image.remove(image);
+            image.setExArticle(null);
+        }
+
+    }
+
     public static ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
         ExArticleResponse exArticleResponse = null;
-
-        //        List<FavoriteResponse> favoriteResponses
-//                = article.favorite.stream().map(
-//                favorite1 -> favorite1.toResponse(customUser)).collect(Collectors.toList());
+        log.info(" articlearticle" + article);
 
         Favorite favorite1 = null;
 
@@ -116,18 +126,23 @@ public class ExArticle {
             favorite1 = article.getFavorite().get(0);
         }
 
+//        log.info("typetype"+article.getType()+" "+ article.trans.getTrans_sell_price());
+
         exArticleResponse = ExArticleResponse.builder()
                 .exArticleId(article.getId())
                 .exArticleTitle(article.getTitle())
                 .exArticleType(article.getType())
                 .exLocation(article.getLocation())
-                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDeal_cur_price() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
+//                .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDealCurPrice() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
                 .imageResponses(article.getImage().stream().map(Image::toResponse)
                         .collect(Collectors.toList()))
 //                .favoriteResponse(
 //                        favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
 //                                .builder().islike(false).isLikeCnt(0).build()
 //                )
+                .time(article.created_at)
+                .content(article.getContent())
+                .userId(article.getUser().getId())
                 .build();
 
 
@@ -180,6 +195,8 @@ public class ExArticle {
 //                .exLocation(article.getLocation())
 //                .imageResponses(article.getImage().stream().map(Image::toResponse)
 //                        .collect(Collectors.toList()))
+                .dealResponse(article.deal == null ? null : article.deal.toResponse(customUser))
+                .transResponse(article.trans == null ? null : article.trans.toResponse(article.trans))
 
                 .favoriteResponse(
                         favorite1 != null ? favorite1.toResponse(customUser) : FavoriteResponse
@@ -240,4 +257,8 @@ public class ExArticle {
         return exArticleDetailResponse;
     }
 
+    public void addimage(Image image) {
+        this.image.add(image);
+        image.setExArticle(this);
+    }
 }

@@ -34,14 +34,10 @@ const Content = styled.div`
 
 const CropTips = () => {
   const [crop, setCrop] = useAtom(cropAtom);
-  const accessToken = sessionStorage.getItem("accessToken");
 
   const { isLoading, data: tipList } = useQuery({
     queryKey: ["cropList"],
-    queryFn:
-      accessToken && crop
-        ? () => getTipList(accessToken, crop.cropTypeId)
-        : undefined,
+    queryFn: crop ? () => getTipList(crop.cropTypeId) : undefined,
   });
 
   if (isLoading) {
@@ -50,7 +46,7 @@ const CropTips = () => {
 
   return (
     <TipsBox>
-      <CropType>{crop.cropTypeName}</CropType>
+      {crop && <CropType>{crop.cropTypeName}</CropType>}
       {tipList.map((tip: TipType) => (
         <TipBox key={tip.cropTipId}>
           <GrowthStep>{tip.cropTipGrowthStep}단계</GrowthStep>

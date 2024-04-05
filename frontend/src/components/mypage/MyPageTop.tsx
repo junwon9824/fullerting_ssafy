@@ -1,9 +1,13 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import profileImage from "/src/assets/svg/profileimage.svg";
 import arrow from "/src/assets/svg/arrow_forward_ios.svg";
 import { getUsersInfo } from "../../apis/MyPage";
 import { useQuery } from "@tanstack/react-query";
+import pull from "../../assets/svg/pullright.svg";
+
+interface ProfileImage {
+  backgroundImage: string;
+}
 
 const ProfileContent = styled.div`
   display: flex;
@@ -18,12 +22,12 @@ const ProfileContainer = styled.div`
   align-items: center;
 `;
 
-const ProfileImageContainer = styled.div`
+const ProfileImageContainer = styled.div<ProfileImage>`
   width: 5rem;
   height: 5rem;
   border-radius: 50%;
   overflow: hidden;
-  background-image: url(${profileImage});
+  background-image: url(${(props) => props.backgroundImage || pull});
   background-size: cover;
   background-position: center;
   margin-right: 1rem;
@@ -68,11 +72,12 @@ const Maintop = () => {
     return <div>사용자 데이터를 가져오는데 실패했습니다: {error.message}</div>;
   }
 
-  console.log("여기는 메인 TOP", badges?.data.data_body);
   return (
     <ProfileContent onClick={goToProfilePage}>
       <ProfileContainer>
-        <ProfileImageContainer />
+        <ProfileImageContainer
+          backgroundImage={badges?.data.data_body.thumbnail}
+        />
         <ProfileText>
           <Nickname>{badges?.data.data_body.nickname}</Nickname>
           <Grade>{badges?.data.data_body.rank}</Grade>

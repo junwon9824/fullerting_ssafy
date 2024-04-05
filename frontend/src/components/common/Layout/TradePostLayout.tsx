@@ -1,7 +1,12 @@
 import styled from "styled-components";
 import { PropsWithChildren } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { NavBar, TopBar } from "../Navigator/navigator";
+import {
+  NavBar,
+  PostTopBar,
+  TopBar,
+  TradeTopBar,
+} from "../Navigator/navigator";
 import { BottomButton } from "../Button/LargeButton";
 
 const MainBox = styled.main`
@@ -12,6 +17,7 @@ const MainBox = styled.main`
   width: 100%;
   padding-top: 3.125rem;
   padding-bottom: 6rem;
+  overflow-y: scroll;
 `;
 
 const InnerBox = styled.div`
@@ -38,11 +44,10 @@ const TradePostLayout = ({
   };
   return (
     <>
-      <TopBar title={title} showEdit={showEdit} />
+      <PostTopBar title={title} showEdit={showEdit} />
       <MainBox>
         <InnerBox>{children || <Outlet />}</InnerBox>
       </MainBox>
-      <BottomButton onClick={handleCheck} text="등록하기" />
     </>
   );
 };

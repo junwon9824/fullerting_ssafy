@@ -3,6 +3,7 @@ import StyledInput from "../../common/Input/StyledInput";
 import { BottomButton } from "../../common/Button/LargeButton";
 import { getUsersInfo } from "../../../apis/MyPage";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const BiddingBox = styled.div`
   background-color: #eee;
@@ -41,23 +42,21 @@ const Name = styled.div`
 `;
 
 const Maintop = () => {
+  const navigate = useNavigate();
   const { data: profile, error } = useQuery({
     queryKey: ["Edit"],
     queryFn: getUsersInfo,
   });
   if (error) {
-    console.error("프로필 데이터를 가져오는데 실패했습니다:", error);
     return <div>사용자 데이터를 가져오는데 실패했습니다: {error.message}</div>;
   }
-
-  console.log("프로필 수정페이지", profile?.data.data_body);
 
   const setPassword = () => {
     console.log("비밀번호변경");
   };
 
   const editInformation = () => {
-    console.log("정보수정");
+    navigate("/mypage");
   };
   return (
     <>

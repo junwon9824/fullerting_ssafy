@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import StyledInput from "../../components/common/Input/StyledInput";
 import {
   LayoutInnerBox,
@@ -59,27 +59,24 @@ const CropCreatePage = () => {
     setSelectedDate(event.target.value);
   };
 
-  const accessToken = sessionStorage.getItem("accessToken");
-
   const { data: types } = useQuery({
     queryKey: ["types"],
-    queryFn: accessToken ? () => getCropType(accessToken) : undefined,
+    queryFn: getCropType,
   });
 
   const { mutate } = useMutation({
-    mutationFn: accessToken
-      ? (data) => createCrop(data, accessToken)
-      : undefined,
+    mutationFn: createCrop,
     onSuccess: () => {
-      navigate("/diary");
+      navigate("/crop");
     },
     onError: (error) => {
       console.log(error);
     },
   });
 
-  const handleCropTypeChange = (e) => {
-    setCropTypeId(e.currentTarget.value);
+  const handleCropTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = parseInt(e.currentTarget.value);
+    setCropTypeId(value);
   };
 
   const handleConfirmClick = () => {
@@ -90,8 +87,6 @@ const CropCreatePage = () => {
       packDiaryTitle: cropName,
       packDiaryCulStartAt: selectedDate,
     };
-
-    console.log(packDiaryData);
 
     mutate(packDiaryData);
   };

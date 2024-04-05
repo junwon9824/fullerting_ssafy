@@ -20,11 +20,10 @@ public class ExArticleRegisterRequest {
     private Long id;
     private String exArticleTitle;
     private String exArticleContent;
-    private String exArticlePlace;
     private ExArticleType exArticleType; // "제안", "일반 거래", "나눔"
 
     private String ex_article_location;
-    private int deal_cur_price;
+    private int dealCurPrice;
 
     @Builder.Default
     private Long packdiaryid = null; // packdiary id

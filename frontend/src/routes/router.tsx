@@ -13,34 +13,57 @@ import ProposePost from "../pages/profile/ProposePost";
 import TransPost from "../pages/profile/TransPost";
 import DiaryPage from "../pages/diary/DiaryPage";
 import MyPageLayout from "../pages/profile/MyPageLayout";
-import TradePost from "../pages/trade/TradePost";
+import TradePostPage from "../pages/trade/TradePostPage";
 import DiaryCreatePage from "../pages/diary/DiaryCreatePage";
 import DiaryWaterPage from "../pages/diary/DiaryWaterPage";
 import CropCreatePage from "../pages/diary/CropCreatePage";
-import TradeGeneralDetail from "../pages/trade/TradeGeneralDetail";
-import TradeProposeDetail from "../pages/trade/TradeProposeDetail";
 import TestPage from "../pages/user/test";
+import CommunityLayout from "../pages/community/CommunityLayout";
+import Community from "../pages/community/Community";
+import CreateCommunity from "../pages/community/CreateCommunity";
+import CommunityDetail from "../pages/community/CommunityDetail";
+import TradeGeneralDetailPage from "../pages/trade/TradeGeneralDetail";
+import CropUpdatePage from "../pages/diary/CropUpdatePage";
+import TradeSellerPage from "../pages/trade/TradeSellerPage";
+import AuthCallbackPage from "../pages/user/AuthCallbackPage";
+import TradeBuyerPage from "../pages/trade/TradeBuyerPage";
+import TradeChatPage from "../pages/trade/TradeChatPage";
+import DiaryDetailPage from "../pages/diary/DiaryDetailPage";
+import TradeDealDetailPage from "../pages/trade/TradeDealDetailPage";
+import AlarmLayout from "../pages/alarm/AlarmLayout";
+import Alarm from "../pages/alarm/Alarm";
+import RecognizePage from "../pages/diary/RecognizePage";
+import TradeModifyPage from "../pages/trade/TradeModifyPage";
+import DiaryUpdatePage from "../pages/diary/DiaryUpdatePage";
+
 const authRoutes = [
   { path: "/", element: <MainPage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/join", element: <JoinPage /> },
+  { path: "/auth/callback", element: <AuthCallbackPage /> },
 ];
 
-// 다이어리 관련 경로
 const diaryRoutes = [
-  { path: "/diary", element: <CropPage /> },
-  { path: "/diary/:packDiaryId", element: <DiaryPage /> },
-  { path: "/diary/:packDiaryId/create", element: <DiaryCreatePage /> },
-  { path: "/diary/:packDiaryId/water", element: <DiaryWaterPage /> },
-  { path: "/diary/create", element: <CropCreatePage /> },
+  { path: "/crop", element: <CropPage /> },
+  { path: "/crop/create", element: <CropCreatePage /> },
+  { path: "/crop/:packDiaryId/update", element: <CropUpdatePage /> },
+  { path: "/crop/:packDiaryId", element: <DiaryPage /> },
+  { path: "/crop/:packDiaryId/ai", element: <RecognizePage /> },
+  { path: "/diary/:diaryId", element: <DiaryDetailPage /> },
+  { path: "/diary/create", element: <DiaryCreatePage /> },
+  { path: "/diary/water", element: <DiaryWaterPage /> },
+  { path: "/diary/:diaryId/update", element: <DiaryUpdatePage /> },
 ];
 
-// 거래 관련 경로
 const tradeRoutes = [
   { path: "/trade", element: <TradePage /> },
-  { path: "/trade/post", element: <TradePost /> },
-  { path: "/trade/generaldetail", element: <TradeGeneralDetail /> },
-  { path: "/trade/proposedetail", element: <TradeProposeDetail /> },
+  { path: "/trade/post", element: <TradePostPage /> },
+  { path: "/trade/:postId/generaldetail", element: <TradeGeneralDetailPage /> },
+  { path: "/trade/:postId/DealDetail", element: <TradeDealDetailPage /> },
+  { path: "/trade/:postId/seller", element: <TradeSellerPage /> },
+  { path: "/trade/:postId/buyer", element: <TradeBuyerPage /> },
+  { path: "/trade/:postId/Chat", element: <TradeChatPage /> },
+  { path: "/trade/:postId/modify", element: <TradeModifyPage /> },
   { path: "/trade/test", element: <TestPage /> },
 ];
 
@@ -60,10 +83,38 @@ const mypageRoutes = [
   },
 ];
 
-// 모든 경로를 하나의 배열로 결합
-const routes = [...authRoutes, ...diaryRoutes, ...tradeRoutes, ...mypageRoutes];
+const communityRoutes = [
+  {
+    path: "/community",
+    element: <CommunityLayout />,
+    children: [
+      { index: true, element: <Community /> },
+      { path: "createcommunity", element: <CreateCommunity /> },
+      { path: ":id", element: <CommunityDetail /> },
+    ],
+  },
+];
 
-// 라우터 생성
+const alarm = [
+  {
+    path: "/alarm",
+    element: <AlarmLayout />,
+    children: [
+      { index: true, element: <Alarm /> },
+      // { path: "allalarm", element: <AllAlarm /> },
+    ],
+  },
+];
+
+const routes = [
+  ...authRoutes,
+  ...diaryRoutes,
+  ...tradeRoutes,
+  ...mypageRoutes,
+  ...communityRoutes,
+  ...alarm,
+];
+
 const router = createBrowserRouter(routes);
 
 export default router;
