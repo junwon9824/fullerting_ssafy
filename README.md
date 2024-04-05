@@ -9,7 +9,7 @@
 | Frontend | React, Typescript, Jotai, Tanstack Query, React router dom, Styled components, PWA |
 | Backend  | Spring Boot, NginX, Spring Security, JWT, Oauth, MySQL, Redis                      |
 | Server   | Docker, Docker-compose, Jenkins, AWS                                               |
-| AI       | Teacherable machine                                                                |
+| AI       | Teachable machine                                                                |
 
 ## 📄 주요기능
 
