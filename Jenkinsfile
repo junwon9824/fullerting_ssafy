@@ -30,6 +30,7 @@ pipeline {
         REPO = 's10-ai-image-sub2/S10P12C102'
         GIT_REPO = 'https://github.com/junwon9824/fullertingsecretfolder.git'
 
+
         // Gradle 환경 변수 설정
         ORG_GRADLE_JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
     }
