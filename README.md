@@ -17,7 +17,7 @@
 
 <!-- <img src="./img/etc/시스템아키텍처.png"/> -->
 <!-- ![image.png](./image.png)-->
-![image](https://github.com/junwon9824/fullerting_ssafy/assets/42957005/4673567f-2017-4e66-b933-7189b32dcb44)
+![image](https://github.com/junwon9824/fullerting_ssafy/assets/42957005/486e30c4-9fff-42fb-bae5-381b6469f7c1)
 
 ### erd
 
