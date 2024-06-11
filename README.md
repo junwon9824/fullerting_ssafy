@@ -19,6 +19,10 @@
 <!-- ![image.png](./image.png)-->
 ![image](https://github.com/junwon9824/fullerting_ssafy/assets/42957005/4673567f-2017-4e66-b933-7189b32dcb44)
 
+### erd
+
+![image](https://github.com/junwon9824/fullerting_ssafy/assets/42957005/3e589a0e-8429-4c8e-934f-11a95a467758)
+
 
 ### 기타 산출물
 
