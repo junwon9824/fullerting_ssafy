@@ -11,6 +11,28 @@
 | Server   | Docker, Docker-compose, Jenkins, AWS                                               |
 | AI       | Teachable machine                                                                |
 
+## 산출물
+
+### 시스템 아키텍처
+
+<!-- <img src="./img/etc/시스템아키텍처.png"/> -->
+![image.png](./image.png)
+
+
+### 기타 산출물
+
+- [화면구성도](https://www.figma.com/file/Sknk6qQVE8fAiR5nOFvxza/%ED%92%80%EB%9F%AC%ED%8C%85?type=design&node-id=127-5825&mode=design&t=MnKBPQRoEeXjfoAR-0)
+
+- [페이지 명세서](https://www.notion.so/e6dd58e2958e4d87a058ba5411bdc34b?v=490bc367fa934dd6b4d8f99816e66ba6)
+
+- [컴포넌트 명세서](https://www.notion.so/a1d316ad22c14e8d8615d9fd25b97608?v=a9f05331c88348239700d19d218dfb57)
+
+- [ERD](https://www.notion.so/ERD-dc7ce2874a2b4e0c8078cb161eadd6d6)
+
+- [API 명세서](https://www.notion.so/44419a63e21b4465b541f5cb0ce26b57?v=9deef6569fdd47b98a22de3c9d91ca21)
+
+
+
 ## 📄 주요기능
 
 ### 메인화면
@@ -145,24 +167,7 @@
 
 로그아웃을 할 수 있습니다.
 
-## 산출물
 
-### 시스템 아키텍처
-
-<!-- <img src="./img/etc/시스템아키텍처.png"/> -->
-![image.png](./image.png)
-
-### 기타 산출물
-
-- [화면구성도](https://www.figma.com/file/Sknk6qQVE8fAiR5nOFvxza/%ED%92%80%EB%9F%AC%ED%8C%85?type=design&node-id=127-5825&mode=design&t=MnKBPQRoEeXjfoAR-0)
-
-- [페이지 명세서](https://www.notion.so/e6dd58e2958e4d87a058ba5411bdc34b?v=490bc367fa934dd6b4d8f99816e66ba6)
-
-- [컴포넌트 명세서](https://www.notion.so/a1d316ad22c14e8d8615d9fd25b97608?v=a9f05331c88348239700d19d218dfb57)
-
-- [ERD](https://www.notion.so/ERD-dc7ce2874a2b4e0c8078cb161eadd6d6)
-
-- [API 명세서](https://www.notion.so/44419a63e21b4465b541f5cb0ce26b57?v=9deef6569fdd47b98a22de3c9d91ca21)
 
 ## 팀원 소개
 
