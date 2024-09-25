@@ -1,28 +1,18 @@
 package com.ssafy.fullerting.deal.service;
 
-import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.repository.BidRepository;
-import com.ssafy.fullerting.deal.model.dto.request.DealProposeRequest;
-import com.ssafy.fullerting.deal.model.dto.response.DealResponse;
 import com.ssafy.fullerting.deal.model.dto.response.MyExArticleResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
-import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
-import com.ssafy.fullerting.exArticle.exception.ExArticleException;
-import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
-import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
-import com.ssafy.fullerting.global.utils.MessageUtils;
-import com.ssafy.fullerting.trans.model.dto.response.TransResponse;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.m;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,7 +31,7 @@ public class DealService {
 
     public List<ExArticleAllResponse> selectDeals() {
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
 
         List<Deal> deals = dealRepository.findAllDeal();
 
@@ -58,7 +48,7 @@ public class DealService {
     @Transactional
     public List<MyExArticleResponse> mybidarticles() {
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
 
         List<BidLog> bidLogs = bidRepository.findAllByuserId(customUser.getId());
 

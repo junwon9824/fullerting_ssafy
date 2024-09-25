@@ -4,7 +4,7 @@ import com.ssafy.fullerting.security.exception.AuthErrorCode;
 import com.ssafy.fullerting.security.exception.AuthException;
 import com.ssafy.fullerting.security.model.entity.CustomAuthenticationToken;
 import com.ssafy.fullerting.security.service.DataBaseUserDetailsService;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -33,7 +33,7 @@ CustomAuthenticationProvider implements AuthenticationProvider {
         String inputUsername = authentication.getName();
         String inputPassword = authentication.getCredentials().toString();
 
-        CustomUser customUser = null;
+        MemberProfile customUser = null;
         try {
             customUser = dataBaseUserDetailsService.loadUserByUsername(inputUsername);
         } catch (UsernameNotFoundException e) {

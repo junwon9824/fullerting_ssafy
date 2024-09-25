@@ -1,12 +1,8 @@
 package com.ssafy.fullerting.trans.controller;
 
-import com.ssafy.fullerting.deal.model.dto.request.DealProposeRequest;
-import com.ssafy.fullerting.deal.service.DealService;
-import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 
 import com.ssafy.fullerting.trans.service.TransService;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

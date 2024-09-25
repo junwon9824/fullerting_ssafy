@@ -8,7 +8,7 @@ import com.ssafy.fullerting.bidLog.service.BidService;
 import com.ssafy.fullerting.deal.service.DealService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,7 +37,7 @@ public class bidLogController {
 //                                                 @PathVariable Long ex_article_id, @AuthenticationPrincipal String email) {
 //
 //        UserResponse userResponse = userService.getUserInfo();
-//        CustomUser customUser = userResponse.toEntity(userResponse);
+//        MemberProfile customUser = userResponse.toEntity(userResponse);
 //
 //        bidService.deal(bidProposeRequest, customUser, ex_article_id);
 //        log.info("[New User]: {}", bidProposeRequest.toString());
@@ -59,7 +59,7 @@ public class bidLogController {
 
         BidLog bidLog = bidService.dealbid(ex_article_id, bidProposeRequest );
         UserResponse userResponse=userService.getUserInfo();
-        CustomUser customUser=userResponse.toEntity(userResponse);
+        MemberProfile customUser=userResponse.toEntity(userResponse);
 
         BidLogResponse bidLogResponse = bidLog.tobidLogResponse(bidLog,customUser);
         return ResponseEntity.ok().body(MessageUtils.success(bidLogResponse));

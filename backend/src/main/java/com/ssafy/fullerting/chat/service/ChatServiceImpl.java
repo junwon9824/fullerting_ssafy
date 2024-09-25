@@ -9,10 +9,9 @@ import com.ssafy.fullerting.chat.model.entity.Chat;
 import com.ssafy.fullerting.chat.model.entity.ChatRoom;
 import com.ssafy.fullerting.chat.repository.ChatRepository;
 import com.ssafy.fullerting.chat.repository.ChatRoomRepository;
-import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
-import com.ssafy.fullerting.user.repository.UserRepository;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
+import com.ssafy.fullerting.user.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,13 +31,13 @@ import static com.ssafy.fullerting.user.exception.UserErrorCode.NOT_EXISTS_USER;
 public class ChatServiceImpl implements ChatService{
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
     private final EventAlarmService eventAlarmService;
 
     @Override
     public ChatResponse createChat(Long senderId, ChatRequest chatRequest) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRequest.getChatRoomId()).orElseThrow(()->new ChatException(NOT_EXISTS_CHAT_ROOM));
-        CustomUser sender = userRepository.findById(senderId).orElseThrow(()->new UserException(NOT_EXISTS_USER));
+        MemberProfile sender = userRepository.findById(senderId).orElseThrow(()->new UserException(NOT_EXISTS_USER));
         try {
             //채팅 내역 DB 저장
             Chat chat =chatRepository.save(Chat.builder()
@@ -47,10 +46,10 @@ public class ChatServiceImpl implements ChatService{
                     .message(chatRequest.getChatMessage())
                     .sendAt(Timestamp.valueOf(LocalDateTime.now()))
                     .build());
-            CustomUser customUser = userRepository.findById(senderId).orElseThrow(()->new UserException(NOT_EXISTS_USER));
+            MemberProfile customUser = userRepository.findById(senderId).orElseThrow(()->new UserException(NOT_EXISTS_USER));
 
             ChatResponse chatResponse = ChatResponse.toResponse(chat);
-            chatResponse = chatResponse.toBuilder()
+            chatResponse = ChatResponse.builder()
                     .chatSenderThumb(customUser.getThumbnail())
                     .chatSenderNick(customUser.getNickname())
                     .build();
@@ -68,7 +67,7 @@ public class ChatServiceImpl implements ChatService{
 
         return chatList.stream()
                 .map(chat -> {
-                    CustomUser sender = userRepository.findById(chat.getSender().getId()).orElseThrow(()->new UserException(NOT_EXISTS_USER)); // senderId로 사용자 조회
+                    MemberProfile sender = userRepository.findById(chat.getSender().getId()).orElseThrow(()->new UserException(NOT_EXISTS_USER)); // senderId로 사용자 조회
                     return GetAllChatResponse.builder()
                             .chatId(chat.getId())
                             .chatRoomId(chat.getChatRoom().getId())

@@ -1,7 +1,7 @@
 package com.ssafy.fullerting.alarm.model.entity;
 
 import com.ssafy.fullerting.alarm.model.EventAlarmType;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
@@ -20,11 +20,11 @@ public class EventAlarm {
 
     @ManyToOne
     @JoinColumn(name = "receive_user_id")
-    private CustomUser receiveUser;
+    private MemberProfile receiveUser;
 
     @ManyToOne
     @JoinColumn(name = "send_user_id")
-    private CustomUser sendUser;
+    private MemberProfile sendUser;
 
     @Column(name = "event_alarm_type", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
@@ -69,20 +69,20 @@ public class EventAlarm {
     }
 
     public static class Builder {
-        private CustomUser receiveUser;
-        private CustomUser sendUser;
+        private MemberProfile receiveUser;
+        private MemberProfile sendUser;
         private EventAlarmType type;
         private String content;
         private boolean isChecked = false;
         private String redirect;
 
 
-        public Builder receiveUser(CustomUser receiveUser) {
+        public Builder receiveUser(MemberProfile receiveUser) {
             this.receiveUser = receiveUser;
             return this;
         }
 
-        public Builder sendUser(CustomUser sendUser) {
+        public Builder sendUser(MemberProfile sendUser) {
             this.sendUser = sendUser;
             return this;
         }

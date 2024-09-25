@@ -1,9 +1,8 @@
 package com.ssafy.fullerting.chat.model.entity;
 
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -25,5 +24,5 @@ public class ChatRoom { //채팅방
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private CustomUser buyer; //구매자
+    private MemberProfile buyer; //구매자
 }

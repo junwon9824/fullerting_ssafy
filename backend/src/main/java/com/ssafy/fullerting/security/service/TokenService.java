@@ -11,7 +11,7 @@ import com.ssafy.fullerting.security.model.entity.Token;
 import com.ssafy.fullerting.security.repository.InvalidTokenRepository;
 import com.ssafy.fullerting.security.repository.TokenRepository;
 import com.ssafy.fullerting.security.util.JwtUtils;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -55,7 +55,7 @@ public class TokenService {
         // 이메일 사용해서 사용자 정보 조회
         if (email != null) {
             try {
-                CustomUser customUser = dataBaseUserDetailsService.loadUserByUsername(email);
+                MemberProfile customUser = dataBaseUserDetailsService.loadUserByUsername(email);
                 userId = customUser.getId();
             } catch (UsernameNotFoundException e) {
                 throw new AuthException(AuthErrorCode.NOT_EXISTS);

@@ -1,8 +1,7 @@
 package com.ssafy.fullerting.community.love.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ssafy.fullerting.community.article.model.entity.Article;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,7 +24,7 @@ public class Love {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private CustomUser customUser;
+    private MemberProfile customUser;
 
     @ManyToOne
     @JoinColumn(name = "article_id", nullable = false)

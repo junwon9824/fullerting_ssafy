@@ -7,7 +7,7 @@ import com.ssafy.fullerting.badge.model.entity.MyBadge;
 import com.ssafy.fullerting.badge.repository.BadgeRepository;
 import com.ssafy.fullerting.badge.repository.MyBadgeRepository;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class BadgeService {
 
     @Transactional
     public MyBadgeResponse earnBadge(PackDiary packDiary) {
-        CustomUser user = packDiary.getUser();
+        MemberProfile user = packDiary.getUser();
         String cropName = packDiary.getCrop().getName();
         int growthStep = packDiary.getGrowthStep();
 

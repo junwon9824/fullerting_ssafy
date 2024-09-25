@@ -12,10 +12,9 @@ import com.ssafy.fullerting.community.comment.model.dto.response.CommentResonse;
 import com.ssafy.fullerting.community.comment.model.entity.Comment;
 import com.ssafy.fullerting.community.comment.repository.CommentRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.dialect.unique.CreateTableUniqueDelegate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,7 +34,7 @@ public class CommentService {
         Article targetArticle = articleRepository.findById(targetArticleId).orElseThrow(() -> new
                 ArticleException(ArticleErrorCode.NOT_EXISTS));
 
-        CustomUser commenter = userService.getNowUserInfoEntityByToken();
+        MemberProfile commenter = userService.getNowUserInfoEntityByToken();
 
         Comment comment = commentRepository.save(Comment.builder()
                 .article(targetArticle)
@@ -57,7 +56,7 @@ public class CommentService {
         return commentRepository.findAllByArticle_Id(article_id)
                 .stream().map(comment -> {
 
-                    CustomUser customUser = comment.getCustomUser();
+                    MemberProfile customUser = comment.getCustomUser();
 
                     CommentResonse commentResonse = comment.tocommentResonse(customUser);
                     return commentResonse;
@@ -72,7 +71,7 @@ public class CommentService {
                 ArticleException(ArticleErrorCode.NOT_EXISTS));
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new CommentException(CommentErrorCode.NOT_EXISTS));

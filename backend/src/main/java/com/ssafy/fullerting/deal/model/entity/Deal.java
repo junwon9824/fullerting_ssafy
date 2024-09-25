@@ -3,12 +3,10 @@ package com.ssafy.fullerting.deal.model.entity;
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.deal.model.dto.response.DealResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
-import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor
@@ -40,7 +38,7 @@ public class Deal {
         this.exArticle = exArticle;
     }
 
-    public DealResponse toResponse(CustomUser customUser) {
+    public DealResponse toResponse(MemberProfile customUser) {
         return DealResponse.builder()
 //                .exArticleResponse(this.exArticle.toResponse(this.exArticle,customUser))
                 .price(this.getDealCurPrice()).id(this.getId()).

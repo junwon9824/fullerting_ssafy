@@ -1,7 +1,6 @@
 package com.ssafy.fullerting.chat.service;
 
 import com.ssafy.fullerting.alarm.service.EventAlarmService;
-import com.ssafy.fullerting.chat.exception.ChatErrorCode;
 import com.ssafy.fullerting.chat.exception.ChatException;
 import com.ssafy.fullerting.chat.model.dto.request.CreateChatRoomRequest;
 import com.ssafy.fullerting.chat.model.dto.response.CreateChatRoomResponse;
@@ -11,15 +10,13 @@ import com.ssafy.fullerting.chat.model.entity.Chat;
 import com.ssafy.fullerting.chat.model.entity.ChatRoom;
 import com.ssafy.fullerting.chat.repository.ChatRepository;
 import com.ssafy.fullerting.chat.repository.ChatRoomRepository;
-import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
-import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
-import com.ssafy.fullerting.user.repository.UserRepository;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
+import com.ssafy.fullerting.user.repository.MemberRepository;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +38,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRepository chatRepository;
     private final ExArticleRepository exArticleRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
     private final EventAlarmService eventAlarmService;
 
     @Override
@@ -51,8 +48,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 
         Optional<ChatRoom> chatRoomOptional; //채팅방 조회
         UserResponse userResponse = null; //일반거래, 나눔 유저 정보
-        CustomUser customUser = null; //제안 유저 정보
-        
+        MemberProfile customUser = null; //제안 유저 정보
+
         //일반거래, 나눔일 경우
         if(createChatRoomRequest.getBuyerId() == null){
             userResponse = userService.getUserInfo();
@@ -86,12 +83,12 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                         .exArticle(exArticle)
                         .buyer(customUser)
                         .build());
-                
+
                 // 채팅방 생성 알림 전송 -> 구매자에게 알림 전송
                 String redirectURL = "/trade/" + chatRoom.getId() + "/chat";
                 eventAlarmService.notifyCreateChatRoomBidder(customUser, exArticle, redirectURL);
             }
-            
+
             return CreateChatRoomResponse.toResponse(chatRoom);
         }
         //존재하는 경우 해당 채팅방 응답
@@ -129,7 +126,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                 .map(chatRoom -> {
                     //상대방 ID 조회
                     ExArticle exArticle = exArticleRepository.findById(chatRoom.getExArticle().getId()).orElseThrow(() -> new ExArticleException(NOT_EXISTS));
-                    CustomUser otherUser = null;
+                    MemberProfile otherUser = null;
                     //현재 유저가 판매자와 동일할 경우
                     if (exArticle.getUser().getId().equals(userResponse.getId())) {
                         //상대방 정보에 구매자 저장

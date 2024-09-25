@@ -3,13 +3,9 @@ package com.ssafy.fullerting.trans.model.entity;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.trans.model.dto.response.MyAllTransResponse;
 import com.ssafy.fullerting.trans.model.dto.response.TransResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor

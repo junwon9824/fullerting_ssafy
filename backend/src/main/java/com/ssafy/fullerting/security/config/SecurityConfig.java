@@ -5,7 +5,7 @@ import com.ssafy.fullerting.security.Filter.JwtValidationFilter;
 import com.ssafy.fullerting.security.handler.AuthFailureHandler;
 import com.ssafy.fullerting.security.handler.ExceptionHandlerFilter;
 import com.ssafy.fullerting.security.handler.OAuthSuccessHandler;
-import com.ssafy.fullerting.security.service.CustomOAuth2Service;
+import com.ssafy.fullerting.security.service.OAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -23,7 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.util.Collections;
 
 @RequiredArgsConstructor
-@EnableWebSecurity(debug = false )
+@EnableWebSecurity(debug = false)
 @Configuration
 public class SecurityConfig {
 
@@ -31,8 +33,7 @@ public class SecurityConfig {
     private final AuthFailureHandler authFailureHandler;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final OAuthSuccessHandler oAuthSuccessHandler;
-    private final CustomOAuth2Service customOAuth2Service;
-
+    private final OAuthService customOAuth2Service;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,12 +45,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
 //                .oauth2Login(Customizer.withDefaults())
+
                 .oauth2Login(customizer ->
-                        customizer
+                                customizer
 //                                .failureHandler(authFailureHandler)
-                                .userInfoEndpoint(userInfoEndpoint ->
-                                        userInfoEndpoint.userService(customOAuth2Service))
-                                .successHandler(oAuthSuccessHandler)
+                                        .userInfoEndpoint(userInfoEndpoint ->
+                                                userInfoEndpoint.userService(customOAuth2Service))
+                                        .successHandler(oAuthSuccessHandler)
                 )
 
                 // 인가 경로 설정

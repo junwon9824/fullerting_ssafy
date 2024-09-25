@@ -17,19 +17,15 @@ import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
 import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.image.repository.ImageRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
-import org.hibernate.Hibernate;
-import org.springframework.data.redis.support.collections.RedisList;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +44,7 @@ public class ArticleService {
     public void registerticle(RegistArticleRequest registArticleRequest, List<MultipartFile> files) {
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
         log.info("type" + registArticleRequest.getType());
 //        log.info("getSelectedFiles" + registArticleRequest.getSelectedFiles().size());
 
@@ -90,7 +86,7 @@ public class ArticleService {
     public ArticleResponse update(UpdateArticleRequest updateArticleRequest, Long articleId, List<MultipartFile> files) {
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
 
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new
                 ArticleException(ArticleErrorCode.NOT_EXISTS));
@@ -158,7 +154,7 @@ public class ArticleService {
                 new ArticleException(ArticleErrorCode.NOT_EXISTS));
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
         boolean mylove = false;
 
         if (loveRepository.findByCustomUserIdAndArticleId(customUser.getId(), articleId) != null) {
@@ -166,7 +162,7 @@ public class ArticleService {
         }
 
         UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
-        CustomUser user = userResponse1.toEntity(userResponse1);
+        MemberProfile user = userResponse1.toEntity(userResponse1);
 
         return article.toResponse(article, mylove, user);
 
@@ -176,7 +172,7 @@ public class ArticleService {
     public void deletearticlebyid(Long articleId) {
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
 
         Article article = articleRepository.findById(articleId).orElseThrow(() ->
                 new ArticleException(ArticleErrorCode.NOT_EXISTS));
@@ -193,7 +189,7 @@ public class ArticleService {
     public List<ArticleAllResponse> findAllArticle() {
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse); //로그인한 유저..
+        MemberProfile customUser = userResponse.toEntity(userResponse); //로그인한 유저..
 
 
         return articleRepository.findAll().stream().map(article -> {
@@ -215,7 +211,7 @@ public class ArticleService {
     public List<ArticleResponse> findAllArticlebyCategory(String keyword) {
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
 
 
         if (keyword.equals("자유게시판")) {
@@ -227,7 +223,7 @@ public class ArticleService {
                         }
 
                         UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
-                        CustomUser user = userResponse1.toEntity(userResponse1);
+                        MemberProfile user = userResponse1.toEntity(userResponse1);
 
                         ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                         return articleResponse;
@@ -241,7 +237,7 @@ public class ArticleService {
                         }
 
                         UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
-                        CustomUser user = userResponse1.toEntity(userResponse1);
+                        MemberProfile user = userResponse1.toEntity(userResponse1);
 
                         ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                         return articleResponse;
@@ -255,7 +251,7 @@ public class ArticleService {
                         }
 
                         UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
-                        CustomUser user = userResponse1.toEntity(userResponse1);
+                        MemberProfile user = userResponse1.toEntity(userResponse1);
 
                         ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                         return articleResponse;
@@ -268,7 +264,7 @@ public class ArticleService {
                             mylove = true;
                         }
                         UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
-                        CustomUser user = userResponse1.toEntity(userResponse1);
+                        MemberProfile user = userResponse1.toEntity(userResponse1);
                         ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                         return articleResponse;
                     })
@@ -281,7 +277,7 @@ public class ArticleService {
                         }
 
                         UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
-                        CustomUser user = userResponse1.toEntity(userResponse1);
+                        MemberProfile user = userResponse1.toEntity(userResponse1);
 
                         ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                         return articleResponse;
@@ -296,7 +292,7 @@ public class ArticleService {
     public List<ArticleResponse> search(String keyword) {
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
 
         return articleRepository.
                 findAllByContentandtitle(keyword)
@@ -307,7 +303,7 @@ public class ArticleService {
                     }
 
                     UserResponse userResponse1 = userService.getUserInfobyid(article.getUserId());
-                    CustomUser user = userResponse1.toEntity(userResponse1);
+                    MemberProfile user = userResponse1.toEntity(userResponse1);
 
                     ArticleResponse articleResponse = article.toResponse(article, mylove, user);
                     return articleResponse;

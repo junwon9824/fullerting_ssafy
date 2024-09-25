@@ -14,4 +14,5 @@ import org.springframework.data.redis.core.RedisHash;
 public class InvalidToken {
     @Id
     private String accessToken;
+
 }

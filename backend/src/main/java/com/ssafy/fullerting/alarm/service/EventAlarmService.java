@@ -7,7 +7,8 @@ import com.ssafy.fullerting.alarm.model.entity.EventAlarm;
 import com.ssafy.fullerting.alarm.repository.EventAlarmRepository;
 import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
+//import com.ssafy.fullerting.user.service.UserService;
 import com.ssafy.fullerting.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -72,8 +73,8 @@ public class EventAlarmService {
     }
 
     // 1. 내가 쓴 게시물에 댓글이 달렸을 때
-    public void notifyCommentCreated(CustomUser commenter, Article article, String redirectURL) {
-        CustomUser author = userService.getUserEntityById(article.getUserId());
+    public void notifyCommentCreated(MemberProfile commenter, Article article, String redirectURL) {
+        MemberProfile author = userService.getUserEntityById(article.getUserId());
 
         EventAlarm alarm = EventAlarm.builder()
                 .receiveUser(author)
@@ -96,7 +97,7 @@ public class EventAlarmService {
 
     // 2.채팅이 왔을 때 ( 채팅방 생성됐을 때 )
     // 누군가에게 첫 채팅이 오면 알림함에 저장하고 푸쉬 알람을 띄운다
-    public void notifyCreateChatRoomAuthor(CustomUser buyer, ExArticle exArticle, String redirectURL) {
+    public void notifyCreateChatRoomAuthor(MemberProfile buyer, ExArticle exArticle, String redirectURL) {
         // 내가 가격제안 게시물을 올렸는데
         // 누군가가 입찰을 했을 때 알림
 
@@ -124,7 +125,7 @@ public class EventAlarmService {
     // 현재 사용자의 알림함에 저장하는 메서드
     // 실행조건 : 입찰자가 입찰하기를 눌렀을 때
     @Transactional
-    public void notifyAuctionBidReceived(CustomUser bidUser, ExArticle exArticle, String redirectURL) {
+    public void notifyAuctionBidReceived(MemberProfile bidUser, ExArticle exArticle, String redirectURL) {
         // 내가 가격제안 게시물을 올렸는데
         // 누군가가 입찰을 했을 때 알림
 
@@ -151,7 +152,7 @@ public class EventAlarmService {
 
     // 4. 제안 온 가격을 판매자가 선택했을 때
     // 선택받은 입찰자에게 알람을 보낸다
-    public void notifyCreateChatRoomBidder(CustomUser buyer, ExArticle exArticle, String redirectURL) {
+    public void notifyCreateChatRoomBidder(MemberProfile buyer, ExArticle exArticle, String redirectURL) {
 
         EventAlarm alarm = EventAlarm.builder()
                 .receiveUser(buyer)

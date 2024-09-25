@@ -1,6 +1,5 @@
 package com.ssafy.fullerting.exArticle.service;
 
-import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import com.ssafy.fullerting.deal.exception.DealErrorCode;
 import com.ssafy.fullerting.deal.exception.DealException;
 import com.ssafy.fullerting.deal.model.entity.Deal;
@@ -9,7 +8,6 @@ import com.ssafy.fullerting.deal.service.DealService;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleDoneRequest;
-import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterImageRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.ExArticleRegisterRequest;
 import com.ssafy.fullerting.exArticle.model.dto.request.UpdateArticleRequest;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
@@ -30,9 +28,6 @@ import com.ssafy.fullerting.image.exception.ImageErrorCode;
 import com.ssafy.fullerting.image.exception.ImageException;
 import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.image.repository.ImageRepository;
-import com.ssafy.fullerting.record.diary.exception.DiaryException;
-import com.ssafy.fullerting.record.diary.model.dto.request.UpdateDiaryRequest;
-import com.ssafy.fullerting.record.diary.model.entity.Diary;
 import com.ssafy.fullerting.record.packdiary.exception.PackDiaryErrorCode;
 import com.ssafy.fullerting.record.packdiary.exception.PackDiaryException;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
@@ -44,8 +39,8 @@ import com.ssafy.fullerting.trans.repository.TransRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
-import com.ssafy.fullerting.user.repository.UserRepository;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
+import com.ssafy.fullerting.user.repository.MemberRepository;
 import com.ssafy.fullerting.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -60,9 +55,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.NOT_EXISTS_DIARY;
-import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.TRANSACTION_FAIL;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -70,7 +62,7 @@ import static com.ssafy.fullerting.record.diary.exception.DiaryErrorCode.TRANSAC
 public class ExArticleService {
     private final ExArticleRepository exArticleRepository;
     private final DealRepository dealRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
     private final favoriteRepository favoriteRepository;
     private final TransRepository transRepository;
     private final PackDiaryRepository packDiaryRepository;
@@ -108,7 +100,7 @@ public class ExArticleService {
             throw new ExArticleException(ExArticleErrorCode.NOT_EXISTS);
         }
 
-        CustomUser customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        MemberProfile customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 //        log.info("ussssss"+customUser.getEmail());
         log.info("ussssss" + email1);
 
@@ -154,7 +146,9 @@ public class ExArticleService {
             return image;
         }).collect(Collectors.toList());
 
-//        exArticle1.setImage(images);
+        log.info("urllllll"+images.get(0).getImgStoreUrl());
+
+        exArticle1.setImage(images);
         ExArticle article = exArticleRepository.save(exArticle1);
 
         if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.DEAL)) {
@@ -203,7 +197,7 @@ public class ExArticleService {
 
     public List<ExArticleAllResponse> allArticle() {
 
-        CustomUser user = UserResponse.toEntity(userService.getUserInfo());
+        MemberProfile user = UserResponse.toEntity(userService.getUserInfo());
 //        log.info("eeeeeeeeeeeee" + exArticle.stream().
 //                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
 
@@ -256,7 +250,7 @@ public class ExArticleService {
     public List<ExArticleKeywordResponse> keyword(String keyword) { //keyword 검색.
         List<ExArticle> exArticles = exArticleRepository.findAllByTitleContaining(keyword).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-        CustomUser user = UserResponse.toEntity(userService.getUserInfo());
+        MemberProfile user = UserResponse.toEntity(userService.getUserInfo());
         return exArticles.stream().map(exArticle -> exArticle.tokeyResponse(exArticle, user)).collect(Collectors.toList());
 
     }
@@ -264,7 +258,7 @@ public class ExArticleService {
     public ExArticleDetailResponse detail(Long ex_article_id) {
         ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser user = userResponse.toEntity(userResponse);
+        MemberProfile user = userResponse.toEntity(userResponse);
 
         return article.toDetailResponse(article, user);
 
@@ -273,7 +267,7 @@ public class ExArticleService {
     public void done(Long exArticleId, ExArticleDoneRequest exArticleDoneRequest) {
         //구매자 누군지 설정, 거래완료 true
 
-        CustomUser customUser = UserResponse.toEntity(userService.getUserInfo());
+        MemberProfile customUser = UserResponse.toEntity(userService.getUserInfo());
         ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
@@ -314,7 +308,7 @@ public class ExArticleService {
 
     public List<ExArticleResponse> selectFavorite() {  //나의 관심 article 추출.
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser user = UserResponse.toEntity(userResponse);
+        MemberProfile user = UserResponse.toEntity(userResponse);
 
         List<ExArticle> exArticles = exArticleRepository.findAllByUserIdAndFavoriteIsNotEmpty(user.getId()); //내 article 중
         List<ExArticleResponse> exArticleResponses = exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
@@ -323,7 +317,7 @@ public class ExArticleService {
 
     public List<ExArticleResponse> finishedarticles() {
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser user = UserResponse.toEntity(userResponse);
+        MemberProfile user = UserResponse.toEntity(userResponse);
 
         List<ExArticle> exArticles = exArticleRepository.findAllByUserIDAndDone(user.getId()); //내 article 중
         List<ExArticleResponse> exArticleResponses = exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
@@ -337,7 +331,7 @@ public class ExArticleService {
         List<Image> image = imageRepository.findAllByExArticleId(ex_article_id);
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser user = userResponse.toEntity(userResponse);
+        MemberProfile user = userResponse.toEntity(userResponse);
 
         if (article.getUser().getId() != user.getId()) {
             throw new ExArticleException(ExArticleErrorCode.NOT_MINE);
@@ -396,8 +390,8 @@ public class ExArticleService {
 
     //@Transactional
     public ExArticle modifyarticle(Long exArticleId,
-                                   UpdateArticleRequest updateArticleRequest, CustomUser customUser, List<MultipartFile> files) {
-//                                   UpdateArticleRequest updateArticleRequest, CustomUser customUser) {
+                                   UpdateArticleRequest updateArticleRequest, MemberProfile customUser, List<MultipartFile> files) {
+//                                   UpdateArticleRequest updateArticleRequest, MemberProfile customUser) {
 
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException
                 (ExArticleErrorCode.NOT_EXISTS));

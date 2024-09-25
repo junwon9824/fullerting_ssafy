@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder(toBuilder = true)
+@Builder
 @Getter
 public class ChatResponse {
     private Long chatRoomId; //채팅방 ID

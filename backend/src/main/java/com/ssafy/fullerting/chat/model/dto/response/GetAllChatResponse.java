@@ -1,11 +1,6 @@
 package com.ssafy.fullerting.chat.model.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ssafy.fullerting.chat.model.entity.Chat;
-import com.ssafy.fullerting.chat.model.entity.ChatRoom;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

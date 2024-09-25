@@ -2,11 +2,10 @@ package com.ssafy.fullerting.record.packdiary.model.entity;
 
 import com.ssafy.fullerting.crop.type.model.entity.Crop;
 import com.ssafy.fullerting.record.packdiary.model.dto.response.PackDiaryResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -26,7 +25,7 @@ public class PackDiary { //작물일지
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    private CustomUser user;
+    private MemberProfile user;
 
     @OneToOne
     @JoinColumn(name = "crop_type_id")

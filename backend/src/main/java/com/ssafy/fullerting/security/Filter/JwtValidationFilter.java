@@ -2,8 +2,7 @@ package com.ssafy.fullerting.security.Filter;
 
 import com.ssafy.fullerting.security.model.entity.CustomAuthenticationToken;
 import com.ssafy.fullerting.security.util.JwtUtils;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
-import com.ssafy.fullerting.user.repository.UserRepository;
+import com.ssafy.fullerting.user.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import jakarta.servlet.FilterChain;
@@ -12,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.br.TituloEleitoral;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,7 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class JwtValidationFilter extends OncePerRequestFilter {
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
     private final JwtUtils jwtUtils;
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
@@ -40,13 +38,14 @@ public class JwtValidationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
 
+
         // 코드 리뷰 버전
-        String [] list = StringUtils.split(authorizationHeader, BEARER_PREFIX);
+        String[] list = StringUtils.split(authorizationHeader, BEARER_PREFIX);
 
         //authorizationHeader 가 null 이 아니고 authorizationHeader에 앞에 BEARER_PREFIX 가 있을 경우만 accessToken 값 있음, 아니면 null
         String accessToken = (list != null && list.length == 2 && list[0].isEmpty()) ? list[1] : null;
 
-        if(accessToken == null){
+        if (accessToken == null) {
             doFilter(request, response, filterChain);
             return;
         }
@@ -69,10 +68,11 @@ public class JwtValidationFilter extends OncePerRequestFilter {
                             null,
                             authorities
                     ); // principal,userid,password,authorities 가 들어감}
-            SecurityContextHolder.getContext().setAuthentication(customAuthenticationToken);
-//            log.info("jwt 토큰 검증 : {}", SecurityContextHolder.getContext().toString());
-        }
 
+            SecurityContextHolder.getContext().setAuthentication(customAuthenticationToken);
+            log.info("jwt 토큰 검증 : {}", SecurityContextHolder.getContext().toString());
+
+        }
 
         filterChain.doFilter(request, response);
     }

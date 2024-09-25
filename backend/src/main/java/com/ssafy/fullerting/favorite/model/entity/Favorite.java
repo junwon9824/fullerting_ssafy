@@ -2,13 +2,9 @@ package com.ssafy.fullerting.favorite.model.entity;
 
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.favorite.model.dto.response.FavoriteResponse;
-import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,9 +29,10 @@ public class Favorite {
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    private CustomUser user;
+    private MemberProfile user;
 
-    public FavoriteResponse toResponse(CustomUser user) { // 이거 수정 ..
+    public FavoriteResponse toResponse(MemberProfile user) {
+        // 이거 수정 ..
         // 해당 게시글에 얼마나 많은 유저가 좋아요 눌럿나, 내가 좋아요 누른지 여부
 
         Long articleid = this.exArticle.getId();
@@ -54,7 +51,6 @@ public class Favorite {
                 .isLikeCnt(this.exArticle.getFavorite().size())
                 .islike(isLikedByUser)
                 .build();
-
     }
 
 }

@@ -8,7 +8,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.security.AuthProvider;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -20,8 +19,8 @@ import java.util.Map;
 @Setter
 @Builder
 @Entity
-@Table(name = "user")
-public class CustomUser implements UserDetails{
+@Table(name = "member_profile")
+public class MemberProfile implements UserDetails {
 
     // DB 필드
     @Id
@@ -53,7 +52,7 @@ public class CustomUser implements UserDetails{
     @Column(name = "user_provider", nullable = false, length = 20)
     private String authProvider;
 
-    
+
     // 메서드 설정
 
 
@@ -68,29 +67,29 @@ public class CustomUser implements UserDetails{
         return Collections.singletonList(new SimpleGrantedAuthority(this.role));
     }
 
-
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true; // 실제 로직에 맞게 수정
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true; // 실제 로직에 맞게 수정
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true; // 실제 로직에 맞게 수정
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true; // 실제 로직에 맞게 수정
     }
 
+
     // DTO 생성자
-    public UserResponse toResponse(){
+    public UserResponse toResponse() {
         return UserResponse.builder()
                 .id(this.id)
                 .email(this.email)
@@ -104,10 +103,9 @@ public class CustomUser implements UserDetails{
     }
 
 
-
-    public static CustomUser of(OAuth2User oAuth2User) {
+    public static MemberProfile of(OAuth2User oAuth2User) {
         Map<String, Object> map = oAuth2User.getAttributes();
-        return CustomUser.builder()
+        return MemberProfile.builder()
                 .email((String) map.get("email"))
                 .nickname((String) map.get("nickname")) // 예시입니다. 실제 속성명에 맞게 조정 필요
                 .role("ROLE_MEMBER")

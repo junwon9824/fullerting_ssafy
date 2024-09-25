@@ -4,7 +4,6 @@ import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.security.model.dto.request.LoginRequest;
 import com.ssafy.fullerting.security.service.AuthService;
 import com.ssafy.fullerting.user.model.dto.request.RefreshRequest;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j

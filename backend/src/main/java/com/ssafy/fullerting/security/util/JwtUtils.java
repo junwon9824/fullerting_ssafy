@@ -112,7 +112,6 @@ public class JwtUtils {
             log.info("exception : 지원되지 않는 엑세스 토큰");
             throw new JwtException(JwtErrorCode.NOT_SUPPORT_TOKEN, e.getMessage());
         }
-
     }
 
 

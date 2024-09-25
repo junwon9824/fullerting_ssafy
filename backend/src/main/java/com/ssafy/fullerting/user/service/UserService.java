@@ -7,10 +7,10 @@ import com.ssafy.fullerting.user.model.dto.request.UserRegisterRequest;
 import com.ssafy.fullerting.user.model.dto.request.UserTownRequest;
 import com.ssafy.fullerting.user.model.dto.request.UserUpdateRequest;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.model.entity.enums.UserRank;
 import com.ssafy.fullerting.user.model.entity.enums.UserRole;
-import com.ssafy.fullerting.user.repository.UserRepository;
+import com.ssafy.fullerting.user.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +24,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AmazonS3Service amazonS3Service;
     String defaultThunmail = "https://fullerting-s3-v2.s3.ap-northeast-2.amazonaws.com/default_thumnail.svg";
 
-    public CustomUser createUserEntity(UserRegisterRequest userRegisterRequest) {
-        return CustomUser.builder()
+    public MemberProfile createUserEntity(UserRegisterRequest userRegisterRequest) {
+        return MemberProfile.builder()
                 .email(userRegisterRequest.getEmail())
                 .password(passwordEncoder.encode(userRegisterRequest.getPassword()))
                 .thumbnail(defaultThunmail)
@@ -51,29 +51,29 @@ public class UserService {
     }
 
 
-    public void registOauthUser(CustomUser customUser) {
-        try {
-            userRepository.save(customUser);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("오류 발생 : " + e);
-        }
-        log.info("유저 회원가입 성공 : {}", customUser.toString());
-
-    }
+//    public void registOauthUser(MemberProfile customUser) {
+//        try {
+//            userRepository.save(customUser);
+//        } catch (RuntimeException e) {
+//            throw new RuntimeException("오류 발생 : " + e);
+//        }
+//        log.info("유저 회원가입 성공 : {}", customUser.toString());
+//
+//    }
 
     public UserResponse getUserInfo() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = (String) principal;
 
-        CustomUser customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        MemberProfile customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         return customUser.toResponse();
     }
 
-    public CustomUser getNowUserInfoEntityByToken() {
+    public MemberProfile getNowUserInfoEntityByToken() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = (String) principal;
 
-        CustomUser customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        MemberProfile customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         return customUser;
     }
 
@@ -81,7 +81,7 @@ public class UserService {
     @Transactional
     public UserResponse uploadThumbAndSaveDB(MultipartFile multipartFile) {
         // 현재 인증된 유저의 db정보를 불러온다
-        CustomUser user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        MemberProfile user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
         // 기존에 프로필 사진이 있었으면 지운다.
         // 기본 사진일 경우 S3에서 지우지 않는다
@@ -103,17 +103,17 @@ public class UserService {
 
     public UserResponse getUserInfobyid(Long userid) {
 
-        CustomUser customUser = userRepository.findById(userid).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        MemberProfile customUser = userRepository.findById(userid).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         return customUser.toResponse();
     }
 
-    public CustomUser getUserEntityById(Long userId) {
-        CustomUser customUser = userRepository.findById(userId).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+    public MemberProfile getUserEntityById(Long userId) {
+        MemberProfile customUser = userRepository.findById(userId).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         return customUser;
     }
 
     public void updatetown(UserTownRequest userTownRequest) {
-        CustomUser user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        MemberProfile user = userRepository.findByEmail(getUserInfo().getEmail()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         user.setLocation(userTownRequest.getUserLocation());
         userRepository.save(user);
     }
@@ -121,7 +121,7 @@ public class UserService {
 
     @Transactional
     public void updateCurrentUserInfo(UserUpdateRequest userUpdateRequest) {
-        CustomUser currentUser = getNowUserInfoEntityByToken();
+        MemberProfile currentUser = getNowUserInfoEntityByToken();
         currentUser.setNickname(userUpdateRequest.getNewNickname());
         userRepository.save(currentUser);
         log.info("닉네임 수정 성공 : {}",userUpdateRequest.getNewNickname());

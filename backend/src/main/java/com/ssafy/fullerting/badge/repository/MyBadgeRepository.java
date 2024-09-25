@@ -2,7 +2,7 @@ package com.ssafy.fullerting.badge.repository;
 
 import com.ssafy.fullerting.badge.model.entity.Badge;
 import com.ssafy.fullerting.badge.model.entity.MyBadge;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +14,6 @@ public interface MyBadgeRepository extends JpaRepository<MyBadge, Long> {
 //    List<MyBadge> findByCustomuserId(Long CustomUserId);
     List<MyBadge> findByCustomUserId(Long CustomUserId);
 
-    Optional<MyBadge> findByCustomUserAndBadge(CustomUser user, Badge badge);
+    Optional<MyBadge> findByCustomUserAndBadge(MemberProfile user, Badge badge);
 
 }

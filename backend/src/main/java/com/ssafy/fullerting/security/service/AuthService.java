@@ -3,11 +3,10 @@ package com.ssafy.fullerting.security.service;
 import com.ssafy.fullerting.security.model.dto.request.LoginRequest;
 import com.ssafy.fullerting.security.model.dto.response.IssuedToken;
 import com.ssafy.fullerting.security.model.entity.CustomAuthenticationToken;
-import com.ssafy.fullerting.security.util.JwtUtils;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
-import com.ssafy.fullerting.user.repository.UserRepository;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
+import com.ssafy.fullerting.user.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
     private final TokenService tokenService;
 
     public IssuedToken login(LoginRequest loginRequest) {
@@ -36,8 +35,10 @@ public class AuthService {
         try {
             Authentication authentication =
                     authenticationManager.authenticate(new CustomAuthenticationToken(inputEmail, inputPassword));
+
             // 성공한 인증객체를 ContextHolder에 등록
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             log.info("로그인 성공 객체정보 : {} ", authentication.toString());
 
             // 해당 인증 객체를 바탕으로 토큰을 발급한다
@@ -47,14 +48,13 @@ public class AuthService {
         } catch (AuthenticationException e) {
             throw new UserException(UserErrorCode.ACCESS_DENIED);
         }
-
     }
 
     public void logout() {
         // 인증 정보삭제
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = (String) principal;
-        CustomUser customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        MemberProfile customUser = userRepository.findByEmail(email).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         SecurityContextHolder.clearContext();
         log.info("사용자 로그아웃 : {}", email);
 

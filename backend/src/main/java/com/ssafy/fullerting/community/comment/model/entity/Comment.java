@@ -2,11 +2,9 @@ package com.ssafy.fullerting.community.comment.model.entity;
 
 import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.community.comment.model.dto.response.CommentResonse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -30,7 +28,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private CustomUser customUser;
+    private MemberProfile customUser;
 
     @ManyToOne
     @JoinColumn(name = "article_id", nullable = false)
@@ -41,7 +39,7 @@ public class Comment {
     @Column(name = "comment_created_at")
     private LocalDateTime localDateTime;
 
-    public CommentResonse tocommentResonse(CustomUser customUser) {
+    public CommentResonse tocommentResonse(MemberProfile customUser) {
         return CommentResonse.builder()
                 .commentcontent(this.comment_content)
                 .rank(customUser.getRank())

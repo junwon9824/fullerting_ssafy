@@ -2,8 +2,8 @@ package com.ssafy.fullerting.security.service;
 
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
-import com.ssafy.fullerting.user.repository.UserRepository;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
+import com.ssafy.fullerting.user.repository.MemberRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,16 +20,16 @@ import java.util.Collections;
 public class DataBaseUserDetailsService implements UserDetailsService {
     // DB에서 유저 정보 조회
 
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
 
     @Override
-    public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
-        CustomUser customUser = userRepository.findByEmail(username).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+    public MemberProfile loadUserByUsername(String username) throws UsernameNotFoundException {
+        MemberProfile customUser = userRepository.findByEmail(username).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
         return customUser;
 //        return new User(customUser.getEmail(), customUser.getPassword(), getAuthorities(customUser));
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(CustomUser customUser) {
+    private Collection<? extends GrantedAuthority> getAuthorities(MemberProfile customUser) {
         // 권한 설정.
         return Collections.singletonList(new SimpleGrantedAuthority(customUser.getRole()));
     }

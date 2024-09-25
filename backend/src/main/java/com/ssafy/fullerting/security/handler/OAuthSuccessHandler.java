@@ -1,11 +1,10 @@
 package com.ssafy.fullerting.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.fullerting.global.utils.MessageUtils;
 import com.ssafy.fullerting.security.model.dto.response.IssuedToken;
 import com.ssafy.fullerting.security.service.TokenService;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
-import com.ssafy.fullerting.user.repository.UserRepository;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
+import com.ssafy.fullerting.user.repository.MemberRepository;
 import com.ssafy.fullerting.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -26,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 @Component
 public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
     private final UserService userService;
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
@@ -39,6 +38,7 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         // 리디렉션할 URL과 토큰 발급
         String redirectUrl = "https://j10c102.p.ssafy.io/auth/callback";
+
         try {
             userRepository.findByEmail(oAuth2User.getName()).ifPresentOrElse(
                     user -> {
@@ -70,9 +70,10 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private void registerNewUser(OAuth2User oAuth2User) {
         // 새 사용자 등록 로직
-        CustomUser customUser = CustomUser.of(oAuth2User);
+        MemberProfile customUser = MemberProfile.of(oAuth2User);
         customUser.setPassword("DummyPasswordeoar!@3");
-        userService.registOauthUser(customUser);
+//        userService.registOauthUser(customUser);
+
     }
 
     private void redirectToCallbackWithToken(HttpServletResponse response, IssuedToken issuedToken, String redirectUrl) throws IOException {

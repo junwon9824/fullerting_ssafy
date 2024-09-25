@@ -1,7 +1,5 @@
 package com.ssafy.fullerting.record.packdiary.service;
 
-import com.ssafy.fullerting.badge.model.entity.Badge;
-import com.ssafy.fullerting.badge.model.entity.MyBadge;
 import com.ssafy.fullerting.badge.service.BadgeService;
 import com.ssafy.fullerting.crop.step.exception.CropStepException;
 import com.ssafy.fullerting.crop.step.model.entity.Step;
@@ -26,12 +24,11 @@ import com.ssafy.fullerting.record.packdiary.model.dto.response.GetCropStepRespo
 import com.ssafy.fullerting.record.packdiary.model.dto.response.GetDetailPackDiaryResponse;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.record.packdiary.repository.PackDiaryRepository;
-import com.ssafy.fullerting.record.steplog.exception.StepLogErrorCode;
 import com.ssafy.fullerting.record.steplog.exception.StepLogException;
 import com.ssafy.fullerting.record.steplog.model.entity.StepLog;
 import com.ssafy.fullerting.record.steplog.repository.CropStepLogRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +37,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.ssafy.fullerting.crop.step.exception.CropStepErrorCode.NOT_EXISTS_CROP_STEP;
@@ -66,7 +61,7 @@ public class PackDiaryServiceImpl implements PackDiaryService {
     private final BadgeService badgeService;
 
     @Override
-    public void createPackDiary(CustomUser user, CreatePackDiaryRequest createPackDiaryRequest) {
+    public void createPackDiary(MemberProfile user, CreatePackDiaryRequest createPackDiaryRequest) {
         Crop crop = cropTypeRepository.findById(createPackDiaryRequest.getCropTypeId()).orElseThrow(() -> new PackDiaryException(NOT_EXISTS_CROP));
         try {
             packDiaryRepository.save(PackDiary.builder()

@@ -2,17 +2,11 @@ package com.ssafy.fullerting.image.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.fullerting.community.article.model.entity.Article;
-import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
-import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.image.model.dto.response.ImageResponse;
 import com.ssafy.fullerting.record.diary.model.entity.Diary;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor

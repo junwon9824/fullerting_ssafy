@@ -2,7 +2,7 @@ package com.ssafy.fullerting.bidLog.model.entity;
 
 import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -41,7 +41,7 @@ public class BidLog {
         this.deal = deal;
     }
 
-    public BidLogResponse tobidLogResponse(BidLog bidLog,CustomUser customUser) {
+    public BidLogResponse tobidLogResponse(BidLog bidLog, MemberProfile customUser) {
 
         return BidLogResponse.builder()
                 .bidLogPrice(bidLog.bidLogPrice)
@@ -54,7 +54,7 @@ public class BidLog {
                 .build();
     }
 
-    public BidLogResponse toBidLogsuggestionResponse(BidLog bidLog,CustomUser user ,int size  ) {
+    public BidLogResponse toBidLogsuggestionResponse(BidLog bidLog, MemberProfile user , int size  ) {
 
         return BidLogResponse.builder()
                 .bidLogPrice(bidLog.bidLogPrice)

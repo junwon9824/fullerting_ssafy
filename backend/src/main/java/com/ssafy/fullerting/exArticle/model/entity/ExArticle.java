@@ -1,7 +1,5 @@
 package com.ssafy.fullerting.exArticle.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.deal.model.dto.response.MyExArticleResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
@@ -11,17 +9,15 @@ import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleResponse;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.favorite.model.dto.response.FavoriteResponse;
 import com.ssafy.fullerting.favorite.model.entity.Favorite;
-import com.ssafy.fullerting.global.BaseTimeEntity;
 import com.ssafy.fullerting.image.model.entity.Image;
 import com.ssafy.fullerting.record.packdiary.model.entity.PackDiary;
 import com.ssafy.fullerting.trans.model.entity.Trans;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,7 +42,7 @@ public class ExArticle {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private CustomUser user;
+    private MemberProfile user;
 
     //    @CreatedDate
     @Column(name = "created_at", nullable = false)
@@ -122,7 +118,7 @@ public class ExArticle {
     }
 
     @Transactional
-    public ExArticleResponse toResponse(ExArticle article, CustomUser customUser) {
+    public ExArticleResponse toResponse(ExArticle article, MemberProfile customUser) {
         ExArticleResponse exArticleResponse = null;
 //        Favorite favorite1 = null;
 
@@ -158,7 +154,7 @@ public class ExArticle {
 
 
     @Transactional
-    public MyExArticleResponse  toMyResponse(ExArticle article, CustomUser customUser) {
+    public MyExArticleResponse  toMyResponse(ExArticle article, MemberProfile customUser) {
         MyExArticleResponse exArticleResponse = null;
 //        Favorite favorite1 = null;
 
@@ -192,7 +188,7 @@ public class ExArticle {
         return exArticleResponse;
     }
 
-    public static ExArticleKeywordResponse tokeyResponse(ExArticle article, CustomUser customUser) {
+    public static ExArticleKeywordResponse tokeyResponse(ExArticle article, MemberProfile customUser) {
         ExArticleKeywordResponse response = null;
 
         //        List<FavoriteResponse> favoriteResponses
@@ -218,7 +214,7 @@ public class ExArticle {
         return response;
     }
 
-    public static ExArticleAllResponse toAllResponse(ExArticle article, CustomUser customUser) {
+    public static ExArticleAllResponse toAllResponse(ExArticle article, MemberProfile customUser) {
         ExArticleAllResponse exArticleAllResponse = null;
 
         //        List<FavoriteResponse> favoriteResponses
@@ -256,7 +252,7 @@ public class ExArticle {
         return exArticleAllResponse;
     }
 
-    public static ExArticleDetailResponse toDetailResponse(ExArticle article, CustomUser customUser) {
+    public static ExArticleDetailResponse toDetailResponse(ExArticle article, MemberProfile customUser) {
         ExArticleDetailResponse exArticleDetailResponse = null;
 
         //        List<FavoriteResponse> favoriteResponses

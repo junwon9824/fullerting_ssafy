@@ -7,7 +7,7 @@ import com.ssafy.fullerting.community.article.repository.ArticleRepository;
 import com.ssafy.fullerting.community.love.model.entity.Love;
 import com.ssafy.fullerting.community.love.repository.LoveRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class LoveService {
 
         log.info("article"+article.getLoves());
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
         AtomicBoolean islike = new AtomicBoolean(false);
 
         Iterator<Love> iterator = article.getLoves().iterator();

@@ -1,6 +1,6 @@
 package com.ssafy.fullerting.user.model.dto.response;
 
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import lombok.*;
 
 @AllArgsConstructor
@@ -19,8 +19,8 @@ public class UserResponse {
     private String authProvider;
 
 
-    public static CustomUser toEntity(UserResponse userResponse){
-        return  CustomUser.builder()
+    public static MemberProfile toEntity(UserResponse userResponse){
+        return  MemberProfile.builder()
                 .email(userResponse.email)
                 .id(userResponse.id)
                 .location(userResponse.location)

@@ -19,16 +19,14 @@ import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
-import com.ssafy.fullerting.user.repository.UserRepository;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
+import com.ssafy.fullerting.user.repository.MemberRepository;
 import com.ssafy.fullerting.user.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -41,11 +39,11 @@ public class BidService {
     private final BidRepository bidRepository;
     private final DealRepository dealRepository;
     private final ExArticleRepository exArticleRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository userRepository;
 
     private final UserService userService;
 
-    public void deal(BidProposeRequest bidProposeRequest, CustomUser user, Long ex_article_id) {
+    public void deal(BidProposeRequest bidProposeRequest, MemberProfile user, Long ex_article_id) {
         LocalDateTime time = LocalDateTime.now();
 
 
@@ -83,7 +81,7 @@ public class BidService {
         }
 
         List<BidLogResponse> bidLogResponses = bidLog.stream().map(bidLog1 -> {
-                    CustomUser user = userRepository.
+                    MemberProfile user = userRepository.
                             findById(bidLog1.getUserId()).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
                     return bidLog1.toBidLogsuggestionResponse(bidLog1, user, bidLogs.size());
                 })
@@ -131,7 +129,7 @@ public class BidService {
     public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
 
         ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
                 ExArticleErrorCode.NOT_EXISTS));
@@ -160,7 +158,7 @@ public class BidService {
     public BidLog choosetbid(Long exArticleId, BidSelectRequest bidSelectRequest) {
 
         UserResponse userResponse = userService.getUserInfo();
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
 
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));

@@ -1,8 +1,6 @@
 package com.ssafy.fullerting.chat.model.entity;
 
-import com.ssafy.fullerting.crop.type.model.entity.Crop;
-import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -28,7 +26,7 @@ public class Chat {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private CustomUser sender; //보낸 사람
+    private MemberProfile sender; //보낸 사람
 
     @Column(name = "chat_message", length = 5000)
     @NotNull

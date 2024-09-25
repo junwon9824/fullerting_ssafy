@@ -12,7 +12,7 @@ import com.ssafy.fullerting.exArticle.service.ExArticleService;
 import com.ssafy.fullerting.global.utils.MessageUtils;
 
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,6 +40,7 @@ public class ExArticleController {
     public ResponseEntity<MessageUtils> register(
             @RequestPart("files") List<MultipartFile> files,
             @RequestPart(value = "exArticleRegisterRequest") ExArticleRegisterRequest exArticleRegisterRequest,
+//            @RequestBody  ExArticleRegisterRequest exArticleRegisterRequest,
             @AuthenticationPrincipal String email) {
 
         Long exarticleid = exArticleService.register(exArticleRegisterRequest, email, files);
@@ -177,7 +178,7 @@ public class ExArticleController {
         log.info("[modifyarticle  ]: {}");
         UserResponse userResponse = userService.getUserInfo();
 
-        CustomUser customUser = userResponse.toEntity(userResponse);
+        MemberProfile customUser = userResponse.toEntity(userResponse);
 
         ExArticle article = exArticleService.modifyarticle(ex_article_id, updateArticleRequest, customUser, images);
 //        ExArticle article = exArticleService.modifyarticle(ex_article_id, updateArticleRequest, customUser);

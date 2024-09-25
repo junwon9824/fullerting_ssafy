@@ -7,12 +7,10 @@ import com.ssafy.fullerting.community.article.model.enums.ArticleType;
 import com.ssafy.fullerting.community.comment.model.entity.Comment;
 import com.ssafy.fullerting.community.love.model.entity.Love;
 import com.ssafy.fullerting.image.model.entity.Image;
-import com.ssafy.fullerting.user.model.entity.CustomUser;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.hibernate.Hibernate;
 
 import java.time.Duration;
@@ -100,7 +98,7 @@ public class Article {
         loves.remove(love);
     }
 
-    public ArticleResponse toResponse(Article article, boolean mylove, CustomUser customUser) {
+    public ArticleResponse toResponse(Article article, boolean mylove, MemberProfile customUser) {
 
         Hibernate.initialize(article.getImages());
         Hibernate.initialize(article.getLoves());
