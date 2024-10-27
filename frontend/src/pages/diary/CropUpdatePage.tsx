@@ -13,7 +13,7 @@ import StyledInput from "../../components/common/Input/StyledInput";
 import { useSSEConnection } from "../../hooks/useSSEConnection";
 
 const CropUpdatePage = () => {
-  useSSEConnection();
+  
   const navigate = useNavigate();
   const { packDiaryId } = useParams();
   const [selectedDate, setSelectedDate] = useState<string>(

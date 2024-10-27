@@ -120,6 +120,9 @@ const AllAlarm = () => {
               {notification.alarmType}
               {/* {notification.alarmId} */}
             </Notification>
+
+            {/*<div>ssss</div>*/}
+
             <div>{parseContent(notification.alarmContent)}</div>
           </NotificationItem>
         ))}

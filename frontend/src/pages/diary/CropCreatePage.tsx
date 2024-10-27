@@ -49,7 +49,7 @@ const RedCircle = styled.div`
 `;
 
 const CropCreatePage = () => {
-  useSSEConnection();
+  
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date(Date.now() + 1000 * 60 * 60 * 9).toISOString().slice(0, 10)

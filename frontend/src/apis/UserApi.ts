@@ -1,4 +1,4 @@
-import { api } from "./Base";
+import {api, loginapi} from "./Base";
 
 interface LoginType {
   email: string;
@@ -14,7 +14,7 @@ interface JoinType {
 
 export const userLogin = async (loginData: LoginType) => {
   try {
-    const response = await api.post("/auth/login", loginData);
+    const response = await loginapi.post("/auth/login", loginData);
     return response.data;
   } catch (error) {
     console.error("Error userLogin: ", error);
@@ -24,7 +24,7 @@ export const userLogin = async (loginData: LoginType) => {
 
 export const userJoin = async (joinData: JoinType) => {
   try {
-    const response = await api.post("/users/register", joinData);
+    const response = await loginapi.post("/users/register", joinData);
     return response.data;
   } catch (error) {
     console.error("Error userLogin: ", error);
@@ -33,7 +33,7 @@ export const userJoin = async (joinData: JoinType) => {
 };
 export const userCheck = async (accessToken: string) => {
   try {
-    const response = await api.get("users/info", {
+    const response = await api.get("/users/info", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     return response.data.data_body;

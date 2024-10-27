@@ -104,6 +104,7 @@ const MainExchange = () => {
     queryKey: ["Exchange"],
     queryFn: accessToken ? () => getExchange(accessToken) : undefined,
   });
+  console.log("Fetched Exchange Data:", data);
 
   const handleItemClick = () => {
     navigate(`/trade`);

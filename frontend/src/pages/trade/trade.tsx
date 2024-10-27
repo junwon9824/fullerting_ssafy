@@ -41,7 +41,7 @@ const SvgBox = styled.svg`
 
 const TradePage = () => {
   const navigate = useNavigate();
-  useSSEConnection();
+  
   const [selectButton, setSelectButton] = useAtom(selectedCategory);
   const [search, setSearch] = useInput("");
   const ComponentContainer = styled.div`

@@ -34,7 +34,7 @@ const SearchContainer = styled.div`
 `;
 
 const CropPage = () => {
-  useSSEConnection();
+  
   const [search, onSearch, setSearch] = useInput("");
   const navigate = useNavigate();
 

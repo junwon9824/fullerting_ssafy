@@ -8,6 +8,8 @@ interface ImportMetaEnv {
   readonly VITE_REACT_APP_API_URL: string;
   readonly VITE_REACT_APP_WSS_URL: string;
   readonly VITE_REACT_APP_SSE_URL: string;
+  readonly  VITE_REACT_APP_GOOGLE_REDIRECT_URI: string;
+  readonly  VITE_REACT_APP_GOOGLE_CLIENT_ID: string;
 }
 
 interface ImportMeta {
