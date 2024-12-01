@@ -1,5 +1,7 @@
 package com.ssafy.fullerting.exArticle.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ssafy.fullerting.deal.model.dto.response.MyExArticleResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
@@ -17,6 +19,7 @@ import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
@@ -74,7 +77,8 @@ public class ExArticle {
     @Column(name = "ex_article_purchaser_id")
     private Long purchaserId;
 
-    @OneToOne(mappedBy = "exArticle", cascade = CascadeType.ALL)
+     @OneToOne(mappedBy = "exArticle", cascade = CascadeType.ALL)
+     @JsonBackReference
     private Deal deal;
 
 
@@ -82,6 +86,7 @@ public class ExArticle {
     private Trans trans;
 
     @OneToMany(mappedBy = "exArticle", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Image> image;
 
     @OneToMany(mappedBy = "exArticle", cascade = CascadeType.ALL)

@@ -25,13 +25,14 @@ public class EventAlarmNotificationController {
     @GetMapping(path = "/pub", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public SseEmitter subscribe() {
+        log.info("subscribeee");
         return eventAlarmNotificationService.subscribe(userService.getUserInfo().getId());
     }
 
-    @PostMapping(path = "/send")
-    public ResponseEntity<Void> sendToUser(@RequestBody AlarmPayload alarmPayload) {
-        eventAlarmNotificationService.sendAsync(alarmPayload);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping(path = "/send")
+//    public ResponseEntity<Void> sendToUser(@RequestBody AlarmPayload alarmPayload) {
+//        eventAlarmNotificationService.sendAsync(alarmPayload);
+//        return ResponseEntity.ok().build();
+//    }
 
 }

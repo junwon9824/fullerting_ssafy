@@ -146,7 +146,7 @@ public class ExArticleService {
             return image;
         }).collect(Collectors.toList());
 
-        log.info("urllllll"+images.get(0).getImgStoreUrl());
+        log.info("urllllll" + images.get(0).getImgStoreUrl());
 
         exArticle1.setImage(images);
         ExArticle article = exArticleRepository.save(exArticle1);
@@ -262,6 +262,12 @@ public class ExArticleService {
 
         return article.toDetailResponse(article, user);
 
+    }
+
+    public ExArticle getbyid(long id) {
+
+        ExArticle article = exArticleRepository.findById(id).orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        return article;
     }
 
     public void done(Long exArticleId, ExArticleDoneRequest exArticleDoneRequest) {

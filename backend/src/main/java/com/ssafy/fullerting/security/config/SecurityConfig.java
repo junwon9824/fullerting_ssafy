@@ -46,20 +46,21 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
 //                .oauth2Login(Customizer.withDefaults())
 
-                .oauth2Login(customizer ->
-                                customizer
-//                                .failureHandler(authFailureHandler)
-                                        .userInfoEndpoint(userInfoEndpoint ->
-                                                userInfoEndpoint.userService(customOAuth2Service))
-                                        .successHandler(oAuthSuccessHandler)
-                )
+//                .oauth2Login(customizer ->
+//                                customizer
+////                                .failureHandler(authFailureHandler)
+//                                        .userInfoEndpoint(userInfoEndpoint ->
+//                                                userInfoEndpoint.userService(customOAuth2Service))
+//                                        .successHandler(oAuthSuccessHandler)
+//                )
 
                 // 인가 경로 설정
                 .authorizeHttpRequests((requests) ->
                         requests.requestMatchers(
                                 "/error",
                                 "/oauth2/**",
-                                "/login/**",
+//                                "/login/**",
+
                                 "/v1/auth/login",
                                 "/v1/users/register",
                                 "/v1/file/upload",
@@ -97,8 +98,8 @@ public class SecurityConfig {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOrigins(Collections.singletonList("*")); // 모든 Origin 허용
-            config.setAllowCredentials(false); // 모든 도메인을 허용할 때는 false로 설정해야 함
+            config.setAllowedOrigins(Collections.singletonList("http://localhost:5173")); // 허용할 출처
+            config.setAllowCredentials(true); // 인증 정보 허용
             config.setMaxAge(3600L);
             return config;
         };

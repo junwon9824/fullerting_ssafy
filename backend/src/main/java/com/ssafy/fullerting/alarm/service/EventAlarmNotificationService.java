@@ -17,7 +17,7 @@ public class EventAlarmNotificationService {
     // thread-safe 한 컬렉션 객체로 sse emitter 객체를 관리
     private final Map<String, SseEmitter> emitterMap = new ConcurrentHashMap<>();
     private static final long TIMEOUT = 10*60*1000;
-    private static final long HEARTBEAT_INTERVAL = 10 * 1000L; // 30초마다 하트비트 전송
+    private static final long HEARTBEAT_INTERVAL = 10 * 10000L; // 30초마다 하트비트 전송
 
     public SseEmitter subscribe(Long userId) {
 //        log.info("SSE 구독 요청 시작: {} (스레드: {})", userId, Thread.currentThread().getName());
@@ -62,11 +62,13 @@ public class EventAlarmNotificationService {
                 emitter.completeWithError(e);
                 emitterMap.remove(userId);
             }
-        } else {
+        }
+        else {
             log.warn("SSE 전송 시도 실패: 사용자 {}에 대한 Emitter 없음", userId);
         }
 
         log.info("비동기 메서드 종료: 사용자 {} (스레드: {})", userId, Thread.currentThread().getName());
+
     }
 
 

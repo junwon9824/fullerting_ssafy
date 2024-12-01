@@ -10,6 +10,7 @@
 //import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 //import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 //import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
+//import com.ssafy.fullerting.global.config.BidProducerService;
 //import com.ssafy.fullerting.security.model.entity.CustomAuthenticationToken;
 //import com.ssafy.fullerting.user.model.entity.MemberProfile;
 //import com.ssafy.fullerting.user.service.UserService;
@@ -21,15 +22,19 @@
 //import org.springframework.messaging.simp.SimpMessagingTemplate;
 //import org.springframework.stereotype.Controller;
 //
+
+
+//이코드는 카프카를 사용하지 않고 내부 브로커 만을 사용한 코드.
 //@Controller
 //@Slf4j
 //@RequiredArgsConstructor
 //public class MessageController {
-////    private final SimpMessagingTemplate messagingTemplate;
+//    private final SimpMessagingTemplate messagingTemplate;
 //    private final ExArticleRepository exArticleRepository;
 //    private final EventAlarmService eventAlarmService;
 //    private final BidService bidService;
 //    private final UserService userService;
+//    private final BidProducerService bidProducerService;
 //
 //    @MessageMapping("/bidding/{exArticleId}/messages")
 //    public void bidBroker(@DestinationVariable Long exArticleId, SimpMessageHeaderAccessor headerAccessor, DealstartRequest dealstartRequest) {
@@ -87,7 +92,17 @@
 //                            .maxPrice(maxBidPrice)
 //                            .bidderCount(bidderCount)
 //                            .build()
+//
 //            );
+//
+//            bidProducerService.sendBidMessage( exArticleId , DealstartResponse.builder()
+//                            .bidLogId(socketdealbid.getId())
+//                            .exArticleId(bidUserId)
+//                            .userResponse(bidUser.toResponse())
+//                            .dealCurPrice(dealstartRequest.getDealCurPrice())
+//                            .maxPrice(maxBidPrice)
+//                            .bidderCount(bidderCount)
+//                            .build() );
 //
 //            log.info("Message [{}] send by member: {} to chatting room: {}", dealstartRequest.getDealCurPrice(), exArticleId);
 //            log.info("리디렉트 {} : ", dealstartRequest.getRedirectURL());

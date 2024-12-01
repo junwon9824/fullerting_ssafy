@@ -30,6 +30,8 @@ public class EventAlarmService {
     // 알림 트리거
     // 1. 내가 쓴 게시물에 댓글이 달렸을 때
     // 2. 채팅이 왔을 때 (채팅이 생성됐을 때)
+    // 2-2.채팅이 왔을 때
+
     // 3. 가격제안 왔을 때
     // 4. 내가 입찰한 게시물의 거래가 종료되었을 때
     // 5. 뱃지 획득했을 때
@@ -105,6 +107,30 @@ public class EventAlarmService {
                 .receiveUser(exArticle.getUser())
                 .sendUser(buyer)
                 .type(EventAlarmType.작물거래)
+                .content(buyer.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 첫채팅을 보냈어요!")
+                .redirect(redirectURL)
+                .build();
+
+        eventAlarmRepository.save(alarm);
+        log.info("이벤트 알람 도착 : {} ", alarm);
+
+        eventAlarmNotificationService.sendAsync(AlarmPayload.builder()
+                .receiveUserId(exArticle.getUser().getId())
+                .alarmType(EventAlarmType.작물거래.toString())
+                .alarmContent(buyer.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 첫채팅을 보냈어요!")
+                .alarmRedirect(redirectURL)
+                .build());
+    }
+
+    // 2-2.채팅이 왔을 때
+
+    public void notifyChatRoomAuthor(MemberProfile buyer, ExArticle exArticle, String redirectURL) {
+
+
+        EventAlarm alarm = EventAlarm.builder()
+                .receiveUser(exArticle.getUser())
+                .sendUser(buyer)
+                .type(EventAlarmType.작물거래)
                 .content(buyer.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 채팅을 보냈어요!")
                 .redirect(redirectURL)
                 .build();
@@ -119,7 +145,6 @@ public class EventAlarmService {
                 .alarmRedirect(redirectURL)
                 .build());
     }
-
 
     // 3. 가격제안 왔을 때
     // 현재 사용자의 알림함에 저장하는 메서드

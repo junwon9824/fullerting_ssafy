@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.image.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.fullerting.community.article.model.entity.Article;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
@@ -25,6 +26,7 @@ public class Image {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ex_article_id")
+    @JsonBackReference // 이 필드는 직렬화 시 포함되지 않음
 
     private ExArticle exArticle;
 
