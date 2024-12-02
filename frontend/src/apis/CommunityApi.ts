@@ -43,6 +43,7 @@ export const getDetailCommunities = async ( communityId: string) => {
 export const create = async (formdata:FormData) => {
   try {
     const accessToken = sessionStorage.getItem("accessToken");
+    console.log("accessToken",accessToken);
     const response = await api.post(
       `articles`,
       formdata,
@@ -105,7 +106,7 @@ export const toggleLike = async (communityId:string) => {
   }
 };
 
-export const createComment = async (commentData: CommentType)=> {``
+export const createComment = async (commentData: CommentType)=> {
   const accessToken = sessionStorage.getItem("accessToken");
   try {
     commentData.redirectURL = window.location.pathname;

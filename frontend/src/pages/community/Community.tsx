@@ -10,6 +10,7 @@ import CommunityAll from "./CommunityAll";
 import { selectedTypeAtom } from "../../stores/community";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
+import {useSSEConnection} from "../../hooks/useSSEConnection.tsx";
 
 const LayoutInnerBox = styled.div`
   width: 100%;
@@ -32,6 +33,7 @@ const Community = () => {
   const [selectedType, setSelectedType] = useAtom(selectedTypeAtom);
   const navigate = useNavigate();
 
+  useSSEConnection();
   useEffect(() => {
     // 컴포넌트가 처음 렌더링될 때 "전체" 라디오 버튼을 선택합니다.
     setSelectedType("전체");

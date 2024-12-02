@@ -1,4 +1,5 @@
-import {api, loginapi} from "./Base";
+import {api} from "./Base";
+// import {  loginapi} from "./Base";
 
 interface LoginType {
   email: string;
@@ -11,26 +12,31 @@ interface JoinType {
   nickname: string;
   auth_provider: "MYAPP";
 }
+const handleApiError = (error: any, functionName: string) => {
+  console.error(`Error in ${functionName}: `, error);
+  throw error;
+};
 
 export const userLogin = async (loginData: LoginType) => {
   try {
-    const response = await loginapi.post("/auth/login", loginData);
+    const response = await api.post("/auth/login", loginData);
     return response.data;
   } catch (error) {
-    console.error("Error userLogin: ", error);
-    throw error;
+    handleApiError(error, "userLogin");
   }
 };
 
 export const userJoin = async (joinData: JoinType) => {
   try {
-    const response = await loginapi.post("/users/register", joinData);
+    const response = await api.post("/users/register", joinData);
     return response.data;
   } catch (error) {
-    console.error("Error userLogin: ", error);
-    throw error;
+    handleApiError(error, "userJoin");
   }
 };
+
+// 나머지 API 호출도 동일한 패턴으로 개선 가능
+
 export const userCheck = async (accessToken: string) => {
   try {
     const response = await api.get("/users/info", {

@@ -52,6 +52,7 @@ const TradePost = () => {
   const [tradeType, setTradeType] = useAtom(selectedTypeAtom);
 
   const handleConfirmClick = async () => {
+    console.log("handleConfirmClick")
     const formData = new FormData();
 
     selectedFiles.forEach((file) => {
@@ -80,7 +81,7 @@ const TradePost = () => {
       // navigate(-1);
       navigate("/community");
     } catch (error) {
-      console.error("업로드 실패:", error);
+      console.log("업로드 실패:", error);
       window.alert("모든 부분을 등록해주세요.");
     }
   };

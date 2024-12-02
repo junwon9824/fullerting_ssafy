@@ -1,24 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { useAtom } from "jotai";
 import { notificationAtom } from "../stores/notification";
+// import "./NotificationPopup.css"; // CSS 스타일 임포트
+
+// const NotificationPopup = ({ notification, onClose }) => {
+//   if (!notification.show) return null;
+//
+//   return (
+//       <div className="popup">
+//         <div className="popup-content">
+//           <h4>{notification.name}</h4>
+//           <p>{notification.content}</p>
+//           {notification.redirectURL && (
+//               <a href={notification.redirectURL}>상세보기</a>
+//           )}
+//           <button onClick={onClose}>닫기</button>
+//         </div>
+//       </div>
+//   );
+// };
 
 export const useSSEConnection = () => {
   const [notification, setNotification] = useAtom(notificationAtom);
-  const [messages, setMessages] = useState([]);
   const wssURL = import.meta.env.VITE_REACT_APP_SSE_URL;
 
   useEffect(() => {
-    let isMounted = true; // 컴포넌트 마운트 상태를 추적
+    let isMounted = true;
 
     const accessToken = sessionStorage.getItem("accessToken") || "";
-    // const url = "http://localhost:8080/v1/noti/pub";
     const url = wssURL;
 
     const connectSSE = () => {
+
       const eventSource = new EventSourcePolyfill(url, {
         headers: { Authorization: `Bearer ${accessToken}` },
-        heartbeatTimeout: 20 * 60 * 1000, // 20분
+        heartbeatTimeout: 20 * 60 * 1000,
       });
 
       eventSource.onmessage = (event) => {
@@ -45,26 +62,52 @@ export const useSSEConnection = () => {
       eventSource.onerror = (error) => {
         console.error("EventSource failed:", error);
         eventSource.close();
-        // 재연결 로직: 일정 시간 후 재연결 시도
         if (isMounted) {
-          setTimeout(connectSSE, 1000); // 5초 후 재시도
+          setTimeout(connectSSE, 1000);
         }
       };
 
       return () => {
-        isMounted = false; // 컴포넌트 언마운트 시 재연결 중단
+        isMounted = false;
         eventSource.close();
       };
     };
 
-    const disconnectSSE = connectSSE(); // SSE 연결 시도 및 연결 해제 함수 반환
+    connectSSE();
 
     return () => {
-      disconnectSSE(); // 컴포넌트 언마운트 시 연결 해제
+      isMounted = false;
     };
-  }, []); // 의존성 배열이 빈 배열이므로, 컴포넌트가 마운트될 때 한 번만 실행됨
+  }, [setNotification]);
 
-  useEffect(() => {}, [notification]); // notification 상태 업데이트 시 리렌더링을 위해 필요
-
-  return { messages, notification };
+  // return { notification, setNotification, NotificationPopup }; // NotificationPopup 컴포넌트도 반환
+  return { notification, setNotification};
 };
+
+// CSS 스타일
+const styles = `
+.popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #f0c14b;
+  border: 1px solid #a88734;
+  padding: 10px;
+  z-index: 1000;
+  transition: opacity 0.5s;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.popup button {
+  margin-top: 10px;
+}
+`;
+
+// 스타일을 문서에 추가
+const styleElement = document.createElement("style");
+styleElement.innerHTML = styles;
+document.head.appendChild(styleElement);

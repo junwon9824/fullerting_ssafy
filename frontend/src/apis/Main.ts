@@ -6,7 +6,7 @@ export const getExchange = async (accessToken: string) => {
     const response = await api.get(`/exchanges/all`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    console.log("데이터 연결 성공ㄴㄴㄴ", response.data);
+    // console.log("데이터 연결 성공ㄴㄴㄴ", response.data);
 
     console.log("데이터 연결 성공", response.data.data_body);
 
