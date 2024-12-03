@@ -24,7 +24,7 @@
 //@Controller
 //@Slf4j
 //@RequiredArgsConstructor
-//public class MessageController {
+//public class gitMessageController {
 ////    private final SimpMessagingTemplate messagingTemplate;
 //    private final ExArticleRepository exArticleRepository;
 //    private final EventAlarmService eventAlarmService;
