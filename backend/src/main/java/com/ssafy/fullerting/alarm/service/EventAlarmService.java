@@ -112,7 +112,7 @@ public class EventAlarmService {
                 .build();
 
         eventAlarmRepository.save(alarm);
-        log.info("이벤트 알람 도착 : {} ", alarm);
+        log.info("이벤트 알람 도착 : {} ", alarm );
 
         eventAlarmNotificationService.sendAsync(AlarmPayload.builder()
                 .receiveUserId(exArticle.getUser().getId())

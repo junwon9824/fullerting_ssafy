@@ -1,8 +1,9 @@
-package com.ssafy.fullerting.global.config;
+package com.ssafy.fullerting.global.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.fullerting.deal.model.dto.response.DealstartResponse;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
+import com.ssafy.fullerting.global.config.BidNotification;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,11 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @RequiredArgsConstructor
 public class BidProducerService {
-//    private final KafkaTemplate<String, BidNotification> kafkaTemplate; // Object 타입으로 변경하여 다양한 메시지 타입 지원
-        private final KafkaTemplate<String, String> kafkaTemplatetest; // Object 타입으로 변경하여 다양한 메시지 타입 지원
+    //    private final KafkaTemplate<String, BidNotification> kafkaTemplate; // Object 타입으로 변경하여 다양한 메시지 타입 지원
+    private final KafkaTemplate<String, String> kafkaTemplatetest; // Object 타입으로 변경하여 다양한 메시지 타입 지원
     private final ObjectMapper objectMapper; // Jackson ObjectMapper
 
+    // 원래 코드에 카프카로 코드 변환한 파일...
 
     // DealstartResponse 메시지 전송
 //    public void sendBidMessage(Long exArticleId, DealstartResponse dealstartResponse) {
@@ -51,8 +53,8 @@ public class BidProducerService {
 //                });
 //    }
 
-    public void test(MemberProfile memberProfile, ExArticle exArticle, String redirecturl) {
-        String topicName = "test"; // 알림 전용 토픽
+    public void kafkaalarm(MemberProfile memberProfile, ExArticle exArticle, String redirecturl) {
+        String topicName = "kafka-alarm"; // 알림 전용 토픽
 
         try {
 
@@ -61,12 +63,14 @@ public class BidProducerService {
                     userId(memberProfile.getId())
                     .articleId(exArticle.getId())
                     .redirectUrl(redirecturl)
+                    .price(exArticle.getDeal() == null ? exArticle.getTrans().getTrans_sell_price() : exArticle.getDeal().getDealCurPrice())
                     .build();
 
 //            BidNotification(memberProfile, exArticle, redirecturl);
 
 
             String message = objectMapper.writeValueAsString(messagePayload); // JSON으로 직렬화
+            log.info("kafka messagemessagemessage"+ message);
 
             CompletableFuture<SendResult<String, String>> future = kafkaTemplatetest.send(topicName, message);
 

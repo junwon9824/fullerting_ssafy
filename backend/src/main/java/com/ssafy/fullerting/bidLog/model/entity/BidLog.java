@@ -28,7 +28,7 @@ public class BidLog {
     private Deal deal;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private Long userId; //입찰자 아이디
 
     @Column(name = "bid_log_time", nullable = false)
     private LocalDateTime localDateTime;

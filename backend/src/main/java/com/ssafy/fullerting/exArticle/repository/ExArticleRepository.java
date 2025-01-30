@@ -21,6 +21,9 @@ public interface ExArticleRepository extends JpaRepository<ExArticle, Long> {
     List<ExArticle> findAllByUserIdAndFavoriteIsNotEmpty(Long userId);
 
 
+    @Query("select e from ExArticle e  where e.user.id = :userid and e.isDone = false ")
+    List<ExArticle> findAllByUserID(Long userid);
+
     @Query("select e from ExArticle e  where e.user.id = :userid and e.isDone = true ")
     List<ExArticle> findAllByUserIDAndDone(Long userid);
 

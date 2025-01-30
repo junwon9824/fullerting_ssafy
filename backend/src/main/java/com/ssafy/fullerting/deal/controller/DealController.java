@@ -39,4 +39,12 @@ public class DealController {
 
     }
 
+    @GetMapping("/wrotearticles")
+    @Operation(summary = "내가 작성한 게시물 조회 ", description = "내가 작성한 게시물 조회")
+    public ResponseEntity<MessageUtils> wrotearticles() {
+
+        log.info("[wrotearticles  ]: {}");
+        return ResponseEntity.ok().body(MessageUtils.success(dealService.wrotearticles()));
+
+    }
 }

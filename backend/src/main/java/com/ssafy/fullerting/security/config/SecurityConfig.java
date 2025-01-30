@@ -99,6 +99,7 @@ public class SecurityConfig {
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
             config.setAllowedOrigins(Collections.singletonList("http://localhost:5173")); // 허용할 출처
+            config.setAllowedOrigins(Collections.singletonList("http://localhost:5174")); // 허용할 출처
             config.setAllowCredentials(true); // 인증 정보 허용
             config.setMaxAge(3600L);
             return config;

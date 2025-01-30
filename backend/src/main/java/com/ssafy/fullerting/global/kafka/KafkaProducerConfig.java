@@ -1,4 +1,4 @@
-package com.ssafy.fullerting.kafka;
+package com.ssafy.fullerting.global.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;

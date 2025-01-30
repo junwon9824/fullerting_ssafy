@@ -10,7 +10,6 @@ import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
-import com.ssafy.fullerting.global.config.BidProducerService;
 import com.ssafy.fullerting.security.model.entity.CustomAuthenticationToken;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;

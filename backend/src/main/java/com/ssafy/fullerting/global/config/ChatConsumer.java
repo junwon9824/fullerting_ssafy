@@ -16,10 +16,6 @@
 ////        this.messagingTemplate = messagingTemplate;
 ////    }
 //
-//    @KafkaListener(topics = "#{T(java.util.List).of('chat-1', 'chat-2')}", groupId = "chat-group") // 예시로 두 개의 채팅방
-//    public void listen(ChatResponse chatResponse) {
-//        messagingTemplate.convertAndSend("/sub/chat/" + chatResponse.getChatRoomId(), chatResponse);
-//    }
 //
 //
 //    @MessageMapping("/chat")

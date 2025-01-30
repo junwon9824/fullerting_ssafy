@@ -45,6 +45,7 @@ public class DealService {
         }).collect(Collectors.toList());
 
     }
+
     @Transactional
     public List<MyExArticleResponse> mybidarticles() {
         UserResponse userResponse = userService.getUserInfo();
@@ -71,5 +72,42 @@ public class DealService {
 
         return uniqueResponses;
     }
+
+
+    @Transactional
+    public List<MyExArticleResponse> wrotearticles() {
+
+        UserResponse userResponse = userService.getUserInfo();
+        MemberProfile customUser = userResponse.toEntity(userResponse);
+        List<ExArticle> exArticles = exArticleRepository.findAllByUserID(customUser.getId());
+
+        List<BidLog> bidLogs = exArticles.stream().map(exArticle -> BidLog.builder()
+                .bidLogPrice(exArticle.getDeal().getDealCurPrice())
+                .userId(exArticle.getPurchaserId())
+                .deal(exArticle.getDeal())
+
+                .build()
+        ).collect(Collectors.toList());
+
+        // 중복을 제거할 열의 값을 저장할 Set
+        HashSet<Long> exArticleIds = new HashSet<>();
+
+        // 중복 제거된 결과를 저장할 리스트
+        List<MyExArticleResponse> uniqueResponses = new ArrayList<>();
+
+        // 특정 열의 값을 추출하여 Set에 저장하여 중복 제거
+        for (BidLog bidLog : bidLogs) {
+            ExArticle article = bidLog.getDeal().getExArticle();
+            Long exArticleId = article.getId(); // 특정 열의 값 추출
+            if (!exArticleIds.contains(exArticleId)) {
+                // 중복이 아닌 경우에만 리스트에 추가
+                exArticleIds.add(exArticleId);
+                uniqueResponses.add(article.toMyResponse(article, customUser));
+            }
+        }
+
+        return uniqueResponses;
+    }
+
 
 }
