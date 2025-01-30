@@ -1,4 +1,4 @@
-package com.ssafy.fullerting.global.config;
+package com.ssafy.fullerting.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -26,17 +26,6 @@ import java.util.Map;
 @EnableKafka
 public class KafkaProducerConfig {
 
-    // Producer 설정
-//    @Bean
-//    public ProducerFactory<String, BidNotification> producerFactory() {
-//
-//        Map<String, Object> config = new HashMap<>();
-//        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-//        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-//        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-//        config.put(JsonSerializer.TYPE_MAPPINGS, "BidNotification:com.ssafy.fullerting.global.config.BidNotification");
-//        return new DefaultKafkaProducerFactory<>(config);
-//    }
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {

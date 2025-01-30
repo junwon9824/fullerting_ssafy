@@ -140,7 +140,7 @@ const MainTip = () => {
       <LogoAndTextContainer>
         <LogoContent>
           작물 꿀팁을 공유해보세요
-          <LogoText onClick={goCommunity}>커뮤니티 바로가기</LogoText>
+          <LogoText onClick={accessToken ? goCommunity : goToLogin} >커뮤니티 바로가기 </LogoText>
         </LogoContent>
         <Character>
           <img src={pullright} alt="" />

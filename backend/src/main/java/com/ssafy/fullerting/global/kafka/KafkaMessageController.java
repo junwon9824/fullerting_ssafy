@@ -1,4 +1,4 @@
-package com.ssafy.fullerting.deal.controller;
+package com.ssafy.fullerting.global.kafka;
 
 import com.ssafy.fullerting.alarm.service.EventAlarmService;
 import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
@@ -78,28 +78,19 @@ public class KafkaMessageController {
                             .bidderCount(bidderCount)
                             .build());
 
-            // Kafka로 메시지 전송
-            DealstartResponse kafkaMessage = DealstartResponse.builder()
-                    .bidLogId(socketdealbid.getId())
-                    .exArticleId(bidUserId)
-                    .userResponse(bidUser.toResponse())
-                    .dealCurPrice(dealstartRequest.getDealCurPrice())
-                    .maxPrice(maxBidPrice)
-                    .bidderCount(bidderCount)
-                    .build();
 
 //            bidProducerService.sendBidMessage(exArticleId, kafkaMessage); // Kafka 토픽으로 메시지 전송
 
             log.info("Message [{}] sent by member: {} to bidding room: {}", dealstartRequest.getDealCurPrice(), exArticleId);
             log.info("리디렉트 URL: {}", dealstartRequest.getRedirectURL());
 
-            // 입찰 알림 -->  이 부분을 이제 카프카를 사용하여 변경할거야
+            // 입찰 알림 -->  이 부분을 이제 카프카를 사용하여 변경
             //eventAlarmService.notifyAuctionBidReceived(bidUser, exArticle, dealstartRequest.getRedirectURL());
 
 
             // 카프카를 사용하여 입찰 알림 전송
 //            bidProducerService.sendBidNotificationMessage(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
-            bidProducerService.test(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
+            bidProducerService.kafkaalarm(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
 
 
         } else {

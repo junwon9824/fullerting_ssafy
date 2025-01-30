@@ -44,6 +44,7 @@ import TradeChatRoomPage from "../pages/trade/TradeChatRoomPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import SearchAddressPage from "../pages/user/SearchAddressPage";
 import DiaryOtherViewPage from "../pages/diary/DiaryOtherViewPage";
+import WrotePost from "../pages/profile/WrotePost.tsx";
 
 const authRoutes = [
   { path: "/", element: <MainPage /> },
@@ -94,6 +95,7 @@ const mypageRoutes = [
       { path: "allbadge", element: <AllBadge /> },
       { path: "likedpost", element: <MyPost /> },
       { path: "proposepost", element: <ProposePost /> },
+      { path: "wrotepost", element: <WrotePost /> },
       { path: "transpost", element: <TransPost /> },
       { path: "logout", element: <Logout /> },
     ],
