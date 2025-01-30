@@ -57,7 +57,6 @@ public class BidConsumerService {
             e.printStackTrace();
         }
 
-
     }
 
 }
