@@ -87,7 +87,7 @@ public class KafkaMessageController {
             //eventAlarmService.notifyAuctionBidReceived(bidUser, exArticle, dealstartRequest.getRedirectURL());
 
 
-            // 카프카를 사용하여 입찰 알림 전송
+            // 카프카 producer 를 사용하여 입찰 알림 전송
 //            bidProducerService.sendBidNotificationMessage(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
             bidProducerService.kafkaalarm(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
 

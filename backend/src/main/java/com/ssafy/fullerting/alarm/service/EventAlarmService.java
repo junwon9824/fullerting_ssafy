@@ -138,7 +138,7 @@ public class EventAlarmService {
         eventAlarmRepository.save(alarm);
         log.info("이벤트 알람 도착 : {} ", alarm);
 
-        eventAlarmNotificationService.sendAsync(AlarmPayload.builder()
+        eventAlarmNotificationService.sendAsync(AlarmPayload.builder() //sse 전송 메서드
                 .receiveUserId(exArticle.getUser().getId())
                 .alarmType(EventAlarmType.작물거래.toString())
                 .alarmContent(buyer.getNickname() + "님이 " + "#"+exArticle.getTitle()+"#" +"에 채팅을 보냈어요!")
