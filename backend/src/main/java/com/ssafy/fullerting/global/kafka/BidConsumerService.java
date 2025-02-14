@@ -32,7 +32,10 @@ public class BidConsumerService {
             MemberProfile buyer = userService.getUserEntityById(bidNotification.getUserId());
             ExArticle article =exArticleService.getbyid(bidNotification.getArticleId());
 
+
             eventAlarmService.notifyChatRoomAuthor(buyer,article , bidNotification.getRedirectUrl() );
+
+
             // 추가적인 처리 로직을 여기에 구현
         } catch (Exception e) {
             // 예외 타입에 따라 다른 처리를 할 수 있습니다.

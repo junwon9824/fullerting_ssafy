@@ -66,7 +66,7 @@ public class TokenService {
 
         accessToken = jwtUtils.issueAccessToken(email, userId, authorities);
         refreshToken = jwtUtils.issueRefreshToken(email, userId, authorities);
-
+        log.info("before redissave"+refreshToken.toString());
         // Redis에 토큰 저장
         tokenRepository.save(new Token(userId, refreshToken));
         return new IssuedToken(accessToken, refreshToken);

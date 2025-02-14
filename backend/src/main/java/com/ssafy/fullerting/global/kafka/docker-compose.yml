@@ -6,6 +6,7 @@ services:
     ports:
       - "2181:2181"
 
+
   kafka:
     image: bitnami/kafka:latest
     environment:
