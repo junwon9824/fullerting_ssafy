@@ -41,6 +41,7 @@ public class BidConsumerService {
             // 예외 타입에 따라 다른 처리를 할 수 있습니다.
             System.err.println("Error processing bid notification: " + e.getClass().getSimpleName() + " - " + e.getMessage());
             e.printStackTrace();
+
         }
 
     }
