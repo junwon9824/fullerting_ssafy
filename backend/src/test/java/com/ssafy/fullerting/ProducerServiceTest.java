@@ -1,6 +1,6 @@
 package com.ssafy.fullerting;
 
-import com.ssafy.fullerting.global.config.BidProducerService;
+import com.ssafy.fullerting.global.kafka.BidProducerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

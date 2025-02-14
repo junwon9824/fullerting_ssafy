@@ -6,6 +6,8 @@ import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Data
 public class BidNotification {
@@ -17,6 +19,8 @@ public class BidNotification {
     @JsonProperty("articleid") // JSON에서의 키와 매핑
     private long articleId;
     private String redirectUrl;
+    private int price;
+    private LocalDateTime localDateTime;
 
 
 

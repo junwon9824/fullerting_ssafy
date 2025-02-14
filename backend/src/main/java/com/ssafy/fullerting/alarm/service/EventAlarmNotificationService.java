@@ -48,7 +48,7 @@ public class EventAlarmNotificationService {
     }
 
     @Async("notiExecutor")
-    public void sendAsync(AlarmPayload alarmPayload) {
+    public void sendAsync(AlarmPayload alarmPayload) { //sse 전송 메서드
         String userId = alarmPayload.getReceiveUserId().toString();
 //        log.info("비동기 메서드 시작: 사용자 {}, 데이터 {} (스레드: {})", userId, alarmPayload, Thread.currentThread().getName());
         SseEmitter emitter = emitterMap.get(userId);

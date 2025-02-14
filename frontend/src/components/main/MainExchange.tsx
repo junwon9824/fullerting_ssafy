@@ -121,7 +121,6 @@ const MainExchange = () => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % data.length);
     }
   };
-  // if (!data || data.length === 0) return <div>거래 데이터 없음</div>;
 
   return (
     <MainBox>
@@ -134,9 +133,17 @@ const MainExchange = () => {
           나의 작물을 판매하고 나눔해 보세요
           <LogoText>작물 거래하기</LogoText>
         </LogoContent>
+
+
       </LogoAndTextContainer>
+
+
+
+      {/* accessToken 디버깅 */}
+      {console.log("Access TokenTokenToken:", accessToken)}
+
       {!data || data.length === 0 ? (
-        <ExchangeBox onClick={goToTrade}>
+          <ExchangeBox onClick={accessToken ? goToTrade : goToLogin}>
           <TokenBox>동네인증을 해주세요</TokenBox>
         </ExchangeBox>
       ) : accessToken ? (

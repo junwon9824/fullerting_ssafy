@@ -100,6 +100,24 @@ export const getPropose = async () => {
 };
 
 
+export const getWrote = async () => {
+  try {
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      throw new Error('Access token is not available.');
+    }
+
+    const response = await api.get(`/exchanges/wrotearticles`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data.data_body;
+  } catch (error) {
+    console.log("나의 게시물 작성 목록 API요청 실패", error);
+    throw error;
+  }
+};
+
+
 export const logoutUser = async () => {
   try {
     const accessToken = sessionStorage.getItem('accessToken');

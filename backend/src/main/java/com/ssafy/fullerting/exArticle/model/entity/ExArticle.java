@@ -46,6 +46,7 @@ public class ExArticle {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private MemberProfile user;
+    //게시자
 
     //    @CreatedDate
     @Column(name = "created_at", nullable = false)
