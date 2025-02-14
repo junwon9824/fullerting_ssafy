@@ -139,6 +139,9 @@ const MainExchange = () => {
 
 
 
+      {/* accessToken 디버깅 */}
+      {console.log("Access TokenTokenToken:", accessToken)}
+
       {!data || data.length === 0 ? (
           <ExchangeBox onClick={accessToken ? goToTrade : goToLogin}>
           <TokenBox>동네인증을 해주세요</TokenBox>
