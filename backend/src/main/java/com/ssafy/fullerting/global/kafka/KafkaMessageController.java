@@ -69,7 +69,7 @@ public class KafkaMessageController {
             // WebSocket을 통해 메시지 전송
             messagingTemplate.convertAndSend("/sub/bidding/" + exArticleId,
                     DealstartResponse.builder()
-                            .bidLogId(socketdealbid.getId())
+                            .bidLogId(Long.valueOf(socketdealbid.getId()))
                             .exArticleId(bidUserId)
                             .userResponse(bidUser.toResponse())
                             .dealCurPrice(dealstartRequest.getDealCurPrice())

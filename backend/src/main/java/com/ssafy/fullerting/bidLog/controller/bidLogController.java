@@ -61,7 +61,7 @@ public class bidLogController {
         UserResponse userResponse=userService.getUserInfo();
         MemberProfile customUser=userResponse.toEntity(userResponse);
 
-        BidLogResponse bidLogResponse = bidLog.tobidLogResponse(bidLog,customUser);
+        BidLogResponse bidLogResponse = bidLog.toBidLogResponse(bidLog,customUser);
         return ResponseEntity.ok().body(MessageUtils.success(bidLogResponse));
 
     }

@@ -51,7 +51,7 @@ public class DealService {
         UserResponse userResponse = userService.getUserInfo();
         MemberProfile customUser = userResponse.toEntity(userResponse);
 
-        List<BidLog> bidLogs = bidRepository.findAllByuserId(customUser.getId());
+        List<BidLog> bidLogs = bidRepository.findAllByUserId(String.valueOf(customUser.getId()));
 
         // 중복을 제거할 열의 값을 저장할 Set
         HashSet<Long> exArticleIds = new HashSet<>();

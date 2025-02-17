@@ -3,8 +3,11 @@ package com.ssafy.fullerting.bidLog.model.entity;
 import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
-import jakarta.persistence.*;
 import lombok.*;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.time.LocalDateTime;
 
@@ -13,59 +16,44 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@Entity
 @ToString
-@Table(name = "bid_log")
+@Document(collection = "bid_log") // MongoDB의 컬렉션 이름
 public class BidLog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bid_log_id", nullable = false)
-    private Long id;
+    private String id; // MongoDB에서는 ID가 String으로 저장되는 경우가 많음
 
-    @ManyToOne
-    @JoinColumn(name = "deal_id")
+    @DBRef // 관계를 나타내는 어노테이션
     private Deal deal;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId; //입찰자 아이디
+    private Long userId; // 입찰자 아이디
 
-    @Column(name = "bid_log_time", nullable = false)
     private LocalDateTime localDateTime;
 
-
-    @Column(name = "bid_log_price", nullable = false)
     private int bidLogPrice;
 
-    public void setDeal(Deal deal) {
-        this.deal = deal;
-    }
-
-    public BidLogResponse tobidLogResponse(BidLog bidLog, MemberProfile customUser) {
-
+    public BidLogResponse toBidLogResponse(BidLog bidLog, MemberProfile customUser) {
         return BidLogResponse.builder()
-                .bidLogPrice(bidLog.bidLogPrice)
-                .userId(bidLog.userId)
-                .localDateTime(bidLog.localDateTime)
-                .exarticleid(bidLog.deal.getExArticle().getId())
-                .id(bidLog.id)
-                .nickname(customUser.getNickname() )
+                .bidLogPrice(this.bidLogPrice)
+                .userId(this.userId)
+                .localDateTime(this.localDateTime)
+                .exarticleid(this.deal.getExArticle().getId())
+                .id(Long.valueOf(this.id))
+                .nickname(customUser.getNickname())
                 .thumbnail(customUser.getThumbnail())
                 .build();
     }
 
-    public BidLogResponse toBidLogsuggestionResponse(BidLog bidLog, MemberProfile user , int size  ) {
-
+    public BidLogResponse toBidLogSuggestionResponse(BidLog bidLog1, MemberProfile user, int size) {
         return BidLogResponse.builder()
-                .bidLogPrice(bidLog.bidLogPrice)
-                .userId(bidLog.userId)
-                .localDateTime(bidLog.localDateTime)
-                .exarticleid(bidLog.deal.getExArticle().getId())
-                .id(bidLog.id)
+                .bidLogPrice(this.bidLogPrice)
+                .userId(this.userId)
+                .localDateTime(this.localDateTime)
+                .exarticleid(this.deal.getExArticle().getId())
+                .id(Long.valueOf(this.id))
                 .thumbnail(user.getThumbnail())
                 .nickname(user.getNickname())
                 .bidcount(size)
-
                 .build();
     }
 

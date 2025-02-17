@@ -1,23 +1,21 @@
 package com.ssafy.fullerting.bidLog.repository;
 
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
-import io.lettuce.core.dynamic.annotation.Param;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BidRepository extends JpaRepository<BidLog,Long > {
+@Repository
+public interface BidRepository extends MongoRepository<BidLog, String>, BidRepositoryCustom { // 사용자 정의 인터페이스 추가
 
-    List<BidLog> findAllByDealId(Long bidid);
+    List<BidLog> findAllByDealId(String dealId);
 
-    @Query("select   b  from BidLog b where b.userId= :userid ")
-    List<BidLog> findAllByuserId(Long userid);
+    @Query("{ 'userId': ?0 }")
+    List<BidLog> findAllByUserId(String userId);
 
-    @Query("SELECT COUNT(DISTINCT b.userId) FROM BidLog b WHERE b.deal.exArticle.id = :exArticleId")
-    int countDistinctUserIdsByExArticleId(@Param("exArticleId") Long exArticleId);
-
-    @Query("SELECT MAX(bl.bidLogPrice) FROM BidLog bl WHERE bl.deal.exArticle.id = :exArticleId")
-    Optional<Integer> findMaxBidPriceByExArticleId(@Param("exArticleId") Long exArticleId);
+    @Query(value = "{ 'deal.exArticle.id': ?0 }", count = true)
+    int countDistinctUserIdsByExArticleId(String exArticleId);
 }
