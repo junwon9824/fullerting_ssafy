@@ -93,7 +93,7 @@ function ChatTestPage() {
       throw new Error("Access token is not available.");
     }
 
-    //  const socket = new WebSocket("ws://localhost:8080/ws");
+    //  const socket = new WebSocket("ws://localhost:8082/ws");
 
     console.log(socket);
 
