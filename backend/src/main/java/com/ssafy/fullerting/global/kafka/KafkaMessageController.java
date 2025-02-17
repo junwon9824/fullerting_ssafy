@@ -78,7 +78,6 @@ public class KafkaMessageController {
                             .build());
 
 
-//            bidProducerService.sendBidMessage(exArticleId, kafkaMessage); // Kafka 토픽으로 메시지 전송
 
             log.info("Message [{}] sent by member: {} to bidding room: {}", dealstartRequest.getDealCurPrice(), exArticleId);
             log.info("리디렉트 URL: {}", dealstartRequest.getRedirectURL());

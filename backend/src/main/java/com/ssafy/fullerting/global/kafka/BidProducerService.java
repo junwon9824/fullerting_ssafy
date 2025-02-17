@@ -23,35 +23,6 @@ public class BidProducerService {
     private final KafkaTemplate<String, String> kafkaTemplatetest; // Object 타입으로 변경하여 다양한 메시지 타입 지원
     private final ObjectMapper objectMapper; // Jackson ObjectMapper
 
-    // 원래 코드에 카프카로 코드 변환한 파일...
-
-    // DealstartResponse 메시지 전송
-//    public void sendBidMessage(Long exArticleId, DealstartResponse dealstartResponse) {
-//        String topicName = "bidding-" + exArticleId; // 채팅방 ID에 따라 동적으로 토픽 이름 생성
-//        kafkaTemplate.send(topicName, String.valueOf(dealstartResponse.getBidLogId()), dealstartResponse);
-//    }
-
-
-//    public void sendBidNotificationMessage(MemberProfile memberProfile, ExArticle exArticle, String redirecturl) {
-//        String topicName = "bidding-notifications"; // 알림 전용 토픽
-//
-//        BidNotification bidNotification = BidNotification.builder()
-//                .userId(memberProfile.getId())
-//                .articleId(exArticle.getId())
-//                .redirectUrl(redirecturl)
-//                .build();
-//
-//        CompletableFuture<SendResult<String, BidNotification>> future = kafkaTemplate.send(topicName, bidNotification);
-//
-//        future
-//                .thenAccept(result -> {
-//                    log.info("Message sent to topic {} with offset {}", topicName, result.getRecordMetadata().offset());
-//                })
-//                .exceptionally(ex -> {
-//                    log.error("Failed to send message to topic {} due to {}", topicName, ex.getMessage());
-//                    return null; // Exceptionally는 Void를 반환하므로 null 반환
-//                });
-//    }
 
     public void kafkaalarm(MemberProfile memberProfile, ExArticle exArticle, String redirecturl) {
         String topicName = "kafka-alarm"; // 알림 전용 토픽
@@ -71,12 +42,14 @@ public class BidProducerService {
 
             String message = objectMapper.writeValueAsString(messagePayload); // JSON으로 직렬화
             log.info("kafka messagemessagemessage"+ message);
+            long startTime = System.currentTimeMillis();
 
             CompletableFuture<SendResult<String, String>> future = kafkaTemplatetest.send(topicName, message);
 
             future
                     .thenAccept(result -> {
-                        log.info("Message sent to topic {} with offset {}", topicName, result.getRecordMetadata().offset());
+                        long endTime = System.currentTimeMillis();
+                        log.info("Message sent to topic {} with offset {} in {} ms", topicName, result.getRecordMetadata().offset(), (endTime - startTime));
                     })
                     .exceptionally(ex -> {
                         log.error("Failed to send message to topic {} due to {}", topicName, ex.getMessage());

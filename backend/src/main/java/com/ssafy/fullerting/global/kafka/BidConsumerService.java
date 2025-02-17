@@ -8,11 +8,14 @@ import com.ssafy.fullerting.global.config.BidNotification;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+
 public class BidConsumerService {
 
     private final EventAlarmService eventAlarmService;
@@ -20,20 +23,22 @@ public class BidConsumerService {
     private final ExArticleService exArticleService;
     private final ObjectMapper objectMapper;
 
-
     @KafkaListener(topics = "kafka-alarm", groupId = "user-notifications", containerFactory = "kafkaJsonContainerFactory")
-    public void kafkaalram(String string  ) {
-
+    public void kafkaalram(String string) {
+        long receivedTime = System.currentTimeMillis();
+        log.info("Received notification: {} at {}", string, receivedTime);
+        
+        // 수신 시간과 전송 시간을 비교하여 속도 측정
         try {
             // 수신한 BidNotification 객체를 처리하는 로직
             System.out.println("Received notification for member: " + string);
             BidNotification bidNotification = objectMapper.readValue(string, BidNotification.class);
 
             MemberProfile buyer = userService.getUserEntityById(bidNotification.getUserId());
-            ExArticle article =exArticleService.getbyid(bidNotification.getArticleId());
+            ExArticle article = exArticleService.getbyid(bidNotification.getArticleId());
 
 
-            eventAlarmService.notifyChatRoomAuthor(buyer,article , bidNotification.getRedirectUrl() );
+            eventAlarmService.notifyChatRoomAuthor(buyer, article, bidNotification.getRedirectUrl());
 
 
             // 추가적인 처리 로직을 여기에 구현

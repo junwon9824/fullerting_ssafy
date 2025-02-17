@@ -1,0 +1,5 @@
+services:
+  jmeter:
+    build: .  # Dockerfile이 있는 디렉토리 지정
+    volumes:
+      - ./results:/home/jmeter/results  # results 디렉토리 마운트

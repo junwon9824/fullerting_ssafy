@@ -20,4 +20,5 @@ services:
       - "9092:9092"
     depends_on:
       - zookeeper
-    user: "root"  # 변경된 부분
+    user: "root"
+
