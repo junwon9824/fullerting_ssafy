@@ -24,7 +24,7 @@ public class BidProducerService {
     private final ObjectMapper objectMapper; // Jackson ObjectMapper
 
 
-    public void kafkaalarm(MemberProfile memberProfile, ExArticle exArticle, String redirecturl) {
+    public void kafkaalarmproduce(MemberProfile memberProfile, ExArticle exArticle, String redirecturl) {
         String topicName = "kafka-alarm"; // 알림 전용 토픽
 
         try {

@@ -1,21 +1,22 @@
 package com.ssafy.fullerting.bidLog.repository;
 
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface BidRepository extends MongoRepository<BidLog, String>, BidRepositoryCustom { // 사용자 정의 인터페이스 추가
+public interface BidRepository extends JpaRepository<BidLog, Long>, BidRepositoryCustom { // Long 타입으로 변경
 
-    List<BidLog> findAllByDealId(String dealId);
 
-    @Query("{ 'userId': ?0 }")
-    List<BidLog> findAllByUserId(String userId);
+    @Query("SELECT b FROM BidLog b JOIN FETCH b.deal d WHERE d.id = ?1")
+    List<BidLog> findAllByDealId(Long dealId); // Deal 엔티티를 함께 가져옴
 
-    @Query(value = "{ 'deal.exArticle.id': ?0 }", count = true)
-    int countDistinctUserIdsByExArticleId(String exArticleId);
+    @Query("SELECT b FROM BidLog b JOIN FETCH b.deal d WHERE b.userId = ?1")
+    List<BidLog> findAllByUserId(Long userId); // Deal 엔티티를 함께 가져옴
+
+    @Query("SELECT COUNT(DISTINCT b.userId) FROM BidLog b WHERE b.deal.exArticle.id = ?1")
+    int countDistinctUserIdsByExArticleId(Long exArticleId); // exArticleId의 타입을 Long으로 변경
 }

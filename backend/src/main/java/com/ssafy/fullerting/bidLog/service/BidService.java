@@ -72,7 +72,7 @@ public class BidService {
             throw new BidException(BidErrorCode.NOT_DEAL);
         }
 
-        List<BidLog> bidLog = bidRepository.findAllByDealId(String.valueOf(exArticle.getDeal().getId()));
+        List<BidLog> bidLog = bidRepository.findAllByDealId(exArticle.getDeal().getId());
 
         HashSet<Long> bidLogs = new HashSet<>();
 
@@ -163,7 +163,7 @@ public class BidService {
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
-        BidLog bidLog = bidRepository.findById(String.valueOf(bidSelectRequest.getBidid())).orElseThrow(() ->
+        BidLog bidLog = bidRepository.findById((bidSelectRequest.getBidid())).orElseThrow(() ->
                 new BidException(BidErrorCode.NOT_EXISTS));
 
         article.setDone(true);
@@ -174,7 +174,7 @@ public class BidService {
 
 
     public int getBidderCount(ExArticle exArticle) {
-        return bidRepository.countDistinctUserIdsByExArticleId(String.valueOf(exArticle.getId()));
+        return bidRepository.countDistinctUserIdsByExArticleId((exArticle.getId()));
     }
 
     public int getMaxBidPrice(ExArticle exArticle) {

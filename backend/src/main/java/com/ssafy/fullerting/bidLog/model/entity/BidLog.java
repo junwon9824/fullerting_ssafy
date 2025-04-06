@@ -3,11 +3,8 @@ package com.ssafy.fullerting.bidLog.model.entity;
 import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
+import jakarta.persistence.*;
 import lombok.*;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.time.LocalDateTime;
 
@@ -17,13 +14,16 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @ToString
-@Document(collection = "bid_log") // MongoDB의 컬렉션 이름
+@Entity
+@Table(name = "bid_log") // MySQL의 테이블 이름
 public class BidLog {
 
     @Id
-    private String id; // MongoDB에서는 ID가 String으로 저장되는 경우가 많음
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // MySQL에서는 ID가 Long으로 저장됨
 
-    @DBRef // 관계를 나타내는 어노테이션
+    @ManyToOne // Deal과의 관계를 나타내는 어노테이션
+    @JoinColumn(name = "deal_id", nullable = false) // 외래 키 컬럼 이름
     private Deal deal;
 
     private Long userId; // 입찰자 아이디
@@ -38,7 +38,7 @@ public class BidLog {
                 .userId(this.userId)
                 .localDateTime(this.localDateTime)
                 .exarticleid(this.deal.getExArticle().getId())
-                .id(Long.valueOf(this.id))
+                .id(this.id) // Long 타입으로 변경
                 .nickname(customUser.getNickname())
                 .thumbnail(customUser.getThumbnail())
                 .build();
@@ -50,7 +50,7 @@ public class BidLog {
                 .userId(this.userId)
                 .localDateTime(this.localDateTime)
                 .exarticleid(this.deal.getExArticle().getId())
-                .id(Long.valueOf(this.id))
+                .id(this.id) // Long 타입으로 변경
                 .thumbnail(user.getThumbnail())
                 .nickname(user.getNickname())
                 .bidcount(size)

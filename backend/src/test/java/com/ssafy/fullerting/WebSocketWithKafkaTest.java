@@ -39,7 +39,7 @@ public class WebSocketWithKafkaTest {
 
         // 카프카에 1000개의 메시지 전송
         for (int i = 0; i < 1000; i++) {
-            bidProducerService.kafkaalarm(null, null, "Message " + i);
+            bidProducerService.kafkaalarmproduce(null, null, "Message " + i);
             // 카프카 템플릿을 호출하는지 확인
             verify(kafkaTemplate, times(i + 1)).send(any(String.class), any(String.class));
         }
@@ -57,7 +57,7 @@ public class WebSocketWithKafkaTest {
 
         // When
         // When
-        bidProducerService.kafkaalarm(mock(MemberProfile.class), mock(ExArticle.class), message);
+        bidProducerService.kafkaalarmproduce(mock(MemberProfile.class), mock(ExArticle.class), message);
 
         // Then
         // 웹소켓을 통해 클라이언트에게 전송하는지 확인
