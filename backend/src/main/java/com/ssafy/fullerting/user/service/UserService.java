@@ -30,6 +30,7 @@ public class UserService {
     String defaultThunmail = "https://fullerting-s3-v2.s3.ap-northeast-2.amazonaws.com/default_thumnail.svg";
 
     public MemberProfile createUserEntity(UserRegisterRequest userRegisterRequest) {
+
         return MemberProfile.builder()
                 .email(userRegisterRequest.getEmail())
                 .password(passwordEncoder.encode(userRegisterRequest.getPassword()))
@@ -46,6 +47,8 @@ public class UserService {
         userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
             throw new UserException(UserErrorCode.ALREADY_IN_EMAIL);
         });
+        System.out.println("registttttt"+request.getAuthProvider() + " email "+request.getEmail()+ " pwd"+request.getPassword()+
+                "nickname"+request.getNickname());
         // 유저 객체를 DB에 저장
         userRepository.save(createUserEntity(request));
     }
