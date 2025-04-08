@@ -38,7 +38,6 @@ public class OAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         // 리디렉션할 URL과 토큰 발급
         String redirectUrl = "https://j10c102.p.ssafy.io/auth/callback";
-
         try {
             userRepository.findByEmail(oAuth2User.getName()).ifPresentOrElse(
                     user -> {

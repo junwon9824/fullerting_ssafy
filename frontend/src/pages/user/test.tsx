@@ -85,7 +85,7 @@ function TestPage() {
       throw new Error("Access token is not available.");
     }
 
-    //  const socket = new WebSocket("ws://localhost:8080/ws");
+    //  const socket = new WebSocket("ws://localhost:8082/ws");
     const socket = import.meta.env.VITE_REACT_APP_WSS_URL;
     const client = Stomp.over(socket);
 
@@ -122,7 +122,6 @@ function TestPage() {
         });
       }
     };
-
   }, [exArticleId]);
 
   const sendMessage = async () => {

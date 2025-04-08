@@ -68,7 +68,6 @@ public class EventAlarmNotificationService {
         }
 
         log.info("비동기 메서드 종료: 사용자 {} (스레드: {})", userId, Thread.currentThread().getName());
-
     }
 
 

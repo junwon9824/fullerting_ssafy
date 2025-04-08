@@ -29,6 +29,7 @@ public class KafkaMessageController {
     private final ExArticleRepository exArticleRepository;
     private final EventAlarmService eventAlarmService;
     private final BidService bidService;
+
     private final UserService userService;
     private final BidProducerService bidProducerService;
 
@@ -42,43 +43,42 @@ public class KafkaMessageController {
             Long bidUserId = authentication.getUserId();
             MemberProfile bidUser = userService.getUserEntityById(bidUserId);
 
-            log.info("웹소켓에서 추출한 유저 : {}", bidUser.toString());
+//            log.info("웹소켓에서 추출한 유저 : {}", bidUser.toString());
 
-            // 게시물 정보
+//            // 게시물 정보
             ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
                     ExArticleErrorCode.NOT_EXISTS));
 
             // 최고가 검증
-            int maxBidPrice = bidService.getMaxBidPrice(exArticle);
-            if (dealstartRequest.getDealCurPrice() <= maxBidPrice || dealstartRequest.getDealCurPrice() < exArticle.getDeal().getDealCurPrice()) {
-                throw new RuntimeException("최고가보다 낮거나 같은 입찰가 입력 : " + maxBidPrice);
-            }
+//            int maxBidPrice = bidService.getMaxBidPrice(exArticle);
+//            if (dealstartRequest.getDealCurPrice() <= maxBidPrice || dealstartRequest.getDealCurPrice() < exArticle.getDeal().getDealCurPrice()) {
+//                throw new RuntimeException("최고가보다 낮거나 같은 입찰가 입력 : " + maxBidPrice);
+//            }
 
 
-            // 입찰 기록(bid_log) 저장
-            BidLog socketdealbid = bidService.socketdealbid(exArticle,
-                    BidProposeRequest.builder()
-                            .dealCurPrice(dealstartRequest.getDealCurPrice())
-                            .userId(bidUserId)
-                            .build());
+//            // 입찰 기록(bid_log) 저장
+//            BidLog socketdealbid = bidService.socketdealbid(exArticle,
+//                    BidProposeRequest.builder()
+//                            .dealCurPrice(dealstartRequest.getDealCurPrice())
+//                            .userId(bidUserId)
+//                            .build());
 
-            // 현재 입찰 참여자 수
-            int bidderCount = bidService.getBidderCount(exArticle);
-            log.info("bidCount {}", bidderCount);
+//            // 현재 입찰 참여자 수
+//            int bidderCount = bidService.getBidderCount(exArticle);
+//            log.info("bidCount {}", bidderCount);
+//
+//            // WebSocket을 통해 메시지 전송
+//            messagingTemplate.convertAndSend("/sub/bidding/" + exArticleId,
+//                    DealstartResponse.builder()
+//                            .bidLogId(Long.valueOf(socketdealbid.getId()))
+//                            .exArticleId(bidUserId)
+//                            .userResponse(bidUser.toResponse())
+//                            .dealCurPrice(dealstartRequest.getDealCurPrice())
+//                            .maxPrice(maxBidPrice)
+//                            .bidderCount(bidderCount)
+//                            .build());
 
-            // WebSocket을 통해 메시지 전송
-            messagingTemplate.convertAndSend("/sub/bidding/" + exArticleId,
-                    DealstartResponse.builder()
-                            .bidLogId(socketdealbid.getId())
-                            .exArticleId(bidUserId)
-                            .userResponse(bidUser.toResponse())
-                            .dealCurPrice(dealstartRequest.getDealCurPrice())
-                            .maxPrice(maxBidPrice)
-                            .bidderCount(bidderCount)
-                            .build());
 
-
-//            bidProducerService.sendBidMessage(exArticleId, kafkaMessage); // Kafka 토픽으로 메시지 전송
 
             log.info("Message [{}] sent by member: {} to bidding room: {}", dealstartRequest.getDealCurPrice(), exArticleId);
             log.info("리디렉트 URL: {}", dealstartRequest.getRedirectURL());
@@ -89,7 +89,7 @@ public class KafkaMessageController {
 
             // 카프카 producer 를 사용하여 입찰 알림 전송
 //            bidProducerService.sendBidNotificationMessage(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
-            bidProducerService.kafkaalarm(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
+            bidProducerService.kafkaalarmproduce(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
 
 
         } else {

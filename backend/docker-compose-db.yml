@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0  # 사용할 MySQL 이미지 버전 (예: 8.0, 5.7 등)
+    container_name: mysql-container # 컨테이너 이름 (선택 사항)
+    environment:
+
+    ports:
+      - "3306:3306"  # 호스트의 3306 포트를 컨테이너의 3306 포트에 매핑
+    volumes:
+      - mysql_data:/var/lib/mysql  # 데이터 영구 저장을 위한 볼륨 마운트
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      timeout: 20s
+      retries: 3
+
+volumes:
+  mysql_data: # 명명된 볼륨 정의

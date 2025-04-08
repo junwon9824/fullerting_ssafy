@@ -9,5 +9,4 @@ import java.util.List;
 public interface ChatService {
     ChatResponse createChat(Long senderId, ChatRequest chatRequest);
     List<GetAllChatResponse> getAllChat(Long chatRoomId);
-
 }

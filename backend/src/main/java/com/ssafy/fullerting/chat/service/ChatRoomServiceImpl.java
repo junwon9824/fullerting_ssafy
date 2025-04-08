@@ -83,12 +83,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                         .exArticle(exArticle)
                         .buyer(customUser)
                         .build());
-
                 // 채팅방 생성 알림 전송 -> 구매자에게 알림 전송
                 String redirectURL = "/trade/" + chatRoom.getId() + "/chat";
                 eventAlarmService.notifyCreateChatRoomBidder(customUser, exArticle, redirectURL);
             }
-
             return CreateChatRoomResponse.toResponse(chatRoom);
         }
         //존재하는 경우 해당 채팅방 응답

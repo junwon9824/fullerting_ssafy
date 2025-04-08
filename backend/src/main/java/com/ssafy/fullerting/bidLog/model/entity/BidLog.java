@@ -13,59 +13,47 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@Entity
 @ToString
-@Table(name = "bid_log")
+@Entity
+@Table(name = "bid_log") // MySQL의 테이블 이름
 public class BidLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bid_log_id", nullable = false)
-    private Long id;
+    private Long id; // MySQL에서는 ID가 Long으로 저장됨
 
-    @ManyToOne
-    @JoinColumn(name = "deal_id")
+    @ManyToOne // Deal과의 관계를 나타내는 어노테이션
+    @JoinColumn(name = "deal_id", nullable = false) // 외래 키 컬럼 이름
     private Deal deal;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId; //입찰자 아이디
+    private Long userId; // 입찰자 아이디
 
-    @Column(name = "bid_log_time", nullable = false)
     private LocalDateTime localDateTime;
 
-
-    @Column(name = "bid_log_price", nullable = false)
     private int bidLogPrice;
 
-    public void setDeal(Deal deal) {
-        this.deal = deal;
-    }
-
-    public BidLogResponse tobidLogResponse(BidLog bidLog, MemberProfile customUser) {
-
+    public BidLogResponse toBidLogResponse(BidLog bidLog, MemberProfile customUser) {
         return BidLogResponse.builder()
-                .bidLogPrice(bidLog.bidLogPrice)
-                .userId(bidLog.userId)
-                .localDateTime(bidLog.localDateTime)
-                .exarticleid(bidLog.deal.getExArticle().getId())
-                .id(bidLog.id)
-                .nickname(customUser.getNickname() )
+                .bidLogPrice(this.bidLogPrice)
+                .userId(this.userId)
+                .localDateTime(this.localDateTime)
+                .exarticleid(this.deal.getExArticle().getId())
+                .id(this.id) // Long 타입으로 변경
+                .nickname(customUser.getNickname())
                 .thumbnail(customUser.getThumbnail())
                 .build();
     }
 
-    public BidLogResponse toBidLogsuggestionResponse(BidLog bidLog, MemberProfile user , int size  ) {
-
+    public BidLogResponse toBidLogSuggestionResponse(BidLog bidLog1, MemberProfile user, int size) {
         return BidLogResponse.builder()
-                .bidLogPrice(bidLog.bidLogPrice)
-                .userId(bidLog.userId)
-                .localDateTime(bidLog.localDateTime)
-                .exarticleid(bidLog.deal.getExArticle().getId())
-                .id(bidLog.id)
+                .bidLogPrice(this.bidLogPrice)
+                .userId(this.userId)
+                .localDateTime(this.localDateTime)
+                .exarticleid(this.deal.getExArticle().getId())
+                .id(this.id) // Long 타입으로 변경
                 .thumbnail(user.getThumbnail())
                 .nickname(user.getNickname())
                 .bidcount(size)
-
                 .build();
     }
 
