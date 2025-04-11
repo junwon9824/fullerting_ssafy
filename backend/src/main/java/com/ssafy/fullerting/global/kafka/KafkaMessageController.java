@@ -92,6 +92,12 @@ public class KafkaMessageController {
             // 입찰 알림 -->  이 부분을 이제 카프카를 사용하여 변경
             //eventAlarmService.notifyAuctionBidReceived(bidUser, exArticle, dealstartRequest.getRedirectURL());
 
+
+
+            if (exArticle.getDeal().getDealCurPrice() >= dealstartRequest.getDealCurPrice()) {
+                throw new RuntimeException("최고가보다 높은 금액을 입력해주세요!! : " + dealstartRequest.getDealCurPrice());
+            }
+
             exArticle.getDeal().setDealCurPrice(dealstartRequest.getDealCurPrice());
 
             // 카프카 producer 를 사용하여 입찰 알림 전송
