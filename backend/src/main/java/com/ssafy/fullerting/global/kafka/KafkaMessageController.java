@@ -83,17 +83,12 @@ public class KafkaMessageController {
 //                            .bidderCount(bidderCount)
 //                            .build());
 
-
-
             log.info("in MEssagemapping");
             log.info("Message [{}] sent by member: {} to bidding room: {}", dealstartRequest.getDealCurPrice(), exArticleId);
             log.info("리디렉트 URL: {}", dealstartRequest.getRedirectURL());
 
             // 입찰 알림 -->  이 부분을 이제 카프카를 사용하여 변경
             //eventAlarmService.notifyAuctionBidReceived(bidUser, exArticle, dealstartRequest.getRedirectURL());
-
-
-
 
 
             // 카프카 producer 를 사용하여 입찰 알림 전송
