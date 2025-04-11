@@ -16,12 +16,14 @@ import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
+import com.ssafy.fullerting.global.kafka.BidProducerService;
 import com.ssafy.fullerting.user.exception.UserErrorCode;
 import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.repository.MemberRepository;
 import com.ssafy.fullerting.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,30 @@ public class BidService {
     private final MemberRepository userRepository;
 
     private final UserService userService;
+    private final BidProducerService bidProducerService;
+
+
+    @Transactional
+    public void processBidWithLock(Long exArticleId, int dealCurPrice, MemberProfile bidder, String redirectUrl) {
+        // 🔒 비관적 락으로 게시물 조회
+        ExArticle exArticle = exArticleRepository.findByIdWithLock(exArticleId)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
+        int currentPrice = exArticle.getDeal().getDealCurPrice();
+
+        log.info("현재가: {}, 희망가: {}", currentPrice, dealCurPrice);
+
+        if (dealCurPrice <= currentPrice) {
+            throw new RuntimeException("최고가보다 높은 금액을 입력해주세요!! 현재가: " + currentPrice);
+        }
+
+        // ✅ 가격 갱신
+        exArticle.getDeal().setDealCurPrice(dealCurPrice);
+
+        // ✅ 카프카로 알림 전송
+        bidProducerService.kafkaalarmproduce(bidder, exArticle, redirectUrl);
+    }
+
 
     public void deal(BidProposeRequest bidProposeRequest, MemberProfile user, Long ex_article_id) {
         LocalDateTime time = LocalDateTime.now();

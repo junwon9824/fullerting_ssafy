@@ -100,10 +100,23 @@ public class KafkaMessageController {
 
             exArticle.getDeal().setDealCurPrice(dealstartRequest.getDealCurPrice());
 
+
+
+
             // 카프카 producer 를 사용하여 입찰 알림 전송
 //            bidProducerService.sendBidNotificationMessage(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
-            bidProducerService.kafkaalarmproduce(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
-
+//            bidProducerService.kafkaalarmproduce(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
+            try {
+                bidService.processBidWithLock(
+                        exArticleId,
+                        dealstartRequest.getDealCurPrice(),
+                        bidUser,
+                        dealstartRequest.getRedirectURL()
+                );
+            } catch (RuntimeException e) {
+                log.warn("❌ 입찰 실패: {}", e.getMessage());
+                // 필요시 WebSocket 응답으로 클라이언트에 실패 메시지 전송 가능
+            }
 
         } else {
             log.error("웹소켓 요청에 유저 정보없음");
