@@ -94,13 +94,6 @@ public class KafkaMessageController {
 
 
 
-            if (exArticle.getDeal().getDealCurPrice() >= dealstartRequest.getDealCurPrice()) {
-                throw new RuntimeException("최고가보다 높은 금액을 입력해주세요!! : " + dealstartRequest.getDealCurPrice());
-            }
-
-            exArticle.getDeal().setDealCurPrice(dealstartRequest.getDealCurPrice());
-
-
 
 
             // 카프카 producer 를 사용하여 입찰 알림 전송
