@@ -115,6 +115,7 @@ public class BidService {
 
         log.info("price" + bidLog.getBidLogPrice());
         Deal deal1 = exArticle.getDeal();
+        log.info("💰 [WebSocket] 입찰 요청 - 사용자 ID: {}, 입찰가: {}, 게시글 ID: {}", bidProposeRequest.getUserId(), bidProposeRequest.getDealCurPrice(), exArticle.getId());
 
 //        deal1.setDealCurPrice( );
         deal.setDealCurPrice(bidProposeRequest.getDealCurPrice());
@@ -149,6 +150,7 @@ public class BidService {
                 .userId(customUser.getId())
                 .localDateTime(LocalDateTime.now())
                 .build());
+        log.info("💰 입찰 요청 - 사용자 ID: {}, 입찰가: {}, 게시글 ID: {}", customUser.getId(), bidProposeRequest.getDealCurPrice(), exArticleId);
 
 //        bidRepository.save(bidLog);
 

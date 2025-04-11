@@ -32,6 +32,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
 //        SimpMessageHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, SimpMessageHeaderAccessor.class);
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+            log.info("websocket connect ");
             String jwtToken = accessor.getFirstNativeHeader("Authorization");
 
             if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
@@ -64,6 +65,21 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             }
             }
         }
+
+
+        // ✅ SUBSCRIBE: 로그 찍기
+        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+            log.info("SUBSCRIBE 요청: sessionId={}, destination={}", accessor.getSessionId(), accessor.getDestination());
+
+            Object auth = accessor.getSessionAttributes().get("userAuthentication");
+            if (auth != null) {
+                log.info("SUBSCRIBE 시 유저 인증 존재함: {}", auth.toString());
+            } else {
+                log.warn("SUBSCRIBE 시 세션에 유저 인증 없음!");
+            }
+        }
+
+
         return message;
     }
 }
