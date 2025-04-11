@@ -3,6 +3,7 @@ package com.ssafy.fullerting.exArticle.repository;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.model.entity.enums.ExArticleType;
 import com.ssafy.fullerting.record.steplog.model.entity.StepLog;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,6 +12,12 @@ import java.util.Optional;
 
 public interface ExArticleRepository extends JpaRepository<ExArticle, Long> {
     Optional<List<ExArticle>> findAllByTitleContaining(String keyword);
+
+    // ExArticleRepository.java
+
+    @Query("SELECT ea FROM ExArticle ea LEFT JOIN FETCH ea.deal WHERE ea.id = :id")
+    Optional<ExArticle> findWithDealById(@Param("id") Long id);
+
 
     List<ExArticle> findAllByType(ExArticleType type);
 

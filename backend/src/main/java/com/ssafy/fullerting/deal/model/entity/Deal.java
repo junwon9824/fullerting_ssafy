@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.deal.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.deal.model.dto.response.DealResponse;
@@ -7,7 +8,6 @@ import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import jakarta.persistence.*;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.List;
 
@@ -35,6 +35,7 @@ public class Deal {
     @Column(name = "deal_cur_price", nullable = false)
     private int dealCurPrice;
 
+    @JsonIgnore // ✅ 직렬화 제외
     @OneToMany(mappedBy = "deal",cascade = CascadeType.ALL)
     private List<BidLog> bidLog;
 

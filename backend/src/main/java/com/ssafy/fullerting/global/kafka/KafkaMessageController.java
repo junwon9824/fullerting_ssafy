@@ -45,9 +45,14 @@ public class KafkaMessageController {
 
 //            log.info("웹소켓에서 추출한 유저 : {}", bidUser.toString());
 
-//            // 게시물 정보
-            ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
-                    ExArticleErrorCode.NOT_EXISTS));
+////            // 게시물 정보
+//            ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
+//                    ExArticleErrorCode.NOT_EXISTS));
+
+
+            // ⭐ LazyInitializationException 방지용 fetch join
+            ExArticle exArticle = exArticleRepository.findWithDealById(exArticleId)
+                    .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
             // 최고가 검증
 //            int maxBidPrice = bidService.getMaxBidPrice(exArticle);
@@ -80,12 +85,14 @@ public class KafkaMessageController {
 
 
 
+            log.info("in MEssagemapping");
             log.info("Message [{}] sent by member: {} to bidding room: {}", dealstartRequest.getDealCurPrice(), exArticleId);
             log.info("리디렉트 URL: {}", dealstartRequest.getRedirectURL());
 
             // 입찰 알림 -->  이 부분을 이제 카프카를 사용하여 변경
             //eventAlarmService.notifyAuctionBidReceived(bidUser, exArticle, dealstartRequest.getRedirectURL());
 
+            exArticle.getDeal().setDealCurPrice(dealstartRequest.getDealCurPrice());
 
             // 카프카 producer 를 사용하여 입찰 알림 전송
 //            bidProducerService.sendBidNotificationMessage(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분

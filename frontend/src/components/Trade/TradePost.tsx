@@ -189,9 +189,9 @@ const TradePost = () => {
   const handleCheckClick = async () => {
     const formData = new FormData();
 
-    selectedFiles.forEach((file, index) => {
-      formData.append("files", file); // 'file'은 서버에서 파일을 받을 때 사용할 키입니다.
-    });
+    // selectedFiles.forEach((file, index) => {
+    //   formData.append("files", file); // 'file'은 서버에서 파일을 받을 때 사용할 키입니다.
+    // });
 
     // 나머지 필요한 정보를 formData에 추가합니다.
     const exArticleRegisterRequest = JSON.stringify({
