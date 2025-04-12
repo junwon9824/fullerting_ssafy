@@ -2,6 +2,7 @@ package com.ssafy.fullerting.global.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.fullerting.deal.model.dto.response.DealstartResponse;
+import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.global.config.BidNotification;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
@@ -28,6 +29,12 @@ public class BidProducerService {
         String topicName = "kafka-alarm"; // 알림 전용 토픽
 
         try {
+            Deal deal = exArticle.getDeal();
+            if (deal != null) {
+                log.info("Deal current price: {}", deal.getDealCurPrice());
+            } else {
+                log.info("Deal is null");
+            }
 
             // 세 개의 값을 JSON 객체로 생성
             BidNotification messagePayload = BidNotification.builder().

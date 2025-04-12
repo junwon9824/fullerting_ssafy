@@ -45,9 +45,14 @@ public class KafkaMessageController {
 
 //            log.info("웹소켓에서 추출한 유저 : {}", bidUser.toString());
 
-//            // 게시물 정보
-            ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
-                    ExArticleErrorCode.NOT_EXISTS));
+////            // 게시물 정보
+//            ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
+//                    ExArticleErrorCode.NOT_EXISTS));
+
+
+            // ⭐ LazyInitializationException 방지용 fetch join
+            ExArticle exArticle = exArticleRepository.findWithDealById(exArticleId)
+                    .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
             // 최고가 검증
 //            int maxBidPrice = bidService.getMaxBidPrice(exArticle);
@@ -78,8 +83,7 @@ public class KafkaMessageController {
 //                            .bidderCount(bidderCount)
 //                            .build());
 
-
-
+            log.info("in MEssagemapping");
             log.info("Message [{}] sent by member: {} to bidding room: {}", dealstartRequest.getDealCurPrice(), exArticleId);
             log.info("리디렉트 URL: {}", dealstartRequest.getRedirectURL());
 
@@ -89,8 +93,18 @@ public class KafkaMessageController {
 
             // 카프카 producer 를 사용하여 입찰 알림 전송
 //            bidProducerService.sendBidNotificationMessage(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
-            bidProducerService.kafkaalarmproduce(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
-
+//            bidProducerService.kafkaalarmproduce(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
+            try {
+                bidService.processBidWithLock(
+                        exArticleId,
+                        dealstartRequest.getDealCurPrice(),
+                        bidUser,
+                        dealstartRequest.getRedirectURL()
+                );
+            } catch (RuntimeException e) {
+                log.warn("❌ 입찰 실패: {}", e.getMessage());
+                // 필요시 WebSocket 응답으로 클라이언트에 실패 메시지 전송 가능
+            }
 
         } else {
             log.error("웹소켓 요청에 유저 정보없음");
