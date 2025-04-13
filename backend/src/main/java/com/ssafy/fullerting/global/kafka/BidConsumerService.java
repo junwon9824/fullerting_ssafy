@@ -3,10 +3,15 @@ package com.ssafy.fullerting.global.kafka;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.fullerting.alarm.service.EventAlarmService;
 import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
+//import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.service.BidService;
+import com.ssafy.fullerting.deal.exception.DealErrorCode;
+import com.ssafy.fullerting.deal.exception.DealException;
 import com.ssafy.fullerting.deal.model.dto.request.DealstartRequest;
 import com.ssafy.fullerting.deal.model.dto.response.DealstartResponse;
+import com.ssafy.fullerting.deal.model.entity.Deal;
+import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
@@ -32,6 +37,7 @@ public class BidConsumerService {
     private final ExArticleService exArticleService;
     private final BidService bidService;
     private final ExArticleRepository exArticleRepository;
+    private final DealRepository dealRepository;
     private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -48,6 +54,7 @@ public class BidConsumerService {
 
             MemberProfile buyer = userService.getUserEntityById(bidNotification.getUserId());
             ExArticle article = exArticleService.getbyid(bidNotification.getArticleId());
+            Deal deal=dealRepository.findById(article.getDeal().getId() ).orElseThrow(()->new DealException(DealErrorCode.NOT_EXISTS));
 
             // 게시물 정보
             ExArticle exArticle = exArticleRepository.findById(bidNotification.getArticleId()).orElseThrow(() -> new ExArticleException(
@@ -68,7 +75,8 @@ public class BidConsumerService {
                             .dealCurPrice(dealstartRequest.getDealCurPrice())
                             .userId(bidNotification.getUserId())
                             .build());
-            int bidderCount = bidService.getBidderCount(exArticle);
+
+            int bidderCount = bidService.getBidderCount(deal);
 
             int maxBidPrice = bidService.getMaxBidPrice(exArticle);
             if (dealstartRequest.getDealCurPrice() <= maxBidPrice || dealstartRequest.getDealCurPrice() < exArticle.getDeal().getDealCurPrice()) {

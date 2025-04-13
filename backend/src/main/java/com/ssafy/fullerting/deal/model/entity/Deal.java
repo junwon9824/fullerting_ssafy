@@ -29,15 +29,14 @@ public class Deal {
     @OneToOne
     @JoinColumn(name = "ex_article_id", nullable = false)
     @JsonManagedReference
-
     private ExArticle exArticle;
 
     @Column(name = "deal_cur_price", nullable = false)
     private int dealCurPrice;
-
-    @JsonIgnore // ✅ 직렬화 제외
-    @OneToMany(mappedBy = "deal",cascade = CascadeType.ALL)
-    private List<BidLog> bidLog;
+//
+//    @JsonIgnore // ✅ 직렬화 제외
+//    @OneToMany(mappedBy = "deal",cascade = CascadeType.ALL)
+//    private List<BidLog> bidLog;
 
     public void setexarticle(ExArticle exArticle) {
         this.exArticle = exArticle;

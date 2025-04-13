@@ -5,8 +5,10 @@ import com.ssafy.fullerting.bidLog.exception.BidException;
 import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
 import com.ssafy.fullerting.bidLog.model.dto.request.BidSelectRequest;
 import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
+//import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
-import com.ssafy.fullerting.bidLog.repository.BidRepository;
+//import com.ssafy.fullerting.bidLog.repository.BidRepository;
+import com.ssafy.fullerting.bidLog.repository.BidLogMongoRepository;
 import com.ssafy.fullerting.deal.exception.DealErrorCode;
 import com.ssafy.fullerting.deal.exception.DealException;
 import com.ssafy.fullerting.deal.model.entity.Deal;
@@ -38,7 +40,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class BidService {
-    private final BidRepository bidRepository;
+    private final BidLogMongoRepository bidRepository;
     private final DealRepository dealRepository;
     private final ExArticleRepository exArticleRepository;
     private final MemberRepository userRepository;
@@ -81,11 +83,18 @@ public class BidService {
         Deal deal = dealRepository.findById(dealid).orElseThrow(
                 () -> new DealException(DealErrorCode.NOT_EXISTS));
 
+//        BidLog bidLog = bidRepository.save(BidLog.builder()
+//                .bidLogPrice(bidProposeRequest.getDealCurPrice())
+//                .localDateTime(time)
+//                .userId(user.getId())
+//                .deal(deal)
+//                .build());
+
         BidLog bidLog = bidRepository.save(BidLog.builder()
                 .bidLogPrice(bidProposeRequest.getDealCurPrice())
                 .localDateTime(time)
                 .userId(user.getId())
-                .deal(deal)
+                .dealId(deal.getId())
                 .build());
 
     }
@@ -98,10 +107,15 @@ public class BidService {
             throw new BidException(BidErrorCode.NOT_DEAL);
         }
 
+//        List<BidLog> bidLog = bidRepository.findAllByDealId(exArticle.getDeal().getId());
         List<BidLog> bidLog = bidRepository.findAllByDealId(exArticle.getDeal().getId());
 
         HashSet<Long> bidLogs = new HashSet<>();
 
+//        for (BidLog bl : bidLog) {
+//            bidLogs.add(bl.getUserId());
+//        }
+        
         for (BidLog bl : bidLog) {
             bidLogs.add(bl.getUserId());
         }
@@ -118,6 +132,39 @@ public class BidService {
 
     }
 
+//    // 웹소켓 전용
+//    // 입찰 제안을 DB에 저장한다 -> 입찰기록을 만든다
+//    public BidLog socketdealbid(ExArticle exArticle, BidProposeRequest bidProposeRequest) {
+//        exArticle.getDeal().setDealCurPrice(bidProposeRequest.getDealCurPrice());
+//        if (exArticle.getDeal() == null) {
+//            throw new BidException(BidErrorCode.NOT_DEAL);
+//        }
+//
+//
+//        Deal deal = dealRepository.findById(exArticle.getDeal().getId()).orElseThrow(() ->
+//                new DealException(DealErrorCode.NOT_EXISTS));
+//
+//        BidLog bidLog = bidRepository.save(BidLog.builder()
+//                .bidLogPrice(bidProposeRequest.getDealCurPrice())
+//                .deal(deal)
+//                .userId(bidProposeRequest.getUserId())
+//                .localDateTime(LocalDateTime.now())
+//                .build());
+//
+//
+//        log.info("price" + bidLog.getBidLogPrice());
+//        Deal deal1 = exArticle.getDeal();
+//        log.info("💰 [WebSocket] 입찰 요청 - 사용자 ID: {}, 입찰가: {}, 게시글 ID: {}", bidProposeRequest.getUserId(), bidProposeRequest.getDealCurPrice(), exArticle.getId());
+//
+//        deal.setDealCurPrice(bidProposeRequest.getDealCurPrice());
+//        dealRepository.save(deal1);
+//
+//        ExArticle article = exArticleRepository.save(exArticle);
+//
+//
+//        return bidLog;
+//    }
+
     // 웹소켓 전용
     // 입찰 제안을 DB에 저장한다 -> 입찰기록을 만든다
     public BidLog socketdealbid(ExArticle exArticle, BidProposeRequest bidProposeRequest) {
@@ -132,18 +179,16 @@ public class BidService {
 
         BidLog bidLog = bidRepository.save(BidLog.builder()
                 .bidLogPrice(bidProposeRequest.getDealCurPrice())
-                .deal(deal)
+                .dealId(deal.getId())
                 .userId(bidProposeRequest.getUserId())
                 .localDateTime(LocalDateTime.now())
                 .build());
 
-//        exArticle.setdeal(deal);
 
         log.info("price" + bidLog.getBidLogPrice());
         Deal deal1 = exArticle.getDeal();
         log.info("💰 [WebSocket] 입찰 요청 - 사용자 ID: {}, 입찰가: {}, 게시글 ID: {}", bidProposeRequest.getUserId(), bidProposeRequest.getDealCurPrice(), exArticle.getId());
 
-//        deal1.setDealCurPrice( );
         deal.setDealCurPrice(bidProposeRequest.getDealCurPrice());
         dealRepository.save(deal1);
 
@@ -153,6 +198,7 @@ public class BidService {
         return bidLog;
     }
 
+    //    public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
     public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
 
         UserResponse userResponse = userService.getUserInfo();
@@ -170,12 +216,22 @@ public class BidService {
         Deal deal = dealRepository.findById(exArticle.getDeal().getId()).orElseThrow(() ->
                 new DealException(DealErrorCode.NOT_EXISTS));
 
+//            BidLog bidLog = bidRepository.save(BidLog.builder()
+//                    .bidLogPrice(bidProposeRequest.getDealCurPrice())
+//                    .deal(deal)
+//                    .userId(customUser.getId())
+//                    .localDateTime(LocalDateTime.now())
+//                    .build());
+
+
         BidLog bidLog = bidRepository.save(BidLog.builder()
                 .bidLogPrice(bidProposeRequest.getDealCurPrice())
-                .deal(deal)
+                .dealId(deal.getId())
                 .userId(customUser.getId())
                 .localDateTime(LocalDateTime.now())
                 .build());
+
+
         log.info("💰 입찰 요청 - 사용자 ID: {}, 입찰가: {}, 게시글 ID: {}", customUser.getId(), bidProposeRequest.getDealCurPrice(), exArticleId);
 
 //        bidRepository.save(bidLog);
@@ -191,7 +247,7 @@ public class BidService {
         ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() ->
                 new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
-        BidLog bidLog = bidRepository.findById((bidSelectRequest.getBidid())).orElseThrow(() ->
+        BidLog bidLog = bidRepository.findById(String.valueOf((bidSelectRequest.getBidid()))).orElseThrow(() ->
                 new BidException(BidErrorCode.NOT_EXISTS));
 
         article.setDone(true);
@@ -201,8 +257,9 @@ public class BidService {
     }
 
 
-    public int getBidderCount(ExArticle exArticle) {
-        return bidRepository.countDistinctUserIdsByExArticleId((exArticle.getId()));
+    public int getBidderCount(Deal deal) {
+        return bidRepository.countDistinctUserIdByDealId((deal.getId()));
+//        return bidRepository.countDistinctUserIdsByExArticleId((exArticle.getId()));
     }
 
     public int getMaxBidPrice(ExArticle exArticle) {
