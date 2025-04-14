@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @ToString
 public class BidLog {
 
+
+
     @Id
     private String id;  // MongoDB ID
 
@@ -31,7 +33,7 @@ public class BidLog {
                 .userId(BidLog.getUserId())
                 .localDateTime(BidLog.getLocalDateTime())
                 .exarticleid(BidLog.getDealId())  // dealId만 사용
-                .id(Long.valueOf(BidLog.getId()))  // MongoDB ID
+                .id((BidLog.getId()))  // MongoDB ID
                 .nickname(customUser.getNickname())
                 .thumbnail(customUser.getThumbnail())
                 .build();
@@ -43,7 +45,7 @@ public class BidLog {
                 .userId(BidLog.getUserId())
                 .localDateTime(BidLog.getLocalDateTime())
                 .exarticleid(BidLog.getDealId())  // dealId
-                .id(Long.valueOf(BidLog.getId()))  // MongoDB ID
+                .id( BidLog.getId())  // MongoDB ID
                 .thumbnail(user.getThumbnail())
                 .nickname(user.getNickname())
                 .bidcount(size)
