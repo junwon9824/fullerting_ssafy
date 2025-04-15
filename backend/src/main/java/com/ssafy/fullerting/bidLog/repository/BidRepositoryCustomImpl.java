@@ -1,35 +1,31 @@
 package com.ssafy.fullerting.bidLog.repository;
 
-//import com.ssafy.fullerting.bidLog.model.entity.BidLog;
+import com.mongodb.BasicDBObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
-import jakarta.persistence.*;
+
 import java.util.Optional;
 
 @Repository
 public class BidRepositoryCustomImpl implements BidRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-//
-//    @Override
-//    public Optional<Integer> findMaxBidPriceByExArticleId(String exArticleId) {
-//        return Optional.empty();
-//    }
-
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     public Optional<Integer> findMaxBidPriceByExArticleId(String exArticleId) {
-//        String jpql = "SELECT MAX(b.bidLogPrice) FROM BidLog b WHERE b.deal.exArticle.id = :exArticleId";
-        String jpql = "SELECT MAX(b.bidLogPrice) FROM BidLog b WHERE b.deal.exArticle.id = :exArticleId";
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("deal.exArticle.id").is(exArticleId)),
+                Aggregation.group().max("bidLogPrice").as("maxPrice")
+        );
 
-        TypedQuery<Integer> query = entityManager.createQuery(jpql, Integer.class);
-        query.setParameter("exArticleId", exArticleId);
+        AggregationResults<BasicDBObject> results = mongoTemplate.aggregate(aggregation, "bidLog", BasicDBObject.class);
+        BasicDBObject result = results.getUniqueMappedResult();
 
-        Integer maxBidPrice = query.getSingleResult();
-        return Optional.ofNullable(maxBidPrice);
+        Integer maxPrice = result != null ? result.getInt("maxPrice") : null;
+        return Optional.ofNullable(maxPrice);
     }
-
-
-
 }

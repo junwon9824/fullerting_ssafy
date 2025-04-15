@@ -85,7 +85,7 @@ public class BidConsumerService {
             // WebSocket을 통해 메시지 전송
             messagingTemplate.convertAndSend("/sub/bidding/" + bidNotification.getArticleId(),
                     DealstartResponse.builder()
-                            .bidLogId(Long.valueOf(socketdealbid.getId()))
+                            .bidLogId( socketdealbid.getId())
                             .exArticleId(bidNotification.getUserId())
                             .userResponse(bidUser.toResponse())
                             .dealCurPrice(dealstartRequest.getDealCurPrice())
