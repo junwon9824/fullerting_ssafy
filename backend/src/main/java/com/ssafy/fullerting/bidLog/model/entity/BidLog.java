@@ -17,8 +17,6 @@ import java.time.LocalDateTime;
 @ToString
 public class BidLog {
 
-
-
     @Id
     private String id;  // MongoDB ID
 
