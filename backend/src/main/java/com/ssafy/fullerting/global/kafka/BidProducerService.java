@@ -51,7 +51,9 @@ public class BidProducerService {
             log.info("kafka messagemessagemessage"+ message);
             long startTime = System.currentTimeMillis();
 
-            CompletableFuture<SendResult<String, String>> future = kafkaTemplatetest.send(topicName, message);
+//            CompletableFuture<SendResult<String, String>> future = kafkaTemplatetest.send(topicName, message);
+            String key = exArticle.getId().toString();  // 게시물 ID를 키로 사용
+            CompletableFuture<SendResult<String, String>> future = kafkaTemplatetest.send(topicName, key, message);
 
             future
                     .thenAccept(result -> {

@@ -115,7 +115,7 @@ public class BidService {
 //        for (BidLog bl : bidLog) {
 //            bidLogs.add(bl.getUserId());
 //        }
-        
+
         for (BidLog bl : bidLog) {
             bidLogs.add(bl.getUserId());
         }
@@ -165,8 +165,7 @@ public class BidService {
 //        return bidLog;
 //    }
 
-    // 웹소켓 전용
-    // 입찰 제안을 DB에 저장한다 -> 입찰기록을 만든다
+    // 입찰 제안을 mongoDB에 저장한다 -> 입찰기록을 만든다
     public BidLog socketdealbid(ExArticle exArticle, BidProposeRequest bidProposeRequest) {
         exArticle.getDeal().setDealCurPrice(bidProposeRequest.getDealCurPrice());
         if (exArticle.getDeal() == null) {
@@ -177,12 +176,27 @@ public class BidService {
         Deal deal = dealRepository.findById(exArticle.getDeal().getId()).orElseThrow(() ->
                 new DealException(DealErrorCode.NOT_EXISTS));
 
+        // MongoDB에 입찰 기록 저장
         BidLog bidLog = bidRepository.save(BidLog.builder()
                 .bidLogPrice(bidProposeRequest.getDealCurPrice())
                 .dealId(deal.getId())
                 .userId(bidProposeRequest.getUserId())
                 .localDateTime(LocalDateTime.now())
                 .build());
+
+        // 저장된 ID 확인 로그
+        log.info("✅ [Mongo] 저장된 입찰 로그 ID: {}", bidLog.getId());
+        log.info("💰 [WebSocket] 입찰 요청 - 사용자 ID: {}, 입찰가: {}, 게시글 ID: {}",
+                bidProposeRequest.getUserId(), bidProposeRequest.getDealCurPrice(), exArticle.getId());
+
+        // MongoDB에 실제 저장됐는지 바로 조회해서 검증
+        BidLog savedCheck = bidRepository.findById(bidLog.getId()).orElse(null);
+        if (savedCheck == null) {
+            log.warn("❌ [Mongo] 입찰 로그 저장 실패! ID: {}", bidLog.getId());
+        } else {
+            log.info("✅ [Mongo] 입찰 로그 저장 확인 완료. 가격: {}", savedCheck.getBidLogPrice());
+        }
+
 
 
         log.info("price" + bidLog.getBidLogPrice());

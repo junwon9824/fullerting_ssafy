@@ -42,7 +42,7 @@ public class BidConsumerService {
     private final SimpMessagingTemplate messagingTemplate;
 
     @KafkaListener(topics = "kafka-alarm", groupId = "user-notifications", containerFactory = "kafkaJsonContainerFactory")
-    public void kafkaalram(String string) {
+    public synchronized void kafkaalram(String string) {
         long receivedTime = System.currentTimeMillis();
         log.info("Received notification: {} at {}", string, receivedTime);
         
