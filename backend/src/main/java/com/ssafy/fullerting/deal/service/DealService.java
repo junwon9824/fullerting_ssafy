@@ -54,7 +54,7 @@ public class DealService {
         UserResponse userResponse = userService.getUserInfo();
         MemberProfile customUser = userResponse.toEntity(userResponse);
 
-        List<BidLog> bidLogs = bidRepository.findAllByUserId(   (customUser.getId()));
+        List<BidLog> bidLogs = bidRepository.findAllByUserId((customUser.getId()));
 
         // 중복을 제거할 열의 값을 저장할 Set
         HashSet<Long> exArticleIds = new HashSet<>();
@@ -65,7 +65,7 @@ public class DealService {
         // 특정 열의 값을 추출하여 Set에 저장하여 중복 제거
         for (BidLog bidLog : bidLogs) {
 //            ExArticle article = bidLog.getDeal().getExArticle();
-            Deal deal = dealRepository.findById(bidLog.getDealId()).orElseThrow(()->new DealException(DealErrorCode.NOT_EXISTS));
+            Deal deal = dealRepository.findById(bidLog.getDealId()).orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
             ExArticle article = deal.getExArticle();
             Long exArticleId = article.getId(); // 특정 열의 값 추출
             if (!exArticleIds.contains(exArticleId)) {
@@ -87,12 +87,12 @@ public class DealService {
         List<ExArticle> exArticles = exArticleRepository.findAllByUserID(customUser.getId());
 
         List<BidLog> bidLogs = exArticles.stream().map(exArticle -> BidLog.builder()
-                .bidLogPrice(exArticle.getDeal().getDealCurPrice())
-                .userId(exArticle.getPurchaserId())
+                        .bidLogPrice(exArticle.getDeal().getDealCurPrice())
+                        .userId(exArticle.getPurchaserId())
 //                .deal(exArticle.getDeal())
-                .dealId(exArticle.getDeal().getId())
+                        .dealId(exArticle.getDeal().getId())
 
-                .build()
+                        .build()
         ).collect(Collectors.toList());
 
         // 중복을 제거할 열의 값을 저장할 Set
@@ -104,7 +104,7 @@ public class DealService {
         // 특정 열의 값을 추출하여 Set에 저장하여 중복 제거
         for (BidLog bidLog : bidLogs) {
 //            ExArticle article = bidLog.getDeal().getExArticle();
-            Deal deal =  dealRepository.findById( bidLog.getDealId()).orElseThrow(()->new DealException(DealErrorCode.NOT_EXISTS));
+            Deal deal = dealRepository.findById(bidLog.getDealId()).orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
 
             ExArticle article = deal.getExArticle();
             Long exArticleId = article.getId(); // 특정 열의 값 추출
