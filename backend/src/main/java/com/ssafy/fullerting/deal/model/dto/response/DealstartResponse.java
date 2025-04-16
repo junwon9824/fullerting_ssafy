@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class DealstartResponse {
-    private String bidLogId; // 입찰제안 ID
+    private Long bidLogId; // 입찰제안 ID
     private Long exArticleId; // 가격제안 게시물 id
     private UserResponse userResponse; // 입찰자 ID, 썸네일, 닉네임
     private int dealCurPrice; // 입찰자가 제안한 금액

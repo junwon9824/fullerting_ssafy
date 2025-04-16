@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 @Getter
 public class BidLogResponse {
-    private String id;
+    private Long id;
     private String nickname;
     private String thumbnail;
 
