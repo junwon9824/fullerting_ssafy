@@ -24,13 +24,6 @@ public class EventAlarmNotificationService {
         SseEmitter emitter = new SseEmitter(TIMEOUT);
         emitterMap.put(userId.toString(), emitter);
 
-        // FOR 503 ERR
-//        sendAsync(AlarmPayload.builder()
-//                .receiveUserId(userId)
-//                .alarmType("WELCOME!")
-//                .alarmContent("SSE CONNECTED!")
-//                .alarmRedirect("")
-//                .build());
 
         emitter.onCompletion(() -> {
 //            log.info("onCompletion callback");

@@ -1,6 +1,8 @@
 package com.ssafy.fullerting.global.kafka;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.ssafy.fullerting.deal.model.dto.response.DealstartResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
@@ -8,6 +10,7 @@ import com.ssafy.fullerting.global.config.BidNotification;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -68,5 +71,7 @@ public class BidProducerService {
             log.error("Failed to convert message to JSON due to {}", e.getMessage());
         }
     }
+
+
 
 }
