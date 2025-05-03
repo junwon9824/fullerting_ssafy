@@ -49,26 +49,15 @@ public class BidService {
     private final BidProducerService bidProducerService;
 
 
-    @Transactional
-    public void processBidWithLock(Long exArticleId, int dealCurPrice, MemberProfile bidder, String redirectUrl) {
-        // 🔒 비관적 락으로 게시물 조회
-        ExArticle exArticle = exArticleRepository.findByIdWithLock(exArticleId)
-                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
+    public void validateBidPrice(ExArticle exArticle, int proposedPrice) {
+        int maxBidPrice = getMaxBidPrice(exArticle);
         int currentPrice = exArticle.getDeal().getDealCurPrice();
-
-        log.info("현재가: {}, 희망가: {}", currentPrice, dealCurPrice);
-
-        if (dealCurPrice <= currentPrice) {
-            throw new RuntimeException("최고가보다 높은 금액을 입력해주세요!! 현재가: " + currentPrice);
+        if (proposedPrice <= maxBidPrice || proposedPrice < currentPrice) {
+            throw new RuntimeException("최고가보다 낮은 입찰");
         }
-
-        // ✅ 가격 갱신
-        exArticle.getDeal().setDealCurPrice(dealCurPrice);
-
-        // ✅ 카프카로 알림 전송
-        bidProducerService.kafkaalarmproduce(bidder, exArticle, redirectUrl);
     }
+
 
 
     public void deal(BidProposeRequest bidProposeRequest, MemberProfile user, Long ex_article_id) {
@@ -281,4 +270,5 @@ public class BidService {
         Optional<Integer> maxBidPriceOptional = bidRepository.findMaxBidPriceByExArticleId(String.valueOf(exArticle.getId()));
         return maxBidPriceOptional.orElse(0);
     }
+
 }

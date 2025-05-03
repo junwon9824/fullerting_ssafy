@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.global.kafka;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -26,6 +27,17 @@ public class BidProducerService {
     //    private final KafkaTemplate<String, BidNotification> kafkaTemplate; // Object 타입으로 변경하여 다양한 메시지 타입 지원
     private final KafkaTemplate<String, String> kafkaTemplatetest; // Object 타입으로 변경하여 다양한 메시지 타입 지원
     private final ObjectMapper objectMapper; // Jackson ObjectMapper
+
+    private static final String BID_TOPIC = "bid_requests";
+    // 입찰 신청 메시지를 카프카로 보내는 메서드
+    public void sendBidRequest(Long exArticleId, int dealCurPrice, MemberProfile bidder) throws JsonProcessingException {
+        BidRequestMessage bidRequest = new BidRequestMessage(exArticleId, dealCurPrice, bidder.getNickname());
+        String messageJson = objectMapper.writeValueAsString(bidRequest); // JSON 직렬화
+
+        kafkaTemplatetest.send(BID_TOPIC, exArticleId.toString(), messageJson);
+
+        log.info("카프카로 입찰 신청을 전송했습니다: {}", bidRequest);
+    }
 
 
     public void kafkaalarmproduce(MemberProfile memberProfile, ExArticle exArticle, String redirecturl) {

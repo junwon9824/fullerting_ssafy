@@ -70,7 +70,8 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
         // ✅ SUBSCRIBE: 로그 찍기
         if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
             log.info("SUBSCRIBE 요청: sessionId={}, destination={}", accessor.getSessionId(), accessor.getDestination());
-
+            log.info("accessor.getSessionAttributes().get(\"userAuthentication\")" +
+                    accessor.getSessionAttributes().get("userAuthentication"));
             Object auth = accessor.getSessionAttributes().get("userAuthentication");
             if (auth != null) {
                 log.info("SUBSCRIBE 시 유저 인증 존재함: {}", auth.toString());

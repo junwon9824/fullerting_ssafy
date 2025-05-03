@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.global.kafka;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssafy.fullerting.alarm.service.EventAlarmService;
 import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
@@ -20,6 +21,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Controller
 @Slf4j
@@ -33,9 +35,20 @@ public class KafkaMessageController {
     private final UserService userService;
     private final BidProducerService bidProducerService;
 
+
     //이 메서드를 호출하는건 pub 로 시작하는 경로..
     @MessageMapping("/bidding/{exArticleId}/messages")
-    public void bidBroker(@DestinationVariable Long exArticleId, SimpMessageHeaderAccessor headerAccessor, DealstartRequest dealstartRequest) {
+    public void bidBroker(@DestinationVariable("exArticleId") Long exArticleId,
+                          SimpMessageHeaderAccessor headerAccessor, DealstartRequest dealstartRequest) {
+
+        // 트랜잭션 상태 확인
+        boolean transactionActive = TransactionSynchronizationManager.isActualTransactionActive();
+        log.info("트랜잭션 상태 확인: {}", transactionActive ? "활성화됨" : "비활성화됨");
+
+        if (!transactionActive) {
+            log.warn("트랜잭션이 활성화되지 않았습니다. 트랜잭션이 필요한 작업입니다.");
+        }
+
         // 세션 속성에서 CustomAuthenticationToken 조회
         CustomAuthenticationToken authentication = (CustomAuthenticationToken) headerAccessor.getSessionAttributes().get("userAuthentication");
 
@@ -43,22 +56,20 @@ public class KafkaMessageController {
             Long bidUserId = authentication.getUserId();
             MemberProfile bidUser = userService.getUserEntityById(bidUserId);
 
-//            log.info("웹소켓에서 추출한 유저 : {}", bidUser.toString());
+            log.info("웹소켓에서 추출한 유저 : {}", bidUser.toString());
 
 ////            // 게시물 정보
 //            ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException(
 //                    ExArticleErrorCode.NOT_EXISTS));
 
+//            // 게시물 정보 조회
+//            ExArticle exArticle = exArticleRepository.findByIdwithLock(exArticleId)
+//                    .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+//            log.info("게시물 정보 조회 완료: {}", exArticle);
+//            bidService.validateBidPrice(exArticle, dealstartRequest.getDealCurPrice());
 
-            // ⭐ LazyInitializationException 방지용 fetch join
-            ExArticle exArticle = exArticleRepository.findWithDealById(exArticleId)
-                    .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
             // 최고가 검증
-//            int maxBidPrice = bidService.getMaxBidPrice(exArticle);
-//            if (dealstartRequest.getDealCurPrice() <= maxBidPrice || dealstartRequest.getDealCurPrice() < exArticle.getDeal().getDealCurPrice()) {
-//                throw new RuntimeException("최고가보다 낮거나 같은 입찰가 입력 : " + maxBidPrice);
-//            }
 
 
 //            // 입찰 기록(bid_log) 저장
@@ -95,15 +106,21 @@ public class KafkaMessageController {
 //            bidProducerService.sendBidNotificationMessage(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
 //            bidProducerService.kafkaalarmproduce(bidUser, exArticle,dealstartRequest.getRedirectURL()); // 수정된 부분
             try {
-                bidService.processBidWithLock(
-                        exArticleId,
+                bidProducerService.sendBidRequest(exArticleId,
                         dealstartRequest.getDealCurPrice(),
-                        bidUser,
-                        dealstartRequest.getRedirectURL()
+                        bidUser
                 );
+//                bidService.processBidWithLock(
+//                        exArticleId,
+//                        dealstartRequest.getDealCurPrice(),
+//                        bidUser,
+//                        dealstartRequest.getRedirectURL()
+//                );
             } catch (RuntimeException e) {
                 log.warn("❌ 입찰 실패: {}", e.getMessage());
                 // 필요시 WebSocket 응답으로 클라이언트에 실패 메시지 전송 가능
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
             }
 
         } else {
