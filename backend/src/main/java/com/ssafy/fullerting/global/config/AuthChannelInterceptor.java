@@ -32,38 +32,55 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
 //        SimpMessageHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, SimpMessageHeaderAccessor.class);
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+            log.info("websocket connect ");
             String jwtToken = accessor.getFirstNativeHeader("Authorization");
 
             if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
                 String accessToken = jwtToken.substring(7);
 
                 //엑세스 토큰 검증
-            Jws<Claims> claimsJws = jwtUtils.validateAccessToken(accessToken);
+                Jws<Claims> claimsJws = jwtUtils.validateAccessToken(accessToken);
 
-            //토큰 있으면 검증
-            if (claimsJws != null) {
-                // 각 권한 문자열을 SimpleGrantedAuthority 객체로 변환
-                List<String> roles = claimsJws.getBody().get("authorities", List.class);
-                Collection<GrantedAuthority> authorities = roles.stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+                //토큰 있으면 검증
+                if (claimsJws != null) {
+                    // 각 권한 문자열을 SimpleGrantedAuthority 객체로 변환
+                    List<String> roles = claimsJws.getBody().get("authorities", List.class);
+                    Collection<GrantedAuthority> authorities = roles.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
 
-                CustomAuthenticationToken customAuthenticationToken =
-                        new CustomAuthenticationToken(
-                                jwtUtils.getEmailByAccessToken(accessToken),
-                                jwtUtils.getUserIdByAccessToken(accessToken),
-                                null,
-                                authorities
-                        ); // principal,userid,password,authorities 가 들어감}
-                SecurityContextHolder.getContext().setAuthentication(customAuthenticationToken);
-                log.info("웹소켓 요청 jwt 토큰 검증 : {}", SecurityContextHolder.getContext().toString());
+                    CustomAuthenticationToken customAuthenticationToken =
+                            new CustomAuthenticationToken(
+                                    jwtUtils.getEmailByAccessToken(accessToken),
+                                    jwtUtils.getUserIdByAccessToken(accessToken),
+                                    null,
+                                    authorities
+                            ); // principal,userid,password,authorities 가 들어감}
+                    SecurityContextHolder.getContext().setAuthentication(customAuthenticationToken);
+                    log.info("웹소켓 요청 jwt 토큰 검증 : {}", SecurityContextHolder.getContext().toString());
 
-                // 인증 정보를 웹소켓 세션 속성에 저장
-                accessor.getSessionAttributes().put("userAuthentication", customAuthenticationToken);
+                    // 인증 정보를 웹소켓 세션 속성에 저장
+                    accessor.getSessionAttributes().put("userAuthentication", customAuthenticationToken);
 
-            }
+                }
             }
         }
+
+
+        // ✅ SUBSCRIBE: 로그 찍기
+        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+            log.info("SUBSCRIBE 요청: sessionId={}, destination={}", accessor.getSessionId(), accessor.getDestination());
+            log.info("accessor.getSessionAttributes().get(\"userAuthentication\")" +
+                    accessor.getSessionAttributes().get("userAuthentication"));
+            Object auth = accessor.getSessionAttributes().get("userAuthentication");
+            if (auth != null) {
+                log.info("SUBSCRIBE 시 유저 인증 존재함: {}", auth.toString());
+            } else {
+                log.warn("SUBSCRIBE 시 세션에 유저 인증 없음!");
+            }
+        }
+
+
         return message;
     }
 }

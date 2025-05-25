@@ -93,8 +93,8 @@ public class ExArticleService {
     }
 
 
-    public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
-//        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
+//    public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
+        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
 
         if (exArticleRegisterRequest.getExArticleType().equals(null)) {
             throw new ExArticleException(ExArticleErrorCode.NOT_EXISTS);
@@ -106,8 +106,8 @@ public class ExArticleService {
 
 //        List<MultipartFile> files = exArticleRegisterImageRequest.getMultipartFiles();
 
-        S3ManyFilesResponse response =
-                amazonS3Service.uploadFiles(files);
+//        S3ManyFilesResponse response =
+//                amazonS3Service.uploadFiles(files);
 
         Optional<PackDiary> packDiary = null;
 
@@ -137,18 +137,18 @@ public class ExArticleService {
 
         ExArticle article2 = null;
 
-        List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
-            Image image = new Image();
-            image.setImgStoreUrl(stringStringEntry.getValue());
-            image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
-                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
-            imageRepository.save(image);
-            return image;
-        }).collect(Collectors.toList());
+//        List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
+//            Image image = new Image();
+//            image.setImgStoreUrl(stringStringEntry.getValue());
+//            image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
+//                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
+//            imageRepository.save(image);
+//            return image;
+//        }).collect(Collectors.toList());
 
-        log.info("urllllll" + images.get(0).getImgStoreUrl());
-
-        exArticle1.setImage(images);
+//        log.info("urllllll" + images.get(0).getImgStoreUrl());
+//
+//        exArticle1.setImage(images);
         ExArticle article = exArticleRepository.save(exArticle1);
 
         if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.DEAL)) {

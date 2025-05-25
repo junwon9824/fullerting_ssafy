@@ -72,7 +72,20 @@ const PostBoxComponent: React.FC<{ item: DataItem }> = ({ item }) => {
   return (
     <PostBox onClick={goToDetail}>
       <ImgBox>
-        <StyledImg src={item.imageResponses[0].imgStoreUrl} alt="tomato" />
+        {item.imageResponses?.length ? (
+          <StyledImg
+            src={item.imageResponses[0].imgStoreUrl}
+            alt={item.exArticleTitle || "Image"}
+          />
+        ) : (
+          <StyledImg
+            src={
+              process.env.REACT_APP_DEFAULT_IMAGE_URL ||
+              "/path/to/default/image.jpg"
+            }
+            alt="No image available"
+          />
+        )}
       </ImgBox>
       <Town>
         <div>

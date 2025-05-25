@@ -1,7 +1,10 @@
 package com.ssafy.fullerting.deal.service;
 
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
+//import com.ssafy.fullerting.bidLog.repository.BidRepository;
 import com.ssafy.fullerting.bidLog.repository.BidRepository;
+import com.ssafy.fullerting.deal.exception.DealErrorCode;
+import com.ssafy.fullerting.deal.exception.DealException;
 import com.ssafy.fullerting.deal.model.dto.response.MyExArticleResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
@@ -45,7 +48,6 @@ public class DealService {
         }).collect(Collectors.toList());
 
     }
-
     @Transactional
     public List<MyExArticleResponse> mybidarticles() {
         UserResponse userResponse = userService.getUserInfo();
@@ -85,6 +87,7 @@ public class DealService {
                 .bidLogPrice(exArticle.getDeal().getDealCurPrice())
                 .userId(exArticle.getPurchaserId())
                 .deal(exArticle.getDeal())
+//                .dealId(exArticle.getDeal().getId())
 
                 .build()
         ).collect(Collectors.toList());

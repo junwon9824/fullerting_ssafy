@@ -1,8 +1,7 @@
 package com.ssafy.fullerting.global.config;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
-import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,17 +11,28 @@ import java.time.LocalDateTime;
 @Data
 public class BidNotification {
 
+    @JsonProperty("userid")
+    private long userId;
 
-    @JsonProperty("userid") // JSON에서의 키와 매핑
-    private long userId; //입찰 희망자
-
-    @JsonProperty("articleid") // JSON에서의 키와 매핑
+    @JsonProperty("articleid")
     private long articleId;
+
     private String redirectUrl;
     private int price;
     private LocalDateTime localDateTime;
 
-
-
-    // Getters and Setters
+    // @JsonCreator와 @JsonProperty를 사용하여 객체를 생성
+    @JsonCreator
+    public BidNotification(
+            @JsonProperty("userid") long userId,
+            @JsonProperty("articleid") long articleId,
+            @JsonProperty("redirectUrl") String redirectUrl,
+            @JsonProperty("price") int price,
+            @JsonProperty("localDateTime") LocalDateTime localDateTime) {
+        this.userId = userId;
+        this.articleId = articleId;
+        this.redirectUrl = redirectUrl;
+        this.price = price;
+        this.localDateTime = localDateTime;
+    }
 }

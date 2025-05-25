@@ -145,6 +145,8 @@ const calculateDDay = (createdAt: string) => {
 };
 const Maintop = () => {
   const accessToken = sessionStorage.getItem("accessToken");
+
+
   const navigate = useNavigate();
 
   const { data: cropList } = useQuery({
@@ -170,12 +172,23 @@ const Maintop = () => {
     <MainContainer>
       <MainText>
         풀러팅{" "}
+        <span role="img" aria-label="leaf">
+        🌱
+        </span>
+
         <BellIcon
           src={bell}
           alt="Notification bell"
           onClick={handleViewAlarm}
         />
         <ChatIcon src={Chat} alt="Notification bell" onClick={handleChat} />
+
+        {!accessToken && (
+          <Diary onClick={goToLogin} style={{ position: "absolute", top: "15px", right: "91px" }}>
+            로그인
+          </Diary>
+        )}
+        
       </MainText>
       <TextBox>"{cropList?.length || 0}개의 작물을 가꾸고 계시군요"</TextBox>
       {accessToken ? (

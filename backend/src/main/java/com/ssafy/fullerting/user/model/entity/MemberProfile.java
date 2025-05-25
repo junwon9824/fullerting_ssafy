@@ -49,7 +49,7 @@ public class MemberProfile implements UserDetails {
     @Column(name = "user_location", length = 20)
     private String location;
 
-    @Column(name = "user_provider", nullable = false, length = 20)
+    @Column(name = "user_provider", nullable = true, length = 20)
     private String authProvider;
 
 
