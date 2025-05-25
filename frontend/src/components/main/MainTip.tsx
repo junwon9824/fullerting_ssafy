@@ -147,24 +147,6 @@ const MainTip = () => {
         </Character>
       </LogoAndTextContainer>
 
-      {accessToken ? ( // 로그인 상태일 때만 SliderContainer 렌더링
-        <SliderContainer onClick={goCommunity}>
-          <DiarySlider>
-            {posts?.map((post) => (
-              <DiaryBox key={post.id}>
-                <TextContent>
-                  <DiaryText>{post.title}</DiaryText>
-                  <BasicText>{post.content}</BasicText>
-                </TextContent>
-              </DiaryBox>
-            ))}
-          </DiarySlider>
-        </SliderContainer>
-      ) : (
-        <ExchangeBox onClick={goToLogin}>
-          <TokenBox>커뮤니티를 작성 해주세요</TokenBox>
-        </ExchangeBox>
-      )}
     </MainBox>
   );
 };
