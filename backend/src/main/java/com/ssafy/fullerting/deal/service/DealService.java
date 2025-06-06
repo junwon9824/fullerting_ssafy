@@ -1,10 +1,15 @@
 package com.ssafy.fullerting.deal.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 //import com.ssafy.fullerting.bidLog.repository.BidRepository;
 import com.ssafy.fullerting.bidLog.repository.BidRepository;
-import com.ssafy.fullerting.deal.exception.DealErrorCode;
-import com.ssafy.fullerting.deal.exception.DealException;
 import com.ssafy.fullerting.deal.model.dto.response.MyExArticleResponse;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
@@ -14,14 +19,9 @@ import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +31,6 @@ public class DealService {
     private final ExArticleRepository exArticleRepository;
     private final UserService userService;
 
-
     public List<ExArticleAllResponse> selectDeals() {
         UserResponse userResponse = userService.getUserInfo();
         MemberProfile customUser = userResponse.toEntity(userResponse);
@@ -40,20 +39,23 @@ public class DealService {
 
         return deals.stream().map(deal -> {
             ExArticleAllResponse exArticleAllResponse = ExArticleAllResponse.builder()
-                    .exArticleResponse(deal.getExArticle().toResponse(deal.getExArticle(), deal.getExArticle().getUser()))
-                    .packDiaryResponse(deal.getExArticle().getPackDiary() == null ? null : deal.getExArticle().getPackDiary().toResponse(deal.getExArticle().getPackDiary()))
+                    .exArticleResponse(
+                            deal.getExArticle().toResponse(deal.getExArticle(), deal.getExArticle().getUser()))
+                    .packDiaryResponse(deal.getExArticle().getPackDiary() == null ? null
+                            : deal.getExArticle().getPackDiary().toResponse(deal.getExArticle().getPackDiary()))
                     .build();
 
             return exArticleAllResponse;
         }).collect(Collectors.toList());
 
     }
+
     @Transactional
     public List<MyExArticleResponse> mybidarticles() {
         UserResponse userResponse = userService.getUserInfo();
         MemberProfile customUser = userResponse.toEntity(userResponse);
 
-        List<BidLog> bidLogs = bidRepository.findAllByUserId(   (customUser.getId()));
+        List<BidLog> bidLogs = bidRepository.findAllByUserId((customUser.getId()));
 
         // 중복을 제거할 열의 값을 저장할 Set
         HashSet<Long> exArticleIds = new HashSet<>();
@@ -74,7 +76,6 @@ public class DealService {
 
         return uniqueResponses;
     }
-
 
     @Transactional
     public List<MyExArticleResponse> wrotearticles() {
@@ -89,12 +90,6 @@ public class DealService {
                 .deal(exArticle.getDeal())
 //                .dealId(exArticle.getDeal().getId())
 
-                .build()
-        ).collect(Collectors.toList());
-
-        // 중복을 제거할 열의 값을 저장할 Set
-        HashSet<Long> exArticleIds = new HashSet<>();
-
         // 중복 제거된 결과를 저장할 리스트
         List<MyExArticleResponse> uniqueResponses = new ArrayList<>();
 
@@ -111,6 +106,5 @@ public class DealService {
 
         return uniqueResponses;
     }
-
 
 }
