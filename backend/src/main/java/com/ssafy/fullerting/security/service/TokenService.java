@@ -14,6 +14,7 @@ import com.ssafy.fullerting.security.util.JwtUtils;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -33,6 +35,7 @@ public class TokenService {
     private final TokenRepository tokenRepository;
     private final InvalidTokenRepository invalidTokenRepository;
     private final DataBaseUserDetailsService dataBaseUserDetailsService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public IssuedToken issueToken(Authentication authentication) {
 
@@ -113,4 +116,13 @@ public class TokenService {
         throw new JwtException(JwtErrorCode.INVALID_TOKEN);
     }
 
+    public void addToBlacklist(String token) {
+        // 블랙리스트에 토큰 추가 (예: 만료된 토큰)
+        redisTemplate.opsForValue().set(token, "blacklisted", 7, TimeUnit.DAYS);
+    }
+
+    public boolean isBlacklisted(String token) {
+        // 블랙리스트에 토큰이 있는지 확인
+        return redisTemplate.hasKey(token);
+    }
 }
