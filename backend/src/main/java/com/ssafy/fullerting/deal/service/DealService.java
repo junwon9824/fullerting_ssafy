@@ -88,6 +88,7 @@ public class DealService {
                 .bidLogPrice(exArticle.getDeal().getDealCurPrice())
                 .userId(exArticle.getPurchaserId())
                 .deal(exArticle.getDeal())
+                .build()).collect(Collectors.toList());
 //                .dealId(exArticle.getDeal().getId())
 
         // 중복 제거된 결과를 저장할 리스트
