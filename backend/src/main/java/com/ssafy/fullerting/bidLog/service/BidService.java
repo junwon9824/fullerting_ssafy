@@ -28,12 +28,16 @@ import com.ssafy.fullerting.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,7 +52,7 @@ public class BidService {
     private final UserService userService;
     private final BidProducerService bidProducerService;
 
-
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public void validateBidPrice(ExArticle exArticle, int proposedPrice) {
         int maxBidPrice = getMaxBidPrice(exArticle);
@@ -58,34 +62,26 @@ public class BidService {
         }
     }
 
-
-
     public void deal(BidProposeRequest bidProposeRequest, MemberProfile user, Long ex_article_id) {
         LocalDateTime time = LocalDateTime.now();
-
-
         ExArticle exArticle = exArticleRepository.findById(ex_article_id).orElseThrow
                 (() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-
         Long dealid = exArticle.getDeal().getId();
-
         Deal deal = dealRepository.findById(dealid).orElseThrow(
                 () -> new DealException(DealErrorCode.NOT_EXISTS));
-
-//        BidLog bidLog = bidRepository.save(BidLog.builder()
-//                .bidLogPrice(bidProposeRequest.getDealCurPrice())
-//                .localDateTime(time)
-//                .userId(user.getId())
-//                .deal(deal)
-//                .build());
-
         BidLog bidLog = bidRepository.save(BidLog.builder()
                 .bidLogPrice(bidProposeRequest.getDealCurPrice())
                 .localDateTime(time)
                 .userId(user.getId())
                 .deal(deal)
                 .build());
-
+        // Redis에 경매 상태 캐시
+        String auctionKey = "auction:" + ex_article_id;
+        Map<String, Object> auctionStatus = new HashMap<>();
+        auctionStatus.put("currentPrice", bidProposeRequest.getDealCurPrice());
+        auctionStatus.put("topBidder", user.getNickname());
+        redisTemplate.opsForHash().putAll(auctionKey, auctionStatus);
+        redisTemplate.expire(auctionKey, 1, TimeUnit.HOURS);
     }
 
     public List<BidLogResponse> selectbid(Long ex_article_id) {
@@ -174,6 +170,14 @@ public class BidService {
                 .localDateTime(LocalDateTime.now())
                 .build());
 
+        // Redis에 경매 상태 캐시
+        String auctionKey = "auction:" + exArticle.getId();
+        Map<String, Object> auctionStatus = new HashMap<>();
+        auctionStatus.put("currentPrice", bidProposeRequest.getDealCurPrice());
+        auctionStatus.put("topBidder", bidProposeRequest.getUserId());
+        redisTemplate.opsForHash().putAll(auctionKey, auctionStatus);
+        redisTemplate.expire(auctionKey, 1, TimeUnit.HOURS);
+
         // 저장된 ID 확인 로그
         log.info("✅ [Mongo] 저장된 입찰 로그 ID: {}", bidLog.getId());
         log.info("💰 [WebSocket] 입찰 요청 - 사용자 ID: {}, 입찰가: {}, 게시글 ID: {}",
@@ -235,6 +239,13 @@ public class BidService {
                 .localDateTime(LocalDateTime.now())
                 .build());
 
+        // Redis에 경매 상태 캐시
+        String auctionKey = "auction:" + exArticleId;
+        Map<String, Object> auctionStatus = new HashMap<>();
+        auctionStatus.put("currentPrice", bidProposeRequest.getDealCurPrice());
+        auctionStatus.put("topBidder", customUser.getNickname());
+        redisTemplate.opsForHash().putAll(auctionKey, auctionStatus);
+        redisTemplate.expire(auctionKey, 1, TimeUnit.HOURS);
 
         log.info("💰 입찰 요청 - 사용자 ID: {}, 입찰가: {}, 게시글 ID: {}", customUser.getId(), bidProposeRequest.getDealCurPrice(), exArticleId);
 

@@ -18,8 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.redis.core.RedisTemplate;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -31,6 +32,7 @@ public class bidLogController {
     private final DealService dealService;
     private final BidService bidService;
     private final UserService userService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
 //    @PostMapping("/{ex_article_id}/deal")
 //    @Operation(summary = "가격 제안하기 ", description = "가격 제안하기")
@@ -48,6 +50,14 @@ public class bidLogController {
     @GetMapping("/{ex_article_id}/suggestion")
     @Operation(summary = "입찰 제안조회하기 ", description = "특정 게시물의 입찰 제안 조회 하기")
     public ResponseEntity<MessageUtils> selectbid(@AuthenticationPrincipal String email, @PathVariable Long ex_article_id) {
+        // Redis에서 경매 상태 조회
+        String auctionKey = "auction:" + ex_article_id;
+        Map<Object, Object> auctionStatus = redisTemplate.opsForHash().entries(auctionKey);
+        if (!auctionStatus.isEmpty()) {
+            // Redis에 상태가 있으면 이 값으로 응답
+            return ResponseEntity.ok().body(MessageUtils.success(auctionStatus));
+        }
+        // 없으면 기존 로직
         List<BidLogResponse> bidLogs = bidService.selectbid(ex_article_id);
         log.info("[show deal]: {}");
         return ResponseEntity.ok().body(MessageUtils.success(bidLogs));
