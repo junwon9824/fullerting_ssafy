@@ -91,6 +91,9 @@ public class DealService {
                 .build()).collect(Collectors.toList());
 //                .dealId(exArticle.getDeal().getId())
 
+        // 중복을 제거할 열의 값을 저장할 Set
+        HashSet<Long> exArticleIds = new HashSet<>();
+
         // 중복 제거된 결과를 저장할 리스트
         List<MyExArticleResponse> uniqueResponses = new ArrayList<>();
 
@@ -98,6 +101,7 @@ public class DealService {
         for (BidLog bidLog : bidLogs) {
             ExArticle article = bidLog.getDeal().getExArticle();
             Long exArticleId = article.getId(); // 특정 열의 값 추출
+            
             if (!exArticleIds.contains(exArticleId)) {
                 // 중복이 아닌 경우에만 리스트에 추가
                 exArticleIds.add(exArticleId);
