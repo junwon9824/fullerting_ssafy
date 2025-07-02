@@ -8,7 +8,8 @@ const baseURL = import.meta.env.VITE_REACT_APP_API_URL
 
 // API 인스턴스 생성
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "https://j10c102.p.ssafy.io/api",
+  baseURL: import.meta.env.VITE_API_URL ,
+  // baseURL: import.meta.env.VITE_API_URL || "https://j10c102.p.ssafy.io/api",
   withCredentials: true,
 });
 
