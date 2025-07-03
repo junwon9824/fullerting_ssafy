@@ -19,6 +19,7 @@ const JoinPage = () => {
   const [password, onPassword] = useInput("");
   const [verifyPassword, onVerifyPassword] = useInput("");
   // const [isEmailVerify, setIsEmailVerify] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -28,8 +29,14 @@ const JoinPage = () => {
       alert("회원가입이 완료되었습니다.\n로그인해주세요!");
       navigate("/login");
     },
-    onError: (error) => {
-      console.log(error);
+    onError: (error: any) => {
+      const msg =
+        typeof error === "string"
+          ? error
+          : error?.response?.data?.message ||
+            error?.message ||
+            "요청에 실패했습니다.";
+      setError(msg);
     },
   });
 
@@ -55,6 +62,10 @@ const JoinPage = () => {
       alert("모든 정보를 입력해주세요!");
     }
   };
+
+  if (error) {
+    return <div style={{ color: 'red', margin: '10px 0' }}>{String(error)}</div>;
+  }
 
   return (
     <>
@@ -114,6 +125,9 @@ const JoinPage = () => {
             placeholder="닉네임"
             onChange={onName}
           />
+          {error && (
+            <div style={{ color: "red", margin: "10px 0" }}>{error}</div>
+          )}
         </LayoutInnerBox>
       </LayoutMainBox>
       <BottomButton onClick={handleConfirmClick} text="확인" />
