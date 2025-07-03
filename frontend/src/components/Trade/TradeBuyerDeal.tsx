@@ -323,18 +323,55 @@ const TradeBuyerDetail = () => {
 
   useEffect(() => {
     console.log("데이터", dealListData);
+    
+    // Redis 응답인지 기존 응답인지 확인
+    if (dealListData?.type === 'redis') {
+      // Redis 응답 처리
+      const redisData = dealListData.data;
+      console.log("Redis에서 가져온 데이터:", redisData);
+      // Redis 데이터로 메시지 설정 (MessageRes 타입에 맞게)
+      const transformedData: MessageRes[] = [{
+        bidLogId: redisData.bidLogId || 0,
+        exArticleId: postNumber,
+        userResponse: {
+          id: redisData.topBidderId || 0,
+          email: redisData.topBidderEmail || '',
+          role: redisData.topBidderRole || '',
+          nickname: redisData.topBidder || 'Unknown',
+          thumbnail: '',
+          rank: redisData.topBidderRank || '',
+          location: redisData.topBidderLocation || '',
+          authProvider: redisData.topBidderAuthProvider || '',
+        },
+        dealCurPrice: redisData.currentPrice || 0,
+        maxPrice: redisData.currentPrice || 0,
+        bidderCount: 1,
+      }];
+      setMessages(transformedData);
+    } else if (dealListData?.type === 'database') {
+      // 기존 DB 응답 처리
+      const transformedData = Array.isArray(dealListData.data) 
+        ? dealListData.data.map((item: Response) => ({
+            bidLogId: item.id,
+            exArticleId: item.exarticleid,
+            userResponse: {
+              id: item.userId,
+              email: '',
+              role: '',
+              nickname: item.nickname,
+              thumbnail: item.thumbnail,
+              rank: '',
+              location: '',
+              authProvider: '',
+            },
+            dealCurPrice: item.bidLogPrice,
+            maxPrice: item.bidLogPrice,
+            bidderCount: 1,
+          })) as MessageRes[]
+        : [];
+      setMessages(transformedData);
+    }
     const socket = new WebSocket(wssURL);
-    const transformedData = dealListData?.map((item: Response) => ({
-      bidLogId: item.id,
-      exArticleId: item.exarticleid,
-      userResponse: {
-        id: item.userId,
-        nickname: item.nickname,
-        thumbnail: item.thumbnail,
-      },
-      dealCurPrice: item.bidLogPrice,
-    }));
-    setMessages(transformedData);
     const client = Stomp.over(socket);
 
     console.log(socket);
@@ -365,7 +402,9 @@ const TradeBuyerDetail = () => {
       try {
         if (
           Number(newMessage) <=
-          dealListData[dealListData.length - 1]?.bidLogPrice
+          (dealListData?.type === 'redis' 
+            ? dealListData.data.currentPrice 
+            : dealListData?.data?.[dealListData.data.length - 1]?.bidLogPrice)
         ) {
           alert("최고가보다 더 높은 가격을 제안해주세요");
           return;
@@ -471,8 +510,10 @@ const TradeBuyerDetail = () => {
                   최고가
                 </Situation>
                 <TextStyle>
-                  {dealListData && dealListData.length > 0
-                    ? `${dealListData[dealListData.length - 1].bidLogPrice}원`
+                  {dealListData?.type === 'redis'
+                    ? `${dealListData.data.currentPrice}원`
+                    : dealListData?.data && dealListData.data.length > 0
+                    ? `${dealListData.data[dealListData.data.length - 1].bidLogPrice}원`
                     : `${data?.dealResponse?.price}원`}
                 </TextStyle>
               </SituationGroup>
@@ -484,8 +525,11 @@ const TradeBuyerDetail = () => {
                   참여자
                 </Situation>
                 <TextStyle>
-                  {dealListData &&
-                    dealListData[dealListData.length - 1]?.bidcount | 0}
+                  {dealListData?.type === 'redis'
+                    ? '1'
+                    : dealListData?.data && dealListData.data.length > 0
+                    ? dealListData.data[dealListData.data.length - 1]?.bidcount || 0
+                    : 0}
                   명
                 </TextStyle>
               </SituationGroup>

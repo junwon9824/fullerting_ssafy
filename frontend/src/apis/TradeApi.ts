@@ -83,7 +83,23 @@ export const getDealList = async (accessToken: string, postId: number) => {
     const response = await api.get(`/exchanges/${postId}/suggestion`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    return response.data.data_body;
+    
+    // Redis 응답인지 기존 응답인지 확인
+    const data = response.data.data_body;
+    
+    // Redis 응답인 경우 (auctionStatus 형태)
+    if (data && typeof data === 'object' && 'currentPrice' in data) {
+      return {
+        type: 'redis',
+        data: data
+      };
+    }
+    
+    // 기존 응답인 경우 (BidLogResponse[] 형태)
+    return {
+      type: 'database',
+      data: data
+    };
   } catch (e) {
     console.log("에러났어요", e);
   }
