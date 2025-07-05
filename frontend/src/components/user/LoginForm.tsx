@@ -55,7 +55,7 @@ const LoginForm = () => {
     mutationFn: userLogin,
     onSuccess: (res) => {
       sessionStorage.setItem("accessToken", res.data_body.accessToken);
-
+      sessionStorage.setItem("refreshToken", res.data_body.refreshToken);
       navigate("/");
     },
     onError: (error) => {

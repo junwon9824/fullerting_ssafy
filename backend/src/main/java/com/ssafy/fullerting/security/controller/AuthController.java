@@ -17,30 +17,31 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/auth")
-@Tag(name="회원 기능 API", description = "[JWT 토큰을 이용해야해서 포스트맨으로 테스트 필요한 API] 인가,인증과 관련된 작업을 수행한다")
+@Tag(name = "회원 기능 API", description = "[JWT 토큰을 이용해야해서 포스트맨으로 테스트 필요한 API] 인가,인증과 관련된 작업을 수행한다")
 public class AuthController {
 
     private final AuthService authService;
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @Operation(summary="회원 로그인", description="이메일, 비밀번호로 로그인한다")
+    @Operation(summary = "회원 로그인", description = "이메일, 비밀번호로 로그인한다")
     public ResponseEntity<MessageUtils> login(@Valid @RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok().body(MessageUtils.success(authService.login(loginRequest)));
     }
 
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary="회원 로그아웃", description="로그인 상태에서 로그아웃한다. <br> [헤더 Bearer: Access토큰 필요] <br> 토큰을 기반으로 유저정보 검사")
-    public ResponseEntity<MessageUtils> logut() {
+    @Operation(summary = "회원 로그아웃", description = "로그인 상태에서 로그아웃한다. <br> [헤더 Bearer: Access토큰 필요] <br> 토큰을 기반으로 유저정보 검사")
+    public ResponseEntity<MessageUtils> logout() {
         authService.logout();
         return ResponseEntity.ok().body(MessageUtils.success());
     }
 
     @PostMapping("/refresh")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary="토큰 재발행", description="REFRESH 토큰을 비교해 기한이 만료된 ACCESS 토큰을 재발행한다 <br> CODE: 401  MESSAGE : EXPIRED_TOKEN 인 경우 해당 API 요청 <br> REFRESH 토큰의 유효기간이 남았을 경우만 재발급한다")
+    @Operation(summary = "토큰 재발행", description = "REFRESH 토큰을 비교해 기한이 만료된 ACCESS 토큰을 재발행한다 <br> CODE: 401  MESSAGE : EXPIRED_TOKEN 인 경우 해당 API 요청 <br> REFRESH 토큰의 유효기간이 남았을 경우만 재발급한다")
     public ResponseEntity<MessageUtils> refresh(@RequestBody RefreshRequest refreshRequest) {
+        log.info("newAccessToken");
         return ResponseEntity.ok().body(MessageUtils.success(authService.refresh(refreshRequest.getRefreshToken())));
     }
 

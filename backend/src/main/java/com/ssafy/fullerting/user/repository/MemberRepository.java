@@ -1,5 +1,5 @@
 package com.ssafy.fullerting.user.repository;
-import com.ssafy.fullerting.user.model.entity.Member;
+// import com.ssafy.fullerting.user.model.entity.Member;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

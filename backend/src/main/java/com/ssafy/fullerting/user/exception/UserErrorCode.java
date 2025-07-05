@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum UserErrorCode {
-    NOT_EXISTS_USER("존재하지 않는 회원입니다.",HttpStatus.BAD_REQUEST),
+    NOT_EXISTS_USER("존재하지 않는 회원입니다.",HttpStatus.UNAUTHORIZED),
     ALREADY_IN_EMAIL("이미 가입된 회원입니다.", HttpStatus.BAD_REQUEST),
     ACCESS_DENIED("권한이 없습니다.", HttpStatus.FORBIDDEN);
 

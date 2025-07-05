@@ -67,6 +67,7 @@ api.interceptors.response.use(
     ) {
 
       if (isRefreshing) {
+        
         // 이미 재발급 중이면 큐에 추가
         return new Promise(function (resolve, reject) {
           failedQueue.push({ resolve, reject });
@@ -83,21 +84,18 @@ api.interceptors.response.use(
 
       const refreshToken = sessionStorage.getItem("refreshToken");
       if (!refreshToken) {
-        // refresh token도 없으면 로그아웃
-        window.location.href = "/user/logout";
+        // refresh token도 없으면 로그인 페이지로 이동
+        console.log("refreshToken11111111111111", refreshToken);
+        window.location.href = "/login";
         return Promise.reject(error);
       }
 
       try {
         // refresh token으로 access token 재발급 요청
+        console.log("refreshToken22222222222222", refreshToken);
         const res = await axios.post(
-          `${import.meta.env.VITE_API_URL || "https://j10c102.p.ssafy.io/api"}/auth/refresh`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${refreshToken}`,
-            },
-          }
+          `${import.meta.env.VITE_REACT_APP_API_URL}/auth/refresh`,
+          { refreshToken }
         );
         const newAccessToken = res.data.data_body.accessToken;
         const newRefreshToken = res.data.data_body.refreshToken;
@@ -111,8 +109,8 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
-        // refresh token도 만료 → 로그아웃
-        window.location.href = "/user/logout";
+        // refresh token도 만료 → 로그인 페이지로 이동
+        window.location.href = "/login";
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

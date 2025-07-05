@@ -1,6 +1,5 @@
 package com.ssafy.fullerting.security.config;
 
-
 import com.ssafy.fullerting.security.Filter.JwtValidationFilter;
 import com.ssafy.fullerting.security.handler.AuthFailureHandler;
 import com.ssafy.fullerting.security.handler.ExceptionHandlerFilter;
@@ -44,39 +43,40 @@ public class SecurityConfig {
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfig()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-//                .oauth2Login(Customizer.withDefaults())
+                // .oauth2Login(Customizer.withDefaults())
 
-//                .oauth2Login(customizer ->
-//                                customizer
-////                                .failureHandler(authFailureHandler)
-//                                        .userInfoEndpoint(userInfoEndpoint ->
-//                                                userInfoEndpoint.userService(customOAuth2Service))
-//                                        .successHandler(oAuthSuccessHandler)
-//                )
+                // .oauth2Login(customizer ->
+                // customizer
+                //// .failureHandler(authFailureHandler)
+                // .userInfoEndpoint(userInfoEndpoint ->
+                // userInfoEndpoint.userService(customOAuth2Service))
+                // .successHandler(oAuthSuccessHandler)
+                // )
 
                 // 인가 경로 설정
-                .authorizeHttpRequests((requests) ->
-                        requests.requestMatchers(
-                                "/error",
-                                "/oauth2/**",
-//                                "/login/**",
+                .authorizeHttpRequests((requests) -> requests.requestMatchers(
+                        "/error",
+                        "/oauth2/**",
+                        // "/login/**",
 
-                                "/v1/auth/login",
-                                "/v1/users/register",
-                                "/v1/file/upload",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/ws",
-                                "/v1/noti/send",
-                                "/v1/noti/pub"// 알람
-                        ).permitAll().anyRequest().authenticated())
+                        "/v1/auth/login",
+                        "/v1/auth/refresh", // ← 추가
+
+                        "/v1/users/register",
+                        "/v1/file/upload",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**",
+                        "/ws",
+                        "/v1/noti/send",
+                        "/v1/noti/pub"// 알람
+                ).permitAll().anyRequest().authenticated())
                 // 예외처리
-//                .exceptionHandling(exceptionHandling ->
-//                        exceptionHandling
-//                                .authenticationEntryPoint(authFailureHandler)
-//                )
-//                // 토큰 사용을 위해 JSESSIONID 발급 중지
+                // .exceptionHandling(exceptionHandling ->
+                // exceptionHandling
+                // .authenticationEntryPoint(authFailureHandler)
+                // )
+                // // 토큰 사용을 위해 JSESSIONID 발급 중지
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // JWT 필터
@@ -88,7 +88,8 @@ public class SecurityConfig {
 
     // authenticationManager 빈으로 등록
     @Bean
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 

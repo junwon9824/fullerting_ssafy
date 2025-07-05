@@ -46,7 +46,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
         String accessToken = (list != null && list.length == 2 && list[0].isEmpty()) ? list[1] : null;
 
         if (accessToken == null) {
-            doFilter(request, response, filterChain);
+            filterChain.doFilter(request, response);
             return;
         }
 
