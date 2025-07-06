@@ -467,38 +467,7 @@ POST   /api/community/comments # 댓글 작성
     <artifactId>jackson-datatype-jsr310</artifactId>
 </dependency>
 ```
-
-#### RedisConfig.java
-```java
-@Configuration
-public class RedisConfig {
-
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
-
-        // 문자열 직렬화
-        StringRedisSerializer stringSerializer = new StringRedisSerializer();
-        
-        // JSON 직렬화 (Jackson) - Java 8 날짜/시간 모듈 등록
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        
-        GenericJackson2JsonRedisSerializer jsonSerializer = 
-            new GenericJackson2JsonRedisSerializer(objectMapper);
-
-        template.setKeySerializer(stringSerializer);
-        template.setHashKeySerializer(stringSerializer);
-        template.setValueSerializer(jsonSerializer);
-        template.setHashValueSerializer(jsonSerializer);
-
-        template.afterPropertiesSet();
-        return template;
-    }
-}
-```
+ 
 
 #### Redis 데이터 구조
 - `auction:{articleId}`: 경매 상태 정보 (Hash)

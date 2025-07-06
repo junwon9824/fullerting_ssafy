@@ -18,9 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.redis.core.RedisTemplate;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 @Slf4j
 @RestController
@@ -55,17 +56,38 @@ public class bidLogController {
         // Redis에서 경매 상태 조회 (최근 입찰 로그 리스트 우선)
         String baseKey = "auction:" + ex_article_id;
         String logKey = baseKey + ":logs";
+        log.info("Redis 키 조회 시도: " + logKey);
         List<Object> redisList = redisTemplate.opsForList().range(logKey, 0, -1);
+        log.info("Redis 조회 결과 - 리스트 크기: " + (redisList != null ? redisList.size() : "null"));
+
         if (redisList != null && !redisList.isEmpty()) {
-            List<BidLogResponse> cachedList = redisList.stream()
-                    .filter(o -> o instanceof BidLogResponse)
-                    .map(o -> (BidLogResponse) o)
-                    .toList();
+            log.info("첫 번째 요소 클래스: " + (redisList.get(0) != null ? redisList.get(0).getClass().getName() : "null"));
+
+            List<BidLogResponse> cachedList = new ArrayList<>();
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            for (Object item : redisList) {
+                try {
+                    if (item instanceof Map) {
+                        // LinkedHashMap을 BidLogResponse로 변환
+                        BidLogResponse bidLog = objectMapper.convertValue(item, BidLogResponse.class);
+                        cachedList.add(bidLog);
+                    } else if (item instanceof BidLogResponse) {
+                        cachedList.add((BidLogResponse) item);
+                    }
+                } catch (Exception e) {
+                    log.error("Redis에서 가져온 데이터 변환 중 오류 발생: " + e.getMessage(), e);
+                }
+            }
+
+            log.info("변환 성공한 항목 수: " + cachedList.size());
+
             if (!cachedList.isEmpty()) {
+                log.info("Redis 캐시에서 데이터 반환");
                 return ResponseEntity.ok().body(MessageUtils.success(cachedList));
             }
         }
-        // 없으면 서비스 계층에서 캐시/DB 조회
+        log.info("Redis에 데이터가 없거나 변환에 실패하여 DB에서 조회");
         List<BidLogResponse> bidLogs = bidService.selectbid(ex_article_id);
         return ResponseEntity.ok().body(MessageUtils.success(bidLogs));
     }
