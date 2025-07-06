@@ -22,6 +22,7 @@
 - [API 문서](#-api-문서)
 - [팀원 소개](#-팀원-소개)
 - [협업 도구](#-협업-도구)
+- [JWT 토큰 갱신 정책](#-jwt-토큰-갱신-정책)
 
 ## 🌟 프로젝트 소개
 
@@ -215,6 +216,28 @@
   - 조회 시 DB 부하 감소
   - 1시간 만료 시간으로 메모리 관리
 
+##### Redis 해시 구조 예시 (auction:<경매글ID>)
+```bash
+# 예) 경매글 ID = 3
+127.0.0.1:6379> HGETALL auction:3
+1) "currentPrice"  # 현재 최고가
+2) "8"
+3) "bidLogId"      # 해당 입찰 로그(MongoDB) ID
+4) "7"
+5) "topBidderId"   # 최고 입찰자(사용자) ID
+6) "2"
+```
+> BidService 에서 입찰이 발생할 때마다 위 해시를 갱신합니다. 프론트엔드·백엔드는 `HGETALL` 또는 `HVALS` 명령으로 값을 읽어 배열로 변환해 화면을 즉시 업데이트합니다.
+
+##### Redis 입찰 로그 리스트 예시 (auction:<경매글ID>:logs)
+```bash
+LRANGE auction:3:logs 0 2   # 최신 3건 조회
+1) "{\"bidLogId\":7,\"userId\":2,\"price\":8000, ... }"
+2) "{\"bidLogId\":6,\"userId\":5,\"price\":7500, ... }"
+3) "{\"bidLogId\":5,\"userId\":9,\"price\":7000, ... }"
+```
+> 두 키는 **독립적**으로 저장됩니다. 입찰 발생 시 서비스가 Hash 와 List 를 함께 갱신하지만, Redis 관점에서는 별도 엔트리이므로 만료시간/삭제를 개별 관리할 수 있습니다. Hash 는 현재 상태(O(1) 조회) , List 는 최근 로그 스트림(최대 50개) 역할을 합니다.
+
 #### 입찰 현황 조회 동작
 - **경매글(작물) 상세 페이지에 진입하면**
   - 판매자(작물 내놓은 사람)와 구매자(입찰자) 모두
@@ -245,6 +268,42 @@
 - **실시간성**: Kafka + WebSocket으로 즉시 알림
 - **확장성**: 각각 독립적으로 스케일링 가능
 - **안정성**: 메시지 순서 보장 및 장애 복구
+
+### 🚑 트러블슈팅 – ClassCastException(Integer → BidLogResponse)
+| 증상 | 원인 | 해결 |
+|------|------|------|
+| `java.lang.ClassCastException: java.lang.Integer cannot be cast to BidLogResponse` | Redis 에 Hash 타입으로 `currentPrice`(숫자) 등을 저장한 뒤, 컨트롤러에서 **모든** Hash 값을 `BidLogResponse` 로 캐스팅함 | 1) Redis 구조를 **Hash(요약)** + **List(최근 로그)** 로 분리 2) 컨트롤러에서 `auction:{id}:logs` 리스트를 읽어 `instanceof` 검사 후 캐스팅 |
+> 2025-07-06 리팩터링으로 Hash 에는 숫자·ID 등 요약 정보만, List 에는 `BidLogResponse` 객체만 저장하도록 변경했습니다. 컨트롤러는 먼저 List 를 조회하여 캐스팅 오류를 방지합니다.
+
+## 🔐 JWT 토큰 갱신 정책
+
+| 구분 | 내용 |
+|------|------|
+| Access Token | 유효기간 짧음(15 min). 모든 API 요청 시 `Authorization: Bearer <access>` 헤더로 전송 |
+| Refresh Token | 유효기간 김(14 days). 최초 로그인 시 Redis 에 저장, Cookie/SessionStorage 에 보관 |
+
+1. **요청 흐름**
+   1) 클라이언트가 API 호출 → `JwtValidationFilter` 에서 accessToken 검증.
+   2) 만료(401) → 프론트 Axios 인터셉터가 `/v1/auth/refresh` POST `{ refreshToken }` 호출.
+
+2. **`TokenService.reIssueAccessTokenByRefreshToken()`**
+   - refreshToken 서명·만료 검증 → `jwtUtils.validateRefreshToken()`
+   - Claim 에서 `userId` 추출 → Redis 의 저장값과 일치 여부 확인.
+   - 일치할 경우 **Refresh-Token Rotation** 수행:
+     ```java
+     String newAccess = jwtUtils.issueAccessToken(email, userId, authorities);
+     String newRefresh = jwtUtils.issueRefreshToken(email, userId, authorities);
+     tokenRepository.save(new Token(userId, newRefresh));          // Redis 갱신
+     invalidTokenRepository.save(new InvalidToken(null, oldRefresh)); // 구 RT 폐기
+     return new IssuedToken(newAccess, newRefresh);
+     ```
+   - 불일치 → `JwtException(JwtErrorCode.INVALID_TOKEN)` 반환.
+
+3. **보안 효과**
+   - 탈취된 refreshToken 재사용 시도 → Redis 불일치로 즉시 차단.
+   - 이전 토큰은 블랙리스트 처리하여 일회성 보장.
+
+> Rotation 이 부담스럽다면 새 refreshToken 발급·저장을 생략하고 기존 값을 그대로 반환하는 **Reuse 전략**으로 한 줄만 수정하면 됩니다.
 
 ## 💻 설치 및 실행
 
@@ -376,8 +435,7 @@ POST   /api/community/comments # 댓글 작성
 - [📋 화면구성도](https://www.figma.com/file/Sknk6qQVE8fAiR5nOFvxza/%ED%92%80%EB%9F%AC%ED%8C%85?type=design&node-id=127-5825&mode=design&t=MnKBPQRoEeXjfoAR-0)
 - [📄 페이지 명세서](https://www.notion.so/e6dd58e2958e4d87a058ba5411bdc34b?v=490bc367fa934dd6b4d8f99816e66ba6)
 - [🧩 컴포넌트 명세서](https://www.notion.so/a1d316ad22c14e8d8615d9fd25b97608?v=a9f05331c88348239700d19d218dfb57)
-- [🗄️ ERD](https://www.notion.so/ERD-dc7ce2874a2b4e0c8078cb161eadd6d6)
-- [🔌 API 명세서](https://www.notion.so/44419a63e21b4465b541f5cb0ce26b57?v=9deef6569fdd47b98a22de3c9d91ca21)
+- [🗄️ ERD](https://www.notion.so/ERD-dc7ce2874a2b4465b541f5cb0ce26b56?v=9deef6569fdd47b98a22de3c9d91ca21)
 
 ## 📄 라이선스
 

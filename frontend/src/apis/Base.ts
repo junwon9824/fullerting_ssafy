@@ -29,6 +29,9 @@ api.interceptors.request.use(
     const accessToken = sessionStorage.getItem("accessToken");
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
+    } else {
+      // accessToken이 없으면 기존 Authorization 헤더 제거 (만료 토큰 전송 방지)
+      delete config.headers.Authorization;
     }
     return config;
   },

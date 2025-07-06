@@ -115,7 +115,7 @@ public class TokenService {
                 tokenRepository.save(new Token(userId, newRefreshToken));
 
                 // 보안을 위해 기존 refreshToken 은 블랙리스트에 보관 (선택)
-                invalidTokenRepository.save(new InvalidToken(null, refreshToken));
+                invalidTokenRepository.save(new InvalidToken(refreshToken));
 
                 log.info("[TOKEN-ROTATE] userId={} access={} refresh={}", userId, newAccessToken, newRefreshToken);
                 return new IssuedToken(newAccessToken, newRefreshToken);

@@ -83,25 +83,24 @@ export const getDealList = async (accessToken: string, postId: number) => {
     const response = await api.get(`/exchanges/${postId}/suggestion`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    
-    // Redis 응답인지 기존 응답인지 확인
+
     const data = response.data.data_body;
-    
-    // Redis 응답인 경우 (auctionStatus 형태)
-    if (data && typeof data === 'object' && 'currentPrice' in data) {
-      return {
-        type: 'redis',
-        data: data
-      };
+
+    // 1) 이미 배열이면 그대로 반환
+    if (Array.isArray(data)) {
+      return data;
     }
-    
-    // 기존 응답인 경우 (BidLogResponse[] 형태)
-    return {
-      type: 'database',
-      data: data
-    };
+
+    // 2) Redis 해시 형태라면 값만 배열로 변환 후 반환
+    if (data && typeof data === "object") {
+      return Object.values(data);
+    }
+
+    // 3) 그 외에는 빈 배열 반환하여 프런트 오류 방지
+    return [];
   } catch (e) {
-    console.log("에러났어요", e);
+    console.log("deal list 조회 실패", e);
+    throw e;
   }
 };
 export const getDealCategoryList = async (accessToken: string) => {
