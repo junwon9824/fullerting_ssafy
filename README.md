@@ -216,6 +216,11 @@
   - 조회 시 DB 부하 감소
   - 1시간 만료 시간으로 메모리 관리
 
+#### MongoDB: 입찰 로그 장기 보존 & 통계
+- **Bid Log 영속 저장**: BidService 가 입찰 발생 시 `MongoTemplate.save()` 로 `bidLog` 컬렉션에 동시에 저장(upsert).  
+- **집계 쿼리**: `BidRepositoryCustomImpl` 의 Aggregation 파이프라인으로 사용자 통계 등 계산.  
+- **Schema-less**: 새로운 필드 추가 시 테이블 변경 없이 바로 반영.
+
 ##### Redis 해시 구조 예시 (auction:<경매글ID>)
 ```bash
 # 예) 경매글 ID = 3
@@ -239,20 +244,22 @@ LRANGE auction:3:logs 0 2   # 최신 3건 조회
 > 두 키는 **독립적**으로 저장됩니다. 입찰 발생 시 서비스가 Hash 와 List 를 함께 갱신하지만, Redis 관점에서는 별도 엔트리이므로 만료시간/삭제를 개별 관리할 수 있습니다. Hash 는 현재 상태(O(1) 조회) , List 는 최근 로그 스트림(최대 50개) 역할을 합니다.
 
 #### 입찰 현황 조회 동작
+- **bidLogController.selectbid()** 로직
+  1. `auction:{id}:logs` **Redis List** 에서 최근 입찰 로그 조회 → 있으면 바로 응답
+  2. 비어 있을 경우 `bidService.selectbid()` 호출 → (캐시 해시 or DB) 조회 후 결과 반환
 - **경매글(작물) 상세 페이지에 진입하면**
-  - 판매자(작물 내놓은 사람)와 구매자(입찰자) 모두
-  - useQuery로 API를 호출하면 백엔드가 Redis에서 "auction:{경매글ID}"로 상태를 조회
-  - Redis에 값이 있으면 현재가, 최고입찰자 등 입찰 현황을 바로 응답
-  - 없으면 DB에서 조회
-  - 프론트엔드는 이 값을 화면에 렌더링
-- 즉, "렌더링하면 바로 보이는 입찰 정보"가 Redis 캐시를 통해 빠르게 제공됨
+  - 프론트엔드가 selectbid API 호출
+  - Controller 단계에서 Redis List 캐시 히트 시 즉시 반환->화면에 렌더링
+  - 미스일 경우 Service 단계에서 Hash/DB 조회 후 결과 저장·반환
+  - 결국 "렌더링하면 바로 보이는 입찰 정보"가 캐시 미스 없는 한 <100ms 내 응답
 
 #### 동작 흐름
 ```
 입찰 발생 시:
 1. DB에 입찰 기록 저장
 2. Redis에 상태 캐시 저장 (조회용)
-3. Kafka로 실시간 메시지 전송 (알림용)
+3. MongoDB에 입찰 로그 영속 저장 (통계용)
+4. Kafka로 실시간 메시지 전송 (알림용)
 
 조회 시:
 1. Redis에서 상태 우선 조회 (빠른 응답)
@@ -448,4 +455,68 @@ POST   /api/community/comments # 댓글 작성
 - [📄 페이지 명세서](https://www.notion.so/e6dd58e2958e4d87a058ba5411bdc34b?v=490bc367fa934dd6b4d8f99816e66ba6)
 - [🧩 컴포넌트 명세서](https://www.notion.so/a1d316ad22c14e8d8615d9fd25b97608?v=a9f05331c88348239700d19d218dfb57)
 - [🗄️ ERD](https://www.notion.so/ERD-dc7ce2874a2b4465b541f5cb0ce26b56?v=9deef6569fdd47b98a22de3c9d91ca21)
- 
+
+## 🛠 백엔드 설정
+
+### Redis 설정
+
+#### 의존성 추가 (pom.xml)
+```xml
+<dependency>
+    <groupId>com.fasterxml.jackson.datatype</groupId>
+    <artifactId>jackson-datatype-jsr310</artifactId>
+</dependency>
+```
+
+#### RedisConfig.java
+```java
+@Configuration
+public class RedisConfig {
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        // 문자열 직렬화
+        StringRedisSerializer stringSerializer = new StringRedisSerializer();
+        
+        // JSON 직렬화 (Jackson) - Java 8 날짜/시간 모듈 등록
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        
+        GenericJackson2JsonRedisSerializer jsonSerializer = 
+            new GenericJackson2JsonRedisSerializer(objectMapper);
+
+        template.setKeySerializer(stringSerializer);
+        template.setHashKeySerializer(stringSerializer);
+        template.setValueSerializer(jsonSerializer);
+        template.setHashValueSerializer(jsonSerializer);
+
+        template.afterPropertiesSet();
+        return template;
+    }
+}
+```
+
+#### Redis 데이터 구조
+- `auction:{articleId}`: 경매 상태 정보 (Hash)
+  - `bidLogId`: 마지막 입찰 ID
+  - `topBidderId`: 최고 입찰자 ID
+  - `currentPrice`: 현재 최고가
+
+- `auction:{articleId}:logs`: 입찰 내역 (List)
+  - 최대 50개 항목 유지
+  - 1시간 TTL 설정
+
+#### Redis CLI 명령어 예시
+```bash
+# 모든 경매 키 조회
+KEYS auction:*
+
+# 특정 경매의 상태 조회
+HGETALL auction:3
+
+# 입찰 내역 조회
+LRANGE auction:3:logs 0 -1

@@ -26,6 +26,7 @@ import com.ssafy.fullerting.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,7 @@ public class BidService {
     private final BidProducerService bidProducerService;
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final MongoTemplate mongoTemplate;
 
     public void validateBidPrice(ExArticle exArticle, int proposedPrice) {
         int maxBidPrice = getMaxBidPrice(exArticle);
@@ -93,6 +95,9 @@ public class BidService {
         redisTemplate.expire(logKey, 1, TimeUnit.HOURS);
         // 리스트 길이 제한 (메모리 절감)
         redisTemplate.opsForList().trim(logKey, 0, 49); // 최근 50개 유지
+
+        // ---- MongoDB 동시 저장 ----
+        saveBidLogToMongo(bidLog);
     }
 
     public List<BidLogResponse> selectbid(Long ex_article_id) {
@@ -206,7 +211,9 @@ public class BidService {
 
         // 2) 입찰 로그 List : 최근 N건만 유지 (예: 50건)
         String logKey = auctionKey + ":logs"; // auction:3:logs
-        BidLogResponse bidDto = bidLog.toBidLogSuggestionResponse(bidLog, bidProposeRequest.getUserId(), 1);
+        MemberProfile user = userRepository.findById(bidProposeRequest.getUserId())
+                .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        BidLogResponse bidDto = bidLog.toBidLogSuggestionResponse(bidLog, user, 1);
         redisTemplate.opsForList().leftPush(logKey, bidDto);
         // 로그 리스트 만료 시간도 동일하게 맞춤
         redisTemplate.expire(logKey, 1, TimeUnit.HOURS);
@@ -296,6 +303,9 @@ public class BidService {
         // 리스트 길이 제한 (메모리 절감)
         redisTemplate.opsForList().trim(logKey, 0, 49); // 최근 50개 유지
 
+        // ---- MongoDB 동시 저장 ----
+        saveBidLogToMongo(bidLog);
+
         log.info("💰 입찰 요청 - 사용자 ID: {}, 입찰가: {}, 게시글 ID: {}", customUser.getId(), bidProposeRequest.getDealCurPrice(),
                 exArticleId);
 
@@ -331,4 +341,13 @@ public class BidService {
         return maxBidPriceOptional.orElse(0);
     }
 
+    /*-----------------------------------------------------
+     * Mongo Helper
+     *---------------------------------------------------*/
+    private void saveBidLogToMongo(BidLog bidLog) {
+        // MongoTemplate 는 POJO 를 그대로 BSON 으로 직렬화해 저장 가능하다.
+        // JPA annotation 이 있어도 무시되며, 컬렉션 스키마가 자유롭기 때문에 insert 만 수행.
+        // 동일 id 로 중복 저장을 막기 위해 upsert(save) 사용.
+        mongoTemplate.save(bidLog, "bidLog");
+    }
 }

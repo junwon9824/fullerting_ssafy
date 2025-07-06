@@ -3,7 +3,6 @@ package com.ssafy.fullerting.bidLog.controller;
 import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
 import com.ssafy.fullerting.bidLog.model.dto.request.BidSelectRequest;
 import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
-//import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.service.BidService;
 import com.ssafy.fullerting.deal.service.DealService;
@@ -16,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import java.util.List;
@@ -50,9 +49,9 @@ public class bidLogController {
     // }
 
     @GetMapping("/{ex_article_id}/suggestion")
-    @Operation(summary = "입찰 제안조회하기 ", description = "특정 게시물의 입찰 제안 조회 하기")
-    public ResponseEntity<MessageUtils> selectbid(@AuthenticationPrincipal String email,
-            @PathVariable Long ex_article_id) {
+    @PreAuthorize("permitAll()")
+    @Operation(summary = "입찰 제안 조회", description = "특정 게시물의 입찰 제안 조회 – 비로그인 허용")
+    public ResponseEntity<MessageUtils> selectbid(@PathVariable Long ex_article_id) {
         // Redis에서 경매 상태 조회 (최근 입찰 로그 리스트 우선)
         String baseKey = "auction:" + ex_article_id;
         String logKey = baseKey + ":logs";

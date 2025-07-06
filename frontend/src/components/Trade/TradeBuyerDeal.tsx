@@ -398,7 +398,10 @@ const TradeBuyerDetail = () => {
   }, [accessToken]);
 
   const sendMessage = async () => {
+    console.log('sendmessage',newMessage);
     if (stompClient && newMessage.trim() !== "") {
+      console.log('iff');
+
       try {
         if (
           Number(newMessage) <=
