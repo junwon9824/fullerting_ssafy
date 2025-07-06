@@ -193,7 +193,7 @@
 ## 🏗 시스템 아키텍처
 
 <div align="center">
-  <img src="./image.png" width="800"/>
+  <img src="./아키텍쳐.drawio.png" alt="System Architecture" width="800"/>
 </div>
 
 ### 아키텍처 특징
@@ -274,6 +274,18 @@ LRANGE auction:3:logs 0 2   # 최신 3건 조회
 |------|------|------|
 | `java.lang.ClassCastException: java.lang.Integer cannot be cast to BidLogResponse` | Redis 에 Hash 타입으로 `currentPrice`(숫자) 등을 저장한 뒤, 컨트롤러에서 **모든** Hash 값을 `BidLogResponse` 로 캐스팅함 | 1) Redis 구조를 **Hash(요약)** + **List(최근 로그)** 로 분리 2) 컨트롤러에서 `auction:{id}:logs` 리스트를 읽어 `instanceof` 검사 후 캐스팅 |
 > 2025-07-06 리팩터링으로 Hash 에는 숫자·ID 등 요약 정보만, List 에는 `BidLogResponse` 객체만 저장하도록 변경했습니다. 컨트롤러는 먼저 List 를 조회하여 캐스팅 오류를 방지합니다.
+
+**원인 상세**
+1. 초기 구현에서는 `auction:{id}` 해시에 최근 입찰 로그 객체와 숫자 필드(현재가 등)를 **섞어** 저장했습니다.
+2. 컨트롤러는 `HVALS auction:{id}` 로 모든 값을 조회한 뒤, 별도의 타입 체크 없이 `BidLogResponse` 로 강제 캐스팅했습니다.
+3. 해시 안에 있던 `currentPrice`(Integer) 가 스트림 연산 중 캐스팅되어 `ClassCastException` 이 발생했습니다.
+
+```java
+List<BidLogResponse> cached = redisEntries.values().stream()
+    .map(obj -> (BidLogResponse) obj) // Integer → BidLogResponse 캐스팅 오류
+    .toList();
+```
+> 핵심 문제는 **단일 컨테이너(해시)에 다양한 타입**을 섞어 저장하면서도, 읽을 때 타입 구분을 하지 않은 설계였습니다.
 
 ## 🔐 JWT 토큰 갱신 정책
 
@@ -436,23 +448,4 @@ POST   /api/community/comments # 댓글 작성
 - [📄 페이지 명세서](https://www.notion.so/e6dd58e2958e4d87a058ba5411bdc34b?v=490bc367fa934dd6b4d8f99816e66ba6)
 - [🧩 컴포넌트 명세서](https://www.notion.so/a1d316ad22c14e8d8615d9fd25b97608?v=a9f05331c88348239700d19d218dfb57)
 - [🗄️ ERD](https://www.notion.so/ERD-dc7ce2874a2b4465b541f5cb0ce26b56?v=9deef6569fdd47b98a22de3c9d91ca21)
-
-## 📄 라이선스
-
-이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
-
-## 🤝 기여하기
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
-<div align="center">
-  <p>🌱 <strong>풀러팅</strong>과 함께 도시농부의 새로운 경험을 시작하세요! 🌱</p>
-  
-  <p>문의사항: <a href="mailto:contact@fullerting.com">contact@fullerting.com</a></p>
-</div>
+ 
