@@ -19,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.redis.core.RedisTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
@@ -64,7 +65,9 @@ public class bidLogController {
             log.info("첫 번째 요소 클래스: " + (redisList.get(0) != null ? redisList.get(0).getClass().getName() : "null"));
 
             List<BidLogResponse> cachedList = new ArrayList<>();
-            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .registerModule(new JavaTimeModule())
+                    .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
             for (Object item : redisList) {
                 try {
