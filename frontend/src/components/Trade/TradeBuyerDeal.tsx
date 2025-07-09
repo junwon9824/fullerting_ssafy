@@ -287,19 +287,32 @@ const TradeBuyerDetail = () => {
   const navigate = useNavigate();
   const [dealCash, setDealCash] = useInput("");
   const [like, setLike] = useState<boolean>(false);
+  const [currentHighestBid, setCurrentHighestBid] = useState<number>(0);
+  const [bidCount, setBidCount] = useState<number>(0);
+  const [messages, setMessages] = useState<MessageRes[]>([]);
+  const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  
   const handleLike = () => {
     setLike(!like);
   };
+  
   const [deals, setDeals] = useState<Deal[]>([]);
-  // const { mutate: handleLikeClick } = useLike();
   const { postId } = useParams<{ postId?: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
+  
   const { isLoading, data, error } = useQuery({
     queryKey: ["tradeDetail", postNumber],
     queryFn: accessToken
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
+    onSuccess: (data) => {
+      // Initialize highest bid from the article's current price
+      if (data?.dealResponse?.price) {
+        setCurrentHighestBid(data.dealResponse.price);
+      }
+    }
   });
 
   const {
@@ -312,163 +325,140 @@ const TradeBuyerDetail = () => {
       ? () => getDealList(accessToken, postNumber)
       : undefined,
   });
-  // console.log("딜데이터", dealListData);
-  //socket
+  
   const queryClient = useQueryClient();
-  const [messages, setMessages] = useState<MessageRes[]>([]);
-  const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
-  const [newMessage, setNewMessage] = useState<string>("");
-  const [messageSubscribed, setMessageSubscribed] = useState<boolean>(false);
   const wssURL = import.meta.env.VITE_REACT_APP_WSS_URL;
 
+  // WebSocket connection
   useEffect(() => {
-    console.log("데이터", dealListData);
+    if (!accessToken || !postNumber) return;
+
+    // Convert http:// or https:// to ws:// or wss://
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    const wsUrl = `${wsProtocol}${window.location.host}/ws`;
     
-    // Redis 응답인지 기존 응답인지 확인
-    if (dealListData?.type === 'redis') {
-      // Redis 응답 처리
-      const redisData = dealListData.data;
-      console.log("Redis에서 가져온 데이터:", redisData);
-      // Redis 데이터로 메시지 설정 (MessageRes 타입에 맞게)
-      const transformedData: MessageRes[] = [{
-        bidLogId: redisData.bidLogId || 0,
-        exArticleId: postNumber,
-        userResponse: {
-          id: redisData.topBidderId || 0,
-          email: redisData.topBidderEmail || '',
-          role: redisData.topBidderRole || '',
-          nickname: redisData.topBidder || 'Unknown',
-          thumbnail: '',
-          rank: redisData.topBidderRank || '',
-          location: redisData.topBidderLocation || '',
-          authProvider: redisData.topBidderAuthProvider || '',
-        },
-        dealCurPrice: redisData.currentPrice || 0,
-        maxPrice: redisData.currentPrice || 0,
-        bidderCount: 1,
-      }];
-      setMessages(transformedData);
-    } else if (dealListData?.type === 'database') {
-      // 기존 DB 응답 처리
-      const transformedData = Array.isArray(dealListData.data) 
-        ? dealListData.data.map((item: Response) => ({
-            bidLogId: item.id,
-            exArticleId: item.exarticleid,
-            userResponse: {
-              id: item.userId,
-              email: '',
-              role: '',
-              nickname: item.nickname,
-              thumbnail: item.thumbnail,
-              rank: '',
-              location: '',
-              authProvider: '',
-            },
-            dealCurPrice: item.bidLogPrice,
-            maxPrice: item.bidLogPrice,
-            bidderCount: 1,
-          })) as MessageRes[]
-        : [];
-      setMessages(transformedData);
-    }
-    const socket = new WebSocket(wssURL);
+    const socket = new WebSocket(wsUrl);
     const client = Stomp.over(socket);
+    
+    // Set debug to null to prevent console logs
+    client.debug = () => {};
+    
+    const connectHeaders = {
+      'Authorization': `Bearer ${accessToken}`
+    };
 
-    console.log(socket);
+    client.connect(
+      connectHeaders,
+      () => {
+        console.log('WebSocket connected');
+        setIsConnected(true);
+        setStompClient(client);
+        
+        // Subscribe to the topic
+        client.subscribe(
+          `/topic/bids/${postNumber}`,
+          (message) => {
+            try {
+              const bidUpdate = JSON.parse(message.body);
+              if (bidUpdate) {
+                setCurrentHighestBid(prev => 
+                  bidUpdate.dealCurPrice > prev ? bidUpdate.dealCurPrice : prev
+                );
+                setBidCount(bidUpdate.bidderCount || 0);
+                
+                // Add the new message to the list
+                setMessages(prev => [...prev, bidUpdate]);
+                
+                // Invalidate queries to refresh data
+                queryClient.invalidateQueries({
+                  queryKey: ["dealDetail", postNumber],
+                });
+              }
+            } catch (error) {
+              console.error('Error processing WebSocket message:', error);
+            }
+          },
+          { id: `sub-${postNumber}` }
+        );
+      },
+      (error: any) => {
+        console.error('WebSocket connection error:', error);
+        // Attempt to reconnect after 5 seconds
+        setTimeout(() => {
+          if (socket.readyState === WebSocket.CLOSED) {
+            console.log('Attempting to reconnect WebSocket...');
+            socket.close();
+            const newSocket = new WebSocket(wsUrl);
+            socket.onopen = () => {
+              console.log('WebSocket reconnected');
+              const newClient = Stomp.over(newSocket);
+              newClient.debug = () => {};
+              newClient.connect(connectHeaders, () => {
+                setStompClient(newClient);
+              });
+            };
+          }
+        }, 5000);
+      }
+    );
 
-    client.connect({ Authorization: `Bearer ${accessToken}` }, () => {
-      client.subscribe(`/sub/bidding/${postNumber}`, (message) => {
-        console.log("저는 메세지 입니다", message);
-
-        const msg: MessageRes = JSON.parse(message.body);
-        queryClient.invalidateQueries({
-          queryKey: ["dealDetail", postNumber],
-        });
-        setMessageSubscribed(true);
-      });
-    });
-    setStompClient(client);
     return () => {
       if (client.connected) {
         client.disconnect(() => {
-          console.log("Disconnected from WebSocket server");
+          console.log('WebSocket disconnected');
         });
       }
     };
-  }, [accessToken]);
+  }, [accessToken, postNumber, queryClient]);
 
+  // Handle sending a new bid
   const sendMessage = async () => {
-    console.log('sendmessage',newMessage);
-    if (stompClient && newMessage.trim() !== "") {
-      console.log('iff');
-
-      try {
-        if (
-          Number(newMessage) <=
-          (dealListData?.type === 'redis' 
-            ? dealListData.data.currentPrice 
-            : dealListData?.data?.[dealListData.data.length - 1]?.bidLogPrice)
-        ) {
-          alert("최고가보다 더 높은 가격을 제안해주세요");
-          return;
-        }
-        const messageReq = {
-          dealCurPrice: newMessage,
-        };
-
-        const accessToken = sessionStorage.getItem("accessToken");
-        if (!accessToken) {
-          throw new Error("Access token is not available.");
-        }
-
-        const DealstartRequest = {
-          exArticleId: postNumber,
-          dealCurPrice: messageReq.dealCurPrice,
-          redirectURL: window.location.pathname,
-        };
-
-        stompClient.send(
-          `/pub/bidding/${postNumber}/messages`,
-          {},
-          JSON.stringify(DealstartRequest)
-        );
-
-        setNewMessage("");
-      } catch (error) {
-        console.error("메시지 전송 실패", error);
-      }
+    if (!stompClient || !stompClient.connected) {
+      alert('연결 중입니다. 잠시 후 다시 시도해주세요.');
+      return;
     }
-  };
-  //socket 끝
-  // console.log(dealListData);
-  const formatDateAndTime = (dateString: string) => {
-    if (!dateString) return "";
-    const [date, time] = dateString.split("T");
-    const [hours, minutes, seconds] = time.split(":");
-    return `${date} ${hours}:${minutes}:${seconds}`;
-  };
-  const {
-    isLoading: isIndividualUserDetail,
-    data: IndividualUserData,
-    error: IndividualUserDetailError,
-  } = useQuery({
-    queryKey: ["individualUserDetail"],
-    queryFn: () =>
-      userIndividualCheck(
-        accessToken as string,
-        data?.exArticleResponse.userId
-      ),
-    enabled: !!accessToken && !!data?.exArticleResponse.userId, // 여기에 조건 추가
-  });
-  // 배열 역순 정렬
-  useEffect(() => {
-    if (dealListData) {
-      const sortedDeals: Deal[] = [...dealListData].sort((a: Deal, b: Deal) => {
-        return b.localDateTime.localeCompare(a.localDateTime);
+
+    if (!dealCash) return;
+
+    const bidAmount = parseInt(dealCash);
+    if (isNaN(bidAmount) || bidAmount <= currentHighestBid) {
+      alert(`입찰 금액은 현재 최고가(${currentHighestBid.toLocaleString()}원)보다 높아야 합니다.`);
+      return;
+    }
+
+    try {
+      // Optimistic update
+      setCurrentHighestBid(bidAmount);
+      setBidCount(prev => prev + 1);
+
+      // Send the bid
+      await stompClient.send(
+        `/pub/bidding/${postNumber}/messages`,
+        {},
+        JSON.stringify({
+          dealCurPrice: bidAmount,
+          userId: 1, // Replace with actual user ID from auth
+          redirectURL: window.location.href
+        })
+      );
+
+      // Clear the input
+      setDealCash("");
+      
+    } catch (error) {
+      console.error("Failed to send bid:", error);
+      // Revert optimistic update on error
+      queryClient.invalidateQueries({
+        queryKey: ["dealDetail", postNumber],
       });
-      setDeals(sortedDeals);
+      alert("입찰에 실패했습니다. 다시 시도해주세요.");
     }
-  }, [dealListData]);
+  };
+
+  // Update the JSX to show the current highest bid
+  // Find the section where you display the current highest bid and update it to use currentHighestBid
+  // For example:
+  // <TextStyle>{currentHighestBid.toLocaleString()}원</TextStyle>
 
   return (
     //  <AppContainer>
@@ -478,9 +468,16 @@ const TradeBuyerDetail = () => {
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper slidesPerView={1} pagination={true}>
-            {data?.imageResponses.map((image: ImageResponse, index: number) => (
+            {data?.imageResponses?.map((image: ImageResponse, index: number) => (
               <SwiperSlide key={index}>
-                <ImgBox src={image.imgStoreUrl} alt={"img"} />
+                <ImgBox 
+                  src={image?.imgStoreUrl} 
+                  alt="img"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/default-image.png';
+                  }}
+                />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -488,75 +485,74 @@ const TradeBuyerDetail = () => {
         <LayoutInnerBox>
           <InfoBox>
             <Profile>
-              <Thumbnail src={IndividualUserData?.thumbnail} alt="profile" />
+              <Thumbnail src={data?.exArticleResponse?.userResponse?.thumbnail} alt="profile" />
               <Name>
-                <NameText>{IndividualUserData?.nickname}</NameText>
+                <NameText>{data?.exArticleResponse?.userResponse?.nickname}</NameText>
                 <ClassesText>
-                  {IndividualUserData?.rank}
+                  {data?.exArticleResponse?.userResponse?.rank ?? ''}
                   {/* <img src={Sprout} alt="Sprout" /> */}
                 </ClassesText>
               </Name>
             </Profile>
-            <Date>{formatDateAndTime(data?.exArticleResponse.time)}</Date>
+            <Date>{data?.exArticleResponse.time}</Date>
           </InfoBox>
 
           <SituationBox>
             <Wall>
-              <Title>{data?.exArticleResponse.exArticleTitle}</Title>
+              <SituationGroup>
+                <Situation
+                  border="2px solid var(--black, #000)"
+                  background="var(--white, #FFF)"
+                  color="var(--black, #000)"
+                >
+                  {data?.exArticleResponse?.deal?.dealCurPrice?.toLocaleString() || '0'}원
+                </Situation>
+                <Situation
+                  border="2px solid var(--black, #000)"
+                  background="var(--white, #FFF)"
+                  color="var(--black, #000)"
+                >
+                  {data?.exArticleResponse?.deal?.dealCompletePrice?.toLocaleString() || '0'}원
+                </Situation>
+              </SituationGroup>
             </Wall>
             <Wall>
               <SituationGroup>
                 <Situation
-                  border="2px solid var(--sub3, #FFBFBF)"
-                  color="#FFBFBF;"
+                  border="2px solid var(--black, #000)"
+                  background="var(--white, #FFF)"
+                  color="var(--black, #000)"
                 >
-                  최고가
+                  {data?.exArticleResponse?.deal?.dealStartAt?.split('T')[0] || '시작 전'}
                 </Situation>
-                <TextStyle>
-                  {dealListData?.type === 'redis'
-                    ? `${dealListData.data.currentPrice}원`
-                    : dealListData?.data && dealListData.data.length > 0
-                    ? `${dealListData.data[dealListData.data.length - 1].bidLogPrice}원`
-                    : `${data?.dealResponse?.price}원`}
-                </TextStyle>
-              </SituationGroup>
-              <SituationGroup>
                 <Situation
-                  border="2px solid var(--sub0, #A0D8B3)"
-                  color="#A0D8B3;"
+                  border="2px solid var(--black, #000)"
+                  background="var(--white, #FFF)"
+                  color="var(--black, #000)"
                 >
-                  참여자
+                  {data?.exArticleResponse?.deal?.dealEndAt?.split('T')[0] || '종료 전'}
                 </Situation>
-                <TextStyle>
-                  {dealListData?.type === 'redis'
-                    ? '1'
-                    : dealListData?.data && dealListData.data.length > 0
-                    ? dealListData.data[dealListData.data.length - 1]?.bidcount || 0
-                    : 0}
-                  명
-                </TextStyle>
               </SituationGroup>
             </Wall>
           </SituationBox>
-          {/* <DealBox>
-            {dealListData?.map((item: Deal, index: number) => (
-              <DealList>
-                <ProfileBox>
-                  <PhotoBox src={item?.thumbnail} alt="thumbnail" />
-                  {item?.nickname}
-                </ProfileBox>
-                <CostBox>{item?.bidLogPrice}원</CostBox>
-              </DealList>
-            ))}
-          </DealBox> */}
           <DealBox>
-            {deals?.map((item: Deal, index: number) => (
-              <DealList>
+            {messages?.map((message) => (
+              <DealList key={message?.bidLogId || Math.random().toString(36).substr(2, 9)}>
                 <ProfileBox>
-                  <PhotoBox src={item?.thumbnail} alt="thumbnail" />
-                  {item?.nickname}
+                  <PhotoBox 
+                    src={message?.userResponse?.thumbnail || '/default-profile.png'} 
+                    alt="profile"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/default-profile.png';
+                    }}
+                  />
+                  <div>
+                    <div>{message?.userResponse?.nickname || '익명'}</div>
+                    <div>{(message?.dealCurPrice || 0).toLocaleString()}원</div>
+                  </div>
                 </ProfileBox>
-                <CostBox>{item?.bidLogPrice}원</CostBox>
+                <div>{message?.bidderCount || 0}명이 참여중</div>
               </DealList>
             ))}
           </DealBox>
@@ -564,7 +560,7 @@ const TradeBuyerDetail = () => {
           <DealChatBox>
             <DealInput
               placeholder="최고가보다 높게 제안해주세요"
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={(e) => setDealCash(e.target.value)}
             />
             <SendButton src={Send} alt="send" onClick={sendMessage} />
           </DealChatBox>

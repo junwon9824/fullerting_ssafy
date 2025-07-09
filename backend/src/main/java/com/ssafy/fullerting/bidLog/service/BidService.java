@@ -63,86 +63,108 @@ public class BidService {
                 }
         }
 
-        public void deal(BidProposeRequest bidProposeRequest, MemberProfile user, Long ex_article_id) {
-                LocalDateTime time = LocalDateTime.now();
-                ExArticle exArticle = exArticleRepository.findById(ex_article_id)
-                                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-                Long dealid = exArticle.getDeal().getId();
-                Deal deal = dealRepository.findById(dealid).orElseThrow(
-                                () -> new DealException(DealErrorCode.NOT_EXISTS));
-                BidLog bidLog = bidRepository.save(BidLog.builder()
-                                .bidLogPrice(bidProposeRequest.getDealCurPrice())
-                                .localDateTime(time)
-                                .userId(user.getId())
-                                .deal(deal)
-                                .build());
+        // public void deal(BidProposeRequest bidProposeRequest, MemberProfile user,
+        // Long ex_article_id) {
+        // LocalDateTime time = LocalDateTime.now();
+        // ExArticle exArticle = exArticleRepository.findById(ex_article_id)
+        // .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        // Long dealid = exArticle.getDeal().getId();
+        // Deal deal = dealRepository.findById(dealid).orElseThrow(
+        // () -> new DealException(DealErrorCode.NOT_EXISTS));
+        // BidLog bidLog = bidRepository.save(BidLog.builder()
+        // .bidLogPrice(bidProposeRequest.getDealCurPrice())
+        // .localDateTime(time)
+        // .userId(user.getId())
+        // .deal(deal)
+        // .build());
 
-                // ---- Redis 캐싱 ----
-                // 1) 경매 요약 Hash : 현재가 / 최고 입찰자 / 최근 로그 ID
-                String auctionKey = "auction:" + ex_article_id;
-                Map<String, Object> auctionSummary = Map.of(
-                                "currentPrice", bidProposeRequest.getDealCurPrice(),
-                                "topBidderId", user.getId(),
-                                "bidLogId", bidLog.getId());
-                redisTemplate.opsForHash().putAll(auctionKey, auctionSummary);
-                redisTemplate.expire(auctionKey, 24, TimeUnit.HOURS);
+        // // ---- Redis 캐싱 ----
+        // // 1) 경매 요약 Hash : 현재가 / 최고 입찰자 / 최근 로그 ID
+        // String auctionKey = "auction:" + ex_article_id;
+        // Map<String, Object> auctionSummary = Map.of(
+        // "currentPrice", bidProposeRequest.getDealCurPrice(),
+        // "topBidderId", user.getId(),
+        // "bidLogId", bidLog.getId());
+        // redisTemplate.opsForHash().putAll(auctionKey, auctionSummary);
+        // redisTemplate.expire(auctionKey, 24, TimeUnit.HOURS);
 
-                // 2) 입찰 로그 List : 최근 N건만 유지 (예: 50건)
-                String logKey = auctionKey + ":logs"; // auction:3:logs
-                BidLogResponse bidDto = bidLog.toBidLogSuggestionResponse(bidLog, user, 1);
-                redisTemplate.opsForList().leftPush(logKey, bidDto);
-                // 로그 리스트 만료 시간도 동일하게 맞춤
-                redisTemplate.expire(logKey, 24, TimeUnit.HOURS);
-                // 리스트 길이 제한 (메모리 절감)
-                redisTemplate.opsForList().trim(logKey, 0, 49); // 최근 50개 유지
+        // // 2) 입찰 로그 List : 최근 N건만 유지 (예: 50건)
+        // String logKey = auctionKey + ":logs"; // auction:3:logs
+        // BidLogResponse bidDto = bidLog.toBidLogSuggestionResponse(bidLog, user, 1);
+        // redisTemplate.opsForList().leftPush(logKey, bidDto);
+        // // 로그 리스트 만료 시간도 동일하게 맞춤
+        // redisTemplate.expire(logKey, 24, TimeUnit.HOURS);
+        // // 리스트 길이 제한 (메모리 절감)
+        // redisTemplate.opsForList().trim(logKey, 0, 49); // 최근 50개 유지
 
-                // ---- MongoDB 동시 저장 ----
-                saveBidLogToMongo(bidLog);
-        }
+        // // ---- MongoDB 동시 저장 ----
+        // saveBidLogToMongo(bidLog);
+        // }
 
         public List<BidLogResponse> selectbid(Long ex_article_id) {
                 ExArticle exArticle = exArticleRepository.findById(ex_article_id)
                                 .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
-                if (!exArticle.getType().equals(ExArticleType.DEAL)) {
-                        throw new BidException(BidErrorCode.NOT_DEAL);
-                }
-
-                // ---- Redis 캐싱 ----
-                // 캐시 우선 조회 – List(logs) 존재 시 바로 반환
-                String auctionKey = "auction:" + ex_article_id;
-                String logKey = auctionKey + ":logs";
+                // Redis 캐시에서 조회
+                String logKey = "auction:" + ex_article_id + ":logs";
                 List<Object> redisList = redisTemplate.opsForList().range(logKey, 0, -1);
+
                 if (redisList != null && !redisList.isEmpty()) {
-                        List<BidLogResponse> cachedLogs = redisList.stream()
-                                        .filter(v -> v instanceof BidLogResponse)
-                                        .map(v -> (BidLogResponse) v)
-                                        .toList();
-                        if (!cachedLogs.isEmpty()) {
-                                return cachedLogs;
-                        }
+                        // 캐시된 데이터가 있으면 반환
+                        return redisList.stream()
+                                        .map(obj -> objectMapper.convertValue(obj, BidLogResponse.class))
+                                        .collect(Collectors.toList());
                 }
 
-                // 2) 캐시가 없으면 DB 조회
-                List<BidLog> bidLog = bidRepository.findAllByDealId(exArticle.getDeal().getId());
+                // 캐시가 없으면 DB에서 조회 (Redis 업데이트는 dealbid에서 처리)
+                List<BidLog> bidLogs = bidRepository.findByDealIdOrderByLocalDateTimeDesc(ex_article_id);
 
-                HashSet<Long> bidLogs = new HashSet<>();
-
-                for (BidLog bl : bidLog) {
-                        bidLogs.add(bl.getUserId());
-                }
-
-                List<BidLogResponse> bidLogResponses = bidLog.stream().map(bidLog1 -> {
-                        MemberProfile user = userRepository.findById(bidLog1.getUserId())
-                                        .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-                        return bidLog1.toBidLogSuggestionResponse(bidLog1, user, bidLogs.size());
-                })
-                                // .sorted(Comparator.comparing(BidLogResponse::getBidLogPrice).reversed())
+                return bidLogs.stream()
+                                .map(bidLog -> {
+                                        MemberProfile user = userRepository.findById(bidLog.getUserId())
+                                                        .orElseThrow(() -> new UserException(
+                                                                        UserErrorCode.NOT_EXISTS_USER));
+                                        return bidLog.toBidLogSuggestionResponse(bidLog, user, bidLogs.size());
+                                })
                                 .collect(Collectors.toList());
-
-                return bidLogResponses;
-
         }
+        // public void deal(BidProposeRequest bidProposeRequest, MemberProfile user,
+        // Long ex_article_id) {
+        // LocalDateTime time = LocalDateTime.now();
+        // ExArticle exArticle = exArticleRepository.findById(ex_article_id)
+        // .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        // Long dealid = exArticle.getDeal().getId();
+        // Deal deal = dealRepository.findById(dealid).orElseThrow(
+        // () -> new DealException(DealErrorCode.NOT_EXISTS));
+        // BidLog bidLog = bidRepository.save(BidLog.builder()
+        // .bidLogPrice(bidProposeRequest.getDealCurPrice())
+        // .localDateTime(time)
+        // .userId(user.getId())
+        // .deal(deal)
+        // .build());
+
+        // // ---- Redis 캐싱 ----
+        // // 1) 경매 요약 Hash : 현재가 / 최고 입찰자 / 최근 로그 ID
+        // String auctionKey = "auction:" + ex_article_id;
+        // Map<String, Object> auctionSummary = Map.of(
+        // "currentPrice", bidProposeRequest.getDealCurPrice(),
+        // "topBidderId", user.getId(),
+        // "bidLogId", bidLog.getId());
+        // redisTemplate.opsForHash().putAll(auctionKey, auctionSummary);
+        // redisTemplate.expire(auctionKey, 24, TimeUnit.HOURS);
+
+        // // 2) 입찰 로그 List : 최근 N건만 유지 (예: 50건)
+        // String logKey = auctionKey + ":logs"; // auction:3:logs
+        // BidLogResponse bidDto = bidLog.toBidLogSuggestionResponse(bidLog, user, 1);
+        // redisTemplate.opsForList().leftPush(logKey, bidDto);
+        // // 로그 리스트 만료 시간도 동일하게 맞춤
+        // redisTemplate.expire(logKey, 24, TimeUnit.HOURS);
+        // // 리스트 길이 제한 (메모리 절감)
+        // redisTemplate.opsForList().trim(logKey, 0, 49); // 최근 50개 유지
+
+        // // ---- MongoDB 동시 저장 ----
+        // saveBidLogToMongo(bidLog);
+        // }
 
         // // 웹소켓 전용
         // // 입찰 제안을 DB에 저장한다 -> 입찰기록을 만든다
@@ -251,6 +273,7 @@ public class BidService {
                 return bidLog;
         }
 
+        // 입찰제안
         public BidLog dealbid(Long exArticleId, BidProposeRequest bidProposeRequest) {
 
                 UserResponse userResponse = userService.getUserInfo();
@@ -299,8 +322,8 @@ public class BidService {
                 redisTemplate.opsForList().leftPush(logKey, bidDto);
                 // 로그 리스트 만료 시간도 동일하게 맞춤
                 redisTemplate.expire(logKey, 24, TimeUnit.HOURS);
-                // 리스트 길이 제한 (메모리 절감)
-                redisTemplate.opsForList().trim(logKey, 0, 49); // 최근 50개 유지
+                // 리스트 길이 제한 (메모리 절감) - 최근 50개만 유지
+                redisTemplate.opsForList().trim(logKey, 0, 49);
 
                 // ---- MongoDB 동시 저장 ----
                 saveBidLogToMongo(bidLog);

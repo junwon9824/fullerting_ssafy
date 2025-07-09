@@ -54,43 +54,7 @@ public class bidLogController {
     @PreAuthorize("permitAll()")
     @Operation(summary = "입찰 제안 조회", description = "특정 게시물의 입찰 제안 조회 – 비로그인 허용")
     public ResponseEntity<MessageUtils> selectbid(@PathVariable Long ex_article_id) {
-        // Redis에서 경매 상태 조회 (최근 입찰 로그 리스트 우선)
-        String baseKey = "auction:" + ex_article_id;
-        String logKey = baseKey + ":logs";
-        log.info("Redis 키 조회 시도: " + logKey);
-        List<Object> redisList = redisTemplate.opsForList().range(logKey, 0, -1);
-        log.info("Redis 조회 결과 - 리스트 크기: " + (redisList != null ? redisList.size() : "null"));
-
-        if (redisList != null && !redisList.isEmpty()) {
-            log.info("첫 번째 요소 클래스: " + (redisList.get(0) != null ? redisList.get(0).getClass().getName() : "null"));
-
-            List<BidLogResponse> cachedList = new ArrayList<>();
-            ObjectMapper objectMapper = new ObjectMapper()
-                    .registerModule(new JavaTimeModule())
-                    .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-            for (Object item : redisList) {
-                try {
-                    if (item instanceof Map) {
-                        // LinkedHashMap을 BidLogResponse로 변환
-                        BidLogResponse bidLog = objectMapper.convertValue(item, BidLogResponse.class);
-                        cachedList.add(bidLog);
-                    } else if (item instanceof BidLogResponse) {
-                        cachedList.add((BidLogResponse) item);
-                    }
-                } catch (Exception e) {
-                    log.error("Redis에서 가져온 데이터 변환 중 오류 발생: " + e.getMessage(), e);
-                }
-            }
-
-            log.info("변환 성공한 항목 수: " + cachedList.size());
-
-            if (!cachedList.isEmpty()) {
-                log.info("Redis 캐시에서 데이터 반환");
-                return ResponseEntity.ok().body(MessageUtils.success(cachedList));
-            }
-        }
-        log.info("Redis에 데이터가 없거나 변환에 실패하여 DB에서 조회");
+        log.info("입찰 제안 조회 요청 - 게시글 ID: {}", ex_article_id);
         List<BidLogResponse> bidLogs = bidService.selectbid(ex_article_id);
         return ResponseEntity.ok().body(MessageUtils.success(bidLogs));
     }
