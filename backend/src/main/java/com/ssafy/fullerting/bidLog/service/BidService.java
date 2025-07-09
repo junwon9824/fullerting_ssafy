@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.bidLog.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.fullerting.bidLog.exception.BidErrorCode;
 import com.ssafy.fullerting.bidLog.exception.BidException;
 import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
@@ -54,6 +55,7 @@ public class BidService {
 
         private final RedisTemplate<String, Object> redisTemplate;
         private final MongoTemplate mongoTemplate;
+        private final ObjectMapper objectMapper;
 
         public void validateBidPrice(ExArticle exArticle, int proposedPrice) {
                 int maxBidPrice = getMaxBidPrice(exArticle);
@@ -117,7 +119,10 @@ public class BidService {
                 }
 
                 // 캐시가 없으면 DB에서 조회 (Redis 업데이트는 dealbid에서 처리)
-                List<BidLog> bidLogs = bidRepository.findByDealIdOrderByLocalDateTimeDesc(ex_article_id);
+                List<BidLog> bidLogs = bidRepository.findAllByDealId(ex_article_id);
+
+                // Sort by localDateTime in descending order
+                bidLogs.sort((b1, b2) -> b2.getLocalDateTime().compareTo(b1.getLocalDateTime()));
 
                 return bidLogs.stream()
                                 .map(bidLog -> {
@@ -339,7 +344,8 @@ public class BidService {
         public BidLog choosetbid(Long exArticleId, BidSelectRequest bidSelectRequest) {
 
                 UserResponse userResponse = userService.getUserInfo();
-                MemberProfile customUser = userResponse.toEntity(userResponse);
+                // Fix: Call the static method on the class, not instance
+                MemberProfile customUser = UserResponse.toEntity(userResponse);
 
                 ExArticle article = exArticleRepository.findById(exArticleId)
                                 .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));

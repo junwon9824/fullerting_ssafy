@@ -15,13 +15,13 @@ public class EventAlarmController {
 
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<MessageUtils> getAlarmsForUser() {
+    public ResponseEntity<MessageUtils<?>> getAlarmsForUser() {
         return ResponseEntity.ok().body(MessageUtils.success(eventAlarmService.getEventAlarmsForUser()));
     }
 
     @PostMapping("/{alarmId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<MessageUtils> alarmReadCheck(@PathVariable Long alarmId) {
+    public ResponseEntity<MessageUtils<Void>> alarmReadCheck(@PathVariable Long alarmId) {
         eventAlarmService.markAlarmAsRead(alarmId);
         return ResponseEntity.ok().body(MessageUtils.success());
     }

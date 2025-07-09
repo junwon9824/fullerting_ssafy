@@ -141,13 +141,14 @@ const Title = styled.div`
 `;
 const SituationBox = styled.div`
   width: 100%;
+  height: auto;
+  align-items: center;
   justify-content: flex-start;
+  gap: 1rem;
+  padding-right: 1rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.69rem;
-  padding-bottom: 0.5rem;
-  border-top: 1px solid #f4f4f4;
-  border-bottom: 1px solid #f4f4f4;
+  flex-direction: row;
+  margin: 1rem 0;
 `;
 
 const Situation = styled.div<SituationResponse>`
@@ -163,11 +164,15 @@ const Situation = styled.div<SituationResponse>`
   font-weight: bold;
   justify-content: center;
 `;
-const Wall = styled.div`
+
+const TextStyle = styled.div`
+  align-items: center;
   display: flex;
-  gap: 2rem;
-  flex-direction: row;
+  color: #000;
+  font-size: 0.8125rem;
+  font-weight: 400;
 `;
+
 const LayoutMainBox = styled.main`
   width: 100%;
   display: flex;
@@ -194,42 +199,118 @@ const LayoutInnerBox = styled.div`
   flex-grow: 1;
   /* height: 100%; */
 `;
-const TextStyle = styled.div`
-  align-items: center;
-  display: flex;
-  color: #000;
-  font-size: 0.8125rem;
-  font-weight: 400;
-  margin-left: 0.5rem;
-`;
-const SituationGroup = styled.div`
-  width: auto;
-  height: auto;
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-`;
+
 const DealBox = styled.div`
   width: 100%;
-  max-height: 12rem;
+  max-height: 15rem;
   overflow-y: auto;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.8rem;
   display: flex;
-
-  flex-grow: 1;
+  padding: 0.5rem 0;
+  margin: 0.5rem 0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
 `;
+
 const DealList = styled.div`
-  padding-right: 0.5rem;
+  padding: 0.8rem;
   width: 100%;
-  justify-content: space-between;
-  height: 2.0625rem;
-  border-radius: 0.625rem;
-  background: var(--sub1, #e5f9db);
+  border-radius: 0.8rem;
+  background: #f8f8f8;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  }
 `;
+
+const DealChatBox = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.5rem 0;
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding: 1rem 0;
+  border-top: 1px solid #eee;
+`;
+
+const DealInput = styled.input`
+  flex: 1;
+  padding: 0.8rem 1.2rem;
+  height: 3rem;
+  border-radius: 1.5rem;
+  border: 2px solid #e0e0e0;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+  }
+  
+  &::placeholder {
+    color: #aaa;
+  }
+`;
+
+const SendButton = styled.button<{ disabled?: boolean }>`
+  width: 3rem;
+  height: 3rem;
+  border: none;
+  border-radius: 50%;
+  background: ${props => props.disabled ? '#ccc' : '#4CAF50'};
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background: #45a049;
+    transform: scale(1.05);
+  }
+  
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+`;
+
+const PriceHighlight = styled.div`
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #2E7D32;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  
+  &::before {
+    content: '₩';
+    font-size: 1rem;
+    color: #2E7D32;
+  }
+`;
+
+const ParticipantCount = styled.div`
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #1565C0;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+`;
+
 const ProfileBox = styled.div`
   width: auto;
   justify-content: space-between;
@@ -254,50 +335,22 @@ const PhotoBox = styled.img`
   border-radius: 50%;
   object-fit: cover;
 `;
-const DealInput = styled.input`
-  display: flex;
-  justify-content: flex-start;
-  padding-left: 1rem;
-  width: 17rem;
-  height: 2.1875rem;
-  border-radius: 1rem;
-  border: 1px solid var(--gray2, #c8c8c8);
-  font-size: 0.875rem;
-  &:focus {
-    border: 1px solid var(--gray2, #c8c8c8);
-  }
-`;
-
-const SendButton = styled.img`
-  width: 2.1875rem;
-  height: 2.1875rem;
-`;
-const DealChatBox = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  /* padding-left: 2rem;
-  padding-right: 0.5rem; */
-  gap: 0.8rem;
-  margin-top: 0%.5;
-`;
 
 const TradeBuyerDetail = () => {
   const navigate = useNavigate();
-  const [dealCash, setDealCash] = useInput("");
+  const [newMessage, setNewMessage] = useState("");
   const [like, setLike] = useState<boolean>(false);
   const [currentHighestBid, setCurrentHighestBid] = useState<number>(0);
   const [bidCount, setBidCount] = useState<number>(0);
   const [messages, setMessages] = useState<MessageRes[]>([]);
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [bidHistory, setBidHistory] = useState<Deal[]>([]);
   
   const handleLike = () => {
     setLike(!like);
   };
   
-  const [deals, setDeals] = useState<Deal[]>([]);
   const { postId } = useParams<{ postId?: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -315,15 +368,31 @@ const TradeBuyerDetail = () => {
     }
   });
 
-  const {
-    isLoading: dealListLoading,
-    data: dealListData,
-    error: ealListError,
-  } = useQuery({
+  const { data: dealData, isLoading: isDealLoading, error: dealError } = useQuery({
     queryKey: ["dealDetail", postNumber],
-    queryFn: accessToken
-      ? () => getDealList(accessToken, postNumber)
-      : undefined,
+    queryFn: () => {
+      if (!accessToken || !postNumber) {
+        console.log("Missing access token or post number");
+        return Promise.reject(new Error("Missing required parameters"));
+      }
+      return getDealList(accessToken, postNumber);
+    },
+    onSuccess: (data) => {
+      console.log("Bid history loaded:", data);
+      if (data && data.length > 0) {
+        setBidHistory(data);
+        const uniqueBidders = new Set(data.map(bid => bid.nickname));
+        setBidCount(uniqueBidders.size);
+      } else {
+        console.log("No bid history data received");
+        setBidHistory([]);
+        setBidCount(0);
+      }
+    },
+    onError: (error) => {
+      console.error("Error loading bid history:", error);
+    },
+    enabled: !!accessToken && !!postNumber,
   });
   
   const queryClient = useQueryClient();
@@ -333,83 +402,65 @@ const TradeBuyerDetail = () => {
   useEffect(() => {
     if (!accessToken || !postNumber) return;
 
-    // Convert http:// or https:// to ws:// or wss://
-    const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-    const wsUrl = `${wsProtocol}${window.location.host}/ws`;
+    // Use the WebSocket URL directly from environment variables
+    const wsUrl = import.meta.env.VITE_REACT_APP_WSS_URL;
     
     const socket = new WebSocket(wsUrl);
     const client = Stomp.over(socket);
     
-    // Set debug to null to prevent console logs
-    client.debug = () => {};
+    // Enable debug logging in development
+    if (import.meta.env.DEV) {
+      client.debug = (str) => console.log(str);
+    } else {
+      client.debug = () => {};
+    }
     
     const connectHeaders = {
       'Authorization': `Bearer ${accessToken}`
     };
 
+    const onConnect = () => {
+      console.log('WebSocket connected');
+      setIsConnected(true);
+      
+      // Subscribe to the topic for this post
+      client.subscribe(
+        `/topic/bidding/${postNumber}`, 
+        (message) => {
+          const newBid = JSON.parse(message.body);
+          setMessages(prev => [...prev, newBid]);
+          setCurrentHighestBid(newBid.dealCurPrice);
+          setBidCount(prev => prev + 1);
+        },
+        { id: `sub-${postNumber}` }
+      );
+    };
+
+    const onError = (error: any) => {
+      console.error('WebSocket error:', error);
+      setIsConnected(false);
+    };
+
+    // Connect to the WebSocket
     client.connect(
       connectHeaders,
-      () => {
-        console.log('WebSocket connected');
-        setIsConnected(true);
-        setStompClient(client);
-        
-        // Subscribe to the topic
-        client.subscribe(
-          `/topic/bids/${postNumber}`,
-          (message) => {
-            try {
-              const bidUpdate = JSON.parse(message.body);
-              if (bidUpdate) {
-                setCurrentHighestBid(prev => 
-                  bidUpdate.dealCurPrice > prev ? bidUpdate.dealCurPrice : prev
-                );
-                setBidCount(bidUpdate.bidderCount || 0);
-                
-                // Add the new message to the list
-                setMessages(prev => [...prev, bidUpdate]);
-                
-                // Invalidate queries to refresh data
-                queryClient.invalidateQueries({
-                  queryKey: ["dealDetail", postNumber],
-                });
-              }
-            } catch (error) {
-              console.error('Error processing WebSocket message:', error);
-            }
-          },
-          { id: `sub-${postNumber}` }
-        );
-      },
-      (error: any) => {
-        console.error('WebSocket connection error:', error);
-        // Attempt to reconnect after 5 seconds
-        setTimeout(() => {
-          if (socket.readyState === WebSocket.CLOSED) {
-            console.log('Attempting to reconnect WebSocket...');
-            socket.close();
-            const newSocket = new WebSocket(wsUrl);
-            socket.onopen = () => {
-              console.log('WebSocket reconnected');
-              const newClient = Stomp.over(newSocket);
-              newClient.debug = () => {};
-              newClient.connect(connectHeaders, () => {
-                setStompClient(newClient);
-              });
-            };
-          }
-        }, 5000);
-      }
+      onConnect,
+      onError
     );
 
+    // Save the client instance
+    setStompClient(client);
+
+    // Cleanup function
     return () => {
       if (client.connected) {
+        client.unsubscribe(`sub-${postNumber}`);
         client.disconnect(() => {
           console.log('WebSocket disconnected');
         });
       }
     };
-  }, [accessToken, postNumber, queryClient]);
+  }, [accessToken, postNumber]);
 
   // Handle sending a new bid
   const sendMessage = async () => {
@@ -418,9 +469,9 @@ const TradeBuyerDetail = () => {
       return;
     }
 
-    if (!dealCash) return;
+    if (!newMessage) return;
 
-    const bidAmount = parseInt(dealCash);
+    const bidAmount = parseInt(newMessage);
     if (isNaN(bidAmount) || bidAmount <= currentHighestBid) {
       alert(`입찰 금액은 현재 최고가(${currentHighestBid.toLocaleString()}원)보다 높아야 합니다.`);
       return;
@@ -443,7 +494,7 @@ const TradeBuyerDetail = () => {
       );
 
       // Clear the input
-      setDealCash("");
+      setNewMessage("");
       
     } catch (error) {
       console.error("Failed to send bid:", error);
@@ -455,14 +506,7 @@ const TradeBuyerDetail = () => {
     }
   };
 
-  // Update the JSX to show the current highest bid
-  // Find the section where you display the current highest bid and update it to use currentHighestBid
-  // For example:
-  // <TextStyle>{currentHighestBid.toLocaleString()}원</TextStyle>
-
   return (
-    //  <AppContainer>
-    // <AppContainer>
     <>
       <TopBar title="작물거래" showBack={true} />
       <LayoutMainBox>
@@ -498,75 +542,60 @@ const TradeBuyerDetail = () => {
           </InfoBox>
 
           <SituationBox>
-            <Wall>
-              <SituationGroup>
-                <Situation
-                  border="2px solid var(--black, #000)"
-                  background="var(--white, #FFF)"
-                  color="var(--black, #000)"
-                >
-                  {data?.exArticleResponse?.deal?.dealCurPrice?.toLocaleString() || '0'}원
-                </Situation>
-                <Situation
-                  border="2px solid var(--black, #000)"
-                  background="var(--white, #FFF)"
-                  color="var(--black, #000)"
-                >
-                  {data?.exArticleResponse?.deal?.dealCompletePrice?.toLocaleString() || '0'}원
-                </Situation>
-              </SituationGroup>
-            </Wall>
-            <Wall>
-              <SituationGroup>
-                <Situation
-                  border="2px solid var(--black, #000)"
-                  background="var(--white, #FFF)"
-                  color="var(--black, #000)"
-                >
-                  {data?.exArticleResponse?.deal?.dealStartAt?.split('T')[0] || '시작 전'}
-                </Situation>
-                <Situation
-                  border="2px solid var(--black, #000)"
-                  background="var(--white, #FFF)"
-                  color="var(--black, #000)"
-                >
-                  {data?.exArticleResponse?.deal?.dealEndAt?.split('T')[0] || '종료 전'}
-                </Situation>
-              </SituationGroup>
-            </Wall>
+            <Situation border="2px solid var(--sub3, #FFBFBF)" color="#FFBFBF">
+              최고가
+            </Situation>
+            <TextStyle>
+              {currentHighestBid.toLocaleString()}원
+            </TextStyle>
+            <Situation border="2px solid var(--sub0, #A0D8B3)" color="#A0D8B3">
+              참여자
+            </Situation>
+            <TextStyle>
+              {bidCount}명
+            </TextStyle>
           </SituationBox>
+
           <DealBox>
-            {messages?.map((message) => (
-              <DealList key={message?.bidLogId || Math.random().toString(36).substr(2, 9)}>
-                <ProfileBox>
-                  <PhotoBox 
-                    src={message?.userResponse?.thumbnail || '/default-profile.png'} 
-                    alt="profile"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/default-profile.png';
-                    }}
-                  />
-                  <div>
-                    <div>{message?.userResponse?.nickname || '익명'}</div>
-                    <div>{(message?.dealCurPrice || 0).toLocaleString()}원</div>
-                  </div>
-                </ProfileBox>
-                <div>{message?.bidderCount || 0}명이 참여중</div>
-              </DealList>
-            ))}
+            {bidHistory.length > 0 ? (
+              bidHistory.map((item: Deal, index: number) => (
+                <DealList key={index}>
+                  <ProfileBox>
+                    <PhotoBox 
+                      src={item?.thumbnail} 
+                      alt="thumbnail"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/default-profile.png';
+                      }}
+                    />
+                    {item?.nickname}
+                  </ProfileBox>
+                  <CostBox>{item?.bidLogPrice.toLocaleString()}원</CostBox>
+                </DealList>
+              ))
+            ) : (
+              <div style={{ textAlign: 'center', width: '100%', padding: '1rem' }}>
+                아직 입찰 내역이 없습니다.
+              </div>
+            )}
           </DealBox>
 
           <DealChatBox>
             <DealInput
               placeholder="최고가보다 높게 제안해주세요"
-              onChange={(e) => setDealCash(e.target.value)}
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              type="number"
             />
-            <SendButton src={Send} alt="send" onClick={sendMessage} />
+            <SendButton 
+              src={Send} 
+              alt="send" 
+              onClick={sendMessage} 
+            />
           </DealChatBox>
         </LayoutInnerBox>
       </LayoutMainBox>
-      {/* </AppContainer> */}
     </>
   );
 };
