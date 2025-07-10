@@ -32,7 +32,7 @@ interface Deal {
   bidLogPrice: number;
   exarticleid: number;
   id: number;
-  localDateTime: string;
+  localDateTime: string | null | undefined;
   thumbnail: string;
   nickname: string;
   bidcount: number;
@@ -64,6 +64,62 @@ interface Response {
   thumbnail: string;
   bidLogPrice: number;
 }
+
+
+
+// 날짜 문자열("YYYY-MM-DD HH:mm:ss")을 안전하게 Date 객체로 변환
+function parseDateTime(dateTime: string): Date | null {
+  if (!dateTime || typeof dateTime !== 'string') return null;
+
+  // 1. 직접 Date 생성 시도
+  let date = new window.Date(dateTime);
+  if (!isNaN(date.getTime())) return date;
+
+  // 2. "YYYY-MM-DD HH:mm:ss" → "YYYY-MM-DDTHH:mm:ssZ" (UTC로 해석)
+  let isoString = dateTime.replace(' ', 'T') + 'Z';
+  date = new window.Date(isoString);
+  if (!isNaN(date.getTime())) return date;
+
+  // 3. 수동 파싱 (UTC 기준)
+  const [datePart, timePart] = dateTime.split(' ');
+  if (datePart && timePart) {
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hours, minutes, seconds] = timePart.split(':').map(Number);
+    date = new window.Date(window.Date.UTC(year, month - 1, day, hours, minutes, seconds));
+    if (!isNaN(date.getTime())) return date;
+  }
+
+  // 4. 실패 시 null 반환
+  return null;
+}
+
+// 날짜를 "YYYY-MM-DD HH:mm" 형식의 한글로 반환
+function formatDateTime(dateTime: string | Date | null | undefined): string {
+  let date: Date | null | undefined = null;
+
+  if (!dateTime) return '날짜 정보 없음';
+
+  if (typeof dateTime === 'string') {
+    date = parseDateTime(dateTime);
+  } else if (dateTime instanceof Date) {
+    date = dateTime;
+  } else {
+    return '날짜 형식 오류';
+  }
+
+  if (!date || isNaN(date.getTime())) return '날짜 오류';
+
+  return date.toLocaleString('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+}
+
+
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -89,6 +145,12 @@ const Profile = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 0.2rem;
+`;
+const ProfileImage = styled.img`
+  width: 1.875rem;
+  height: 1.875rem;
+  border-radius: 50%;
+  object-fit: cover;
 `;
 const Name = styled.div`
   width: auto;
@@ -355,46 +417,131 @@ const TradeBuyerDetail = () => {
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
   
-  const { isLoading, data, error } = useQuery({
+  const { 
+    isLoading, 
+    data: tradeDetailData, 
+    error: tradeDetailError 
+  } = useQuery({
     queryKey: ["tradeDetail", postNumber],
-    queryFn: accessToken
+    queryFn: accessToken && postNumber 
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
-    onSuccess: (data) => {
-      // Initialize highest bid from the article's current price
-      if (data?.dealResponse?.price) {
-        setCurrentHighestBid(data.dealResponse.price);
-      }
-    }
+    enabled: !!(accessToken && postNumber)
   });
 
-  const { data: dealData, isLoading: isDealLoading, error: dealError } = useQuery({
+  // Handle trade detail query success
+  useEffect(() => {
+    if (tradeDetailData?.dealResponse?.price) {
+      console.log("상품 상세 정보 로드 성공, 최고 입찰가 설정:", tradeDetailData.dealResponse.price);
+      setCurrentHighestBid(tradeDetailData.dealResponse.price);
+    }
+  }, [tradeDetailData]);
+
+  // Handle trade detail query error
+  useEffect(() => {
+    if (tradeDetailError) {
+      console.error("상품 상세 정보 조회 중 오류 발생:", tradeDetailError);
+    }
+  }, [tradeDetailError]);
+
+  console.log("useQuery 선언 직전: accessToken", accessToken, "postNumber", postNumber);
+
+  const { data: _dealData, status, error: queryError } = useQuery<Deal[]>({
     queryKey: ["dealDetail", postNumber],
-    queryFn: () => {
+    queryFn: async () => {
+      console.log("1. 쿼리 함수 실행 시작");
+      
       if (!accessToken || !postNumber) {
-        console.log("Missing access token or post number");
-        return Promise.reject(new Error("Missing required parameters"));
+        const error = new Error(`필수 파라미터 누락: ${!accessToken ? 'accessToken' : ''} ${!postNumber ? 'postNumber' : ''}`);
+        console.error("1a. 쿼리 실행 불가:", error.message);
+        throw error;
       }
-      return getDealList(accessToken, postNumber);
+      
+      try {
+        console.log("2. getDealList 호출 전");
+        const result = await getDealList(accessToken, postNumber);
+        console.log("3. getDealList 결과:", {
+          isArray: Array.isArray(result),
+          length: Array.isArray(result) ? result.length : 'N/A'
+        });
+        
+        if (!result) {
+          console.log("3a. 빈 응답");
+          return [];
+        }
+        
+        if (!Array.isArray(result)) {
+          console.error("3b. 배열이 아닌 응답:", result);
+          return [];
+        }
+        
+        console.log("3c. Mapping items:", result);
+        return result.map(item => {
+          console.log("3d. Processing item:", item);
+          return {
+            ...item,
+            id: item.id || 0,
+            exarticleid: item.exarticleid || postNumber,
+            bidLogPrice: item.bidLogPrice || 0,
+            nickname: item.nickname || '알 수 없음',
+            thumbnail: item.thumbnail || '/src/assets/images/default.png',
+            localDateTime: formatDateTime(item.localDateTime),
+            bidcount: item.bidcount || 0
+          };
+        });
+        
+      } catch (error) {
+        console.error("4. 쿼리 실행 오류:", error);
+        throw error;
+      }
     },
-    onSuccess: (data) => {
-      console.log("Bid history loaded:", data);
-      if (data && data.length > 0) {
-        setBidHistory(data);
-        const uniqueBidders = new Set(data.map(bid => bid.nickname));
+    enabled: !!(accessToken && postNumber),
+    retry: 1
+  });
+
+  // Handle query callbacks using useEffect
+  useEffect(() => {
+    if (status === 'success' && _dealData) {
+      console.group("5. 쿼리 성공");
+      console.log("5a. 데이터 수신:", _dealData);
+      console.log("5b. 데이터 타입:", Array.isArray(_dealData) ? '배열' : typeof _dealData);
+      console.log("5c. 데이터 길이:", Array.isArray(_dealData) ? _dealData.length : 'N/A');
+      
+      if (_dealData.length > 0) {
+        console.log("5d. 입찰 내역 설정");
+        setBidHistory(_dealData);
+        const uniqueBidders = new Set(_dealData.map(bid => bid.nickname).filter(Boolean));
         setBidCount(uniqueBidders.size);
+        const highestBid = Math.max(..._dealData.map(bid => bid.bidLogPrice || 0));
+        setCurrentHighestBid(highestBid);
       } else {
-        console.log("No bid history data received");
+        console.log("5e. 입찰 내역 없음");
         setBidHistory([]);
         setBidCount(0);
       }
-    },
-    onError: (error) => {
-      console.error("Error loading bid history:", error);
-    },
-    enabled: !!accessToken && !!postNumber,
-  });
-  
+      console.groupEnd();
+    }
+  }, [status, _dealData]);
+
+  // Handle errors
+  useEffect(() => {
+    if (queryError) {
+      console.group("6. 쿼리 오류");
+      console.error("6a. 오류 발생:", queryError);
+      if ('response' in queryError) {
+        console.error("6b. 오류 응답:", (queryError as any).response?.data);
+      }
+      console.groupEnd();
+    }
+  }, [queryError]);
+
+  // Log when query is settled (success or error)
+  useEffect(() => {
+    if (status === 'success' || status === 'error') {
+      console.log("7. 쿼리 완료 - 상태:", status);
+    }
+  }, [status]);
+
   const queryClient = useQueryClient();
   const wssURL = import.meta.env.VITE_REACT_APP_WSS_URL;
 
@@ -420,7 +567,7 @@ const TradeBuyerDetail = () => {
     };
 
     const onConnect = () => {
-      console.log('WebSocket connected');
+      console.log('WebSocket 연결됨');
       setIsConnected(true);
       
       // Subscribe to the topic for this post
@@ -437,7 +584,7 @@ const TradeBuyerDetail = () => {
     };
 
     const onError = (error: any) => {
-      console.error('WebSocket error:', error);
+      console.error('WebSocket 오류:', error);
       setIsConnected(false);
     };
 
@@ -456,7 +603,7 @@ const TradeBuyerDetail = () => {
       if (client.connected) {
         client.unsubscribe(`sub-${postNumber}`);
         client.disconnect(() => {
-          console.log('WebSocket disconnected');
+          console.log('WebSocket 연결 해제됨');
         });
       }
     };
@@ -512,7 +659,7 @@ const TradeBuyerDetail = () => {
       <LayoutMainBox>
         <SwiperContainer>
           <Swiper slidesPerView={1} pagination={true}>
-            {data?.imageResponses?.map((image: ImageResponse, index: number) => (
+            {tradeDetailData?.imageResponses?.map((image: ImageResponse, index: number) => (
               <SwiperSlide key={index}>
                 <ImgBox 
                   src={image?.imgStoreUrl} 
@@ -529,16 +676,27 @@ const TradeBuyerDetail = () => {
         <LayoutInnerBox>
           <InfoBox>
             <Profile>
-              <Thumbnail src={data?.exArticleResponse?.userResponse?.thumbnail} alt="profile" />
+              <ProfileImage 
+                src={tradeDetailData?.exArticleResponse?.userResponse?.thumbnail || '/src/assets/images/default.png'} 
+                alt="profile"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/src/assets/images/default.png';
+                }}
+              />
               <Name>
-                <NameText>{data?.exArticleResponse?.userResponse?.nickname}</NameText>
+                <NameText>{tradeDetailData?.exArticleResponse?.userResponse?.nickname}</NameText>
                 <ClassesText>
-                  {data?.exArticleResponse?.userResponse?.rank ?? ''}
+                  {tradeDetailData?.exArticleResponse?.userResponse?.rank ?? ''}
                   {/* <img src={Sprout} alt="Sprout" /> */}
                 </ClassesText>
               </Name>
             </Profile>
-            <Date>{data?.exArticleResponse.time}</Date>
+            <Date>
+              {tradeDetailData?.exArticleResponse?.time 
+                ? formatDateTime(tradeDetailData.exArticleResponse.time) 
+                : '날짜 정보 없음'}
+            </Date>
           </InfoBox>
 
           <SituationBox>
@@ -562,16 +720,23 @@ const TradeBuyerDetail = () => {
                 <DealList key={index}>
                   <ProfileBox>
                     <PhotoBox 
-                      src={item?.thumbnail} 
-                      alt="thumbnail"
+                      src={item.thumbnail || '/src/assets/images/default.png'} 
+                      alt={item.nickname}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = '/default-profile.png';
+                        target.src = '/src/assets/images/default.png';
                       }}
                     />
-                    {item?.nickname}
+                    <div>
+                      <div>{item.nickname}</div>
+                      <div style={{ fontSize: '0.8rem', color: '#666' }}>
+                        {item.localDateTime 
+                          ? formatDateTime(item.localDateTime) 
+                          : '날짜 정보 없음'}
+                      </div>
+                    </div>
                   </ProfileBox>
-                  <CostBox>{item?.bidLogPrice.toLocaleString()}원</CostBox>
+                  <CostBox>{item?.bidLogPrice?.toLocaleString() ?? '0'}원</CostBox>
                 </DealList>
               ))
             ) : (
@@ -588,11 +753,11 @@ const TradeBuyerDetail = () => {
               onChange={(e) => setNewMessage(e.target.value)}
               type="number"
             />
-            <SendButton 
-              src={Send} 
-              alt="send" 
-              onClick={sendMessage} 
-            />
+            
+            <SendButton onClick={sendMessage}>
+              <img src={Send} alt="send" width={24} height={24} />
+            </SendButton>
+            
           </DealChatBox>
         </LayoutInnerBox>
       </LayoutMainBox>
