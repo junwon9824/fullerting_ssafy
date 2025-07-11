@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 public interface BidRepository extends JpaRepository<BidLog, Long>, BidRepositoryCustom { // Long 타입으로 변경
 
-
     @Query("SELECT b FROM BidLog b JOIN FETCH b.deal d WHERE d.id = ?1")
     List<BidLog> findAllByDealId(Long dealId); // Deal 엔티티를 함께 가져옴
 
@@ -19,4 +18,7 @@ public interface BidRepository extends JpaRepository<BidLog, Long>, BidRepositor
 
     @Query("SELECT COUNT(DISTINCT b.userId) FROM BidLog b WHERE b.deal.exArticle.id = ?1")
     int countDistinctUserIdsByExArticleId(Long exArticleId); // exArticleId의 타입을 Long으로 변경
+
+    List<BidLog> findByDealId(Long id);
+
 }

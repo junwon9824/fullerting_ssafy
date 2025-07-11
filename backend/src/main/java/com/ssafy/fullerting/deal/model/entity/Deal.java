@@ -33,10 +33,9 @@ public class Deal {
 
     @Column(name = "deal_cur_price", nullable = false)
     private int dealCurPrice;
-//
-//    @JsonIgnore // ✅ 직렬화 제외
-//    @OneToMany(mappedBy = "deal",cascade = CascadeType.ALL)
-//    private List<BidLog> bidLog;
+    //
+    // @OneToMany(mappedBy = "deal",cascade = CascadeType.ALL)
+    // private List<BidLog> bidLog;
 
     public void setexarticle(ExArticle exArticle) {
         this.exArticle = exArticle;
@@ -44,10 +43,12 @@ public class Deal {
 
     public DealResponse toResponse(MemberProfile customUser) {
         return DealResponse.builder()
-//                .exArticleResponse(this.exArticle.toResponse(this.exArticle,customUser))
+                // .exArticleResponse(this.exArticle.toResponse(this.exArticle,customUser))
                 .price(this.getDealCurPrice()).id(this.getId()).
-//   .price(article.type.equals(ExArticleType.DEAL) ? article.deal.getDealCurPrice() : article.type.equals(ExArticleType.SHARING) ? 0 : article.trans.getTrans_sell_price())
+                // .price(article.type.equals(ExArticleType.DEAL) ?
+                // article.deal.getDealCurPrice() : article.type.equals(ExArticleType.SHARING) ?
+                // 0 : article.trans.getTrans_sell_price())
 
-        build();
+                build();
     }
 }

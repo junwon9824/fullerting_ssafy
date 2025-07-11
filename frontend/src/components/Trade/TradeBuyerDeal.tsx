@@ -65,7 +65,15 @@ interface Response {
   bidLogPrice: number;
 }
 
-
+interface WebSocketMessage {
+  type: string;
+  bidLogId: number;
+  exArticleId: number;
+  userResponse: UserResponse;
+  dealCurPrice: number;
+  bidderCount: number;
+  localDateTime: string;
+}
 
 // 날짜 문자열("YYYY-MM-DD HH:mm:ss")을 안전하게 Date 객체로 변환
 function parseDateTime(dateTime: string): Date | null {
@@ -404,26 +412,26 @@ const TradeBuyerDetail = () => {
   const [like, setLike] = useState<boolean>(false);
   const [currentHighestBid, setCurrentHighestBid] = useState<number>(0);
   const [bidCount, setBidCount] = useState<number>(0);
-  const [messages, setMessages] = useState<MessageRes[]>([]);
+  const [messages, setMessages] = useState<WebSocketMessage[]>([]);
   const [stompClient, setStompClient] = useState<Stomp.Client | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [bidHistory, setBidHistory] = useState<Deal[]>([]);
-  
+
   const handleLike = () => {
     setLike(!like);
   };
-  
+
   const { postId } = useParams<{ postId?: string }>();
   const postNumber = Number(postId);
   const accessToken = sessionStorage.getItem("accessToken");
-  
-  const { 
-    isLoading, 
-    data: tradeDetailData, 
-    error: tradeDetailError 
+
+  const {
+    isLoading,
+    data: tradeDetailData,
+    error: tradeDetailError
   } = useQuery({
     queryKey: ["tradeDetail", postNumber],
-    queryFn: accessToken && postNumber 
+    queryFn: accessToken && postNumber
       ? () => getTradeDetail(accessToken, postNumber)
       : undefined,
     enabled: !!(accessToken && postNumber)
@@ -431,9 +439,13 @@ const TradeBuyerDetail = () => {
 
   // Handle trade detail query success
   useEffect(() => {
-    if (tradeDetailData?.dealResponse?.price) {
-      console.log("상품 상세 정보 로드 성공, 최고 입찰가 설정:", tradeDetailData.dealResponse.price);
+    if (tradeDetailData?.dealResponse) {
+      console.log("상품 상세 정보 로드 성공, 최고 입찰가 설정:", tradeDetailData.dealResponse);
       setCurrentHighestBid(tradeDetailData.dealResponse.price);
+      // Initialize bid count from trade detail if available
+      if (tradeDetailData.dealResponse.bidCount !== undefined) {
+        setBidCount(tradeDetailData.dealResponse.bidCount);
+      }
     }
   }, [tradeDetailData]);
 
@@ -450,13 +462,13 @@ const TradeBuyerDetail = () => {
     queryKey: ["dealDetail", postNumber],
     queryFn: async () => {
       console.log("1. 쿼리 함수 실행 시작");
-      
+
       if (!accessToken || !postNumber) {
         const error = new Error(`필수 파라미터 누락: ${!accessToken ? 'accessToken' : ''} ${!postNumber ? 'postNumber' : ''}`);
         console.error("1a. 쿼리 실행 불가:", error.message);
         throw error;
       }
-      
+
       try {
         console.log("2. getDealList 호출 전");
         const result = await getDealList(accessToken, postNumber);
@@ -464,17 +476,17 @@ const TradeBuyerDetail = () => {
           isArray: Array.isArray(result),
           length: Array.isArray(result) ? result.length : 'N/A'
         });
-        
+
         if (!result) {
           console.log("3a. 빈 응답");
           return [];
         }
-        
+
         if (!Array.isArray(result)) {
           console.error("3b. 배열이 아닌 응답:", result);
           return [];
         }
-        
+
         console.log("3c. Mapping items:", result);
         return result.map(item => {
           console.log("3d. Processing item:", item);
@@ -489,7 +501,7 @@ const TradeBuyerDetail = () => {
             bidcount: item.bidcount || 0
           };
         });
-        
+
       } catch (error) {
         console.error("4. 쿼리 실행 오류:", error);
         throw error;
@@ -506,7 +518,7 @@ const TradeBuyerDetail = () => {
       console.log("5a. 데이터 수신:", _dealData);
       console.log("5b. 데이터 타입:", Array.isArray(_dealData) ? '배열' : typeof _dealData);
       console.log("5c. 데이터 길이:", Array.isArray(_dealData) ? _dealData.length : 'N/A');
-      
+
       if (_dealData.length > 0) {
         console.log("5d. 입찰 내역 설정");
         setBidHistory(_dealData);
@@ -547,50 +559,96 @@ const TradeBuyerDetail = () => {
 
   // WebSocket connection
   useEffect(() => {
-    if (!accessToken || !postNumber) return;
+    if (!accessToken || !postNumber) {
+      console.log('Missing accessToken or postNumber:', { accessToken, postNumber });
+      return;
+    }
 
-    // Use the WebSocket URL directly from environment variables
     const wsUrl = import.meta.env.VITE_REACT_APP_WSS_URL;
-    
+    console.log('WebSocket URL:', wsUrl);
+
     const socket = new WebSocket(wsUrl);
     const client = Stomp.over(socket);
-    
+
     // Enable debug logging in development
     if (import.meta.env.DEV) {
       client.debug = (str) => console.log(str);
     } else {
-      client.debug = () => {};
+      client.debug = () => { };
     }
-    
+
     const connectHeaders = {
       'Authorization': `Bearer ${accessToken}`
     };
 
     const onConnect = () => {
-      console.log('WebSocket 연결됨');
+      console.log('WebSocket connected successfully');
       setIsConnected(true);
       
-      // Subscribe to the topic for this post
-      client.subscribe(
-        `/topic/bidding/${postNumber}`, 
+      const topic = `/topic/bidding/${postNumber}`;
+      console.log(`Subscribing to topic: ${topic}`);
+      
+      const subscription = client.subscribe(
+        topic,
         (message) => {
-          const newBid = JSON.parse(message.body);
-          setMessages(prev => [...prev, newBid]);
-          setCurrentHighestBid(newBid.dealCurPrice);
-          setBidCount(prev => prev + 1);
+          console.log('Raw message received:', message);
+          
+          try {
+            const data = JSON.parse(message.body);
+            console.log('Parsed message data:', data);
+
+            if (data.type === 'BID_UPDATE') {
+              // Update current highest bid
+              setCurrentHighestBid(data.dealCurPrice);
+              
+              // Update bidder count
+              if (data.bidderCount !== undefined) {
+                console.log("Updating bidder count:", data.bidderCount);
+                setBidCount(data.bidderCount);
+              }
+              
+              // Add to bid history
+              setBidHistory(prev => {
+                const newBidEntry: Deal = {
+                  id: data.bidLogId,
+                  exarticleid: data.exArticleId,
+                  bidLogPrice: data.dealCurPrice,
+                  nickname: data.userResponse?.nickname || '알 수 없음',
+                  thumbnail: data.userResponse?.thumbnail || '',
+                  localDateTime: data.localDateTime || new Date().toISOString(),
+                  bidcount: data.bidderCount || 0
+                };
+                return [newBidEntry, ...prev];
+              });
+
+              // Add to messages for notification
+              setMessages(prev => [...prev, data]);
+            }
+            
+            // Invalidate query to refetch latest data
+            queryClient.invalidateQueries({ queryKey: ["dealDetail", postNumber] });
+          } catch (error) {
+            console.error('Error processing message:', error);
+          }
         },
         { id: `sub-${postNumber}` }
       );
+
+      console.log('Subscription active:', subscription);
     };
 
-    const onError = (error: any) => {
-      console.error('WebSocket 오류:', error);
+    const onError = (error: Error | string) => {
+      console.error('WebSocket connection error:', error);
       setIsConnected(false);
     };
 
-    // Connect to the WebSocket
+    console.log('Attempting to connect to WebSocket...');
     client.connect(
-      connectHeaders,
+      {
+        login: accessToken,  // Use 'login' field for the token
+        passcode: '',        // Empty passcode if not required
+        ...connectHeaders    // Spread any additional headers
+      },
       onConnect,
       onError
     );
@@ -627,7 +685,7 @@ const TradeBuyerDetail = () => {
     try {
       // Optimistic update
       setCurrentHighestBid(bidAmount);
-      setBidCount(prev => prev + 1);
+      // Don't update bid count here as it will be updated via WebSocket
 
       // Send the bid
       await stompClient.send(
@@ -642,7 +700,6 @@ const TradeBuyerDetail = () => {
 
       // Clear the input
       setNewMessage("");
-      
     } catch (error) {
       console.error("Failed to send bid:", error);
       // Revert optimistic update on error
@@ -661,8 +718,8 @@ const TradeBuyerDetail = () => {
           <Swiper slidesPerView={1} pagination={true}>
             {tradeDetailData?.imageResponses?.map((image: ImageResponse, index: number) => (
               <SwiperSlide key={index}>
-                <ImgBox 
-                  src={image?.imgStoreUrl} 
+                <ImgBox
+                  src={image?.imgStoreUrl}
                   alt="img"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
@@ -676,8 +733,8 @@ const TradeBuyerDetail = () => {
         <LayoutInnerBox>
           <InfoBox>
             <Profile>
-              <ProfileImage 
-                src={tradeDetailData?.exArticleResponse?.userResponse?.thumbnail || '/src/assets/images/default.png'} 
+              <ProfileImage
+                src={tradeDetailData?.exArticleResponse?.userResponse?.thumbnail || '/src/assets/images/default.png'}
                 alt="profile"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -693,8 +750,8 @@ const TradeBuyerDetail = () => {
               </Name>
             </Profile>
             <Date>
-              {tradeDetailData?.exArticleResponse?.time 
-                ? formatDateTime(tradeDetailData.exArticleResponse.time) 
+              {tradeDetailData?.exArticleResponse?.time
+                ? formatDateTime(tradeDetailData.exArticleResponse.time)
                 : '날짜 정보 없음'}
             </Date>
           </InfoBox>
@@ -719,8 +776,8 @@ const TradeBuyerDetail = () => {
               bidHistory.map((item: Deal, index: number) => (
                 <DealList key={index}>
                   <ProfileBox>
-                    <PhotoBox 
-                      src={item.thumbnail || '/src/assets/images/default.png'} 
+                    <PhotoBox
+                      src={item.thumbnail || '/src/assets/images/default.png'}
                       alt={item.nickname}
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
@@ -730,8 +787,8 @@ const TradeBuyerDetail = () => {
                     <div>
                       <div>{item.nickname}</div>
                       <div style={{ fontSize: '0.8rem', color: '#666' }}>
-                        {item.localDateTime 
-                          ? formatDateTime(item.localDateTime) 
+                        {item.localDateTime
+                          ? formatDateTime(item.localDateTime)
                           : '날짜 정보 없음'}
                       </div>
                     </div>
@@ -753,11 +810,11 @@ const TradeBuyerDetail = () => {
               onChange={(e) => setNewMessage(e.target.value)}
               type="number"
             />
-            
+
             <SendButton onClick={sendMessage}>
               <img src={Send} alt="send" width={24} height={24} />
             </SendButton>
-            
+
           </DealChatBox>
         </LayoutInnerBox>
       </LayoutMainBox>
