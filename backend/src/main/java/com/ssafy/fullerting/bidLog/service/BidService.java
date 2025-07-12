@@ -101,12 +101,20 @@ public class BidService {
                         return redisList.stream()
                                         .map(obj -> {
                                                 if (obj instanceof LinkedHashMap) {
-                                                        // LinkedHashMap을 BidLogResponse로 변환
                                                         return objectMapper.convertValue(obj, BidLogResponse.class);
+                                                } else if (obj instanceof String) {
+                                                        try {
+                                                                return objectMapper.readValue((String) obj,
+                                                                                BidLogResponse.class);
+                                                        } catch (Exception e) {
+                                                                throw new RuntimeException("Redis 캐시 역직렬화 실패", e);
+                                                        }
+                                                } else {
+                                                        throw new RuntimeException("알 수 없는 캐시 타입: " + obj.getClass());
                                                 }
-                                                return (BidLogResponse) obj;
                                         })
                                         .collect(Collectors.toList());
+
                 }
 
                 // Redis에 데이터가 없으면 MongoDB에서 조회

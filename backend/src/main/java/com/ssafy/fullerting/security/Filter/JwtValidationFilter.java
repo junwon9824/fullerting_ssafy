@@ -34,47 +34,50 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
 
+        // Bearer 파싱을 더 견고하게
+        String accessToken = null;
+        if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith(BEARER_PREFIX)) {
+            accessToken = authorizationHeader.substring(BEARER_PREFIX.length()).trim();
+        }
 
-        // 코드 리뷰 버전
-        String[] list = StringUtils.split(authorizationHeader, BEARER_PREFIX);
-
-        //authorizationHeader 가 null 이 아니고 authorizationHeader에 앞에 BEARER_PREFIX 가 있을 경우만 accessToken 값 있음, 아니면 null
-        String accessToken = (list != null && list.length == 2 && list[0].isEmpty()) ? list[1] : null;
-
-        if (accessToken == null) {
+        if (!StringUtils.hasText(accessToken)) {
+            // 토큰이 없으면 인증 없이 다음 필터로 넘김
             filterChain.doFilter(request, response);
             return;
         }
 
-        //엑세스 토큰 검증
-        Jws<Claims> claimsJws = jwtUtils.validateAccessToken(accessToken);
+        try {
+            // 엑세스 토큰 검증
+            Jws<Claims> claimsJws = jwtUtils.validateAccessToken(accessToken);
 
-        //토큰 있으면 검증
-        if (claimsJws != null) {
-            // 각 권한 문자열을 SimpleGrantedAuthority 객체로 변환
-            List<String> roles = claimsJws.getBody().get("authorities", List.class);
-            Collection<GrantedAuthority> authorities = roles.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+            if (claimsJws != null) {
+                List<String> roles = claimsJws.getBody().get("authorities", List.class);
+                Collection<GrantedAuthority> authorities = roles.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
 
-            CustomAuthenticationToken customAuthenticationToken =
-                    new CustomAuthenticationToken(
-                            jwtUtils.getEmailByAccessToken(accessToken),
-                            jwtUtils.getUserIdByAccessToken(accessToken),
-                            null,
-                            authorities
-                    ); // principal,userid,password,authorities 가 들어감}
+                CustomAuthenticationToken customAuthenticationToken = new CustomAuthenticationToken(
+                        jwtUtils.getEmailByAccessToken(accessToken),
+                        jwtUtils.getUserIdByAccessToken(accessToken),
+                        null,
+                        authorities);
 
-            SecurityContextHolder.getContext().setAuthentication(customAuthenticationToken);
-            log.info("jwt 토큰 검증 : {}", SecurityContextHolder.getContext().toString());
-
+                SecurityContextHolder.getContext().setAuthentication(customAuthenticationToken);
+                log.info("jwt 토큰 검증 성공 : {}", SecurityContextHolder.getContext().toString());
+            }
+        } catch (Exception e) {
+            // 검증 실패 시 401 반환 및 로그
+            log.warn("JWT 토큰 검증 실패: {}", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"error\": \"Invalid or expired JWT token.\"}");
+            return;
         }
 
         filterChain.doFilter(request, response);
     }
-
 }

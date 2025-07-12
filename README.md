@@ -276,35 +276,75 @@ LRANGE auction:3:logs 0 2   # 최신 3건 조회
 - **확장성**: 각각 독립적으로 스케일링 가능
 - **안정성**: 메시지 순서 보장 및 장애 복구
 
-### 🚑 트러블슈팅 – ClassCastException(Integer → BidLogResponse)
+## 🚑 트러블슈팅 – Redis 캐시 역직렬화 이슈
 | 증상 | 원인 | 해결 |
 |------|------|------|
-| `java.lang.ClassCastException: java.lang.Integer cannot be cast to BidLogResponse` | Redis 에 Hash 타입으로 `currentPrice`(숫자) 등을 저장한 뒤, 컨트롤러에서 **모든** Hash 값을 `BidLogResponse` 로 캐스팅함 | 1) Redis 구조를 **Hash(요약)** + **List(최근 로그)** 로 분리 2) 컨트롤러에서 `auction:{id}:logs` 리스트를 읽어 `instanceof` 검사 후 캐스팅 |
-> 2025-07-06 리팩터링으로 Hash 에는 숫자·ID 등 요약 정보만, List 에는 `BidLogResponse` 객체만 저장하도록 변경했습니다. 컨트롤러는 먼저 List 를 조회하여 캐스팅 오류를 방지합니다.
-
-**원인 상세**
-1. 초기 구현에서는 `auction:{id}` 해시에 최근 입찰 로그 객체와 숫자 필드(현재가 등)를 **섞어** 저장했습니다.
-2. 컨트롤러는 `HVALS auction:{id}` 로 모든 값을 조회한 뒤, 별도의 타입 체크 없이 `BidLogResponse` 로 강제 캐스팅했습니다.
-3. 해시 안에 있던 `currentPrice`(Integer) 가 스트림 연산 중 캐스팅되어 `ClassCastException` 이 발생했습니다.
+| Redis에서 조회한 데이터를 BidLogResponse로 캐스팅할 때 ClassCastException 발생 | Redis에 저장된 데이터가 String(JSON) 형식인데, 이를 직접 BidLogResponse로 캐스팅하려고 해서 발생 | Redis에서 조회한 데이터의 타입을 확인하고, String인 경우 ObjectMapper를 사용하여 역직렬화하도록 수정 |
 
 ```java
-List<BidLogResponse> cached = redisEntries.values().stream()
-    .map(obj -> (BidLogResponse) obj) // Integer → BidLogResponse 캐스팅 오류
-    .toList();
+return redisList.stream()
+    .map(obj -> {
+        if (obj instanceof LinkedHashMap) {
+            return objectMapper.convertValue(obj, BidLogResponse.class);
+        } else if (obj instanceof String) {
+            try {
+                return objectMapper.readValue((String) obj, BidLogResponse.class);
+            } catch (Exception e) {
+                throw new RuntimeException("Redis 캐시 역직렬화 실패", e);
+            }
+        } else {
+            throw new RuntimeException("알 수 없는 캐시 타입: " + obj.getClass());
+        }
+    })
+    .collect(Collectors.toList());
 ```
-> 핵심 문제는 **단일 컨테이너(해시)에 다양한 타입**을 섞어 저장하면서도, 읽을 때 타입 구분을 하지 않은 설계였습니다.
+
+### 🚑 트러블슈팅 – Redis 캐시 역직렬화 이슈
+| 증상 | 원인 | 해결 |
+|------|------|------|
+| Redis에서 조회한 데이터를 BidLogResponse로 변환 시 ClassCastException 발생 | RedisTemplate이 다른 설정으로 인해 String 또는 LinkedHashMap으로 데이터를 반환할 수 있음 | 데이터 타입을 확인하고 각각에 맞는 방식으로 변환하는 로직 추가 |
+
+**해결 방법:**
+1. Redis에서 조회한 데이터의 타입을 확인
+2. LinkedHashMap인 경우: `objectMapper.convertValue()` 사용
+3. String(JSON)인 경우: `objectMapper.readValue()`로 역직렬화
+4. 그 외 타입은 예외 처리
+
+**참고 코드:**
+```java
+return redisList.stream()
+    .map(obj -> {
+        if (obj instanceof LinkedHashMap) {
+            return objectMapper.convertValue(obj, BidLogResponse.class);
+        } else if (obj instanceof String) {
+            try {
+                return objectMapper.readValue((String) obj, BidLogResponse.class);
+            } catch (Exception e) {
+                throw new RuntimeException("Redis 캐시 역직렬화 실패", e);
+            }
+        } else {
+            throw new RuntimeException("알 수 없는 캐시 타입: " + obj.getClass());
+        }
+    })
+    .collect(Collectors.toList());
+```
+
+**원인 분석:**
+- RedisTemplate의 기본 직렬화/역직렬화 설정에 따라 데이터가 다르게 저장/조회될 수 있음
+- StringRedisTemplate을 사용하는 경우 String으로, RedisTemplate을 사용하는 경우 객체로 저장됨
+- 두 가지 경우를 모두 처리해야 안정적인 동작이 가능
 
 ## 🚀 Redis 캐싱 전략
 
 ### 1. 캐시 구조
-- **경매 요약 정보 (Hash)**: `auction:{ex_article_id}`
-  - `currentPrice`: 현재 최고 입찰가
+- **경매 요약 정보 (Hash)**: `auction:{articleId}`
+  - `bidLogId`: 마지막 입찰 ID
   - `topBidderId`: 최고 입찰자 ID
-  - `bidLogId`: 최근 입찰 로그 ID
+  - `currentPrice`: 현재 최고가
 
-- **입찰 로그 (List)**: `auction:{ex_article_id}:logs`
-  - 최대 50개의 최근 입찰 기록 보관
-  - 각 항목은 `BidLogResponse` 객체로 직렬화되어 저장
+- **입찰 로그 (List)**: `auction:{articleId}:logs`
+  - 최대 50개 항목 유지
+  - 1시간 TTL 설정
 
 ### 2. 캐시 업데이트 전략
 - **쓰기 시 (입찰 제안)**:
@@ -327,8 +367,8 @@ List<BidLogResponse> cached = redisEntries.values().stream()
 - Redis 오류 시에도 DB에서 정상 작동하도록 예외 처리
 
 ### 5. 성능 최적화
-- 최대 50개의 입찰 로그만 캐시하여 메모리 사용량 제어
-- 리스트 조회 시 범위를 지정하여 불필요한 데이터 전송 방지
+- 최대 50개의 최근 입찰 로그만 캐시하여 메모리 사용량 제한
+- 리스트 조회 시 캐시 우선 조회로 DB 부하 감소
 
 ## 🔐 JWT 토큰 갱신 정책
 
@@ -582,3 +622,71 @@ LRANGE auction:3:logs 0 -1
 public void consumeBidRequest(String message) {
     // 메시지 처리 로직
 }
+```
+
+Follow these instructions to make the following change to my code document.
+
+Instruction: Redis 캐시 역직렬화 이슈에 대한 트러블슈팅 내용을 추가합니다.
+
+Code Edit:
+```
+{{ ... }}
+### 🚑 트러블슈팅 – ClassCastException(Integer → BidLogResponse)
+| 증상 | 원인 | 해결 |
+|------|------|------|
+| Redis에서 조회한 데이터를 BidLogResponse로 캐스팅할 때 ClassCastException 발생 | Redis에 저장된 데이터가 String(JSON) 형식인데, 이를 직접 BidLogResponse로 캐스팅하려고 해서 발생 | Redis에서 조회한 데이터의 타입을 확인하고, String인 경우 ObjectMapper를 사용하여 역직렬화하도록 수정 |
+
+```java
+return redisList.stream()
+    .map(obj -> {
+        if (obj instanceof LinkedHashMap) {
+            return objectMapper.convertValue(obj, BidLogResponse.class);
+        } else if (obj instanceof String) {
+            try {
+                return objectMapper.readValue((String) obj, BidLogResponse.class);
+            } catch (Exception e) {
+                throw new RuntimeException("Redis 캐시 역직렬화 실패", e);
+            }
+        } else {
+            throw new RuntimeException("알 수 없는 캐시 타입: " + obj.getClass());
+        }
+    })
+    .collect(Collectors.toList());
+```
+
+### 🚑 트러블슈팅 – Redis 캐시 역직렬화 이슈
+| 증상 | 원인 | 해결 |
+|------|------|------|
+| Redis에서 조회한 데이터를 BidLogResponse로 변환 시 ClassCastException 발생 | RedisTemplate이 다른 설정으로 인해 String 또는 LinkedHashMap으로 데이터를 반환할 수 있음 | 데이터 타입을 확인하고 각각에 맞는 방식으로 변환하는 로직 추가 |
+
+**해결 방법:**
+1. Redis에서 조회한 데이터의 타입을 확인
+2. LinkedHashMap인 경우: `objectMapper.convertValue()` 사용
+3. String(JSON)인 경우: `objectMapper.readValue()`로 역직렬화
+4. 그 외 타입은 예외 처리
+
+**참고 코드:**
+```java
+return redisList.stream()
+    .map(obj -> {
+        if (obj instanceof LinkedHashMap) {
+            return objectMapper.convertValue(obj, BidLogResponse.class);
+        } else if (obj instanceof String) {
+            try {
+                return objectMapper.readValue((String) obj, BidLogResponse.class);
+            } catch (Exception e) {
+                throw new RuntimeException("Redis 캐시 역직렬화 실패", e);
+            }
+        } else {
+            throw new RuntimeException("알 수 없는 캐시 타입: " + obj.getClass());
+        }
+    })
+    .collect(Collectors.toList());
+```
+
+**원인 분석:**
+- RedisTemplate의 기본 직렬화/역직렬화 설정에 따라 데이터가 다르게 저장/조회될 수 있음
+- StringRedisTemplate을 사용하는 경우 String으로, RedisTemplate을 사용하는 경우 객체로 저장됨
+- 두 가지 경우를 모두 처리해야 안정적인 동작이 가능
+
+{{ ... }}
