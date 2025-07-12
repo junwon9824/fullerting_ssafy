@@ -214,7 +214,7 @@
 - **Redis**: 상태 캐시 및 빠른 조회
   - 경매 상태(현재가, 최고입찰자) 캐싱
   - 조회 시 DB 부하 감소
-  - 1시간 만료 시간으로 메모리 관리
+  - 24시간 TTL 설정으로 메모리 관리
 
 #### MongoDB: 입찰 로그 장기 보존 & 통계
 - **Bid Log 영속 저장**: BidService 가 입찰 발생 시 `MongoTemplate.save()` 로 `bidLog` 컬렉션에 동시에 저장(upsert).  
@@ -257,13 +257,13 @@ LRANGE auction:3:logs 0 2   # 최신 3건 조회
 ```
 입찰 발생 시:
 1. DB에 입찰 기록 저장
-2. Redis에 상태 캐시 저장 (조회용)
+2. Redis에 상태 캐시 저장 (24시간 유지, 조회용)
 3. MongoDB에 입찰 로그 영속 저장 (통계용)
 4. Kafka로 실시간 메시지 전송 (알림용)
 
 조회 시:
-1. Redis에서 상태 우선 조회 (빠른 응답)
-2. 없으면 DB에서 조회
+1. Redis에서 상태 우선 조회 (빠른 응답, 24시간 유지)
+2. 없으면 DB에서 조회 후 Redis에 캐싱
 
 실시간 알림 시:
 1. Kafka 메시지로 WebSocket 전송
@@ -276,127 +276,19 @@ LRANGE auction:3:logs 0 2   # 최신 3건 조회
 - **확장성**: 각각 독립적으로 스케일링 가능
 - **안정성**: 메시지 순서 보장 및 장애 복구
 
-## 🚑 트러블슈팅 – Redis 캐시 역직렬화 이슈
-| 증상 | 원인 | 해결 |
-|------|------|------|
-| Redis에서 조회한 데이터를 BidLogResponse로 캐스팅할 때 ClassCastException 발생 | Redis에 저장된 데이터가 String(JSON) 형식인데, 이를 직접 BidLogResponse로 캐스팅하려고 해서 발생 | Redis에서 조회한 데이터의 타입을 확인하고, String인 경우 ObjectMapper를 사용하여 역직렬화하도록 수정 |
+## 🚑 트러블슈팅
 
-```java
-return redisList.stream()
-    .map(obj -> {
-        if (obj instanceof LinkedHashMap) {
-            return objectMapper.convertValue(obj, BidLogResponse.class);
-        } else if (obj instanceof String) {
-            try {
-                return objectMapper.readValue((String) obj, BidLogResponse.class);
-            } catch (Exception e) {
-                throw new RuntimeException("Redis 캐시 역직렬화 실패", e);
-            }
-        } else {
-            throw new RuntimeException("알 수 없는 캐시 타입: " + obj.getClass());
-        }
-    })
-    .collect(Collectors.toList());
-```
+프로젝트 개발 중 발생한 주요 이슈와 해결 방법은 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 문서에서 확인하실 수 있습니다.
 
-### 🚑 트러블슈팅 – Redis 캐시 역직렬화 이슈
-| 증상 | 원인 | 해결 |
-|------|------|------|
-| Redis에서 조회한 데이터를 BidLogResponse로 변환 시 ClassCastException 발생 | RedisTemplate이 다른 설정으로 인해 String 또는 LinkedHashMap으로 데이터를 반환할 수 있음 | 데이터 타입을 확인하고 각각에 맞는 방식으로 변환하는 로직 추가 |
+주요 이슈:
+- Redis 캐시 역직렬화 이슈
+- Kafka Consumer 그룹 이슈
+- JPA N+1 문제
+- 동시성 제어 문제
+- CORS 이슈
+- JWT 토큰 만료 처리
 
-**해결 방법:**
-1. Redis에서 조회한 데이터의 타입을 확인
-2. LinkedHashMap인 경우: `objectMapper.convertValue()` 사용
-3. String(JSON)인 경우: `objectMapper.readValue()`로 역직렬화
-4. 그 외 타입은 예외 처리
-
-**참고 코드:**
-```java
-return redisList.stream()
-    .map(obj -> {
-        if (obj instanceof LinkedHashMap) {
-            return objectMapper.convertValue(obj, BidLogResponse.class);
-        } else if (obj instanceof String) {
-            try {
-                return objectMapper.readValue((String) obj, BidLogResponse.class);
-            } catch (Exception e) {
-                throw new RuntimeException("Redis 캐시 역직렬화 실패", e);
-            }
-        } else {
-            throw new RuntimeException("알 수 없는 캐시 타입: " + obj.getClass());
-        }
-    })
-    .collect(Collectors.toList());
-```
-
-**원인 분석:**
-- RedisTemplate의 기본 직렬화/역직렬화 설정에 따라 데이터가 다르게 저장/조회될 수 있음
-- StringRedisTemplate을 사용하는 경우 String으로, RedisTemplate을 사용하는 경우 객체로 저장됨
-- 두 가지 경우를 모두 처리해야 안정적인 동작이 가능
-
-## 🚀 Redis 캐싱 전략
-
-### 1. 캐시 구조
-- **경매 요약 정보 (Hash)**: `auction:{articleId}`
-  - `bidLogId`: 마지막 입찰 ID
-  - `topBidderId`: 최고 입찰자 ID
-  - `currentPrice`: 현재 최고가
-
-- **입찰 로그 (List)**: `auction:{articleId}:logs`
-  - 최대 50개 항목 유지
-  - 1시간 TTL 설정
-
-### 2. 캐시 업데이트 전략
-- **쓰기 시 (입찰 제안)**:
-  1. DB에 입찰 기록 저장
-  2. Redis 캐시 업데이트
-     - 경매 요약 정보 갱신
-     - 입찰 로그 리스트에 새 입찰 추가 (최대 50개 유지)
-  3. MongoDB에 백업 저장
-
-- **읽기 시 (입찰 조회)**:
-  1. Redis 캐시에서 조회 시도
-  2. 캐시 미스 시 DB에서 조회 후 반환 (쓰기 시 캐시가 업데이트되므로 별도 캐시 갱신 X)
-
-### 3. TTL (Time To Live)
-- 모든 캐시 항목은 24시간 후 만료
-- 자주 접근하는 항목은 만료 시간이 자동으로 갱신됨
-
-### 4. 일관성 보장
-- 모든 쓰기 작업은 DB와 Redis를 동시에 업데이트하여 일관성 유지
-- Redis 오류 시에도 DB에서 정상 작동하도록 예외 처리
-
-### 5. 성능 최적화
-- 최대 50개의 최근 입찰 로그만 캐시하여 메모리 사용량 제한
-- 리스트 조회 시 캐시 우선 조회로 DB 부하 감소
-
-## 🔐 JWT 토큰 갱신 정책
-
-| 구분 | 내용 |
-|------|------|
-| Access Token | 유효기간 짧음(15 min). 모든 API 요청 시 `Authorization: Bearer <access>` 헤더로 전송 |
-| Refresh Token | 유효기간 김(14 days). 최초 로그인 시 Redis 에 저장, Cookie/SessionStorage 에 보관 |
-
-1. **요청 흐름**
-   1) 클라이언트가 API 호출 → `JwtValidationFilter` 에서 accessToken 검증.
-   2) 만료(401) → 프론트 Axios 인터셉터가 `/v1/auth/refresh` POST `{ refreshToken }` 호출.
-
-2. **`TokenService.reIssueAccessTokenByRefreshToken()`**
-   - refreshToken 서명·만료 검증 → `jwtUtils.validateRefreshToken()`
-   - Claim 에서 `userId` 추출 → Redis 의 저장값과 일치 여부 확인.
-   - 일치할 경우 **Refresh-Token Rotation** 수행:
-     ```java
-     String newAccess = jwtUtils.issueAccessToken(email, userId, authorities);
-     String newRefresh = jwtUtils.issueRefreshToken(email, userId, authorities);
-     tokenRepository.save(new Token(userId, newRefresh));          // Redis 갱신
-     invalidTokenRepository.save(new InvalidToken(null, oldRefresh)); // 구 RT 폐기
-     return new IssuedToken(newAccess, newRefresh);
-     ```
-   - 불일치 → `JwtException(JwtErrorCode.INVALID_TOKEN)` 반환.
-
-3. **보안 효과**
-   - 탈취된 refreshToken 재사용 시도 → Redis 불일치로 즉시 차단.
-   - 이전 토큰은 블랙리스트 처리하여 일회성 보장.
+자세한 내용은 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 문서를 참고해주세요.
 
 ## 📚 API 목록
 
@@ -529,7 +421,7 @@ POST   /v1/file/uploadFile     # 파일 업로드
 
 - `auction:{articleId}:logs`: 입찰 내역 (List)
   - 최대 50개 항목 유지
-  - 1시간 TTL 설정
+  - 24시간 TTL 설정
 
 #### Redis CLI 명령어 예시
 ```bash
@@ -600,165 +492,30 @@ public void consumeBidRequest(String message) {
 }
 ```
 
-Follow these instructions to make the following change to my code document.
+## 🔐 JWT 토큰 갱신 정책
 
-Instruction: Redis 캐시 역직렬화 이슈에 대한 트러블슈팅 내용을 추가합니다.
+| 구분 | 내용 |
+|------|------|
+| Access Token | 유효기간 짧음(15 min). 모든 API 요청 시 `Authorization: Bearer <access>` 헤더로 전송 |
+| Refresh Token | 유효기간 김(14 days). 최초 로그인 시 Redis 에 저장, Cookie/SessionStorage 에 보관 |
 
-Code Edit:
-```
-{{ ... }}
-### 🚑 트러블슈팅 – ClassCastException(Integer → BidLogResponse)
-| 증상 | 원인 | 해결 |
-|------|------|------|
-| Redis에서 조회한 데이터를 BidLogResponse로 캐스팅할 때 ClassCastException 발생 | Redis에 저장된 데이터가 String(JSON) 형식인데, 이를 직접 BidLogResponse로 캐스팅하려고 해서 발생 | Redis에서 조회한 데이터의 타입을 확인하고, String인 경우 ObjectMapper를 사용하여 역직렬화하도록 수정 |
+1. **요청 흐름**
+   1) 클라이언트가 API 호출 → `JwtValidationFilter` 에서 accessToken 검증.
+   2) 만료(401) → 프론트엔드가 `/v1/auth/refresh` POST `{ refreshToken }` 호출.
 
-```java
-return redisList.stream()
-    .map(obj -> {
-        if (obj instanceof LinkedHashMap) {
-            return objectMapper.convertValue(obj, BidLogResponse.class);
-        } else if (obj instanceof String) {
-            try {
-                return objectMapper.readValue((String) obj, BidLogResponse.class);
-            } catch (Exception e) {
-                throw new RuntimeException("Redis 캐시 역직렬화 실패", e);
-            }
-        } else {
-            throw new RuntimeException("알 수 없는 캐시 타입: " + obj.getClass());
-        }
-    })
-    .collect(Collectors.toList());
-```
+2. **`TokenService.reIssueAccessTokenByRefreshToken()`**
+   - refreshToken 서명·만료 검증 → `jwtUtils.validateRefreshToken()`
+   - Claim 에서 `userId` 추출 → Redis 의 저장값과 일치 여부 확인.
+   - 일치할 경우 **Refresh-Token Rotation** 수행:
+     ```java
+     String newAccess = jwtUtils.issueAccessToken(email, userId, authorities);
+     String newRefresh = jwtUtils.issueRefreshToken(email, userId, authorities);
+     tokenRepository.save(new Token(userId, newRefresh));          // Redis 갱신
+     invalidTokenRepository.save(new InvalidToken(null, oldRefresh)); // 구 RT 폐기
+     return new IssuedToken(newAccess, newRefresh);
+     ```
+   - 불일치 → `JwtException(JwtErrorCode.INVALID_TOKEN)` 반환.
 
-### 🚑 트러블슈팅 – Redis 캐시 역직렬화 이슈
-| 증상 | 원인 | 해결 |
-|------|------|------|
-| Redis에서 조회한 데이터를 BidLogResponse로 변환 시 ClassCastException 발생 | RedisTemplate이 다른 설정으로 인해 String 또는 LinkedHashMap으로 데이터를 반환할 수 있음 | 데이터 타입을 확인하고 각각에 맞는 방식으로 변환하는 로직 추가 |
-
-**해결 방법:**
-1. Redis에서 조회한 데이터의 타입을 확인
-2. LinkedHashMap인 경우: `objectMapper.convertValue()` 사용
-3. String(JSON)인 경우: `objectMapper.readValue()`로 역직렬화
-4. 그 외 타입은 예외 처리
-
-**참고 코드:**
-```java
-return redisList.stream()
-    .map(obj -> {
-        if (obj instanceof LinkedHashMap) {
-            return objectMapper.convertValue(obj, BidLogResponse.class);
-        } else if (obj instanceof String) {
-            try {
-                return objectMapper.readValue((String) obj, BidLogResponse.class);
-            } catch (Exception e) {
-                throw new RuntimeException("Redis 캐시 역직렬화 실패", e);
-            }
-        } else {
-            throw new RuntimeException("알 수 없는 캐시 타입: " + obj.getClass());
-        }
-    })
-    .collect(Collectors.toList());
-```
-
-**원인 분석:**
-- RedisTemplate의 기본 직렬화/역직렬화 설정에 따라 데이터가 다르게 저장/조회될 수 있음
-- StringRedisTemplate을 사용하는 경우 String으로, RedisTemplate을 사용하는 경우 객체로 저장됨
-- 두 가지 경우를 모두 처리해야 안정적인 동작이 가능
-
-{{ ... }}
-```
-
-Follow these instructions to make the following change to my code document.
-
-Instruction: Update the API list in the README to accurately reflect the actual endpoints in the codebase, ensuring all paths and methods are correct.
-
-Code Edit:
-```
-{{ ... }}
-
-## 📌 API 목록
-
-### 사용자 인증
-```
-POST   /v1/auth/login           # 로그인
-POST   /v1/auth/refresh        # 토큰 재발급
-POST   /v1/auth/register       # 회원가입
-```
-
-### 사용자 정보
-```
-GET    /v1/users/me            # 내 정보 조회
-PATCH  /v1/users               # 내 정보 수정
-PATCH  /v1/users/town          # 동네 정보 수정
-POST   /v1/users/upload        # 프로필 이미지 업로드
-```
-
-### 경매/거래
-```
-# 경매 입찰
-POST   /v1/exchanges/{ex_article_id}/bid      # 입찰 제안
-GET    /v1/exchanges/bid-logs/{ex_article_id} # 입찰 내역 조회
-
-# 일반 거래
-GET    /v1/exchanges/category/share          # 나눔 목록 조회
-GET    /v1/exchanges/category/trans          # 일반 거래 목록 조회
-GET    /v1/exchanges/category/my/trans       # 내 거래 목록 조회
-
-# 경매/거래 공통
-POST   /v1/exchanges                        # 게시글 등록
-GET    /v1/exchanges/{id}                   # 게시글 상세 조회
-GET    /v1/exchanges/category/deal          # 제안 카테고리 조회
-GET    /v1/exchanges/wrotearticles          # 내가 작성한 게시물 조회
-```
-
-### 작물 일지
-```
-# 작물 일지 팩
-GET    /v1/pack-diaries                     # 작물 일지 팩 목록
-POST   /v1/pack-diaries                     # 작물 일지 팩 생성
-GET    /v1/pack-diaries/{id}                # 작물 일지 팩 상세
-
-# 작물 일지
-GET    /v1/diaries/{pack_diary_id}          # 작물 일지 목록
-GET    /v1/diaries/detail/{diary_id}        # 작물 일지 상세
-POST   /v1/diaries/{pack_diary_id}          # 작물 일지 생성
-POST   /v1/diaries/{pack_diary_id}/water    # 물주기
-```
-
-### 커뮤니티
-```
-# 게시글
-GET    /v1/articles                   # 게시글 목록
-POST   /v1/articles                   # 게시글 작성
-GET    /v1/articles/{id}              # 게시글 상세
-
-# 댓글
-POST   /v1/articles/{article_id}/comments          # 댓글 작성
-GET    /v1/articles/{article_id}/comments/all      # 댓글 목록
-DELETE /v1/articles/{article_id}/comments/{comment_id}  # 댓글 삭제
-
-# 좋아요
-POST   /v1/articles/{article_id}/like   # 좋아요 토글
-```
-
-### 채팅
-```
-GET    /v1/chat-room                   # 채팅방 목록
-POST   /v1/chat-room                   # 채팅방 생성
-GET    /v1/chat-room/{chat_room_id}    # 채팅방 상세
-```
-
-### 알림
-```
-GET    /v1/noti/pub     # SSE 구독 (text/event-stream)
-```
-
-### 기타
-```
-GET    /v1/crop-types          # 작물 종류 조회
-GET    /v1/crop-tips/{crop_type_id}    # 작물별 재배 팁 조회
-GET    /v1/farms/search?region={region} # 텃밭 정보 조회
-POST   /v1/file/uploadFile     # 파일 업로드
-```
-
-{{ ... }}
+3. **보안 효과**
+   - 탈취된 refreshToken 재사용 시도 → Redis 불일치로 즉시 차단.
+   - 이전 토큰은 블랙리스트 처리하여 일회성 보장.
