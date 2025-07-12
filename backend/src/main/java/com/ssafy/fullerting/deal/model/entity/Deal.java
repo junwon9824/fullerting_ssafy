@@ -33,6 +33,9 @@ public class Deal {
 
     @Column(name = "deal_cur_price", nullable = false)
     private int dealCurPrice;
+
+    @Column(name = "bidder_count", nullable = false, columnDefinition = "int default 0")
+    private int bidderCount;
     //
     // @OneToMany(mappedBy = "deal",cascade = CascadeType.ALL)
     // private List<BidLog> bidLog;

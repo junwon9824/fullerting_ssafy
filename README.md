@@ -547,4 +547,38 @@ LRANGE auction:3:logs 0 -1
 #### 4. 성능 최적화
 - 최대 50개의 최근 입찰 내역만 캐시하여 메모리 사용량 제한
 - 리스트 조회 시 캐시 우선 조회로 DB 부하 감소
-```
+
+### 🔄 Kafka Consumer Group
+
+#### Consumer Group이 필요한 이유
+1. **메시지 분산 처리**
+   - 같은 Group ID를 가진 Consumer 인스턴스들이 토픽의 파티션을 나누어 처리
+   - 예: 3개 파티션 토픽에 3개 Consumer가 같은 Group ID로 연결되면 각각 1개 파티션씩 담당
+
+2. **메시지 중복/유실 방지**
+   - Group ID를 기준으로 오프셋(offset) 관리
+   - 메시지가 한 번만 처리되도록 보장
+
+3. **확장성**
+   - Consumer 수를 유연하게 조정 가능
+   - Group Coordinator가 자동으로 파티션 재조정
+
+4. **다양한 소비 패턴 지원**
+   - 같은 토픽을 다른 Group ID로 구독하면 각 그룹이 독립적으로 모든 메시지 수신
+   - 브로드캐스팅이 필요한 경우 유용
+
+#### 주의사항
+- `groupId`는 필수 속성입니다. 생략 시 "No group.id found in consumer config" 오류 발생
+- 파티션 수 ≥ 컨슈머 수여야 모든 컨슈머가 메시지 수신
+- 같은 파티션 내에서만 메시지 순서 보장
+
+#### 예시 코드
+```java
+@KafkaListener(
+    topics = "bid_requests", 
+    groupId = "bid-group",  // 필수
+    containerFactory = "bidKafkaListenerContainerFactory"
+)
+public void consumeBidRequest(String message) {
+    // 메시지 처리 로직
+}
