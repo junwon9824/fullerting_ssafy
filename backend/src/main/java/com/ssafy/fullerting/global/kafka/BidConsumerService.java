@@ -1,15 +1,5 @@
 package com.ssafy.fullerting.global.kafka;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.fullerting.alarm.service.EventAlarmService;
 import com.ssafy.fullerting.bidLog.model.dto.request.BidProposeRequest;
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
@@ -24,41 +14,45 @@ import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
-import com.ssafy.fullerting.exArticle.service.ExArticleService;
 import com.ssafy.fullerting.global.config.BidNotification;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.repository.MemberRepository;
 import com.ssafy.fullerting.user.service.UserService;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-
 public class BidConsumerService {
 
         private final EventAlarmService eventAlarmService;
         private final UserService userService;
-        private final ExArticleService exArticleService;
         private final BidService bidService;
         private final MemberRepository memberRepository;
         private final BidProducerService bidProducerService;
         private final BidRepository bidRepository;
-
         private final ExArticleRepository exArticleRepository;
         private final DealRepository dealRepository;
-        private final ObjectMapper objectMapper;
         private final SimpMessagingTemplate messagingTemplate;
 
-        @KafkaListener(topics = "bid_requests", groupId = "bid-group", containerFactory = "bidKafkaListenerContainerFactory")
+        @KafkaListener(
+                topics = "bid_requests",
+                groupId = "bid-group",
+                containerFactory = "bidKafkaListenerContainerFactory"
+        )
         @Transactional
-        public void consumeBidRequest(String messageJson) {
+        public void consumeBidRequest(BidRequestMessage message) {
                 try {
-                        BidRequestMessage message = objectMapper.readValue(messageJson, BidRequestMessage.class);
-
                         Long exArticleId = message.getExArticleId();
                         int dealCurPrice = message.getDealCurPrice();
                         String bidderUserName = message.getBidderUserName();
@@ -67,7 +61,7 @@ public class BidConsumerService {
 
                         // 게시글 조회 (낙관적 락 사용)
                         ExArticle exArticle = exArticleRepository.findWithDealByIdwithLock(exArticleId)
-                                        .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+                                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
                         Deal deal = exArticle.getDeal();
                         if (deal == null) {
@@ -82,33 +76,33 @@ public class BidConsumerService {
 
                         // 입찰자 정보 조회
                         MemberProfile bidder = memberRepository.findByNickname(bidderUserName)
-                                        .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
+                                .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
                         // 기존 입찰 내역 조회
                         List<BidLog> existingBids = bidRepository.findByDealId(deal.getId().toString());
 
                         // 고유 입찰자 수 계산
                         long uniqueBidderCount = existingBids.stream()
-                                        .map(BidLog::getUserId)
-                                        .distinct()
-                                        .count();
+                                .map(BidLog::getUserId)
+                                .distinct()
+                                .count();
 
                         // 현재 사용자의 기존 입찰 여부 확인
                         boolean isNewBidder = existingBids.stream()
-                                        .noneMatch(bid -> bid.getUserId().equals(bidder.getId()));
+                                .noneMatch(bid -> bid.getUserId().equals(bidder.getId()));
 
                         // 새로운 입찰자라면 카운트 증가
                         if (isNewBidder) {
                                 uniqueBidderCount++;
                         }
 
-                        // 입찰 내역 저장
+                        // 입찰 내역 저장 (오직 여기서만!)
                         BidLog bidLog = BidLog.builder()
-                                        .deal(deal)
-                                        .userId(bidder.getId())
-                                        .bidLogPrice(dealCurPrice)
-                                        .localDateTime(LocalDateTime.now())
-                                        .build();
+                                .deal(deal)
+                                .userId(bidder.getId())
+                                .bidLogPrice(dealCurPrice)
+                                .localDateTime(LocalDateTime.now())
+                                .build();
 
                         bidRepository.save(bidLog);
 
@@ -125,64 +119,60 @@ public class BidConsumerService {
                         wsMessage.put("dealCurPrice", dealCurPrice);
                         wsMessage.put("bidderCount", uniqueBidderCount);
                         wsMessage.put("userResponse", Map.of(
-                                        "nickname", bidder.getNickname(),
-                                        "thumbnail", bidder.getThumbnail()));
+                                "nickname", bidder.getNickname(),
+                                "thumbnail", bidder.getThumbnail()));
                         wsMessage.put("localDateTime", LocalDateTime.now().toString());
 
                         messagingTemplate.convertAndSend(
-                                        "/topic/bidding/" + exArticleId,
-                                        wsMessage);
+                                "/topic/bidding/" + exArticleId,
+                                wsMessage);
 
                         // 알림 전송
                         bidProducerService.kafkaalarmproduce(bidder, exArticle, "/some/redirect/url");
 
                 } catch (Exception e) {
-                        log.error("Kafka 입찰 메시지 처리 실패: {}", messageJson, e);
+                        log.error("Kafka 입찰 메시지 처리 실패: {}", message, e);
                 }
         }
 
-        @KafkaListener(topics = "kafka-alarm", groupId = "user-notifications", concurrency = "5")
+        @KafkaListener(
+                topics = "kafka-alarm",
+                groupId = "user-notifications",
+                concurrency = "5",
+                containerFactory = "bidNotificationKafkaListenerContainerFactory"
+        )
         @Transactional
-        public void kafkaalram(String string) {
+        public void kafkaalram(BidNotification bidNotification) {
                 try {
-                        // Parse the notification
-                        BidNotification bidNotification = objectMapper.readValue(string, BidNotification.class);
+                        log.info("Kafka message: {}", bidNotification);
 
-                        // Get article and deal
-                        ExArticle article = exArticleRepository.findById(bidNotification.getArticleId())
-                                        .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-
+                        ExArticle article = exArticleRepository.findById(bidNotification.getArticleid())
+                                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
                         Deal deal = article.getDeal();
                         if (deal == null) {
                                 throw new DealException(DealErrorCode.NOT_EXISTS);
                         }
-
-                        // Create bid request with user ID from notification
                         BidProposeRequest bidProposeRequest = BidProposeRequest.builder()
-                                        .dealCurPrice(bidNotification.getPrice())
-                                        .userId(bidNotification.getUserId())
-                                        .build();
+                                .dealCurPrice(bidNotification.getPrice())
+                                .userId(bidNotification.getUserid())
+                                .build();
 
-                        // Save bid log
-                        BidLog bidLog = bidService.socketdealbid(article, bidProposeRequest);
+                        // DB 저장 X! 알림/캐싱 등만 필요시 호출
+                        bidService.socketdealbid(article, bidProposeRequest);
 
-                        // Get bid user
-                        MemberProfile bidUser = userService.getUserEntityById(bidNotification.getUserId());
-
-                        // Rest of your existing code...
+                        MemberProfile bidUser = userService.getUserEntityById(bidNotification.getUserid());
                         int bidderCount = bidService.getBidderCount(deal);
                         int maxBidPrice = bidService.getMaxBidPrice(article);
 
-                        // WebSocket을 통해 메시지 전송
-                        messagingTemplate.convertAndSend("/sub/bidding/" + bidNotification.getArticleId(),
-                                        DealstartResponse.builder()
-                                                        .bidLogId(bidLog.getId())
-                                                        .exArticleId(bidNotification.getArticleId())
-                                                        .userResponse(bidUser.toResponse())
-                                                        .dealCurPrice(bidNotification.getPrice())
-                                                        .maxPrice(maxBidPrice)
-                                                        .bidderCount(bidderCount)
-                                                        .build());
+                        messagingTemplate.convertAndSend("/sub/bidding/" + bidNotification.getArticleid(),
+                                DealstartResponse.builder()
+                                        .bidLogId(null) // 저장된 BidLog ID가 필요하면 별도 전달
+                                        .exArticleId(bidNotification.getArticleid())
+                                        .userResponse(bidUser.toResponse())
+                                        .dealCurPrice(bidNotification.getPrice())
+                                        .maxPrice(maxBidPrice)
+                                        .bidderCount(bidderCount)
+                                        .build());
 
                         eventAlarmService.notifyChatRoomAuthor(bidUser, article, bidNotification.getRedirectUrl());
 

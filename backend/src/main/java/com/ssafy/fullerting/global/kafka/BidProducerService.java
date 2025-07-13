@@ -24,63 +24,41 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @RequiredArgsConstructor
 public class BidProducerService {
-    //    private final KafkaTemplate<String, BidNotification> kafkaTemplate; // Object 타입으로 변경하여 다양한 메시지 타입 지원
-    private final KafkaTemplate<String, String> kafkaTemplatetest; // Object 타입으로 변경하여 다양한 메시지 타입 지원
+//    private final KafkaTemplate<String, BidNotification> kafkaTemplatetest;
     private final ObjectMapper objectMapper; // Jackson ObjectMapper
-
+    private final KafkaTemplate<String, BidNotification> kafkaTemplate;
+    private static final String ALARM_TOPIC = "kafka-alarm";
+    private final KafkaTemplate<String, BidNotification> bidNotificationKafkaTemplate;
+    private final KafkaTemplate<String, BidRequestMessage> bidRequestKafkaTemplate;
     private static final String BID_TOPIC = "bid_requests";
     // 입찰 신청 메시지를 카프카로 보내는 메서드
-    public void sendBidRequest(Long exArticleId, int dealCurPrice, MemberProfile bidder) throws JsonProcessingException {
+
+    public void sendBidRequest(Long exArticleId, int dealCurPrice, MemberProfile bidder) {
         BidRequestMessage bidRequest = new BidRequestMessage(exArticleId, dealCurPrice, bidder.getNickname());
-        String messageJson = objectMapper.writeValueAsString(bidRequest); // JSON 직렬화
-
-        kafkaTemplatetest.send(BID_TOPIC, exArticleId.toString(), messageJson);
-
+        bidRequestKafkaTemplate.send(BID_TOPIC, exArticleId.toString(), bidRequest);
         log.info("카프카로 입찰 신청을 전송했습니다: {}", bidRequest);
     }
 
-
     public void kafkaalarmproduce(MemberProfile memberProfile, ExArticle exArticle, String redirecturl) {
-        String topicName = "kafka-alarm"; // 알림 전용 토픽
-
         try {
-            Deal deal = exArticle.getDeal();
-            if (deal != null) {
-                log.info("Deal current price: {}", deal.getDealCurPrice());
-            } else {
-                log.info("Deal is null");
-            }
-
-            // 세 개의 값을 JSON 객체로 생성
-            BidNotification messagePayload = BidNotification.builder().
-                    userId(memberProfile.getId())
-                    .articleId(exArticle.getId())
+            BidNotification messagePayload = BidNotification.builder()
+                    .userid(memberProfile.getId())
+                    .articleid(exArticle.getId())
                     .redirectUrl(redirecturl)
                     .price(exArticle.getDeal() == null ? exArticle.getTrans().getTrans_sell_price() : exArticle.getDeal().getDealCurPrice())
                     .build();
 
-//            BidNotification(memberProfile, exArticle, redirecturl);
-
-
-            String message = objectMapper.writeValueAsString(messagePayload); // JSON으로 직렬화
-            log.info("kafka messagemessagemessage"+ message);
-            long startTime = System.currentTimeMillis();
-
-//            CompletableFuture<SendResult<String, String>> future = kafkaTemplatetest.send(topicName, message);
-            String key = exArticle.getId().toString();  // 게시물 ID를 키로 사용
-            CompletableFuture<SendResult<String, String>> future = kafkaTemplatetest.send(topicName, key, message);
-
-            future
-                    .thenAccept(result -> {
-                        long endTime = System.currentTimeMillis();
-                        log.info("Message sent to topic {} with offset {} in {} ms", topicName, result.getRecordMetadata().offset(), (endTime - startTime));
-                    })
-                    .exceptionally(ex -> {
-                        log.error("Failed to send message to topic {} due to {}", topicName, ex.getMessage());
-                        return null; // Exceptionally는 Void를 반환하므로 null 반환
+            String key = exArticle.getId().toString();
+            kafkaTemplate.send(ALARM_TOPIC, key, messagePayload)
+                    .whenComplete((result, ex) -> {
+                        if (ex == null) {
+                            log.info("Message sent to topic {} with offset {}", ALARM_TOPIC, result.getRecordMetadata().offset());
+                        } else {
+                            log.error("Failed to send message to topic {} due to {}", ALARM_TOPIC, ex.getMessage());
+                        }
                     });
         } catch (Exception e) {
-            log.error("Failed to convert message to JSON due to {}", e.getMessage());
+            log.error("Failed to send kafka alarm: {}", e.getMessage());
         }
     }
 

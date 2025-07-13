@@ -1,5 +1,6 @@
 package com.ssafy.fullerting.global.kafka;
 
+import com.ssafy.fullerting.global.config.BidNotification;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -21,38 +22,39 @@ public class KafkaConsumerConfig {
 
     private static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
-    /**
-     * 🔹 일반 String 메시지용 ConsumerFactory
-     */
+    // 🔹 일반 String 메시지용 ConsumerFactory
     @Bean
     public ConsumerFactory<String, String> stringConsumerFactory() {
         Map<String, Object> config = commonConfig();
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "string-consumer-group");
-
         JsonDeserializer<String> deserializer = new JsonDeserializer<>(String.class);
-        deserializer.addTrustedPackages("*"); // 이 부분이 중요합니다
-
+        deserializer.addTrustedPackages("*");
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
     }
 
-    /**
-     * 🔹 BidRequestMessage용 ConsumerFactory
-     */
+    // 🔹 BidRequestMessage용 ConsumerFactory
     @Bean
     public ConsumerFactory<String, BidRequestMessage> bidRequestConsumerFactory() {
         Map<String, Object> config = commonConfig();
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "bid-consumer-group");
-
-        // JsonDeserializer 설정
         JsonDeserializer<BidRequestMessage> deserializer = new JsonDeserializer<>(BidRequestMessage.class);
-        deserializer.addTrustedPackages("com.ssafy.fullerting.kafka");
-
+        deserializer.addTrustedPackages("com.ssafy.fullerting.global.kafka");
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
     }
 
-    /**
-     * 🔹 String 메시지용 ListenerContainerFactory
-     */
+    // 🔹 BidNotification용 ConsumerFactory
+    @Bean
+    public ConsumerFactory<String, BidNotification> bidNotificationConsumerFactory() {
+        Map<String, Object> config = commonConfig();
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "bid-notification-group");
+        JsonDeserializer<BidNotification> deserializer = new JsonDeserializer<>(BidNotification.class);
+        deserializer.addTrustedPackages("com.ssafy.fullerting.global.config"); // 실제 패키지명!
+        deserializer.setRemoveTypeHeaders(false);
+        deserializer.setUseTypeMapperForKey(true);
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
+    }
+
+    // 🔹 String 메시지용 ListenerContainerFactory
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> stringKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -61,9 +63,7 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
-    /**
-     * 🔹 BidRequestMessage용 ListenerContainerFactory
-     */
+    // 🔹 BidRequestMessage용 ListenerContainerFactory
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, BidRequestMessage> bidKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, BidRequestMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -72,9 +72,16 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
-    /**
-     * 🔹 공통 Kafka Consumer 설정
-     */
+    // 🔹 BidNotification용 ListenerContainerFactory
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, BidNotification> bidNotificationKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, BidNotification> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(bidNotificationConsumerFactory());
+        factory.setCommonErrorHandler(defaultErrorHandler());
+        return factory;
+    }
+
+    // 🔹 공통 Kafka Consumer 설정
     private Map<String, Object> commonConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
@@ -82,9 +89,7 @@ public class KafkaConsumerConfig {
         return config;
     }
 
-    /**
-     * 🔹 공통 에러 핸들러
-     */
+    // 🔹 공통 에러 핸들러
     private DefaultErrorHandler defaultErrorHandler() {
         return new DefaultErrorHandler(
                 (record, exception) ->
@@ -92,5 +97,4 @@ public class KafkaConsumerConfig {
                 new FixedBackOff(1000L, 2)
         );
     }
-
 }

@@ -65,8 +65,6 @@ public class KafkaMessageController {
             } catch (RuntimeException e) {
                 log.warn("❌ 입찰 실패: {}", e.getMessage());
                 // 필요시 WebSocket 응답으로 클라이언트에 실패 메시지 전송 가능
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
             }
 
         } else {

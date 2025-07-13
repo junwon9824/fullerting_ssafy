@@ -21,7 +21,7 @@ services:
     image: mongo:6.0  # ← 공식 이미지로 변경
     container_name: mongodb-container
     ports:
-      - "27017:27017"
+      - "37017:27017"
     volumes:
       - mongodb_data:/data/db  # 공식 이미지의 기본 경로
     environment:
