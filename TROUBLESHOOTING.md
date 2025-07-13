@@ -213,3 +213,38 @@ docker ps에서 0.0.0.0:6379->6379/tcp가 떠 있는지 확인
 Spring Boot 재시작
 
 이제 localhost:6379로 접속하면 Docker Redis에만 연결됨
+
+
+1. Redis List 저장/조회 구조 이해
+저장 시:
+각 입찰 로그 객체(BidLogResponse 등)를
+JSON 문자열로 하나씩 Redis List에 push해야 함.
+
+조회 시:
+Redis List의 각 아이템을
+단일 객체로 역직렬화해야 함.
+
+2. 자주 발생하는 문제 및 해결법
+1) JSON 배열 전체를 한 번에 저장
+문제:
+전체 입찰 로그 리스트를 JSON 배열로 직렬화해
+리스트에 한 번만 push하면,
+
+조회 시 역직렬화 에러(MismatchedInputException: Cannot deserialize value of type ... from Array value)
+
+해결:
+반드시 for문 등으로 각 객체를 하나씩 push
+(예: for (BidLogResponse resp : responses) { ... })
+
+2) Redis List가 비어 있는데 캐시 데이터가 있다고 나옴
+원인:
+
+LRANGE auction:1:logs -1 0처럼 start > stop이면 항상 빈 배열 반환
+
+실제로는 LRANGE auction:1:logs 0 -1로 전체 조회해야 함
+
+해결:
+
+항상 LRANGE <key> 0 -1로 전체 데이터 확인
+
+애플리케이션에서 Redis에 값이 없으면 DB에서 읽고, 그 결과를 다시 캐싱하는 구조인지 확인
