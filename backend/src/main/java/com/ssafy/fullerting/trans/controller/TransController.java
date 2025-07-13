@@ -1,15 +1,22 @@
 package com.ssafy.fullerting.trans.controller;
 
-import com.ssafy.fullerting.global.utils.MessageUtils;
+import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
+import com.ssafy.fullerting.global.utils.MessageUtils;
+import com.ssafy.fullerting.trans.model.dto.response.MyAllTransResponse;
 import com.ssafy.fullerting.trans.service.TransService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -22,7 +29,8 @@ public class TransController {
 
     @GetMapping("/category/share")
     @Operation(summary = "나눔 조회하기 ", description = "나눔 조회하기 ")
-    public ResponseEntity<MessageUtils> selectAllshare(@AuthenticationPrincipal String email) {
+    public ResponseEntity<MessageUtils<List<ExArticleAllResponse>>> selectAllshare(
+            @AuthenticationPrincipal String email) {
 
         log.info("[show share]: {}");
         return ResponseEntity.ok().body(MessageUtils.success(transService.selectAllshare()));
@@ -31,22 +39,18 @@ public class TransController {
 
     @GetMapping("/category/trans")
     @Operation(summary = "일반거래 조회하기 ", description = "나눔 조회하기 ")
-    public ResponseEntity<MessageUtils> selectAlltrans( ) {
-
+    public ResponseEntity<MessageUtils<List<ExArticleAllResponse>>> selectAlltrans() {
         log.info("[show share]: {}");
         return ResponseEntity.ok().body(MessageUtils.success(transService.selectAlltrans()));
-
     }
-
 
     @GetMapping("/category/my/trans")
     @Operation(summary = " 나의 일반거래 조회하기 ", description = "일반거래 카테고리 조회하기 ")
-    public ResponseEntity<MessageUtils> selectTrans( ) {
+    public ResponseEntity<MessageUtils<List<MyAllTransResponse>>> selectTrans() {
 
         log.info("[selectFavorite  ]: {}");
         return ResponseEntity.ok().body(MessageUtils.success(transService.selectmyallTrans()));
 
     }
-
 
 }

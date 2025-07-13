@@ -1,16 +1,28 @@
 package com.ssafy.fullerting.user.model.entity;
 
-import com.ssafy.fullerting.user.model.dto.response.UserResponse;
-import jakarta.persistence.*;
-import lombok.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import com.ssafy.fullerting.user.model.dto.response.UserResponse;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @ToString
 @NoArgsConstructor
@@ -52,15 +64,12 @@ public class MemberProfile implements UserDetails {
     @Column(name = "user_provider", nullable = true, length = 20)
     private String authProvider;
 
-
     // 메서드 설정
-
 
     @Override
     public String getUsername() {
         return this.email;
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -87,7 +96,6 @@ public class MemberProfile implements UserDetails {
         return true; // 실제 로직에 맞게 수정
     }
 
-
     // DTO 생성자
     public UserResponse toResponse() {
         return UserResponse.builder()
@@ -102,7 +110,6 @@ public class MemberProfile implements UserDetails {
                 .build();
     }
 
-
     public static MemberProfile of(OAuth2User oAuth2User) {
         Map<String, Object> map = oAuth2User.getAttributes();
         return MemberProfile.builder()
@@ -114,6 +121,5 @@ public class MemberProfile implements UserDetails {
                 .authProvider(((String) map.get("authProvider")).toUpperCase())
                 .build();
     }
-
 
 }
