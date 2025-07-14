@@ -3,6 +3,8 @@ package com.ssafy.fullerting.bidLog.model.entity;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,6 +24,9 @@ import lombok.Setter;
 @Setter
 @Builder
 @Document(collection = "bid_logs")
+@CompoundIndexes({
+        @CompoundIndex(name = "unique_bid", def = "{'deal': 1, 'userId': 1, 'bidLogPrice': 1}", unique = true)
+})
 public class BidLog {
     @Id
     private Long id;

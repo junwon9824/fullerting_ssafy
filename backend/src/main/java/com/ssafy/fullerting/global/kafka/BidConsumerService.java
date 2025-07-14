@@ -45,6 +45,7 @@ public class BidConsumerService {
         private final DealRepository dealRepository;
         private final SimpMessagingTemplate messagingTemplate;
 
+
         @KafkaListener(
                 topics = "bid_requests",
                 groupId = "bid-group",
@@ -59,42 +60,29 @@ public class BidConsumerService {
 
                         log.info("입찰 요청 수신 - 게시글 ID: {}, 입찰가: {}, 사용자: {}", exArticleId, dealCurPrice, bidderUserName);
 
-                        // 게시글 조회 (낙관적 락 사용)
                         ExArticle exArticle = exArticleRepository.findWithDealByIdwithLock(exArticleId)
                                 .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-
                         Deal deal = exArticle.getDeal();
                         if (deal == null) {
                                 throw new ExArticleException(ExArticleErrorCode.NOT_EXISTS);
                         }
 
-                        // 현재 가격 확인
                         int currentPrice = deal.getDealCurPrice();
                         if (dealCurPrice <= currentPrice) {
                                 throw new RuntimeException("현재가보다 높은 금액을 입력해주세요. 현재가: " + currentPrice);
                         }
 
-                        // 입찰자 정보 조회
                         MemberProfile bidder = memberRepository.findByNickname(bidderUserName)
                                 .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
-                        // 기존 입찰 내역 조회
                         List<BidLog> existingBids = bidRepository.findByDealId(deal.getId().toString());
-
-                        // 고유 입찰자 수 계산
                         long uniqueBidderCount = existingBids.stream()
                                 .map(BidLog::getUserId)
                                 .distinct()
                                 .count();
-
-                        // 현재 사용자의 기존 입찰 여부 확인
                         boolean isNewBidder = existingBids.stream()
                                 .noneMatch(bid -> bid.getUserId().equals(bidder.getId()));
-
-                        // 새로운 입찰자라면 카운트 증가
-                        if (isNewBidder) {
-                                uniqueBidderCount++;
-                        }
+                        if (isNewBidder) uniqueBidderCount++;
 
                         // 입찰 내역 저장 (오직 여기서만!)
                         BidLog bidLog = BidLog.builder()
@@ -105,10 +93,11 @@ public class BidConsumerService {
                                 .build();
 
                         bidRepository.save(bidLog);
+                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse());
 
                         // 거래 정보 업데이트
                         deal.setDealCurPrice(dealCurPrice);
-                        deal.setBidderCount((int) uniqueBidderCount); // 고유 입찰자 수 저장
+                        deal.setBidderCount((int) uniqueBidderCount);
                         dealRepository.save(deal);
 
                         // WebSocket으로 실시간 업데이트 전송
@@ -152,21 +141,22 @@ public class BidConsumerService {
                         if (deal == null) {
                                 throw new DealException(DealErrorCode.NOT_EXISTS);
                         }
-                        BidProposeRequest bidProposeRequest = BidProposeRequest.builder()
-                                .dealCurPrice(bidNotification.getPrice())
-                                .userId(bidNotification.getUserid())
-                                .build();
 
-                        // DB 저장 X! 알림/캐싱 등만 필요시 호출
-                        bidService.socketdealbid(article, bidProposeRequest);
+                        // BidLog 저장은 하지 않는다! (중복 저장 방지)
+                        // BidProposeRequest bidProposeRequest = BidProposeRequest.builder()
+                        //         .dealCurPrice(bidNotification.getPrice())
+                        //         .userId(bidNotification.getUserid())
+                        //         .build();
+                        // bidService.socketdealbid(article, bidProposeRequest); // 삭제 또는 주석처리
 
+                        // 알림/웹소켓 등 부가 로직만 실행
                         MemberProfile bidUser = userService.getUserEntityById(bidNotification.getUserid());
                         int bidderCount = bidService.getBidderCount(deal);
                         int maxBidPrice = bidService.getMaxBidPrice(article);
 
                         messagingTemplate.convertAndSend("/sub/bidding/" + bidNotification.getArticleid(),
                                 DealstartResponse.builder()
-                                        .bidLogId(null) // 저장된 BidLog ID가 필요하면 별도 전달
+                                        .bidLogId(null)
                                         .exArticleId(bidNotification.getArticleid())
                                         .userResponse(bidUser.toResponse())
                                         .dealCurPrice(bidNotification.getPrice())

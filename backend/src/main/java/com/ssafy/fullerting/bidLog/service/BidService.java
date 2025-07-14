@@ -148,7 +148,7 @@ public class BidService {
 
 
 
-        private void updateRedisCache(ExArticle exArticle, BidLog savedBidLog, UserResponse user) {
+        public void updateRedisCache(ExArticle exArticle, BidLog savedBidLog, UserResponse user) {
                 String redisKey = "auction:" + exArticle.getId() + ":logs";
 
                 // 기존 캐시 무효화
@@ -289,10 +289,4 @@ public class BidService {
                 return result != null ? result.getInteger("maxPrice", 0) : 0;
         }
 
-        /**
-         * MongoDB에 입찰 로그 저장
-         */
-        private void saveBidLogToMongo(BidLog bidLog) {
-                mongoTemplate.save(bidLog, "bidLog");
-        }
 }
