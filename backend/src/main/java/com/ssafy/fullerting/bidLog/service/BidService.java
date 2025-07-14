@@ -168,66 +168,6 @@ public class BidService {
                         exArticle.getId(), savedBidLog.getBidLogPrice());
         }
 
-        /**
-         * WebSocket을 통해 입찰을 처리하고 결과를 반환하는 메서드
-         */
-        @Transactional
-        public BidLog socketdealbid(ExArticle exArticle, BidProposeRequest bidProposeRequest) {
-                if (exArticle.getType() != ExArticleType.DEAL) {
-                        throw new ExArticleException(ExArticleErrorCode.DIFFERENT_TYPE);
-                }
-
-                // Get user ID from request or fallback to security context
-                Long userId = bidProposeRequest.getUserId();
-                if (userId == null) {
-                        UserResponse userResponse = userService.getUserInfo();
-                        userId = userResponse.getId();
-                }
-
-                MemberProfile member = userRepository.findById(userId)
-                        .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-
-                // Check if bid price is valid
-                if (bidProposeRequest.getDealCurPrice() <= 0) {
-                        throw new BidException(BidErrorCode.NOT_DEAL);
-                }
-
-                // 1. MongoDB에 입찰 로그 저장
-                BidLog bidLog = BidLog.builder()
-                        .deal(exArticle.getDeal())
-                        .userId(userId)
-                        .localDateTime(LocalDateTime.now())
-                        .bidLogPrice(bidProposeRequest.getDealCurPrice())
-                        .build();
-
-                BidLog savedBidLog = mongoTemplate.save(bidLog, "bid_logs");
-
-                // 2. Redis List에 입찰 로그 추가 (실시간 캐싱)
-                try {
-                        String redisKey = "auction:" + exArticle.getId() + ":logs";
-                        BidLogResponse bidLogResponse = savedBidLog.toBidLogResponse(member, exArticle.getId(), 0); // bidderCount 필요시 계산
-                        redisTemplate.opsForList().rightPush(redisKey, objectMapper.writeValueAsString(bidLogResponse));
-                        redisTemplate.expire(redisKey, 24, TimeUnit.HOURS);
-                } catch (Exception e) {
-                        log.error("Error adding bid log to Redis List", e);
-                }
-
-                // 3. (선택) 경매 요약 정보도 Redis Hash로 갱신
-                try {
-                        String auctionKey = "auction:" + exArticle.getId();
-                        Map<String, Object> auctionData = new HashMap<>();
-                        auctionData.put("currentPrice", savedBidLog.getBidLogPrice());
-                        auctionData.put("topBidderId", savedBidLog.getUserId());
-                        auctionData.put("bidLogId", savedBidLog.getId());
-                        redisTemplate.opsForHash().putAll(auctionKey, auctionData);
-                        redisTemplate.expire(auctionKey, 24, TimeUnit.HOURS);
-                } catch (Exception e) {
-                        log.error("Error updating auction summary in Redis", e);
-                }
-
-                return savedBidLog;
-        }
-
 
         /**
          * 낙찰자 선정
