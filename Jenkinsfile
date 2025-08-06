@@ -7,9 +7,9 @@ def component = [
 
 ]
 
-// íŒŒì¼ ë³µì‚¬ ì‘ì—…ì„ ìˆ˜í–‰í•˜ëŠ” í•¨ìˆ˜ ì •ì˜
+// ?ŒŒ?¼ ë³µì‚¬ ?‘?—…?„ ?ˆ˜?–‰?•˜?Š” ?•¨?ˆ˜ ? •?˜
 def fileCopy() {
-    // íŒŒì¼ ë³µì‚¬ ì‘ì—… ìˆ˜í–‰
+    // ?ŒŒ?¼ ë³µì‚¬ ?‘?—… ?ˆ˜?–‰
     sh 'cp /var/jenkins_home/workspace/fullerting/submodule/*.yml /var/jenkins_home/workspace/fullerting/backend/src/main/resources'
     sh 'cp /var/jenkins_home/workspace/fullerting/submodule/.env /var/jenkins_home/workspace/fullerting/frontend'
 }
@@ -17,21 +17,21 @@ def fileCopy() {
 pipeline {
     agent any
     environment {
-        // í™˜ê²½ë³€ìˆ˜ ì„¤ì •
+        // ?™˜ê²½ë???ˆ˜ ?„¤? •
         NGINX_TAG = 'latest'
         FRONT_TAG = 'latest'
         BACK_TAG = 'latest'
         REDIS_TAG = 'alpine'
         DOCKER_USER_ID = 'junwon1131'
-        // Docker Hub ë° GitHub í¬ë¦¬ë´ì…œ ID
+        // Docker Hub ë°? GitHub ?¬ë¦¬ë´?…œ ID
         DOCKER_HUB_CREDENTIALS_ID = 'Docker-hub'
         GITHUB_CREDENTIALS_ID = 'Github-access-token'
-        GITLAB_CREDENTIALS_ID = 'GitLab-access-token' // GitLab í¬ë¦¬ë´ì…œ ID ì¶”ê°€
+        GITLAB_CREDENTIALS_ID = 'GitLab-access-token' // GitLab ?¬ë¦¬ë´?…œ ID ì¶”ê??
         REPO = 's10-ai-image-sub2/S10P12C102'
         GIT_REPO = 'https://github.com/junwon9824/fullertingsecretfolder.git'
 
 
-        // Gradle í™˜ê²½ ë³€ìˆ˜ ì„¤ì •
+        // Gradle ?™˜ê²? ë³??ˆ˜ ?„¤? •
         ORG_GRADLE_JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
     }
 
@@ -41,10 +41,10 @@ pipeline {
 //                 dir("${env.WORKSPACE}/back") {
 //                     script {
 //                         sh 'ls . -al'
-//                         // í…ŒìŠ¤íŠ¸ìš© ì‰˜ ì½”ë“œ ì¶”ê°€
+//                         // ?…Œ?Š¤?Š¸?š© ?‰˜ ì½”ë“œ ì¶”ê??
 //                         sh 'echo "This is a test shell script"'
 //
-//   // ì‹œí¬ë¦¿ íŒŒì¼ ì‚¬ìš©
+//   // ?‹œ?¬ë¦? ?ŒŒ?¼ ?‚¬?š©
 //
 //
 //
@@ -63,7 +63,7 @@ pipeline {
                     dir('submodule')
                     {
 
-                        // GitHub access tokenì„ ì‚¬ìš©í•˜ì—¬ submoduleì„ ê°€ì ¸ì˜´
+                        // GitHub access token?„ ?‚¬?š©?•˜?—¬ submodule?„ ê°?? ¸?˜´
                         checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: true, recursiveSubmodules: true, reference: '', trackingSubmodules: false]], userRemoteConfigs: [[credentialsId: 'Github-access-token', url: GIT_REPO]]])
 //                         sh 'git pull origin main'
                         sh 'echo "This is a test submodule script"'
@@ -83,13 +83,13 @@ pipeline {
         stage('Copy Files') {
                     steps {
                         script {
-                            // íŒŒì¼ ë³µì‚¬ ë””ë²„ê¹… ë©”ì‹œì§€
+                            // ?ŒŒ?¼ ë³µì‚¬ ?””ë²„ê¹… ë©”ì‹œì§?
                             echo "Copying YAML files from submodule to src/main/resources..."
 
-                            // íŒŒì¼ ë³µì‚¬ ì‘ì—… ìˆ˜í–‰
+                            // ?ŒŒ?¼ ë³µì‚¬ ?‘?—… ?ˆ˜?–‰
                             fileCopy()
 
-                            // íŒŒì¼ ë³µì‚¬ ì™„ë£Œ ë””ë²„ê¹… ë©”ì‹œì§€
+                            // ?ŒŒ?¼ ë³µì‚¬ ?™„ë£? ?””ë²„ê¹… ë©”ì‹œì§?
                             echo "Copying completed."
                         }
                     }
@@ -98,12 +98,12 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // í˜„ì¬ ë””ë ‰í† ë¦¬ ìœ„ì¹˜ì™€ íŒŒì¼ ëª©ë¡ ì¶œë ¥ì„ backend ë””ë ‰í† ë¦¬ ë‚´ì—ì„œ ì‹¤í–‰
+                    // ?˜„?¬ ?””? ‰?† ë¦? ?œ„ì¹˜ì?? ?ŒŒ?¼ ëª©ë¡ ì¶œë ¥?„ backend ?””? ‰?† ë¦? ?‚´?—?„œ ?‹¤?–‰
                     dir('backend') {
-                        sh 'pwd'  // í˜„ì¬ ë””ë ‰í† ë¦¬ ìœ„ì¹˜ ì¶œë ¥
-                        sh 'ls -al'  // ë””ë ‰í† ë¦¬ ë‚´ì˜ íŒŒì¼ ëª©ë¡ ì¶œë ¥
+                        sh 'pwd'  // ?˜„?¬ ?””? ‰?† ë¦? ?œ„ì¹? ì¶œë ¥
+                        sh 'ls -al'  // ?””? ‰?† ë¦? ?‚´?˜ ?ŒŒ?¼ ëª©ë¡ ì¶œë ¥
 
-                        // docker-composeê°€ ì„¤ì¹˜ë˜ì–´ ìˆëŠ”ì§€ í™•ì¸í•˜ê³ , ì—†ìœ¼ë©´ ì„¤ì¹˜
+                        // docker-composeê°? ?„¤ì¹˜ë˜?–´ ?ˆ?Š”ì§? ?™•?¸?•˜ê³?, ?—†?œ¼ë©? ?„¤ì¹?
                         sh '''
                         if ! command -v docker-compose &> /dev/null
                         then
@@ -115,7 +115,7 @@ pipeline {
                         fi
                         '''
 
-                        // Docker Composeë¥¼ ì‚¬ìš©í•˜ì—¬ ì„œë¹„ìŠ¤ ë¹Œë“œ
+                        // Docker Composeë¥? ?‚¬?š©?•˜?—¬ ?„œë¹„ìŠ¤ ë¹Œë“œ
                         sh 'docker-compose -f docker-compose.yml build'
                     }
                 }
@@ -124,7 +124,7 @@ pipeline {
 
         stage('Docker Login') {
             steps {
-                // Docker Hub í¬ë¦¬ë´ì…œì„ ì‚¬ìš©í•˜ì—¬ Dockerì— ë¡œê·¸ì¸
+                // Docker Hub ?¬ë¦¬ë´?…œ?„ ?‚¬?š©?•˜?—¬ Docker?— ë¡œê·¸?¸
                 withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'echo $DOCKER_PASSWORD | docker login --username $DOCKER_USER --password-stdin'
                 }
@@ -188,7 +188,7 @@ pipeline {
                             try {
                                 sh "docker-compose -f backend/docker-compose.yml -p develop-server up -d ${var.toLowerCase()}"
                             } catch (Exception e) {
-                                // 'docker compose up -d' ëª…ë ¹ì´ ì‹¤íŒ¨í•œ ê²½ìš°
+                                // 'docker compose up -d' ëª…ë ¹?´ ?‹¤?Œ¨?•œ ê²½ìš°
                                 echo "Failed to up. Starting 'docker compose start'..."
                                 sh "docker-compose -f backend/docker-compose.yml -p develop-server restart ${var.toLowerCase()}"
                             }
