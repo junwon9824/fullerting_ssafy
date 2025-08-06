@@ -1,5 +1,15 @@
 package com.ssafy.fullerting.exArticle.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.ssafy.fullerting.deal.exception.DealErrorCode;
 import com.ssafy.fullerting.deal.exception.DealException;
 import com.ssafy.fullerting.deal.model.entity.Deal;
@@ -21,7 +31,6 @@ import com.ssafy.fullerting.favorite.exception.FavoriteErrorCode;
 import com.ssafy.fullerting.favorite.exception.FavoriteException;
 import com.ssafy.fullerting.favorite.model.entity.Favorite;
 import com.ssafy.fullerting.favorite.repository.favoriteRepository;
-
 import com.ssafy.fullerting.global.s3.model.entity.response.S3ManyFilesResponse;
 import com.ssafy.fullerting.global.s3.servcie.AmazonS3Service;
 import com.ssafy.fullerting.image.exception.ImageErrorCode;
@@ -42,18 +51,10 @@ import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.repository.MemberRepository;
 import com.ssafy.fullerting.user.service.UserService;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -71,52 +72,50 @@ public class ExArticleService {
     private final AmazonS3Service amazonS3Service;
     private final ImageRepository imageRepository;
 
-
     public void registeriamges(List<MultipartFile> files, Long ex_article_id) {
 
-        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        ExArticle article = exArticleRepository.findById(ex_article_id)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
-
-        S3ManyFilesResponse response =
-                amazonS3Service.uploadFiles(files);
+        S3ManyFilesResponse response = amazonS3Service.uploadFiles(files);
 
         List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
             Image image = new Image();
             image.setImgStoreUrl(stringStringEntry.getValue());
-            image.setExArticle(exArticleRepository.findById(article.getId()).
-                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
+            image.setExArticle(exArticleRepository.findById(article.getId())
+                    .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
             imageRepository.save(image);
             return image;
         }).collect(Collectors.toList());
 
-//        article.setImage(file);
+        // article.setImage(file);
     }
 
-
-//    public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1, List<MultipartFile> files) {
-        public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
+    // public Long register(ExArticleRegisterRequest exArticleRegisterRequest,
+    // String email1, List<MultipartFile> files) {
+    public Long register(ExArticleRegisterRequest exArticleRegisterRequest, String email1) {
 
         if (exArticleRegisterRequest.getExArticleType().equals(null)) {
             throw new ExArticleException(ExArticleErrorCode.NOT_EXISTS);
         }
 
-        MemberProfile customUser = userRepository.findByEmail(email1).orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
-//        log.info("ussssss"+customUser.getEmail());
+        MemberProfile customUser = userRepository.findByEmail(email1)
+                .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+        // log.info("ussssss"+customUser.getEmail());
         log.info("ussssss" + email1);
 
-//        List<MultipartFile> files = exArticleRegisterImageRequest.getMultipartFiles();
+        // List<MultipartFile> files =
+        // exArticleRegisterImageRequest.getMultipartFiles();
 
-//        S3ManyFilesResponse response =
-//                amazonS3Service.uploadFiles(files);
+        // S3ManyFilesResponse response =
+        // amazonS3Service.uploadFiles(files);
 
         Optional<PackDiary> packDiary = null;
 
         if (exArticleRegisterRequest.getPackdiaryid() != null)
             packDiary = packDiaryRepository.findById(exArticleRegisterRequest.getPackdiaryid());
 
-
         LocalDateTime createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul")); // 현재 시각 설정
-
 
         ExArticle exArticle = ExArticle.builder()
                 .id(exArticleRegisterRequest.getId())
@@ -132,23 +131,24 @@ public class ExArticleService {
                 .build();
 
         log.info("exxxxx" + exArticle.toString());
-//        exArticleRepository.saveAndFlush(exArticle);
+        // exArticleRepository.saveAndFlush(exArticle);
         ExArticle exArticle1 = exArticleRepository.save(exArticle);
 
         ExArticle article2 = null;
 
-//        List<Image> images = response.getUrls().entrySet().stream().map(stringStringEntry -> {
-//            Image image = new Image();
-//            image.setImgStoreUrl(stringStringEntry.getValue());
-//            image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
-//                    orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
-//            imageRepository.save(image);
-//            return image;
-//        }).collect(Collectors.toList());
+        // List<Image> images =
+        // response.getUrls().entrySet().stream().map(stringStringEntry -> {
+        // Image image = new Image();
+        // image.setImgStoreUrl(stringStringEntry.getValue());
+        // image.setExArticle(exArticleRepository.findById(exArticle1.getId()).
+        // orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS)));
+        // imageRepository.save(image);
+        // return image;
+        // }).collect(Collectors.toList());
 
-//        log.info("urllllll" + images.get(0).getImgStoreUrl());
-//
-//        exArticle1.setImage(images);
+        // log.info("urllllll" + images.get(0).getImgStoreUrl());
+        //
+        // exArticle1.setImage(images);
         ExArticle article = exArticleRepository.save(exArticle1);
 
         if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.DEAL)) {
@@ -159,7 +159,6 @@ public class ExArticleService {
 
             deal.setexarticle(article);
 
-
             Deal deal1 = dealRepository.save(deal);
 
             article.setdeal(deal1);
@@ -169,7 +168,7 @@ public class ExArticleService {
 
             System.out.println("exarttttt22222      " + article2.getDeal());
         } else {
-            //sharing,generaltransaction
+            // sharing,generaltransaction
             int price = 0;
 
             if (exArticleRegisterRequest.getExArticleType().equals(ExArticleType.GENERAL_TRANSACTION)) {
@@ -198,10 +197,12 @@ public class ExArticleService {
     public List<ExArticleAllResponse> allArticle() {
 
         MemberProfile user = UserResponse.toEntity(userService.getUserInfo());
-//        log.info("eeeeeeeeeeeee" + exArticle.stream().
-//                map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter( exArticleResponse -> exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
+        // log.info("eeeeeeeeeeeee" + exArticle.stream().
+        // map(exArticle1 -> exArticle1.toResponse(exArticle1, user)).filter(
+        // exArticleResponse ->
+        // exArticleResponse.getExArticleId()==28).collect(Collectors.toList()));
 
-//        log.info(user.getLocation());
+        // log.info(user.getLocation());
         StringBuilder sb = new StringBuilder();
         String[] str = user.getLocation().split(" ");
         sb.append(str[0] + " ");
@@ -209,23 +210,19 @@ public class ExArticleService {
 
         List<ExArticle> exArticle = exArticleRepository.findAllByOrderByCreated_atDescandlocation(sb.toString());
 
-//        for (ExArticle article : exArticle)
-//            log.info(article.getLocation());
+        // for (ExArticle article : exArticle)
+        // log.info(article.getLocation());
 
-        List<ExArticleAllResponse> exArticleResponses =
-                exArticle.stream().map(exArticle1 -> exArticle1.toAllResponse(exArticle1, user)).
-                        collect(Collectors.toList());
-
+        List<ExArticleAllResponse> exArticleResponses = exArticle.stream()
+                .map(exArticle1 -> ExArticle.toAllResponse(exArticle1, user)).collect(Collectors.toList());
 
         return exArticleResponses;
     }
 
-
     public void like(Long ex_article_id) {
-        //좋아요 로직
-        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() ->
-                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-
+        // 좋아요 로직
+        ExArticle article = exArticleRepository.findById(ex_article_id)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
         UserResponse userResponse = userService.getUserInfo();
         Long userid = userResponse.getId();
@@ -239,24 +236,25 @@ public class ExArticleService {
 
         Favorite favorite = new Favorite();
         favorite.setExArticle(article);
-        favorite.setUser(userResponse.toEntity(userResponse));
-
+        favorite.setUser(UserResponse.toEntity(userResponse));
 
         article.addfavorite(favorite);
 
         favoriteRepository.save(favorite);
     }
 
-    public List<ExArticleKeywordResponse> keyword(String keyword) { //keyword 검색.
-        List<ExArticle> exArticles = exArticleRepository.findAllByTitleContaining(keyword).orElseThrow(() ->
-                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+    public List<ExArticleKeywordResponse> keyword(String keyword) { // keyword 검색.
+        List<ExArticle> exArticles = exArticleRepository.findAllByTitleContaining(keyword)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
         MemberProfile user = UserResponse.toEntity(userService.getUserInfo());
-        return exArticles.stream().map(exArticle -> exArticle.tokeyResponse(exArticle, user)).collect(Collectors.toList());
+        return exArticles.stream().map(exArticle -> ExArticle.tokeyResponse(exArticle, user))
+                .collect(Collectors.toList());
 
     }
 
     public ExArticleDetailResponse detail(Long ex_article_id) {
-        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        ExArticle article = exArticleRepository.findById(ex_article_id)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
         UserResponse userResponse = userService.getUserInfo();
         MemberProfile user = userResponse.toEntity(userResponse);
 
@@ -266,16 +264,17 @@ public class ExArticleService {
 
     public ExArticle getbyid(long id) {
 
-        ExArticle article = exArticleRepository.findById(id).orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        ExArticle article = exArticleRepository.findById(id)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
         return article;
     }
 
     public void done(Long exArticleId, ExArticleDoneRequest exArticleDoneRequest) {
-        //구매자 누군지 설정, 거래완료 true
+        // 구매자 누군지 설정, 거래완료 true
 
         MemberProfile customUser = UserResponse.toEntity(userService.getUserInfo());
-        ExArticle exArticle = exArticleRepository.findById(exArticleId).orElseThrow(() ->
-                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        ExArticle exArticle = exArticleRepository.findById(exArticleId)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
         if (exArticle.getUser().getId() != customUser.getId()) {
             throw new ExArticleException(ExArticleErrorCode.NOT_MINE);
@@ -290,34 +289,37 @@ public class ExArticleService {
     }
 
     public void deletelike(Long ex_article_id) {
-        //좋아요 삭제
-        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() ->
-                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        // 좋아요 삭제
+        ExArticle article = exArticleRepository.findById(ex_article_id)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
         UserResponse userResponse = userService.getUserInfo();
         Long userid = userResponse.getId();
 
         Long articleid = article.getId();
 
-        Favorite favorite1 = favoriteRepository.findByUserIdAndExArticleId(userid, articleid).
-                orElseThrow(() -> new FavoriteException(FavoriteErrorCode.NOT_EXISTS));
+        Favorite favorite1 = favoriteRepository.findByUserIdAndExArticleId(userid, articleid)
+                .orElseThrow(() -> new FavoriteException(FavoriteErrorCode.NOT_EXISTS));
 
-//
-//        Favorite favorite = new Favorite();
-//        favorite.setExArticle(article);
-//        favorite.setUser(userResponse.toEntity(userResponse));
+        //
+        // Favorite favorite = new Favorite();
+        // favorite.setExArticle(article);
+        // favorite.setUser(userResponse.toEntity(userResponse));
 
         article.deletefavorite(favorite1);
 
         favoriteRepository.delete(favorite1);
     }
 
-    public List<ExArticleResponse> selectFavorite() {  //나의 관심 article 추출.
+    public List<ExArticleResponse> selectFavorite() { // 나의 관심 article 추출.
         UserResponse userResponse = userService.getUserInfo();
         MemberProfile user = UserResponse.toEntity(userResponse);
 
-        List<ExArticle> exArticles = exArticleRepository.findAllByUserIdAndFavoriteIsNotEmpty(user.getId()); //내 article 중
-        List<ExArticleResponse> exArticleResponses = exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
+        List<ExArticle> exArticles = exArticleRepository.findAllByUserIdAndFavoriteIsNotEmpty(user.getId()); // 내
+                                                                                                             // article
+                                                                                                             // 중
+        List<ExArticleResponse> exArticleResponses = exArticles.stream()
+                .map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
         return exArticleResponses;
     }
 
@@ -325,14 +327,15 @@ public class ExArticleService {
         UserResponse userResponse = userService.getUserInfo();
         MemberProfile user = UserResponse.toEntity(userResponse);
 
-        List<ExArticle> exArticles = exArticleRepository.findAllByUserIDAndDone(user.getId()); //내 article 중
-        List<ExArticleResponse> exArticleResponses = exArticles.stream().map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
+        List<ExArticle> exArticles = exArticleRepository.findAllByUserIDAndDone(user.getId()); // 내 article 중
+        List<ExArticleResponse> exArticleResponses = exArticles.stream()
+                .map(exArticle -> exArticle.toResponse(exArticle, user)).collect(Collectors.toList());
         return exArticleResponses;
     }
 
     public void deletearticle(Long ex_article_id) {
-        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(()
-                -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        ExArticle article = exArticleRepository.findById(ex_article_id)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
         List<Image> image = imageRepository.findAllByExArticleId(ex_article_id);
 
@@ -345,15 +348,16 @@ public class ExArticleService {
 
         for (Image image1 : image) {
             imageRepository.delete(image1);
-            amazonS3Service.deleteFile(image1.getImgStoreUrl()); //s3
+            amazonS3Service.deleteFile(image1.getImgStoreUrl()); // s3
         }
 
         if (article.getType().equals(ExArticleType.DEAL)) {
-            Deal deal = dealRepository.findById(article.getDeal().getId()).orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
+            Deal deal = dealRepository.findById(article.getDeal().getId())
+                    .orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
             dealRepository.delete(deal);
         } else {
-            Trans trans = transRepository.findById(article.getTrans().getId()).orElseThrow(()
-                    -> new TransException(TransErrorCode.NOT_EXISTS));
+            Trans trans = transRepository.findById(article.getTrans().getId())
+                    .orElseThrow(() -> new TransException(TransErrorCode.NOT_EXISTS));
             transRepository.delete(trans);
         }
 
@@ -363,9 +367,8 @@ public class ExArticleService {
 
     public void convert_like(Long ex_article_id) {
 
-        ExArticle article = exArticleRepository.findById(ex_article_id).orElseThrow(() ->
-                new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-
+        ExArticle article = exArticleRepository.findById(ex_article_id)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
         UserResponse userResponse = userService.getUserInfo();
         Long userid = userResponse.getId();
@@ -373,7 +376,7 @@ public class ExArticleService {
 
         Optional<Favorite> favorite1 = favoriteRepository.findByUserIdAndExArticleId(userid, articleid);
 
-        if (favorite1.isPresent()) { //내가 이미 좋아요를 한경우 삭제를 해야한다.
+        if (favorite1.isPresent()) { // 내가 이미 좋아요를 한경우 삭제를 해야한다.
 
             article.deletefavorite(favorite1.orElse(null));
 
@@ -384,99 +387,92 @@ public class ExArticleService {
 
         Favorite favorite = new Favorite();
         favorite.setExArticle(article);
-        favorite.setUser(userResponse.toEntity(userResponse));
-
+        favorite.setUser(UserResponse.toEntity(userResponse));
 
         article.addfavorite(favorite);
-//        exArticleRepository.save(article);
+        // exArticleRepository.save(article);
 
         favoriteRepository.save(favorite);
 
     }
 
-    //@Transactional
+    // @Transactional
     public ExArticle modifyarticle(Long exArticleId,
-                                   UpdateArticleRequest updateArticleRequest, MemberProfile customUser, List<MultipartFile> files) {
-//                                   UpdateArticleRequest updateArticleRequest, MemberProfile customUser) {
+            UpdateArticleRequest updateArticleRequest, MemberProfile customUser, List<MultipartFile> files) {
+        // UpdateArticleRequest updateArticleRequest, MemberProfile customUser) {
 
-        ExArticle article = exArticleRepository.findById(exArticleId).orElseThrow(() -> new ExArticleException
-                (ExArticleErrorCode.NOT_EXISTS));
+        ExArticle article = exArticleRepository.findById(exArticleId)
+                .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
         if (customUser.getId() != article.getUser().getId()) {
             throw new ExArticleException(ExArticleErrorCode.NOT_MINE);
         }
 
-        //이미지 삭제
-        List<Image> imageList = imageRepository.findAllByExArticleId(exArticleId); //현재 게시물의 모든 이미지들.
+        // 이미지 삭제
+        List<Image> imageList = imageRepository.findAllByExArticleId(exArticleId); // 현재 게시물의 모든 이미지들.
 
         List<Image> unmodifiedimageList = new ArrayList<>();
         List<Image> delete_imageList = new ArrayList<>();
 
-
-//        updateArticleRequest.getImages().forEach(
+        // updateArticleRequest.getImages().forEach(
         updateArticleRequest.getImages().forEach(
                 aLong -> {
-                    Image image = imageRepository.findById(aLong).orElseThrow(() -> new ImageException(ImageErrorCode.NOT_EXISTS));
+                    Image image = imageRepository.findById(aLong)
+                            .orElseThrow(() -> new ImageException(ImageErrorCode.NOT_EXISTS));
                     unmodifiedimageList.add(image);
-                }
-        );
-//        log.info("unmodifiedimageList"+ unmodifiedimageList.get(0).getId() );
+                });
+        // log.info("unmodifiedimageList"+ unmodifiedimageList.get(0).getId() );
 
         imageList.stream().forEach(image -> {
-                    if (!unmodifiedimageList.contains(image)) {
-                        amazonS3Service.deleteFile(image.getImgStoreUrl());
-                        delete_imageList.add(image);
-                        article.removeimage(image);
-                        log.info("deleeeeee" + image.getId());
+            if (!unmodifiedimageList.contains(image)) {
+                amazonS3Service.deleteFile(image.getImgStoreUrl());
+                delete_imageList.add(image);
+                article.removeimage(image);
+                log.info("deleeeeee" + image.getId());
 
-                    }
+            }
 
-                }
-        );
+        });
 
         imageRepository.deleteAll(delete_imageList);
 
         List<Image> images1 = new ArrayList<>();
         List<Image> newimages = new ArrayList<>();
 
+        // updateArticleRequest.getImages().forEach(file -> {
+        // newimages.add(Image.builder()
+        // .imgStoreUrl()
+        // .build());
+        // });
 
-//        updateArticleRequest.getImages().forEach(file -> {
-//            newimages.add(Image.builder()
-//                    .imgStoreUrl()
-//                    .build());
-//        });
-
-//        if (!updateArticleRequest.getNewImages().get(0).isEmpty()) {
+        // if (!updateArticleRequest.getNewImages().get(0).isEmpty()) {
         if (!files.get(0).isEmpty()) {
 
-            //이미지 업로드
-//                S3ManyFilesResponse response = amazonS3Service.uploadFiles(updateArticleRequest.getNewImages());
+            // 이미지 업로드
+            // S3ManyFilesResponse response =
+            // amazonS3Service.uploadFiles(updateArticleRequest.getNewImages());
             S3ManyFilesResponse response = amazonS3Service.uploadFiles(files);
-            //이미지 DB 저장
-            response.getUrls().
-                    entrySet().
-                    stream().
-                    map(stringStringEntry ->
-                    {
-                        Image image = imageRepository.save(Image.builder()
-                                .imgStoreUrl(stringStringEntry.getValue())
-                                .exArticle(article)
-                                .build());
-                        images1.add(image);
-                        article.addimage(image);
-                        return image;
-                    }).
+            // 이미지 DB 저장
+            response.getUrls().entrySet().stream().map(stringStringEntry -> {
+                Image image = imageRepository.save(Image.builder()
+                        .imgStoreUrl(stringStringEntry.getValue())
+                        .exArticle(article)
+                        .build());
+                images1.add(image);
+                article.addimage(image);
+                return image;
+            }).
 
                     collect(Collectors.toList());
         }
 
-//
-//        article.setImage(images.stream().map(multipartFile -> {
-//            return Image.builder()
-//                    .exArticle(article)
-//                    .imgStoreUrl()
-//                    .build();
-//        }).collect(Collectors.toList()));
+        //
+        // article.setImage(images.stream().map(multipartFile -> {
+        // return Image.builder()
+        // .exArticle(article)
+        // .imgStoreUrl()
+        // .build();
+        // }).collect(Collectors.toList()));
 
         if (updateArticleRequest.getExArticleContent() != null) {
             article.setContent(updateArticleRequest.getExArticleContent());
@@ -491,8 +487,8 @@ public class ExArticleService {
         }
         if (updateArticleRequest.getPackdiaryid() != null) {
 
-            article.setPackDiary(packDiaryRepository.findById(updateArticleRequest.getPackdiaryid()).orElseThrow(() ->
-                    new PackDiaryException(PackDiaryErrorCode.NOT_EXISTS_PACK_DIARY)));
+            article.setPackDiary(packDiaryRepository.findById(updateArticleRequest.getPackdiaryid())
+                    .orElseThrow(() -> new PackDiaryException(PackDiaryErrorCode.NOT_EXISTS_PACK_DIARY)));
         }
 
         if (article.getDeal() != null) {
@@ -506,8 +502,8 @@ public class ExArticleService {
             });
 
             if (updateArticleRequest.getExArticleType().equals(ExArticleType.SHARING)) {
-                Deal deal1 = dealRepository.findById(article.getDeal().getId()).
-                        orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
+                Deal deal1 = dealRepository.findById(article.getDeal().getId())
+                        .orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
 
                 dealRepository.delete(deal1);
                 article.setdeal(null);
@@ -523,8 +519,8 @@ public class ExArticleService {
             }
 
             if (updateArticleRequest.getExArticleType().equals(ExArticleType.GENERAL_TRANSACTION)) {
-                Deal deal1 = dealRepository.findById(article.getDeal().getId()).
-                        orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
+                Deal deal1 = dealRepository.findById(article.getDeal().getId())
+                        .orElseThrow(() -> new DealException(DealErrorCode.NOT_EXISTS));
 
                 dealRepository.delete(deal1);
                 article.setdeal(null);
@@ -539,20 +535,21 @@ public class ExArticleService {
 
             }
 
-//            Trans trans1 = transRepository.findById(article.getTrans().getId()).orElseThrow(() ->
-//                    new TransException(TransErrorCode.NOT_EXISTS));
-//
-//            transRepository.delete(trans1);
-//
-//            article.setTrans(null);
-//
-//            Deal deal = Deal.builder()
-//                    .exArticle(article)
-//                    .dealCurPrice(updateArticleRequest.getPrice())
-//                    .build();
-//            dealRepository.save(deal);
-//
-//            article.setdeal(deal);
+            // Trans trans1 =
+            // transRepository.findById(article.getTrans().getId()).orElseThrow(() ->
+            // new TransException(TransErrorCode.NOT_EXISTS));
+            //
+            // transRepository.delete(trans1);
+            //
+            // article.setTrans(null);
+            //
+            // Deal deal = Deal.builder()
+            // .exArticle(article)
+            // .dealCurPrice(updateArticleRequest.getPrice())
+            // .build();
+            // dealRepository.save(deal);
+            //
+            // article.setdeal(deal);
         }
 
         if (article.getTrans() != null) {
@@ -564,8 +561,8 @@ public class ExArticleService {
 
             if (updateArticleRequest.getExArticleType().equals(ExArticleType.DEAL)) {
 
-                Trans trans1 = transRepository.findById(article.getTrans().getId()).orElseThrow(() ->
-                        new TransException(TransErrorCode.NOT_EXISTS));
+                Trans trans1 = transRepository.findById(article.getTrans().getId())
+                        .orElseThrow(() -> new TransException(TransErrorCode.NOT_EXISTS));
 
                 transRepository.delete(trans1);
 
@@ -581,18 +578,16 @@ public class ExArticleService {
             }
         }
 
-
         article.setType(updateArticleRequest.getExArticleType());
 
         log.info("updateinfo" + updateArticleRequest.getExArticleType());
         log.info("modified" + article.getType());
         ExArticle modifiedexArticle = exArticleRepository.save(article);
 
-//        log.info("modifff" + modifiedexArticle.getImage().get(0).getId());
+        // log.info("modifff" + modifiedexArticle.getImage().get(0).getId());
 
         return modifiedexArticle;
 
     }
-
 
 }

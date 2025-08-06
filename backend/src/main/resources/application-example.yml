@@ -1,0 +1,111 @@
+# ====================================
+# Fullerting Application Configuration
+# ====================================
+# 이 파일은 설정 예시입니다. 복사하여 사용하세요.
+# 실제 사용 시 파일명을 application.yml 또는 application-{profile}.yml로 변경하세요.
+
+spring:
+  # 데이터베이스 설정
+  datasource:
+    url: jdbc:mysql://localhost:3307/fullerting?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: your_mysql_password  # 실제 비밀번호로 변경 필요
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 30000
+  
+  # MongoDB 설정
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: fullerting
+      # 인증이 필요한 경우 아래 주석 해제
+      # authentication-database: admin
+      # username: your_mongodb_username
+      # password: your_mongodb_password
+
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        use-new-id-generator-mappings: false
+
+  # Redis 설정 (캐시 및 세션 저장소로 사용 시)
+  redis:
+    host: localhost
+    port: 6379
+    # password: your_redis_password  # 비밀번호가 설정된 경우 주석 해제
+    timeout: 5000
+
+# 로깅 설정
+logging:
+  level:
+    root: info
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    com.ssafy.fullerting: debug
+
+# JWT 설정 (예시)
+jwt:
+  secret: your_jwt_secret_key_here  # 안전한 랜덤 키로 변경 필요
+  access-token-validity: 86400000   # 1일 (밀리초 단위)
+  refresh-token-validity: 2592000000 # 30일 (밀리초 단위)
+
+# AWS S3 설정 (사용 시)
+#cloud:
+#  aws:
+#    s3:
+#      bucket: your-bucket-name
+#      region: ap-northeast-2
+#    credentials:
+#      access-key: your-access-key
+#      secret-key: your-secret-key
+#    stack:
+#      auto: false
+
+# 이메일 설정 (사용 시)
+#spring:
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: your-email@gmail.com
+#    password: your-email-password
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls.enable: true
+#          ssl.trust: smtp.gmail.com
+
+# 프로파일별 설정 활성화 (예: --spring.profiles.active=local)
+---
+# 로컬 개발 환경 설정
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://localhost:3307/fullerting_local?useSSL=false&serverTimezone=Asia/Seoul
+    username: root
+    password: local_password
+
+---
+# 테스트 환경 설정
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:mysql://test-db:3306/fullerting_test?useSSL=false&serverTimezone=Asia/Seoul
+    username: test_user
+    password: test_password
+
+# 프로덕션 환경 설정은 보안상 예제에 포함하지 않음
+# 별도의 보안 조치 후 관리 필요

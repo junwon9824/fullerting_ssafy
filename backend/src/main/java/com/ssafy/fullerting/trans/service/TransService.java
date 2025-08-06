@@ -1,5 +1,11 @@
 package com.ssafy.fullerting.trans.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
 import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.dto.response.ExArticleAllResponse;
@@ -15,120 +21,120 @@ import com.ssafy.fullerting.trans.repository.TransRepository;
 import com.ssafy.fullerting.user.model.dto.response.UserResponse;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.service.UserService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class TransService {
-    private final TransRepository transRepository;
-    private final ExArticleRepository exArticleRepository;
-    private final UserService userService;
+        private final TransRepository transRepository;
+        private final ExArticleRepository exArticleRepository;
+        private final UserService userService;
 
-    public List<ExArticleAllResponse> selectAllshare() {
+        public List<ExArticleAllResponse> selectAllshare() {
 
-        UserResponse userResponse = userService.getUserInfo();
-        MemberProfile customUser = userResponse.toEntity(userResponse);
+                UserResponse userResponse = userService.getUserInfo();
+                MemberProfile customUser = UserResponse.toEntity(userResponse);
 
-//        List<TransResponse> transResponse = new ArrayList<>();
-        List<ExArticleAllResponse> transResponse = new ArrayList<>();
+                // List<TransResponse> transResponse = new ArrayList<>();
+                List<ExArticleAllResponse> transResponse = new ArrayList<>();
 
-        List<ExArticleResponse> exArticleResponses = exArticleRepository
-                .findAllByType(ExArticleType.SHARING)
-                .stream()
-                .map(exArticles -> exArticles.toResponse(exArticles, customUser))
-                .filter(exArticleResponse -> exArticleResponse.getExArticleType().equals(ExArticleType.SHARING))
-                .collect(Collectors.toList());
+                List<ExArticleResponse> exArticleResponses = exArticleRepository
+                                .findAllByType(ExArticleType.SHARING)
+                                .stream()
+                                .map(exArticles -> exArticles.toResponse(exArticles, customUser))
+                                .filter(exArticleResponse -> exArticleResponse.getExArticleType()
+                                                .equals(ExArticleType.SHARING))
+                                .collect(Collectors.toList());
 
-        log.info("exArticleResponsesexArticleResponses" + exArticleResponses.toString());
-// sharing 만 가져와야한다.
+                log.info("exArticleResponsesexArticleResponses" + exArticleResponses.toString());
+                // sharing 만 가져와야한다.
 
-        transResponse = exArticleResponses.stream().map(exArticleResponse -> {
-                    ExArticleAllResponse transResponse1 = new ExArticleAllResponse();
-//                    transResponse1.setExArticleResponse(exArticleResponse);
+                transResponse = exArticleResponses.stream().map(exArticleResponse -> {
+                        ExArticleAllResponse transResponse1 = new ExArticleAllResponse();
+                        // transResponse1.setExArticleResponse(exArticleResponse);
 
-                    Trans trans = transRepository.findByExArticleId(exArticleResponse.getExArticleId())
-                            .orElseThrow(() -> new TransException(TransErrorCode.NOT_EXISTS));
+                        Trans trans = transRepository.findByExArticleId(exArticleResponse.getExArticleId())
+                                        .orElseThrow(() -> new TransException(TransErrorCode.NOT_EXISTS));
 
-                    transResponse1.setTransResponse(trans.toResponse(trans));
-                    transResponse1.setExArticleResponse(
-                            trans.getExArticle().toResponse(trans.getExArticle(), customUser));
-                    transResponse1.setPackDiaryResponse(trans.getExArticle().getPackDiary() == null ? null : trans.getExArticle().getPackDiary().toResponse(trans.getExArticle().getPackDiary()));
-                    return transResponse1;
+                        transResponse1.setTransResponse(trans.toResponse(trans));
+                        transResponse1.setExArticleResponse(
+                                        trans.getExArticle().toResponse(trans.getExArticle(), customUser));
+                        transResponse1.setPackDiaryResponse(trans.getExArticle().getPackDiary() == null ? null
+                                        : trans.getExArticle().getPackDiary()
+                                                        .toResponse(trans.getExArticle().getPackDiary()));
+                        return transResponse1;
                 })
-                .collect(Collectors.toList());
+                                .collect(Collectors.toList());
 
-        log.info("trrr" + transResponse);
-        return transResponse;
-    }
+                log.info("trrr" + transResponse);
+                return transResponse;
+        }
 
+        public List<ExArticleAllResponse> selectAlltrans() {
 
-    public List<ExArticleAllResponse> selectAlltrans() {
+                UserResponse userResponse = userService.getUserInfo();
+                MemberProfile customUser = UserResponse.toEntity(userResponse);
 
-        UserResponse userResponse = userService.getUserInfo();
-        MemberProfile customUser = userResponse.toEntity(userResponse);
+                // List<TransResponse> transResponse = new ArrayList<>();
+                List<ExArticleAllResponse> transResponse = new ArrayList<>();
 
-//        List<TransResponse> transResponse = new ArrayList<>();
-        List<ExArticleAllResponse> transResponse = new ArrayList<>();
+                List<ExArticleResponse> exArticleResponses = exArticleRepository
+                                .findAllByType(ExArticleType.GENERAL_TRANSACTION)
+                                .stream()
+                                .map(exArticles -> exArticles.toResponse(exArticles, customUser))
+                                .filter(exArticleResponse -> exArticleResponse.getExArticleType()
+                                                .equals(ExArticleType.GENERAL_TRANSACTION))
+                                .collect(Collectors.toList());
 
-        List<ExArticleResponse> exArticleResponses = exArticleRepository
-                .findAllByType(ExArticleType.GENERAL_TRANSACTION)
-                .stream()
-                .map(exArticles -> exArticles.toResponse(exArticles, customUser))
-                .filter(exArticleResponse -> exArticleResponse.getExArticleType().equals(ExArticleType.GENERAL_TRANSACTION))
-                .collect(Collectors.toList());
+                log.info("exArticleResponsesexArticleResponses" + exArticleResponses.toString());
+                // sharing 만 가져와야한다.
 
-        log.info("exArticleResponsesexArticleResponses" + exArticleResponses.toString());
-// sharing 만 가져와야한다.
+                transResponse = exArticleResponses.stream().map(exArticleResponse -> {
+                        ExArticleAllResponse transResponse1 = new ExArticleAllResponse();
+                        // transResponse1.setExArticleResponse(exArticleResponse);
 
-        transResponse = exArticleResponses.stream().map(exArticleResponse -> {
-                    ExArticleAllResponse transResponse1 = new ExArticleAllResponse();
-//                    transResponse1.setExArticleResponse(exArticleResponse);
+                        Trans trans = transRepository.findByExArticleId(exArticleResponse.getExArticleId())
+                                        .orElseThrow(() -> new TransException(TransErrorCode.NOT_EXISTS));
 
-                    Trans trans = transRepository.findByExArticleId(exArticleResponse.getExArticleId())
-                            .orElseThrow(() -> new TransException(TransErrorCode.NOT_EXISTS));
-
-                    transResponse1.setTransResponse(trans.toResponse(trans));
-                    transResponse1.setExArticleResponse(
-                            trans.getExArticle().toResponse(trans.getExArticle(), customUser));
-                    transResponse1.setPackDiaryResponse(trans.getExArticle().getPackDiary() == null ? null : trans.getExArticle().getPackDiary().toResponse(trans.getExArticle().getPackDiary()));
-                    return transResponse1;
+                        transResponse1.setTransResponse(trans.toResponse(trans));
+                        transResponse1.setExArticleResponse(
+                                        trans.getExArticle().toResponse(trans.getExArticle(), customUser));
+                        transResponse1.setPackDiaryResponse(trans.getExArticle().getPackDiary() == null ? null
+                                        : trans.getExArticle().getPackDiary()
+                                                        .toResponse(trans.getExArticle().getPackDiary()));
+                        return transResponse1;
                 })
-                .collect(Collectors.toList());
+                                .collect(Collectors.toList());
 
-        log.info("trrr" + transResponse);
-        return transResponse;
-    }
+                log.info("trrr" + transResponse);
+                return transResponse;
+        }
 
-    public List<MyAllTransResponse> selectmyallTrans() { // 나의 일반거래
+        public List<MyAllTransResponse> selectmyallTrans() { // 나의 일반거래
 
-        UserResponse userResponse = userService.getUserInfo();
-        MemberProfile customUser = UserResponse.toEntity(userResponse);
+                UserResponse userResponse = userService.getUserInfo();
+                MemberProfile customUser = UserResponse.toEntity(userResponse);
 
-        List<Trans> trans = transRepository.findAllTrans(customUser.getId());
+                List<Trans> trans = transRepository.findAllTrans(customUser.getId());
 
-//        log.info("transssssssssss"+trans.stream().map(trans1 -> trans1.getExArticle()));
+                // log.info("transssssssssss"+trans.stream().map(trans1 ->
+                // trans1.getExArticle()));
 
+                List<MyAllTransResponse> transResponse = trans.stream()
+                                .map(trans1 -> trans1.toMyAllTransResponse(trans1)).collect(Collectors.toList());
 
-        List<MyAllTransResponse> transResponse = trans.stream().map(trans1 ->
-                trans1.toMyAllTransResponse(trans1   )).collect(Collectors.toList());
+                ExArticle exArticle;
+                transResponse = transResponse.stream().map(myAllTransResponse -> {
+                        ExArticle exArticle2 = exArticleRepository.findById(myAllTransResponse.getExarticleid())
+                                        .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+                        myAllTransResponse.setExArticleResponse(exArticle2.toResponse(exArticle2, customUser));
+                        return myAllTransResponse;
+                }).collect(Collectors.toList());
 
-        ExArticle exArticle;
-        transResponse = transResponse.stream().map(myAllTransResponse -> {
-                    ExArticle exArticle2 = exArticleRepository.findById(myAllTransResponse.getExarticleid())
-                            .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-                    myAllTransResponse.setExArticleResponse(exArticle2.toResponse(exArticle2, customUser));
-                    return myAllTransResponse;
-                }
-        ).collect(Collectors.toList());
+                return transResponse;
 
-        return transResponse;
-
-    }
+        }
 }

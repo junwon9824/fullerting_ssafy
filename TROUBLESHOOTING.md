@@ -161,3 +161,90 @@ instance.interceptors.response.use(
   }
 );
 ```
+��� Redis 인스턴스 중복 실행 및 연결 혼동 트러블슈팅
+증상
+Spring Boot에서 RedisTemplate으로 조회한 데이터와
+Docker 컨테이너에서 redis-cli로 조회한 데이터가 서로 다름
+
+예를 들어, Spring Boot에서는 auction:1:logs 등 특정 키가 보이는데
+docker exec -it <redis-container> redis-cli에서 keys *를 치면 (empty array)로 나옴
+
+redis-cli에서 키를 삭제해도, Spring Boot에서는 여전히 데이터가 조회됨
+
+원인
+Windows(로컬)에서 redis-server.exe가 이미 실행 중이었고,
+
+Docker Desktop(WSL2)에서 Redis 컨테이너도 별도로 실행되고 있었음
+
+Spring Boot의 application.yml에는 host: localhost, port: 6379로 설정되어 있었음
+
+이 경우, Spring Boot가 접속하는 localhost:6379가
+Windows 로컬 Redis에 먼저 연결될 수 있음
+(이미 포트를 점유하고 있기 때문)
+
+Docker Redis도 같은 6379 포트를 사용하지만,
+Windows에서 이미 점유 중이면 Docker의 포트포워딩이 제대로 동작하지 않거나
+Spring Boot가 로컬 Redis에 우선적으로 연결됨
+
+진단 과정
+docker exec -it <redis-container> redis-cli에서 keys *를 쳤을 때 원하는 키가 안 보임
+
+Spring Boot에서 RedisTemplate으로 keys를 찍으면 데이터가 보임
+
+tasklist | findstr redis 명령으로 Windows에 redis-server.exe가 떠 있는 걸 확인
+
+즉, Spring Boot가 Docker Redis가 아니라 Windows 로컬 Redis에 연결되어 있었음
+
+해결 방법
+Windows의 redis-server.exe 프로세스 종료
+
+Windows 명령 프롬프트(cmd) 또는 PowerShell에서 아래 명령 실행:
+
+text
+taskkill /F /IM redis-server.exe
+성공 메시지 예시:
+
+text
+성공: 프로세스 "redis-server.exe"(PID xxxx)이(가) 종료되었습니다.
+Docker Redis 컨테이너만 실행 상태로 유지
+
+docker ps에서 0.0.0.0:6379->6379/tcp가 떠 있는지 확인
+
+Spring Boot 재시작
+
+이제 localhost:6379로 접속하면 Docker Redis에만 연결됨
+
+
+1. Redis List 저장/조회 구조 이해
+저장 시:
+각 입찰 로그 객체(BidLogResponse 등)를
+JSON 문자열로 하나씩 Redis List에 push해야 함.
+
+조회 시:
+Redis List의 각 아이템을
+단일 객체로 역직렬화해야 함.
+
+2. 자주 발생하는 문제 및 해결법
+1) JSON 배열 전체를 한 번에 저장
+문제:
+전체 입찰 로그 리스트를 JSON 배열로 직렬화해
+리스트에 한 번만 push하면,
+
+조회 시 역직렬화 에러(MismatchedInputException: Cannot deserialize value of type ... from Array value)
+
+해결:
+반드시 for문 등으로 각 객체를 하나씩 push
+(예: for (BidLogResponse resp : responses) { ... })
+
+2) Redis List가 비어 있는데 캐시 데이터가 있다고 나옴
+원인:
+
+LRANGE auction:1:logs -1 0처럼 start > stop이면 항상 빈 배열 반환
+
+실제로는 LRANGE auction:1:logs 0 -1로 전체 조회해야 함
+
+해결:
+
+항상 LRANGE <key> 0 -1로 전체 데이터 확인
+
+애플리케이션에서 Redis에 값이 없으면 DB에서 읽고, 그 결과를 다시 캐싱하는 구조인지 확인

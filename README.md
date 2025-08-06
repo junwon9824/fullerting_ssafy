@@ -318,6 +318,28 @@ LRANGE auction:3:logs 0 2   # 최신 3건 조회
 
 자세한 내용은 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) 문서를 참고해주세요.
 
+## 🚑 입찰 로그와 Redis 캐시 동기화 문제 해결 전략
+
+1. **문제 현상**
+- MongoDB에 입찰 로그가 정상적으로 저장되지만,
+- Redis 캐시와 동기화가 되지 않아 일부 입찰 정보가 실시간 서비스(예: 웹소켓, API 등)에 반영되지 않는 현상 발생.
+- 중복 저장 시도로 MongoDB unique 인덱스 에러(DuplicateKeyException)가 발생하면서 Kafka Consumer에서 알림이 누락되는 문제 발생.
+
+2. **주요 원인**
+- DB만 갱신하고 캐시 무효화/갱신을 누락
+→ 입찰이 DB에 저장된 후 Redis 캐시를 명시적으로 삭제하거나 갱신하지 않으면,
+사용자는 오래된 캐시 데이터를 계속 보게 됨.
+
+3. **핵심 해결 전략**
+- 입찰 저장 후 반드시 Redis 캐시도 갱신
+→ 입찰이 저장되는 모든 곳(특히 Kafka Consumer)에서
+updateRedisCache()를 직접 호출하도록 구조 개선.
+
+- updateRedisCache 메서드는 public으로 변경
+→ 캐시 무효화 또는 갱신 적용
+→ 입찰 내역이 바뀌면 관련 Redis 캐시를 삭제(redisTemplate.delete)하거나
+즉시 최신 데이터로 갱신(redisTemplate.set/opsForList.rightPush)해 일관성 확보.
+
 ## 📚 API 목록
 
 ### 사용자 인증

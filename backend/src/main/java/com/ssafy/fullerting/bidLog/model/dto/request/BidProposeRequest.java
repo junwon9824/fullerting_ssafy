@@ -1,13 +1,15 @@
 package com.ssafy.fullerting.bidLog.model.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
-@Getter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BidProposeRequest {
     private int dealCurPrice;
-    private Long userId ;
+    private Long userId; // Added field for Kafka consumer
 }

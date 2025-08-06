@@ -1,55 +1,56 @@
 package com.ssafy.fullerting.bidLog.model.entity;
 
-import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
-import com.ssafy.fullerting.deal.model.entity.Deal;
-import com.ssafy.fullerting.user.model.entity.MemberProfile;
-import lombok.*;
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
+import com.ssafy.fullerting.deal.model.entity.Deal;
+import com.ssafy.fullerting.user.model.entity.MemberProfile;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@ToString
-@Document(collection = "bid_logs") // MongoDB collection name
+@Document(collection = "bid_logs")
+@CompoundIndexes({
+        @CompoundIndex(name = "unique_bid", def = "{'deal': 1, 'userId': 1, 'bidLogPrice': 1}", unique = true)
+})
 public class BidLog {
     @Id
-    private Long id; // MongoDB uses Long for _id
+    private Long id;
 
-    @DBRef // Reference to Deal document
+    @DBRef
     private Deal deal;
 
-    private Long userId; // 입찰자 아이디
+    private Long userId;
     private LocalDateTime localDateTime;
     private int bidLogPrice;
 
-    public BidLogResponse toBidLogResponse(MemberProfile customUser) {
+    // 모든 필드를 포함하는 변환 메서드
+    public BidLogResponse toBidLogResponse(MemberProfile customUser, Long exarticleid, Integer bidcount) {
         return BidLogResponse.builder()
+                .id(this.id)
                 .bidLogPrice(this.bidLogPrice)
                 .userId(this.userId)
                 .localDateTime(this.localDateTime)
-                .exarticleid(this.deal.getExArticle().getId())
-                .id(this.id)
-                .nickname(customUser.getNickname())
-                .thumbnail(customUser.getThumbnail())
+                .nickname(customUser != null ? customUser.getNickname() : null)
+                .thumbnail(customUser != null ? customUser.getThumbnail() : null)
+                .exarticleid(exarticleid)
+                .bidcount(bidcount)
                 .build();
     }
+    public static final String SEQUENCE_NAME = "bid_log_sequence";
 
-    public BidLogResponse toBidLogSuggestionResponse(BidLog bidLog1, MemberProfile user, int size) {
-        return BidLogResponse.builder()
-                .bidLogPrice(this.bidLogPrice)
-                .userId(this.userId)
-                .localDateTime(this.localDateTime)
-                .exarticleid(this.deal.getExArticle().getId())
-                .id(this.id)
-                .thumbnail(user.getThumbnail())
-                .nickname(user.getNickname())
-                .bidcount(size)
-                .build();
-    }
 }

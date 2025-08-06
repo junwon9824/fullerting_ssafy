@@ -771,39 +771,42 @@ const TradeBuyerDetail = () => {
             </TextStyle>
           </SituationBox>
 
-          <DealBox>
-            {bidHistory.length > 0 ? (
-              bidHistory.map((item: Deal, index: number) => (
-                <DealList key={index}>
-                  <ProfileBox>
-                    <PhotoBox
-                      src={item.thumbnail || '/src/assets/images/default.png'}
-                      alt={item.nickname}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/src/assets/images/default.png';
-                      }}
-                    />
-                    <div>
-                      <div>{item.nickname}</div>
-                      <div style={{ fontSize: '0.8rem', color: '#666' }}>
-                        {item.localDateTime
-                          ? formatDateTime(item.localDateTime)
-                          : '날짜 정보 없음'}
-                      </div>
-                    </div>
-                  </ProfileBox>
-                  <CostBox>{item?.bidLogPrice?.toLocaleString() ?? '0'}원</CostBox>
-                </DealList>
-              ))
-            ) : (
-              <div style={{ textAlign: 'center', width: '100%', padding: '1rem' }}>
-                아직 입찰 내역이 없습니다.
+	<DealBox>
+  {bidHistory.length > 0 ? (
+    [...bidHistory]
+      .sort((a, b) => (b.bidLogPrice || 0) - (a.bidLogPrice || 0))
+      .map((item: Deal, index: number) => (
+        <DealList key={index}>
+          <ProfileBox>
+            <PhotoBox
+              src={item.thumbnail || '/src/assets/images/default.png'}
+              alt={item.nickname}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/src/assets/images/default.png';
+              }}
+            />
+            <div>
+              <div>{item.nickname}</div>
+              <div style={{ fontSize: '0.8rem', color: '#666' }}>
+                {item.localDateTime
+                  ? formatDateTime(item.localDateTime)
+                  : '날짜 정보 없음'}
               </div>
-            )}
-          </DealBox>
+            </div>
+          </ProfileBox>
+          <CostBox>{item?.bidLogPrice?.toLocaleString() ?? '0'}원</CostBox>
+        </DealList>
+      ))
+  ) : (
+    <div style={{ textAlign: 'center', width: '100%', padding: '1rem' }}>
+      아직 입찰 내역이 없습니다.
+    </div>
+  )}
+</DealBox>
 
-          <DealChatBox>
+
+	<DealChatBox>
             <DealInput
               placeholder="최고가보다 높게 제안해주세요"
               value={newMessage}
