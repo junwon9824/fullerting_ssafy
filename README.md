@@ -1,9 +1,9 @@
-# ðŸŒ¿ í’€ëŸ¬íŒ… (Fullerting)
+# ? Ç®·¯ÆÃ (Fullerting)
 
 <div align="center">
-  <img src="./img/etc/í’€ëŸ¬íŒ….png" width="300"/>
+  <img src="./img/etc/Ç®·¯ÆÃ.png" width="300"/>
   
-  **ë„ì‹œë†ë¶€ë¥¼ ìœ„í•œ ìž‘ë¬¼ ê±°ëž˜ ë° ì»¤ë®¤ë‹ˆí‹° í”Œëž«í¼**
+  **µµ½Ã³óºÎ¸¦ À§ÇÑ ÀÛ¹° °Å·¡ ¹× Ä¿¹Â´ÏÆ¼ ÇÃ·§Æû**
   
   [![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react)](https://reactjs.org/)
   [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.3-6DB33F?logo=spring-boot)](https://spring.io/projects/spring-boot)
@@ -12,459 +12,462 @@
   [![Jenkins](https://img.shields.io/badge/Jenkins-CI/CD-D24939?logo=jenkins)](https://jenkins.io/)
 </div>
 
-## ðŸ“‹ ëª©ì°¨
+## ? ¸ñÂ÷
 
-- [í”„ë¡œì íŠ¸ ì†Œê°œ](#-í”„ë¡œì íŠ¸-ì†Œê°œ)
-- [ì£¼ìš” ê¸°ëŠ¥](#-ì£¼ìš”-ê¸°ëŠ¥)
-- [ê¸°ìˆ  ìŠ¤íƒ](#-ê¸°ìˆ -ìŠ¤íƒ)
-- [ì‹œìŠ¤í…œ ì•„í‚¤í…ì²˜](#-ì‹œìŠ¤í…œ-ì•„í‚¤í…ì²˜)
-- [ì„¤ì¹˜ ë° ì‹¤í–‰](#-ì„¤ì¹˜-ë°-ì‹¤í–‰)
-- [API ë¬¸ì„œ](#-api-ë¬¸ì„œ)
-- [íŒ€ì› ì†Œê°œ](#-íŒ€ì›-ì†Œê°œ)
-- [í˜‘ì—… ë„êµ¬](#-í˜‘ì—…-ë„êµ¬)
-- [JWT í† í° ê°±ì‹  ì •ì±…](#-jwt-í† í°-ê°±ì‹ -ì •ì±…)
+- [ÇÁ·ÎÁ§Æ® ¼Ò°³](#-ÇÁ·ÎÁ§Æ®-¼Ò°³)
+- [ÁÖ¿ä ±â´É](#-ÁÖ¿ä-±â´É)
+- [±â¼ú ½ºÅÃ](#-±â¼ú-½ºÅÃ)
+- [½Ã½ºÅÛ ¾ÆÅ°ÅØÃ³](#-½Ã½ºÅÛ-¾ÆÅ°ÅØÃ³)
+- [¼³Ä¡ ¹× ½ÇÇà](#-¼³Ä¡-¹×-½ÇÇà)
+- [API ¹®¼­](#-api-¹®¼­)
+- [ÆÀ¿ø ¼Ò°³](#-ÆÀ¿ø-¼Ò°³)
+- [Çù¾÷ µµ±¸](#-Çù¾÷-µµ±¸)
+- [JWT ÅäÅ« °»½Å Á¤Ã¥](#-jwt-ÅäÅ«-°»½Å-Á¤Ã¥)
 
-## ðŸŒŸ í”„ë¡œì íŠ¸ ì†Œê°œ
+## ? ÇÁ·ÎÁ§Æ® ¼Ò°³
 
-**í’€ëŸ¬íŒ…**ì€ ë„ì‹œë†ë¶€ë“¤ì´ ìžì‹ ì´ ê¸°ë¥¸ ìž‘ë¬¼ì„ ê±°ëž˜í•˜ê³ , ìž¬ë°° ê²½í—˜ì„ ê³µìœ í•  ìˆ˜ ìžˆëŠ” ì¢…í•© í”Œëž«í¼ìž…ë‹ˆë‹¤.
+**Ç®·¯ÆÃ**Àº µµ½Ã³óºÎµéÀÌ ÀÚ½ÅÀÌ ±â¸¥ ÀÛ¹°À» °Å·¡ÇÏ°í, Àç¹è °æÇèÀ» °øÀ¯ÇÒ ¼ö ÀÖ´Â Á¾ÇÕ ÇÃ·§ÆûÀÔ´Ï´Ù.
 
-### í•µì‹¬ ê°€ì¹˜
+### ÇÙ½É °¡Ä¡
 
-- ðŸ¥¬ **ì‹ ì„ í•œ ìž‘ë¬¼ ê±°ëž˜**: ë™ë„¤ ì¸ì¦ì„ í†µí•œ ì‹ ë¢°í•  ìˆ˜ ìžˆëŠ” ìž‘ë¬¼ ê±°ëž˜
-- ðŸ“ **ìž‘ë¬¼ ìž¬ë°° ê¸°ë¡**: AI ê¸°ë°˜ ìž‘ë¬¼ ì¸ì‹ê³¼ í•¨ê»˜í•˜ëŠ” ìŠ¤ë§ˆíŠ¸ ìž¬ë°° ì¼ì§€
-- ðŸ‘¥ **ì»¤ë®¤ë‹ˆí‹°**: ë†ìž‘ë¬¼ ìž¬ë°° ê²½í—˜ê³¼ ê¿€íŒ ê³µìœ 
-- ðŸ¡ **í…ƒë°­ ì •ë³´**: ì§€ì—­ë³„ í…ƒë°­ ìœ„ì¹˜ ë° ì •ë³´ ì œê³µ
+- ? **½Å¼±ÇÑ ÀÛ¹° °Å·¡**: µ¿³× ÀÎÁõÀ» ÅëÇÑ ½Å·ÚÇÒ ¼ö ÀÖ´Â ÀÛ¹° °Å·¡
+- ? **ÀÛ¹° Àç¹è ±â·Ï**: AI ±â¹Ý ÀÛ¹° ÀÎ½Ä°ú ÇÔ²²ÇÏ´Â ½º¸¶Æ® Àç¹è ÀÏÁö
+- ? **Ä¿¹Â´ÏÆ¼**: ³óÀÛ¹° Àç¹è °æÇè°ú ²ÜÆÁ °øÀ¯
+- ? **ÅÔ¹ç Á¤º¸**: Áö¿ªº° ÅÔ¹ç À§Ä¡ ¹× Á¤º¸ Á¦°ø
 
-## ðŸš€ ì£¼ìš” ê¸°ëŠ¥
+## ? ÁÖ¿ä ±â´É
 
-### ðŸ“± ë©”ì¸í™”ë©´
-
-<div align="center">
-  <img src="./img/main/ë©”ì¸í™”ë©´.jpg" width="200" height="420"/>
-  <img src="./img/main/ì•Œë¦¼í™•ì¸.jpg" width="200" height="420"/>
-</div>
-
-- í™ˆ, ìž‘ë¬¼ê±°ëž˜, ì»¤ë®¤ë‹ˆí‹°, ìž‘ë¬¼ì¼ì§€, ë§ˆì´íŽ˜ì´ì§€ ë„¤ë¹„ê²Œì´ì…˜
-- ì‹¤ì‹œê°„ ì•Œë¦¼ ë° ì±„íŒ… ê¸°ëŠ¥
-- PWA ì§€ì›ìœ¼ë¡œ ì•±ê³¼ ê°™ì€ ì‚¬ìš©ìž ê²½í—˜
-
-### ðŸ¥¬ ìž‘ë¬¼ê±°ëž˜
-
-#### ë™ë„¤ì¸ì¦
+### ? ¸ÞÀÎÈ­¸é
 
 <div align="center">
-  <img src="./img/trade/í˜„ìž¬ìœ„ì¹˜.jpg" width="200" height="420"/>
-  <img src="./img/trade/ì£¼ì†Œì¸ì¦.jpg" width="200" height="420"/>
+  <img src="./img/main/¸ÞÀÎÈ­¸é.jpg" width="200" height="420"/>
+  <img src="./img/main/¾Ë¸²È®ÀÎ.jpg" width="200" height="420"/>
 </div>
 
-#### ê±°ëž˜ ì‹œìŠ¤í…œ
+- È¨, ÀÛ¹°°Å·¡, Ä¿¹Â´ÏÆ¼, ÀÛ¹°ÀÏÁö, ¸¶ÀÌÆäÀÌÁö ³×ºñ°ÔÀÌ¼Ç
+- ½Ç½Ã°£ ¾Ë¸² ¹× Ã¤ÆÃ ±â´É
+- PWA Áö¿øÀ¸·Î ¾Û°ú °°Àº »ç¿ëÀÚ °æÇè
+
+### ? ÀÛ¹°°Å·¡
+
+#### µ¿³×ÀÎÁõ
 
 <div align="center">
-  <img src="./img/trade/ê±°ëž˜.jpg" width="200" height="420"/>
-  <img src="./img/trade/ìž‘ë¬¼ê±°ëž˜ìƒì„±.jpg" width="200" height="420"/>
+  <img src="./img/trade/ÇöÀçÀ§Ä¡.jpg" width="200" height="420"/>
+  <img src="./img/trade/ÁÖ¼ÒÀÎÁõ.jpg" width="200" height="420"/>
 </div>
 
-#### ì œì•ˆ ì‹œìŠ¤í…œ
+#### °Å·¡ ½Ã½ºÅÛ
 
 <div align="center">
-  <img src="./img/trade/ê±°ëž˜ì œì•ˆëª©ë¡.jpg" width="200" height="420"/>
-  <img src="./img/trade/ê±°ëž˜ì œì•ˆ.jpg" width="200" height="420"/>
+  <img src="./img/trade/°Å·¡.jpg" width="200" height="420"/>
+  <img src="./img/trade/ÀÛ¹°°Å·¡»ý¼º.jpg" width="200" height="420"/>
 </div>
 
-#### ì‹¤ì‹œê°„ ì±„íŒ…
+#### Á¦¾È ½Ã½ºÅÛ
 
 <div align="center">
-  <img src="./img/trade/ì±„íŒ…ëª©ë¡.jpg" width="200" height="420"/>
-  <img src="./img/trade/ì±„íŒ….jpg" width="200" height="420"/>
+  <img src="./img/trade/°Å·¡Á¦¾È¸ñ·Ï.jpg" width="200" height="420"/>
+  <img src="./img/trade/°Å·¡Á¦¾È.jpg" width="200" height="420"/>
 </div>
 
-**íŠ¹ì§•:**
-
-- GPS ê¸°ë°˜ ë™ë„¤ ì¸ì¦ ì‹œìŠ¤í…œ
-- ì¼ë°˜ê±°ëž˜ ë° ì œì•ˆê±°ëž˜ ë°©ì‹ ì§€ì›
-- WebSocket ê¸°ë°˜ ì‹¤ì‹œê°„ ì±„íŒ…
-- ê±°ëž˜ ì™„ë£Œ ìžë™ ì²˜ë¦¬
-
-### ðŸ“ ìž‘ë¬¼ì¼ì§€
-
-#### ìž‘ë¬¼ ê´€ë¦¬
+#### ½Ç½Ã°£ Ã¤ÆÃ
 
 <div align="center">
-  <img src="./img/diary/ìž‘ë¬¼ì¼ì§€.jpg" width="200" height="420"/>
-  <img src="./img/diary/ìž‘ë¬¼ì¼ì§€ìƒì„±.jpg" width="200" height="420"/>
+  <img src="./img/trade/Ã¤ÆÃ¸ñ·Ï.jpg" width="200" height="420"/>
+  <img src="./img/trade/Ã¤ÆÃ.jpg" width="200" height="420"/>
 </div>
 
-#### ì¼ê¸° ìž‘ì„±
+**Æ¯Â¡:**
+
+- GPS ±â¹Ý µ¿³× ÀÎÁõ ½Ã½ºÅÛ
+- ÀÏ¹Ý°Å·¡ ¹× Á¦¾È°Å·¡ ¹æ½Ä Áö¿ø
+- WebSocket ±â¹Ý ½Ç½Ã°£ Ã¤ÆÃ
+- °Å·¡ ¿Ï·á ÀÚµ¿ Ã³¸®
+
+### ? ÀÛ¹°ÀÏÁö
+
+#### ÀÛ¹° °ü¸®
 
 <div align="center">
-  <img src="./img/diary/ìž‘ë¬¼ì¼ê¸°.jpg" width="200" height="420"/>
-  <img src="./img/diary/ë‹¤ì´ì–´ë¦¬ìƒì„¸.jpg" width="200" height="420"/>
-  <img src="./img/diary/ìž‘ë¬¼ê¿€íŒ.jpg" width="200" height="420"/>
+  <img src="./img/diary/ÀÛ¹°ÀÏÁö.jpg" width="200" height="420"/>
+  <img src="./img/diary/ÀÛ¹°ÀÏÁö»ý¼º.jpg" width="200" height="420"/>
 </div>
 
-#### AI ìž‘ë¬¼ ì¸ì‹
+#### ÀÏ±â ÀÛ¼º
 
 <div align="center">
-  <img src="./img/diary/ìž‘ë¬¼ì¼ì§€ìˆ˜í™•.jpg" width="200" height="420"/>
-  <img src="./img/diary/ìž‘ë¬¼ì¼ê¸°ìˆ˜í™•2.jpg" width="200" height="420"/>
+  <img src="./img/diary/ÀÛ¹°ÀÏ±â.jpg" width="200" height="420"/>
+  <img src="./img/diary/´ÙÀÌ¾î¸®»ó¼¼.jpg" width="200" height="420"/>
+  <img src="./img/diary/ÀÛ¹°²ÜÆÁ.jpg" width="200" height="420"/>
 </div>
 
-**íŠ¹ì§•:**
-
-- TensorFlow ê¸°ë°˜ ìž‘ë¬¼ ì¸ì‹ AI
-- ìƒìœ¡ ë‹¨ê³„ë³„ ìžë™ ë¶„ë¥˜
-- ìˆ˜í™• ì™„ë£Œ ì‹œ ë±ƒì§€ íšë“ ì‹œìŠ¤í…œ
-- ìž‘ë¬¼ë³„ ë§žì¶¤ ìž¬ë°° íŒ ì œê³µ
-
-### ðŸ‘¥ ì»¤ë®¤ë‹ˆí‹°
+#### AI ÀÛ¹° ÀÎ½Ä
 
 <div align="center">
-  <img src="./img/community/ì»¤ë®¤ë‹ˆí‹°.jpg" width="200" height="420"/>
-  <img src="./img/community/ì»¤ë®¤ë‹ˆí‹°ìƒì„¸.jpg" width="200" height="420"/>
-  <img src="./img/community/ì»¤ë®¤ë‹ˆí‹°ëŒ“ê¸€.jpg" width="200" height="420"/>
+  <img src="./img/diary/ÀÛ¹°ÀÏÁö¼öÈ®.jpg" width="200" height="420"/>
+  <img src="./img/diary/ÀÛ¹°ÀÏ±â¼öÈ®2.jpg" width="200" height="420"/>
 </div>
 
-**ì¹´í…Œê³ ë¦¬:**
+**Æ¯Â¡:**
 
-- ìžìœ ê²Œì‹œíŒ
-- ìž‘ë¬¼ì†Œê°œ
-- ê¿€íŒê³µìœ 
-- í…ƒë°­ìš”ë¦¬
+- TensorFlow ±â¹Ý ÀÛ¹° ÀÎ½Ä AI
+- »ýÀ° ´Ü°èº° ÀÚµ¿ ºÐ·ù
+- ¼öÈ® ¿Ï·á ½Ã ¹îÁö È¹µæ ½Ã½ºÅÛ
+- ÀÛ¹°º° ¸ÂÃã Àç¹è ÆÁ Á¦°ø
 
-### ðŸ¡ í…ƒë°­ì •ë³´
+### ? Ä¿¹Â´ÏÆ¼
 
 <div align="center">
-  <img src="./img/farm/í…ƒë°­ì§€ë„.jpg" width="200" height="420"/>
-  <img src="./img/farm/í…ƒë°­ìƒì„¸.jpg" width="200" height="420"/>
+  <img src="./img/community/Ä¿¹Â´ÏÆ¼.jpg" width="200" height="420"/>
+  <img src="./img/community/Ä¿¹Â´ÏÆ¼»ó¼¼.jpg" width="200" height="420"/>
+  <img src="./img/community/Ä¿¹Â´ÏÆ¼´ñ±Û.jpg" width="200" height="420"/>
 </div>
 
-- ì¹´ì¹´ì˜¤ë§µ API ê¸°ë°˜ í…ƒë°­ ìœ„ì¹˜ ì •ë³´
-- ì§€ì—­ë³„ í…ƒë°­ ìƒì„¸ ì •ë³´ ì œê³µ
+**Ä«Å×°í¸®:**
 
-### ðŸ‘¤ ë§ˆì´íŽ˜ì´ì§€
+- ÀÚÀ¯°Ô½ÃÆÇ
+- ÀÛ¹°¼Ò°³
+- ²ÜÆÁ°øÀ¯
+- ÅÔ¹ç¿ä¸®
+
+### ? ÅÔ¹çÁ¤º¸
 
 <div align="center">
-  <img src="./img/mypage/í”„ë¡œí•„.jpg" width="200" height="420"/>
-  <img src="./img/mypage/ë±ƒì§€ì •ë³´.jpg" width="200" height="420"/>
-  <img src="./img/mypage/ë‚˜ì˜ì œì•ˆëª©ë¡.jpg" width="200" height="420"/>
+  <img src="./img/farm/ÅÔ¹çÁöµµ.jpg" width="200" height="420"/>
+  <img src="./img/farm/ÅÔ¹ç»ó¼¼.jpg" width="200" height="420"/>
 </div>
 
-**ê¸°ëŠ¥:**
+- Ä«Ä«¿À¸Ê API ±â¹Ý ÅÔ¹ç À§Ä¡ Á¤º¸
+- Áö¿ªº° ÅÔ¹ç »ó¼¼ Á¤º¸ Á¦°ø
 
-- í”„ë¡œí•„ ê´€ë¦¬
-- ë±ƒì§€ ì»¬ë ‰ì…˜
-- ê±°ëž˜ ë‚´ì—­ ê´€ë¦¬
-- ê´€ì‹¬ ê²Œì‹œê¸€ ê´€ë¦¬
+### ? ¸¶ÀÌÆäÀÌÁö
 
-## ðŸ›  ê¸°ìˆ  ìŠ¤íƒ
+<div align="center">
+  <img src="./img/mypage/ÇÁ·ÎÇÊ.jpg" width="200" height="420"/>
+  <img src="./img/mypage/¹îÁöÁ¤º¸.jpg" width="200" height="420"/>
+  <img src="./img/mypage/³ªÀÇÁ¦¾È¸ñ·Ï.jpg" width="200" height="420"/>
+</div>
+
+**±â´É:**
+
+- ÇÁ·ÎÇÊ °ü¸®
+- ¹îÁö ÄÃ·º¼Ç
+- °Å·¡ ³»¿ª °ü¸®
+- °ü½É °Ô½Ã±Û °ü¸®
+
+## ? ±â¼ú ½ºÅÃ
 
 ### Frontend
 
-| ê¸°ìˆ                  | ë²„ì „   | ìš©ë„           |
+| ±â¼ú                 | ¹öÀü   | ¿ëµµ           |
 | -------------------- | ------ | -------------- |
-| React                | 18.2.0 | UI ë¼ì´ë¸ŒëŸ¬ë¦¬  |
-| TypeScript           | 5.2.2  | íƒ€ìž… ì•ˆì •ì„±    |
-| Vite                 | 5.1.6  | ë¹Œë“œ ë„êµ¬      |
+| React                | 18.2.0 | UI ¶óÀÌºê·¯¸®  |
+| TypeScript           | 5.2.2  | Å¸ÀÔ ¾ÈÁ¤¼º    |
+| Vite                 | 5.1.6  | ºôµå µµ±¸      |
 | Styled Components    | 6.1.8  | CSS-in-JS      |
-| Jotai                | 2.7.0  | ìƒíƒœ ê´€ë¦¬      |
-| TanStack Query       | 5.28.6 | ì„œë²„ ìƒíƒœ ê´€ë¦¬ |
-| React Router DOM     | 6.22.3 | ë¼ìš°íŒ…         |
-| React Kakao Maps SDK | 1.1.26 | ì§€ë„ ì„œë¹„ìŠ¤    |
-| StompJS              | 7.0.0  | WebSocket í†µì‹  |
+| Jotai                | 2.7.0  | »óÅÂ °ü¸®      |
+| TanStack Query       | 5.28.6 | ¼­¹ö »óÅÂ °ü¸® |
+| React Router DOM     | 6.22.3 | ¶ó¿ìÆÃ         |
+| React Kakao Maps SDK | 1.1.26 | Áöµµ ¼­ºñ½º    |
+| StompJS              | 7.0.0  | WebSocket Åë½Å |
 
 ### Backend
 
-| ê¸°ìˆ              | ë²„ì „   | ìš©ë„              |
+| ±â¼ú             | ¹öÀü   | ¿ëµµ              |
 | ---------------- | ------ | ----------------- |
-| Spring Boot      | 3.2.3  | ì›¹ í”„ë ˆìž„ì›Œí¬     |
-| Spring Security  | -      | ì¸ì¦/ì¸ê°€         |
+| Spring Boot      | 3.2.3  | À¥ ÇÁ·¹ÀÓ¿öÅ©     |
+| Spring Security  | -      | ÀÎÁõ/ÀÎ°¡         |
 | Spring Data JPA  | -      | ORM               |
-| Spring WebSocket | -      | ì‹¤ì‹œê°„ í†µì‹        |
-| Spring Kafka     | -      | ë©”ì‹œì§€ í         |
-| JWT              | 0.11.5 | í† í° ì¸ì¦         |
-| MySQL            | -      | ë©”ì¸ ë°ì´í„°ë² ì´ìŠ¤ |
-| Redis            | -      | ìºì‹œ/ì„¸ì…˜         |
-| MongoDB          | -      | ì±„íŒ… ë¡œê·¸         |
-| QueryDSL         | 5.0.0  | ë™ì  ì¿¼ë¦¬         |
+| Spring WebSocket | -      | ½Ç½Ã°£ Åë½Å       |
+| Spring Kafka     | -      | ¸Þ½ÃÁö Å¥         |
+| JWT              | 0.11.5 | ÅäÅ« ÀÎÁõ         |
+| MySQL            | -      | ¸ÞÀÎ µ¥ÀÌÅÍº£ÀÌ½º |
+| Redis            | -      | Ä³½Ã/¼¼¼Ç         |
+| MongoDB          | -      | Ã¤ÆÃ ·Î±×         |
+| QueryDSL         | 5.0.0  | µ¿Àû Äõ¸®         |
 
 ### AI/ML
 
-| ê¸°ìˆ               | ë²„ì „   | ìš©ë„              |
+| ±â¼ú              | ¹öÀü   | ¿ëµµ              |
 | ----------------- | ------ | ----------------- |
-| TensorFlow        | 2.13.0 | ë”¥ëŸ¬ë‹ í”„ë ˆìž„ì›Œí¬ |
-| Keras             | 2.13.1 | ê³ ìˆ˜ì¤€ API        |
-| Django            | 4.2.11 | AI ì„œë²„           |
-| Teachable Machine | -      | ëª¨ë¸ í•™ìŠµ         |
+| TensorFlow        | 2.13.0 | µö·¯´× ÇÁ·¹ÀÓ¿öÅ© |
+| Keras             | 2.13.1 | °í¼öÁØ API        |
+| Django            | 4.2.11 | AI ¼­¹ö           |
+| Teachable Machine | -      | ¸ðµ¨ ÇÐ½À         |
 
 ### DevOps
 
-| ê¸°ìˆ            | ìš©ë„               |
+| ±â¼ú           | ¿ëµµ               |
 | -------------- | ------------------ |
-| Docker         | ì»¨í…Œì´ë„ˆí™”         |
-| Docker Compose | ë©€í‹° ì»¨í…Œì´ë„ˆ ê´€ë¦¬ |
+| Docker         | ÄÁÅ×ÀÌ³ÊÈ­         |
+| Docker Compose | ¸ÖÆ¼ ÄÁÅ×ÀÌ³Ê °ü¸® |
 | Jenkins        | CI/CD              |
-| Nginx          | ë¦¬ë²„ìŠ¤ í”„ë¡ì‹œ      |
-| AWS            | í´ë¼ìš°ë“œ ì¸í”„ë¼    |
+| Nginx          | ¸®¹ö½º ÇÁ·Ï½Ã      |
+| AWS            | Å¬¶ó¿ìµå ÀÎÇÁ¶ó    |
 
-## ðŸ— ì‹œìŠ¤í…œ ì•„í‚¤í…ì²˜
+## ? ½Ã½ºÅÛ ¾ÆÅ°ÅØÃ³
 
 <div align="center">
-  <img src="./ì•„í‚¤í…ì³.drawio.png" alt="System Architecture" width="800"/>
+  <img src="./¾ÆÅ°ÅØÃÄ.drawio.png" alt="System Architecture" width="800"/>
 </div>
 
-### ì•„í‚¤í…ì²˜ íŠ¹ì§•
+### ¾ÆÅ°ÅØÃ³ Æ¯Â¡
 
-- **ë§ˆì´í¬ë¡œì„œë¹„ìŠ¤**: Frontend, Backend, AI ì„œë²„ ë¶„ë¦¬
-- **ì‹¤ì‹œê°„ í†µì‹ **: WebSocket + Kafka ì¡°í•©
-- **ìŠ¤ì¼€ì¼ë§**: Docker ì»¨í…Œì´ë„ˆ ê¸°ë°˜ ìˆ˜í‰ í™•ìž¥
-- **ë³´ì•ˆ**: JWT + OAuth2 ì¸ì¦ ì‹œìŠ¤í…œ
-- **ëª¨ë‹ˆí„°ë§**: Jenkins CI/CD íŒŒì´í”„ë¼ì¸
+- **¸¶ÀÌÅ©·Î¼­ºñ½º**: Frontend, Backend, AI ¼­¹ö ºÐ¸®
+- **½Ç½Ã°£ Åë½Å**: WebSocket + Kafka Á¶ÇÕ
+- **½ºÄÉÀÏ¸µ**: Docker ÄÁÅ×ÀÌ³Ê ±â¹Ý ¼öÆò È®Àå
+- **º¸¾È**: JWT + OAuth2 ÀÎÁõ ½Ã½ºÅÛ
+- **¸ð´ÏÅÍ¸µ**: Jenkins CI/CD ÆÄÀÌÇÁ¶óÀÎ
 
-### ì‹¤ì‹œê°„ ì‹œìŠ¤í…œ ì„¤ê³„
+### ½Ç½Ã°£ ½Ã½ºÅÛ ¼³°è
 
-#### Kafka + Redis ì—­í•  ë¶„ë¦¬
+#### Kafka + Redis ¿ªÇÒ ºÐ¸®
 
-- **Kafka**: ì‹¤ì‹œê°„ ë©”ì‹œì§€ ì „ì†¡ ë° ì•Œë¦¼
+- **Kafka**: ½Ç½Ã°£ ¸Þ½ÃÁö Àü¼Û ¹× ¾Ë¸²
 
-  - ìž…ì°° ë°œìƒ ì‹œ ì¦‰ì‹œ Kafkaë¡œ ë©”ì‹œì§€ ì „ì†¡
-  - WebSocketì„ í†µí•´ ì‹¤ì‹œê°„ í™”ë©´ ì—…ë°ì´íŠ¸
-  - íŒŒí‹°ì…˜ í‚¤ë¥¼ ì‚¬ìš©í•œ ë©”ì‹œì§€ ìˆœì„œ ë³´ìž¥
+  - ÀÔÂû ¹ß»ý ½Ã Áï½Ã Kafka·Î ¸Þ½ÃÁö Àü¼Û
+  - WebSocketÀ» ÅëÇØ ½Ç½Ã°£ È­¸é ¾÷µ¥ÀÌÆ®
+  - ÆÄÆ¼¼Ç Å°¸¦ »ç¿ëÇÑ ¸Þ½ÃÁö ¼ø¼­ º¸Àå
 
-- **Redis**: ìƒíƒœ ìºì‹œ ë° ë¹ ë¥¸ ì¡°íšŒ
-  - ê²½ë§¤ ìƒíƒœ(í˜„ìž¬ê°€, ìµœê³ ìž…ì°°ìž) ìºì‹±
-  - ì¡°íšŒ ì‹œ DB ë¶€í•˜ ê°ì†Œ
-  - 24ì‹œê°„ TTL ì„¤ì •ìœ¼ë¡œ ë©”ëª¨ë¦¬ ê´€ë¦¬
+- **Redis**: »óÅÂ Ä³½Ã ¹× ºü¸¥ Á¶È¸
+  - °æ¸Å »óÅÂ(ÇöÀç°¡, ÃÖ°íÀÔÂûÀÚ) Ä³½Ì
+  - Á¶È¸ ½Ã DB ºÎÇÏ °¨¼Ò
+  - 24½Ã°£ TTL ¼³Á¤À¸·Î ¸Þ¸ð¸® °ü¸®
 
-#### MongoDB: ìž…ì°° ë¡œê·¸ ìž¥ê¸° ë³´ì¡´ & í†µê³„
+#### MongoDB: ÀÔÂû ·Î±× Àå±â º¸Á¸ & Åë°è
 
-- **Bid Log ì˜ì† ì €ìž¥**: BidService ê°€ ìž…ì°° ë°œìƒ ì‹œ `MongoTemplate.save()` ë¡œ `bidLog` ì»¬ë ‰ì…˜ì— ë™ì‹œì— ì €ìž¥(upsert).
-- **ì§‘ê³„ ì¿¼ë¦¬**: `BidRepositoryCustomImpl` ì˜ Aggregation íŒŒì´í”„ë¼ì¸ìœ¼ë¡œ ì‚¬ìš©ìž í†µê³„ ë“± ê³„ì‚°.
-- **Schema-less**: ìƒˆë¡œìš´ í•„ë“œ ì¶”ê°€ ì‹œ í…Œì´ë¸” ë³€ê²½ ì—†ì´ ë°”ë¡œ ë°˜ì˜.
+- **Bid Log ¿µ¼Ó ÀúÀå**: BidService °¡ ÀÔÂû ¹ß»ý ½Ã `MongoTemplate.save()` ·Î `bidLog` ÄÃ·º¼Ç¿¡ µ¿½Ã¿¡ ÀúÀå(upsert).
+- **Áý°è Äõ¸®**: `BidRepositoryCustomImpl` ÀÇ Aggregation ÆÄÀÌÇÁ¶óÀÎÀ¸·Î »ç¿ëÀÚ Åë°è µî °è»ê.
+- **Schema-less**: »õ·Î¿î ÇÊµå Ãß°¡ ½Ã Å×ÀÌºí º¯°æ ¾øÀÌ ¹Ù·Î ¹Ý¿µ.
 
-##### Redis í•´ì‹œ êµ¬ì¡° ì˜ˆì‹œ (auction:<ê²½ë§¤ê¸€ID>)
+##### Redis ÇØ½Ã ±¸Á¶ ¿¹½Ã (auction:<°æ¸Å±ÛID>)
 
 ```bash
-# ì˜ˆ) ê²½ë§¤ê¸€ ID = 3
+# ¿¹) °æ¸Å±Û ID = 3
 127.0.0.1:6379> HGETALL auction:3
-1) "currentPrice"  # í˜„ìž¬ ìµœê³ ê°€
+1) "currentPrice"  # ÇöÀç ÃÖ°í°¡
 2) "8"
-3) "bidLogId"      # í•´ë‹¹ ìž…ì°° ë¡œê·¸(MongoDB) ID
+3) "bidLogId"      # ÇØ´ç ÀÔÂû ·Î±×(MongoDB) ID
 4) "7"
-5) "topBidderId"   # ìµœê³  ìž…ì°°ìž(ì‚¬ìš©ìž) ID
+5) "topBidderId"   # ÃÖ°í ÀÔÂûÀÚ(»ç¿ëÀÚ) ID
 6) "2"
 ```
 
-> BidService ì—ì„œ ìž…ì°°ì´ ë°œìƒí•  ë•Œë§ˆë‹¤ ìœ„ í•´ì‹œë¥¼ ê°±ì‹ í•©ë‹ˆë‹¤. í”„ë¡ íŠ¸ì—”ë“œÂ·ë°±ì—”ë“œëŠ” `HGETALL` ë˜ëŠ” `HVALS` ëª…ë ¹ìœ¼ë¡œ ê°’ì„ ì½ì–´ ë°°ì—´ë¡œ ë³€í™˜í•´ í™”ë©´ì„ ì¦‰ì‹œ ì—…ë°ì´íŠ¸í•©ë‹ˆë‹¤.
+> BidService ¿¡¼­ ÀÔÂûÀÌ ¹ß»ýÇÒ ¶§¸¶´Ù À§ ÇØ½Ã¸¦ °»½ÅÇÕ´Ï´Ù. ÇÁ·ÐÆ®¿£µå¡¤¹é¿£µå´Â `HGETALL` ¶Ç´Â `HVALS` ¸í·ÉÀ¸·Î °ªÀ» ÀÐ¾î ¹è¿­·Î º¯È¯ÇØ È­¸éÀ» Áï½Ã ¾÷µ¥ÀÌÆ®ÇÕ´Ï´Ù.
 
-##### Redis ìž…ì°° ë¡œê·¸ ë¦¬ìŠ¤íŠ¸ ì˜ˆì‹œ (auction:<ê²½ë§¤ê¸€ID>:logs)
+##### Redis ÀÔÂû ·Î±× ¸®½ºÆ® ¿¹½Ã (auction:<°æ¸Å±ÛID>:logs)
 
 ```bash
-LRANGE auction:3:logs 0 2   # ìµœì‹  3ê±´ ì¡°íšŒ
+LRANGE auction:3:logs 0 2   # ÃÖ½Å 3°Ç Á¶È¸
 1) "{\"bidLogId\":7,\"userId\":2,\"price\":8000, ... }"
 2) "{\"bidLogId\":6,\"userId\":5,\"price\":7500, ... }"
 3) "{\"bidLogId\":5,\"userId\":9,\"price\":7000, ... }"
 ```
 
-> ë‘ í‚¤ëŠ” **ë…ë¦½ì **ìœ¼ë¡œ ì €ìž¥ë©ë‹ˆë‹¤. ìž…ì°° ë°œìƒ ì‹œ ì„œë¹„ìŠ¤ê°€ Hash ì™€ List ë¥¼ í•¨ê»˜ ê°±ì‹ í•˜ì§€ë§Œ, Redis ê´€ì ì—ì„œëŠ” ë³„ë„ ì—”íŠ¸ë¦¬ì´ë¯€ë¡œ ë§Œë£Œì‹œê°„/ì‚­ì œë¥¼ ê°œë³„ ê´€ë¦¬í•  ìˆ˜ ìžˆìŠµë‹ˆë‹¤. Hash ëŠ” í˜„ìž¬ ìƒíƒœ(O(1) ì¡°íšŒ) , List ëŠ” ìµœê·¼ ë¡œê·¸ ìŠ¤íŠ¸ë¦¼(ìµœëŒ€ 50ê°œ) ì—­í• ì„ í•©ë‹ˆë‹¤.
+> µÎ Å°´Â **µ¶¸³Àû**À¸·Î ÀúÀåµË´Ï´Ù. ÀÔÂû ¹ß»ý ½Ã ¼­ºñ½º°¡ Hash ¿Í List ¸¦ ÇÔ²² °»½ÅÇÏÁö¸¸, Redis °üÁ¡¿¡¼­´Â º°µµ ¿£Æ®¸®ÀÌ¹Ç·Î ¸¸·á½Ã°£/»èÁ¦¸¦ °³º° °ü¸®ÇÒ ¼ö ÀÖ½À´Ï´Ù. Hash ´Â ÇöÀç »óÅÂ(O(1) Á¶È¸) , List ´Â ÃÖ±Ù ·Î±× ½ºÆ®¸²(ÃÖ´ë 50°³) ¿ªÇÒÀ» ÇÕ´Ï´Ù.
 
-#### ìž…ì°° í˜„í™© ì¡°íšŒ ë™ìž‘
+#### ÀÔÂû ÇöÈ² Á¶È¸ µ¿ÀÛ
 
-- **bidLogController.selectbid()** ë¡œì§
-  1. `auction:{id}:logs` **Redis List** ì—ì„œ ìµœê·¼ ìž…ì°° ë¡œê·¸ ì¡°íšŒ â†’ ìžˆìœ¼ë©´ ë°”ë¡œ ì‘ë‹µ
-  2. ë¹„ì–´ ìžˆì„ ê²½ìš° `bidService.selectbid()` í˜¸ì¶œ â†’ (ìºì‹œ í•´ì‹œ or DB) ì¡°íšŒ í›„ ê²°ê³¼ ë°˜í™˜
-- **ê²½ë§¤ê¸€(ìž‘ë¬¼) ìƒì„¸ íŽ˜ì´ì§€ì— ì§„ìž…í•˜ë©´**
-  - í”„ë¡ íŠ¸ì—”ë“œê°€ selectbid API í˜¸ì¶œ
-  - Controller ë‹¨ê³„ì—ì„œ Redis List ìºì‹œ ížˆíŠ¸ ì‹œ ì¦‰ì‹œ ë°˜í™˜->í™”ë©´ì— ë Œë”ë§
-  - ë¯¸ìŠ¤ì¼ ê²½ìš° Service ë‹¨ê³„ì—ì„œ Hash/DB ì¡°íšŒ í›„ ê²°ê³¼ ì €ìž¥Â·ë°˜í™˜
-  - ê²°êµ­ "ë Œë”ë§í•˜ë©´ ë°”ë¡œ ë³´ì´ëŠ” ìž…ì°° ì •ë³´"ê°€ ìºì‹œ ë¯¸ìŠ¤ ì—†ëŠ” í•œ <100ms ë‚´ ì‘ë‹µ
+- **bidLogController.selectbid()** ·ÎÁ÷
+  1. `auction:{id}:logs` **Redis List** ¿¡¼­ ÃÖ±Ù ÀÔÂû ·Î±× Á¶È¸ ¡æ ÀÖÀ¸¸é ¹Ù·Î ÀÀ´ä
+  2. ºñ¾î ÀÖÀ» °æ¿ì `bidService.selectbid()` È£Ãâ ¡æ (Ä³½Ã ÇØ½Ã or DB) Á¶È¸ ÈÄ °á°ú ¹ÝÈ¯
+- **°æ¸Å±Û(ÀÛ¹°) »ó¼¼ ÆäÀÌÁö¿¡ ÁøÀÔÇÏ¸é**
+  - ÇÁ·ÐÆ®¿£µå°¡ selectbid API È£Ãâ
+  - Controller ´Ü°è¿¡¼­ Redis List Ä³½Ã È÷Æ® ½Ã Áï½Ã ¹ÝÈ¯->È­¸é¿¡ ·»´õ¸µ
+  - ¹Ì½ºÀÏ °æ¿ì Service ´Ü°è¿¡¼­ Hash/DB Á¶È¸ ÈÄ °á°ú ÀúÀå¡¤¹ÝÈ¯
+  - °á±¹ "·»´õ¸µÇÏ¸é ¹Ù·Î º¸ÀÌ´Â ÀÔÂû Á¤º¸"°¡ Ä³½Ã ¹Ì½º ¾ø´Â ÇÑ <100ms ³» ÀÀ´ä
 
-#### ë™ìž‘ íë¦„
-
-```
-ìž…ì°° ë°œìƒ ì‹œ:
-1. DBì— ìž…ì°° ê¸°ë¡ ì €ìž¥
-2. Redisì— ìƒíƒœ ìºì‹œ ì €ìž¥ (24ì‹œê°„ ìœ ì§€, ì¡°íšŒìš©)
-3. MongoDBì— ìž…ì°° ë¡œê·¸ ì˜ì† ì €ìž¥ (í†µê³„ìš©)
-4. Kafkaë¡œ ì‹¤ì‹œê°„ ë©”ì‹œì§€ ì „ì†¡ (ì•Œë¦¼ìš©)
-
-ì¡°íšŒ ì‹œ:
-1. Redisì—ì„œ ìƒíƒœ ìš°ì„  ì¡°íšŒ (ë¹ ë¥¸ ì‘ë‹µ, 24ì‹œê°„ ìœ ì§€)
-2. ì—†ìœ¼ë©´ DBì—ì„œ ì¡°íšŒ í›„ Redisì— ìºì‹±
-
-ì‹¤ì‹œê°„ ì•Œë¦¼ ì‹œ:
-1. Kafka ë©”ì‹œì§€ë¡œ WebSocket ì „ì†¡
-2. í™”ë©´ ì‹¤ì‹œê°„ ì—…ë°ì´íŠ¸
-```
-
-#### ê¸°ìˆ ì  ìž¥ì 
-
-- **ì„±ëŠ¥ ìµœì í™”**: Redis ìºì‹œë¡œ ë¹ ë¥¸ ì¡°íšŒ
-- **ì‹¤ì‹œê°„ì„±**: Kafka + WebSocketìœ¼ë¡œ ì¦‰ì‹œ ì•Œë¦¼
-- **í™•ìž¥ì„±**: ê°ê° ë…ë¦½ì ìœ¼ë¡œ ìŠ¤ì¼€ì¼ë§ ê°€ëŠ¥
-- **ì•ˆì •ì„±**: ë©”ì‹œì§€ ìˆœì„œ ë³´ìž¥ ë° ìž¥ì•  ë³µêµ¬
-
-## ðŸš‘ íŠ¸ëŸ¬ë¸”ìŠˆíŒ…
-
-í”„ë¡œì íŠ¸ ê°œë°œ ì¤‘ ë°œìƒí•œ ì£¼ìš” ì´ìŠˆì™€ í•´ê²° ë°©ë²•ì€ [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) ë¬¸ì„œì—ì„œ í™•ì¸í•˜ì‹¤ ìˆ˜ ìžˆìŠµë‹ˆë‹¤.
-
-ì£¼ìš” ì´ìŠˆ:
-
-- Redis ìºì‹œ ì—­ì§ë ¬í™” ì´ìŠˆ
-- Kafka Consumer ê·¸ë£¹ ì´ìŠˆ
-- JPA N+1 ë¬¸ì œ
-- ë™ì‹œì„± ì œì–´ ë¬¸ì œ
-- CORS ì´ìŠˆ
-- JWT í† í° ë§Œë£Œ ì²˜ë¦¬
-
-ìžì„¸í•œ ë‚´ìš©ì€ [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) ë¬¸ì„œë¥¼ ì°¸ê³ í•´ì£¼ì„¸ìš”.
-
-## ðŸš‘ ìž…ì°° ë¡œê·¸ì™€ Redis ìºì‹œ ë™ê¸°í™” ë¬¸ì œ í•´ê²° ì „ëžµ
-
-1. **ë¬¸ì œ í˜„ìƒ**
-- MongoDBì— ìž…ì°° ë¡œê·¸ê°€ ì •ìƒì ìœ¼ë¡œ ì €ìž¥ë˜ì§€ë§Œ,
-- Redis ìºì‹œì™€ ë™ê¸°í™”ê°€ ë˜ì§€ ì•Šì•„ ì¼ë¶€ ìž…ì°° ì •ë³´ê°€ ì‹¤ì‹œê°„ ì„œë¹„ìŠ¤(ì˜ˆ: ì›¹ì†Œì¼“, API ë“±)ì— ë°˜ì˜ë˜ì§€ ì•ŠëŠ” í˜„ìƒ ë°œìƒ.
-- ì¤‘ë³µ ì €ìž¥ ì‹œë„ë¡œ MongoDB unique ì¸ë±ìŠ¤ ì—ëŸ¬(DuplicateKeyException)ê°€ ë°œìƒí•˜ë©´ì„œ Kafka Consumerì—ì„œ ì•Œë¦¼ì´ ëˆ„ë½ë˜ëŠ” ë¬¸ì œ ë°œìƒ.
-
-2. **ì£¼ìš” ì›ì¸**
-- DBë§Œ ê°±ì‹ í•˜ê³  ìºì‹œ ë¬´íš¨í™”/ê°±ì‹ ì„ ëˆ„ë½
-â†’ ìž…ì°°ì´ DBì— ì €ìž¥ëœ í›„ Redis ìºì‹œë¥¼ ëª…ì‹œì ìœ¼ë¡œ ì‚­ì œí•˜ê±°ë‚˜ ê°±ì‹ í•˜ì§€ ì•Šìœ¼ë©´,
-ì‚¬ìš©ìžëŠ” ì˜¤ëž˜ëœ ìºì‹œ ë°ì´í„°ë¥¼ ê³„ì† ë³´ê²Œ ë¨.
-
-3. **í•µì‹¬ í•´ê²° ì „ëžµ**
-- ìž…ì°° ì €ìž¥ í›„ ë°˜ë“œì‹œ Redis ìºì‹œë„ ê°±ì‹ 
-â†’ ìž…ì°°ì´ ì €ìž¥ë˜ëŠ” ëª¨ë“  ê³³(íŠ¹ížˆ Kafka Consumer)ì—ì„œ
-updateRedisCache()ë¥¼ ì§ì ‘ í˜¸ì¶œí•˜ë„ë¡ êµ¬ì¡° ê°œì„ .
-
-- updateRedisCache ë©”ì„œë“œëŠ” publicìœ¼ë¡œ ë³€ê²½
-â†’ ìºì‹œ ë¬´íš¨í™” ë˜ëŠ” ê°±ì‹  ì ìš©
-â†’ ìž…ì°° ë‚´ì—­ì´ ë°”ë€Œë©´ ê´€ë ¨ Redis ìºì‹œë¥¼ ì‚­ì œ(redisTemplate.delete)í•˜ê±°ë‚˜
-ì¦‰ì‹œ ìµœì‹  ë°ì´í„°ë¡œ ê°±ì‹ (redisTemplate.set/opsForList.rightPush)í•´ ì¼ê´€ì„± í™•ë³´.
-
-## ðŸ“š API ëª©ë¡
-
-### ì‚¬ìš©ìž ì¸ì¦
+#### µ¿ÀÛ Èå¸§
 
 ```
-POST   /v1/auth/login           # ë¡œê·¸ì¸
-POST   /v1/auth/refresh        # í† í° ìž¬ë°œê¸‰
-POST   /v1/auth/register       # íšŒì›ê°€ìž…
+ÀÔÂû ¹ß»ý ½Ã:
+1. DB¿¡ ÀÔÂû ±â·Ï ÀúÀå
+2. Redis¿¡ »óÅÂ Ä³½Ã ÀúÀå (24½Ã°£ À¯Áö, Á¶È¸¿ë)
+3. MongoDB¿¡ ÀÔÂû ·Î±× ¿µ¼Ó ÀúÀå (Åë°è¿ë)
+4. Kafka·Î ½Ç½Ã°£ ¸Þ½ÃÁö Àü¼Û (¾Ë¸²¿ë)
+
+Á¶È¸ ½Ã:
+1. Redis¿¡¼­ »óÅÂ ¿ì¼± Á¶È¸ (ºü¸¥ ÀÀ´ä, 24½Ã°£ À¯Áö)
+2. ¾øÀ¸¸é DB¿¡¼­ Á¶È¸ ÈÄ Redis¿¡ Ä³½Ì
+
+½Ç½Ã°£ ¾Ë¸² ½Ã:
+1. Kafka ¸Þ½ÃÁö·Î WebSocket Àü¼Û
+2. È­¸é ½Ç½Ã°£ ¾÷µ¥ÀÌÆ®
 ```
 
-### ì‚¬ìš©ìž ì •ë³´
+#### ±â¼úÀû ÀåÁ¡
+
+- **¼º´É ÃÖÀûÈ­**: Redis Ä³½Ã·Î ºü¸¥ Á¶È¸
+- **½Ç½Ã°£¼º**: Kafka + WebSocketÀ¸·Î Áï½Ã ¾Ë¸²
+- **È®Àå¼º**: °¢°¢ µ¶¸³ÀûÀ¸·Î ½ºÄÉÀÏ¸µ °¡´É
+- **¾ÈÁ¤¼º**: ¸Þ½ÃÁö ¼ø¼­ º¸Àå ¹× Àå¾Ö º¹±¸
+
+## ? Æ®·¯ºí½´ÆÃ
+
+ÇÁ·ÎÁ§Æ® °³¹ß Áß ¹ß»ýÇÑ ÁÖ¿ä ÀÌ½´¿Í ÇØ°á ¹æ¹ýÀº [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) ¹®¼­¿¡¼­ È®ÀÎÇÏ½Ç ¼ö ÀÖ½À´Ï´Ù.
+
+ÁÖ¿ä ÀÌ½´:
+
+- Redis Ä³½Ã ¿ªÁ÷·ÄÈ­ ÀÌ½´
+- Kafka Consumer ±×·ì ÀÌ½´
+- JPA N+1 ¹®Á¦
+- µ¿½Ã¼º Á¦¾î ¹®Á¦
+- CORS ÀÌ½´
+- JWT ÅäÅ« ¸¸·á Ã³¸®
+
+ÀÚ¼¼ÇÑ ³»¿ëÀº [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) ¹®¼­¸¦ Âü°íÇØÁÖ¼¼¿ä.
+
+## ? ÀÔÂû ·Î±×¿Í Redis Ä³½Ã µ¿±âÈ­ ¹®Á¦ ÇØ°á Àü·«
+
+1. **¹®Á¦ Çö»ó**
+
+- MongoDB¿¡ ÀÔÂû ·Î±×°¡ Á¤»óÀûÀ¸·Î ÀúÀåµÇÁö¸¸,
+- Redis Ä³½Ã¿Í µ¿±âÈ­°¡ µÇÁö ¾Ê¾Æ ÀÏºÎ ÀÔÂû Á¤º¸°¡ ½Ç½Ã°£ ¼­ºñ½º(¿¹: À¥¼ÒÄÏ, API µî)¿¡ ¹Ý¿µµÇÁö ¾Ê´Â Çö»ó ¹ß»ý.
+- Áßº¹ ÀúÀå ½Ãµµ·Î MongoDB unique ÀÎµ¦½º ¿¡·¯(DuplicateKeyException)°¡ ¹ß»ýÇÏ¸é¼­ Kafka Consumer¿¡¼­ ¾Ë¸²ÀÌ ´©¶ôµÇ´Â ¹®Á¦ ¹ß»ý.
+
+2. **ÁÖ¿ä ¿øÀÎ**
+
+- DB¸¸ °»½ÅÇÏ°í Ä³½Ã ¹«È¿È­/°»½ÅÀ» ´©¶ô
+  ¡æ ÀÔÂûÀÌ DB¿¡ ÀúÀåµÈ ÈÄ Redis Ä³½Ã¸¦ ¸í½ÃÀûÀ¸·Î »èÁ¦ÇÏ°Å³ª °»½ÅÇÏÁö ¾ÊÀ¸¸é,
+  »ç¿ëÀÚ´Â ¿À·¡µÈ Ä³½Ã µ¥ÀÌÅÍ¸¦ °è¼Ó º¸°Ô µÊ.
+
+3. **ÇÙ½É ÇØ°á Àü·«**
+
+- ÀÔÂû ÀúÀå ÈÄ ¹Ýµå½Ã Redis Ä³½Ãµµ °»½Å
+  ¡æ ÀÔÂûÀÌ ÀúÀåµÇ´Â ¸ðµç °÷(Æ¯È÷ Kafka Consumer)¿¡¼­
+  updateRedisCache()¸¦ Á÷Á¢ È£ÃâÇÏµµ·Ï ±¸Á¶ °³¼±.
+
+- updateRedisCache ¸Þ¼­µå´Â publicÀ¸·Î º¯°æ
+  ¡æ Ä³½Ã ¹«È¿È­ ¶Ç´Â °»½Å Àû¿ë
+  ¡æ ÀÔÂû ³»¿ªÀÌ ¹Ù²î¸é °ü·Ã Redis Ä³½Ã¸¦ »èÁ¦(redisTemplate.delete)ÇÏ°Å³ª
+  Áï½Ã ÃÖ½Å µ¥ÀÌÅÍ·Î °»½Å(redisTemplate.set/opsForList.rightPush)ÇØ ÀÏ°ü¼º È®º¸.
+
+## ? API ¸ñ·Ï
+
+### »ç¿ëÀÚ ÀÎÁõ
 
 ```
-GET    /v1/users/me            # ë‚´ ì •ë³´ ì¡°íšŒ
-PATCH  /v1/users               # ë‚´ ì •ë³´ ìˆ˜ì •
-PATCH  /v1/users/town          # ë™ë„¤ ì •ë³´ ìˆ˜ì •
-POST   /v1/users/upload        # í”„ë¡œí•„ ì´ë¯¸ì§€ ì—…ë¡œë“œ
+POST   /v1/auth/login           # ·Î±×ÀÎ
+POST   /v1/auth/refresh        # ÅäÅ« Àç¹ß±Þ
+POST   /v1/auth/register       # È¸¿ø°¡ÀÔ
 ```
 
-### ê²½ë§¤/ê±°ëž˜
+### »ç¿ëÀÚ Á¤º¸
 
 ```
-# ê²½ë§¤ ìž…ì°°
-POST   /v1/exchanges/{ex_article_id}/bid      # ìž…ì°° ì œì•ˆ
-GET    /v1/exchanges/bid-logs/{ex_article_id} # ìž…ì°° ë‚´ì—­ ì¡°íšŒ
-
-# ì¼ë°˜ ê±°ëž˜
-GET    /v1/exchanges/category/share          # ë‚˜ëˆ” ëª©ë¡ ì¡°íšŒ
-GET    /v1/exchanges/category/trans          # ì¼ë°˜ ê±°ëž˜ ëª©ë¡ ì¡°íšŒ
-GET    /v1/exchanges/category/my/trans       # ë‚´ ê±°ëž˜ ëª©ë¡ ì¡°íšŒ
-
-# ê²½ë§¤/ê±°ëž˜ ê³µí†µ
-POST   /v1/exchanges                        # ê²Œì‹œê¸€ ë“±ë¡
-GET    /v1/exchanges/{id}                   # ê²Œì‹œê¸€ ìƒì„¸ ì¡°íšŒ
-GET    /v1/exchanges/category/deal          # ì œì•ˆ ì¹´í…Œê³ ë¦¬ ì¡°íšŒ
-GET    /v1/exchanges/wrotearticles          # ë‚´ê°€ ìž‘ì„±í•œ ê²Œì‹œë¬¼ ì¡°íšŒ
+GET    /v1/users/me            # ³» Á¤º¸ Á¶È¸
+PATCH  /v1/users               # ³» Á¤º¸ ¼öÁ¤
+PATCH  /v1/users/town          # µ¿³× Á¤º¸ ¼öÁ¤
+POST   /v1/users/upload        # ÇÁ·ÎÇÊ ÀÌ¹ÌÁö ¾÷·Îµå
 ```
 
-### ìž‘ë¬¼ ì¼ì§€
+### °æ¸Å/°Å·¡
 
 ```
-# ìž‘ë¬¼ ì¼ì§€ íŒ©
-GET    /v1/pack-diaries                     # ìž‘ë¬¼ ì¼ì§€ íŒ© ëª©ë¡
-POST   /v1/pack-diaries                     # ìž‘ë¬¼ ì¼ì§€ íŒ© ìƒì„±
-GET    /v1/pack-diaries/{id}                # ìž‘ë¬¼ ì¼ì§€ íŒ© ìƒì„¸
+# °æ¸Å ÀÔÂû
+POST   /v1/exchanges/{ex_article_id}/bid      # ÀÔÂû Á¦¾È
+GET    /v1/exchanges/bid-logs/{ex_article_id} # ÀÔÂû ³»¿ª Á¶È¸
 
-# ìž‘ë¬¼ ì¼ì§€
-GET    /v1/diaries/{pack_diary_id}          # ìž‘ë¬¼ ì¼ì§€ ëª©ë¡
-GET    /v1/diaries/detail/{diary_id}        # ìž‘ë¬¼ ì¼ì§€ ìƒì„¸
-POST   /v1/diaries/{pack_diary_id}          # ìž‘ë¬¼ ì¼ì§€ ìƒì„±
-POST   /v1/diaries/{pack_diary_id}/water    # ë¬¼ì£¼ê¸°
+# ÀÏ¹Ý °Å·¡
+GET    /v1/exchanges/category/share          # ³ª´® ¸ñ·Ï Á¶È¸
+GET    /v1/exchanges/category/trans          # ÀÏ¹Ý °Å·¡ ¸ñ·Ï Á¶È¸
+GET    /v1/exchanges/category/my/trans       # ³» °Å·¡ ¸ñ·Ï Á¶È¸
+
+# °æ¸Å/°Å·¡ °øÅë
+POST   /v1/exchanges                        # °Ô½Ã±Û µî·Ï
+GET    /v1/exchanges/{id}                   # °Ô½Ã±Û »ó¼¼ Á¶È¸
+GET    /v1/exchanges/category/deal          # Á¦¾È Ä«Å×°í¸® Á¶È¸
+GET    /v1/exchanges/wrotearticles          # ³»°¡ ÀÛ¼ºÇÑ °Ô½Ã¹° Á¶È¸
 ```
 
-### ì»¤ë®¤ë‹ˆí‹°
+### ÀÛ¹° ÀÏÁö
 
 ```
-# ê²Œì‹œê¸€
-GET    /v1/articles                   # ê²Œì‹œê¸€ ëª©ë¡
-POST   /v1/articles                   # ê²Œì‹œê¸€ ìž‘ì„±
-GET    /v1/articles/{id}              # ê²Œì‹œê¸€ ìƒì„¸
+# ÀÛ¹° ÀÏÁö ÆÑ
+GET    /v1/pack-diaries                     # ÀÛ¹° ÀÏÁö ÆÑ ¸ñ·Ï
+POST   /v1/pack-diaries                     # ÀÛ¹° ÀÏÁö ÆÑ »ý¼º
+GET    /v1/pack-diaries/{id}                # ÀÛ¹° ÀÏÁö ÆÑ »ó¼¼
 
-# ëŒ“ê¸€
-POST   /v1/articles/{article_id}/comments          # ëŒ“ê¸€ ìž‘ì„±
-GET    /v1/articles/{article_id}/comments/all      # ëŒ“ê¸€ ëª©ë¡
-DELETE /v1/articles/{article_id}/comments/{comment_id}  # ëŒ“ê¸€ ì‚­ì œ
-
-# ì¢‹ì•„ìš”
-POST   /v1/articles/{article_id}/like   # ì¢‹ì•„ìš” í† ê¸€
+# ÀÛ¹° ÀÏÁö
+GET    /v1/diaries/{pack_diary_id}          # ÀÛ¹° ÀÏÁö ¸ñ·Ï
+GET    /v1/diaries/detail/{diary_id}        # ÀÛ¹° ÀÏÁö »ó¼¼
+POST   /v1/diaries/{pack_diary_id}          # ÀÛ¹° ÀÏÁö »ý¼º
+POST   /v1/diaries/{pack_diary_id}/water    # ¹°ÁÖ±â
 ```
 
-### ì±„íŒ…
+### Ä¿¹Â´ÏÆ¼
 
 ```
-GET    /v1/chat-room                   # ì±„íŒ…ë°© ëª©ë¡
-POST   /v1/chat-room                   # ì±„íŒ…ë°© ìƒì„±
-GET    /v1/chat-room/{chat_room_id}    # ì±„íŒ…ë°© ìƒì„¸
+# °Ô½Ã±Û
+GET    /v1/articles                   # °Ô½Ã±Û ¸ñ·Ï
+POST   /v1/articles                   # °Ô½Ã±Û ÀÛ¼º
+GET    /v1/articles/{id}              # °Ô½Ã±Û »ó¼¼
+
+# ´ñ±Û
+POST   /v1/articles/{article_id}/comments          # ´ñ±Û ÀÛ¼º
+GET    /v1/articles/{article_id}/comments/all      # ´ñ±Û ¸ñ·Ï
+DELETE /v1/articles/{article_id}/comments/{comment_id}  # ´ñ±Û »èÁ¦
+
+# ÁÁ¾Æ¿ä
+POST   /v1/articles/{article_id}/like   # ÁÁ¾Æ¿ä Åä±Û
 ```
 
-### ì•Œë¦¼
+### Ã¤ÆÃ
 
 ```
-GET    /v1/noti/pub     # SSE êµ¬ë… (text/event-stream)
+GET    /v1/chat-room                   # Ã¤ÆÃ¹æ ¸ñ·Ï
+POST   /v1/chat-room                   # Ã¤ÆÃ¹æ »ý¼º
+GET    /v1/chat-room/{chat_room_id}    # Ã¤ÆÃ¹æ »ó¼¼
 ```
 
-### ê¸°íƒ€
+### ¾Ë¸²
 
 ```
-GET    /v1/crop-types          # ìž‘ë¬¼ ì¢…ë¥˜ ì¡°íšŒ
-GET    /v1/crop-tips/{crop_type_id}    # ìž‘ë¬¼ë³„ ìž¬ë°° íŒ ì¡°íšŒ
-GET    /v1/farms/search?region={region} # í…ƒë°­ ì •ë³´ ì¡°íšŒ
-POST   /v1/file/uploadFile     # íŒŒì¼ ì—…ë¡œë“œ
+GET    /v1/noti/pub     # SSE ±¸µ¶ (text/event-stream)
 ```
 
-## ðŸ‘¥ íŒ€ì› ì†Œê°œ
+### ±âÅ¸
 
-| ì´ë¦„              | ì—­í•             | ë‹´ë‹¹ ì˜ì—­                        | ê¸°ìˆ  ìŠ¤íƒ                         |
+```
+GET    /v1/crop-types          # ÀÛ¹° Á¾·ù Á¶È¸
+GET    /v1/crop-tips/{crop_type_id}    # ÀÛ¹°º° Àç¹è ÆÁ Á¶È¸
+GET    /v1/farms/search?region={region} # ÅÔ¹ç Á¤º¸ Á¶È¸
+POST   /v1/file/uploadFile     # ÆÄÀÏ ¾÷·Îµå
+```
+
+## ? ÆÀ¿ø ¼Ò°³
+
+| ÀÌ¸§              | ¿ªÇÒ            | ´ã´ç ¿µ¿ª                        | ±â¼ú ½ºÅÃ                         |
 | ----------------- | --------------- | -------------------------------- | --------------------------------- |
-| **ê¹€ì§„ëª…** (íŒ€ìž¥) | Backend         | íšŒì›, ë§ˆì´íŽ˜ì´ì§€, ì•Œë¦¼           | Spring Boot, Spring Security, JWT |
-| **ë¬¸í˜œë¦°**        | Backend         | ìž‘ë¬¼ì¼ì§€, í…ƒë°­ì •ë³´, ì±„íŒ…         | Spring WebSocket, Kafka, MongoDB  |
-| **ì •ì¤€ì›**        | Backend, DevOps | ìž‘ë¬¼ê±°ëž˜, ì»¤ë®¤ë‹ˆí‹°, CI/CD        | Spring Boot, Docker, Jenkins      |
-| **ê¹€ë‚˜ì—°**        | Frontend        | íšŒì›, ìž‘ë¬¼ì¼ì§€, í…ƒë°­ì •ë³´         | React, TypeScript, Kakao Maps     |
-| **ì‹¬ìš°ì„**        | Frontend        | ë©”ì¸íŽ˜ì´ì§€, ë§ˆì´íŽ˜ì´ì§€, ì»¤ë®¤ë‹ˆí‹° | React, Styled Components, Jotai   |
-| **ì˜¤ì •ë¯¼**        | Frontend        | ìž‘ë¬¼ê±°ëž˜, ì±„íŒ…                   | React, WebSocket, TanStack Query  |
+| **±èÁø¸í** (ÆÀÀå) | Backend         | È¸¿ø, ¸¶ÀÌÆäÀÌÁö, ¾Ë¸²           | Spring Boot, Spring Security, JWT |
+| **¹®Çý¸°**        | Backend         | ÀÛ¹°ÀÏÁö, ÅÔ¹çÁ¤º¸, Ã¤ÆÃ         | Spring WebSocket, Kafka, MongoDB  |
+| **Á¤ÁØ¿ø**        | Backend, DevOps | ÀÛ¹°°Å·¡, Ä¿¹Â´ÏÆ¼, CI/CD        | Spring Boot, Docker, Jenkins      |
+| **±è³ª¿¬**        | Frontend        | È¸¿ø, ÀÛ¹°ÀÏÁö, ÅÔ¹çÁ¤º¸         | React, TypeScript, Kakao Maps     |
+| **½É¿ì¼®**        | Frontend        | ¸ÞÀÎÆäÀÌÁö, ¸¶ÀÌÆäÀÌÁö, Ä¿¹Â´ÏÆ¼ | React, Styled Components, Jotai   |
+| **¿ÀÁ¤¹Î**        | Frontend        | ÀÛ¹°°Å·¡, Ã¤ÆÃ                   | React, WebSocket, TanStack Query  |
 
-## ðŸ›  í˜‘ì—… ë„êµ¬
+## ? Çù¾÷ µµ±¸
 
-### ê°œë°œ ë„êµ¬
+### °³¹ß µµ±¸
 
-- **ë²„ì „ ê´€ë¦¬**: GitLab
-- **ì´ìŠˆ ê´€ë¦¬**: Jira
-- **ë¬¸ì„œ ê´€ë¦¬**: Notion
-- **API í…ŒìŠ¤íŠ¸**: Postman
+- **¹öÀü °ü¸®**: GitLab
+- **ÀÌ½´ °ü¸®**: Jira
+- **¹®¼­ °ü¸®**: Notion
+- **API Å×½ºÆ®**: Postman
 
-### ë¬¸ì„œ ë§í¬
+### ¹®¼­ ¸µÅ©
 
-- [ðŸ“‹ í™”ë©´êµ¬ì„±ë„](https://www.figma.com/file/Sknk6qQVE8fAiR5nOFvxza/%ED%92%80%EB%9F%AC%ED%8C%85?type=design&node-id=127-5825&mode=design&t=MnKBPQRoEeXjfoAR-0)
-- [ðŸ“„ íŽ˜ì´ì§€ ëª…ì„¸ì„œ](https://www.notion.so/e6dd58e2958e4d87a058ba5411bdc34b?v=490bc367fa934dd6b4d8f99816e66ba6)
-- [ðŸ§© ì»´í¬ë„ŒíŠ¸ ëª…ì„¸ì„œ](https://www.notion.so/a1d316ad22c14e8d8615d9fd25b97608?v=a9f05331c88348239700d19d218dfb57)
-- [ðŸ—„ï¸ ERD](https://www.notion.so/ERD-dc7ce2874a2b4465b541f5cb0ce26b56?v=9deef6569fdd47b98a22de3c9d91ca21)
+- [? È­¸é±¸¼ºµµ](https://www.figma.com/file/Sknk6qQVE8fAiR5nOFvxza/%ED%92%80%EB%9F%AC%ED%8C%85?type=design&node-id=127-5825&mode=design&t=MnKBPQRoEeXjfoAR-0)
+- [? ÆäÀÌÁö ¸í¼¼¼­](https://www.notion.so/e6dd58e2958e4d87a058ba5411bdc34b?v=490bc367fa934dd6b4d8f99816e66ba6)
+- [? ÄÄÆ÷³ÍÆ® ¸í¼¼¼­](https://www.notion.so/a1d316ad22c14e8d8615d9fd25b97608?v=a9f05331c88348239700d19d218dfb57)
+- [?? ERD](https://www.notion.so/ERD-dc7ce2874a2b4465b541f5cb0ce26b56?v=9deef6569fdd47b98a22de3c9d91ca21)
 
-## ðŸ›  ë°±ì—”ë“œ ì„¤ì •
+## ? ¹é¿£µå ¼³Á¤
 
-### Redis ì„¤ì •
+### Redis ¼³Á¤
 
-#### ì˜ì¡´ì„± ì¶”ê°€ (pom.xml)
+#### ÀÇÁ¸¼º Ãß°¡ (pom.xml)
 
 ```xml
 <dependency>
@@ -473,124 +476,147 @@ POST   /v1/file/uploadFile     # íŒŒì¼ ì—…ë¡œë“œ
 </dependency>
 ```
 
-#### Redis ë°ì´í„° êµ¬ì¡°
+#### Redis µ¥ÀÌÅÍ ±¸Á¶
 
-- `auction:{articleId}`: ê²½ë§¤ ìƒíƒœ ì •ë³´ (Hash)
+- `auction:{articleId}`: °æ¸Å »óÅÂ Á¤º¸ (Hash)
 
-  - `bidLogId`: ë§ˆì§€ë§‰ ìž…ì°° ID
-  - `topBidderId`: ìµœê³  ìž…ì°°ìž ID
-  - `currentPrice`: í˜„ìž¬ ìµœê³ ê°€
+  - `bidLogId`: ¸¶Áö¸· ÀÔÂû ID
+  - `topBidderId`: ÃÖ°í ÀÔÂûÀÚ ID
+  - `currentPrice`: ÇöÀç ÃÖ°í°¡
 
-- `auction:{articleId}:logs`: ìž…ì°° ë‚´ì—­ (List)
-  - ìµœëŒ€ 50ê°œ í•­ëª© ìœ ì§€
-  - 24ì‹œê°„ TTL ì„¤ì •
+- `auction:{articleId}:logs`: ÀÔÂû ³»¿ª (List)
+  - ÃÖ´ë 50°³ Ç×¸ñ À¯Áö
+  - 24½Ã°£ TTL ¼³Á¤
 
-#### Redis CLI ëª…ë ¹ì–´ ì˜ˆì‹œ
+#### Redis CLI ¸í·É¾î ¿¹½Ã
 
 ```bash
-# ëª¨ë“  ê²½ë§¤ í‚¤ ì¡°íšŒ
+# ¸ðµç °æ¸Å Å° Á¶È¸
 KEYS auction:*
 
-# íŠ¹ì • ê²½ë§¤ì˜ ìƒíƒœ ì¡°íšŒ
+# Æ¯Á¤ °æ¸ÅÀÇ »óÅÂ Á¶È¸
 HGETALL auction:3
 
-# ìž…ì°° ë‚´ì—­ ì¡°íšŒ
+# ÀÔÂû ³»¿ª Á¶È¸
 LRANGE auction:3:logs 0 -1
 ```
 
-### ðŸ”„ Redis ìºì‹± ì „ëžµ
+### ? Redis Ä³½Ì Àü·«
 
-#### 1. ìºì‹œ êµ¬ì¡°
+#### 1. Ä³½Ã ±¸Á¶
 
-- **í‚¤ í¬ë§·**:
-  - `auction:{ex_article_id}`: ê²½ë§¤ ë©”íƒ€ë°ì´í„°
-  - `auction:{ex_article_id}:logs`: ìµœëŒ€ 50ê°œì˜ ìµœê·¼ ìž…ì°° ë‚´ì—­
+- **Å° Æ÷¸Ë**:
+  - `auction:{ex_article_id}`: °æ¸Å ¸ÞÅ¸µ¥ÀÌÅÍ
+  - `auction:{ex_article_id}:logs`: ÃÖ´ë 50°³ÀÇ ÃÖ±Ù ÀÔÂû ³»¿ª
 
-#### 2. ìºì‹œ TTL
+#### 2. Ä³½Ã TTL
 
-- **ë§Œë£Œ ì‹œê°„**: 24ì‹œê°„
-- **ìžë™ ê°±ì‹ **: ìºì‹œ ë¯¸ìŠ¤ ì‹œ DBì—ì„œ ë°ì´í„° ì¡°íšŒ í›„ ìžë™ ê°±ì‹ 
+- **¸¸·á ½Ã°£**: 24½Ã°£
+- **ÀÚµ¿ °»½Å**: Ä³½Ã ¹Ì½º ½Ã DB¿¡¼­ µ¥ÀÌÅÍ Á¶È¸ ÈÄ ÀÚµ¿ °»½Å
 
-#### 3. ìºì‹œ ì¼ê´€ì„±
+#### 3. Ä³½Ã ÀÏ°ü¼º
 
-- **ì“°ê¸° ì‹œ**: ìƒˆë¡œìš´ ìž…ì°° ë°œìƒ ì‹œ ìºì‹œì™€ DBì— ë™ì‹œ ì €ìž¥
-- **ì½ê¸° ì‹œ**:
-  1. Redis ìºì‹œì—ì„œ ì¡°íšŒ ì‹œë„
-  2. ìºì‹œ ë¯¸ìŠ¤ ì‹œ DB ì¡°íšŒ í›„ ìºì‹œ ê°±ì‹ 
+- **¾²±â ½Ã**: »õ·Î¿î ÀÔÂû ¹ß»ý ½Ã Ä³½Ã¿Í DB¿¡ µ¿½Ã ÀúÀå
+- **ÀÐ±â ½Ã**:
+  1. Redis Ä³½Ã¿¡¼­ Á¶È¸ ½Ãµµ
+  2. Ä³½Ã ¹Ì½º ½Ã DB Á¶È¸ ÈÄ Ä³½Ã °»½Å
 
-#### 4. ì„±ëŠ¥ ìµœì í™”
+#### 4. ¼º´É ÃÖÀûÈ­
 
-- ìµœëŒ€ 50ê°œì˜ ìµœê·¼ ìž…ì°° ë‚´ì—­ë§Œ ìºì‹œí•˜ì—¬ ë©”ëª¨ë¦¬ ì‚¬ìš©ëŸ‰ ì œí•œ
-- ë¦¬ìŠ¤íŠ¸ ì¡°íšŒ ì‹œ ìºì‹œ ìš°ì„  ì¡°íšŒë¡œ DB ë¶€í•˜ ê°ì†Œ
+- ÃÖ´ë 50°³ÀÇ ÃÖ±Ù ÀÔÂû ³»¿ª¸¸ Ä³½ÃÇÏ¿© ¸Þ¸ð¸® »ç¿ë·® Á¦ÇÑ
+- ¸®½ºÆ® Á¶È¸ ½Ã Ä³½Ã ¿ì¼± Á¶È¸·Î DB ºÎÇÏ °¨¼Ò
 
-### ðŸ”„ Kafka Consumer Group
+### ? Kafka Consumer Group
 
-#### Consumer Groupì´ í•„ìš”í•œ ì´ìœ 
+#### Consumer GroupÀÌ ÇÊ¿äÇÑ ÀÌÀ¯
 
-1. **ë©”ì‹œì§€ ë¶„ì‚° ì²˜ë¦¬**
+1. **¸Þ½ÃÁö ºÐ»ê Ã³¸®**
 
-   - ê°™ì€ Group IDë¥¼ ê°€ì§„ Consumer ì¸ìŠ¤í„´ìŠ¤ë“¤ì´ í† í”½ì˜ íŒŒí‹°ì…˜ì„ ë‚˜ëˆ„ì–´ ì²˜ë¦¬
-   - ì˜ˆ: 3ê°œ íŒŒí‹°ì…˜ í† í”½ì— 3ê°œ Consumerê°€ ê°™ì€ Group IDë¡œ ì—°ê²°ë˜ë©´ ê°ê° 1ê°œ íŒŒí‹°ì…˜ì”© ë‹´ë‹¹
+   - °°Àº Group ID¸¦ °¡Áø Consumer ÀÎ½ºÅÏ½ºµéÀÌ ÅäÇÈÀÇ ÆÄÆ¼¼ÇÀ» ³ª´©¾î Ã³¸®
+   - ¿¹: 3°³ ÆÄÆ¼¼Ç ÅäÇÈ¿¡ 3°³ Consumer°¡ °°Àº Group ID·Î ¿¬°áµÇ¸é °¢°¢ 1°³ ÆÄÆ¼¼Ç¾¿ ´ã´ç
 
-2. **ë©”ì‹œì§€ ì¤‘ë³µ/ìœ ì‹¤ ë°©ì§€**
+2. **¸Þ½ÃÁö Áßº¹/À¯½Ç ¹æÁö**
 
-   - Group IDë¥¼ ê¸°ì¤€ìœ¼ë¡œ ì˜¤í”„ì…‹(offset) ê´€ë¦¬
-   - ë©”ì‹œì§€ê°€ í•œ ë²ˆë§Œ ì²˜ë¦¬ë˜ë„ë¡ ë³´ìž¥
+   - Group ID¸¦ ±âÁØÀ¸·Î ¿ÀÇÁ¼Â(offset) °ü¸®
+   - ¸Þ½ÃÁö°¡ ÇÑ ¹ø¸¸ Ã³¸®µÇµµ·Ï º¸Àå
 
-3. **í™•ìž¥ì„±**
+3. **È®Àå¼º**
 
-   - Consumer ìˆ˜ë¥¼ ìœ ì—°í•˜ê²Œ ì¡°ì • ê°€ëŠ¥
-   - Group Coordinatorê°€ ìžë™ìœ¼ë¡œ íŒŒí‹°ì…˜ ìž¬ì¡°ì •
+   - Consumer ¼ö¸¦ À¯¿¬ÇÏ°Ô Á¶Á¤ °¡´É
+   - Group Coordinator°¡ ÀÚµ¿À¸·Î ÆÄÆ¼¼Ç ÀçÁ¶Á¤
 
-4. **ë‹¤ì–‘í•œ ì†Œë¹„ íŒ¨í„´ ì§€ì›**
-   - ê°™ì€ í† í”½ì„ ë‹¤ë¥¸ Group IDë¡œ êµ¬ë…í•˜ë©´ ê° ê·¸ë£¹ì´ ë…ë¦½ì ìœ¼ë¡œ ëª¨ë“  ë©”ì‹œì§€ ìˆ˜ì‹ 
-   - ë¸Œë¡œë“œìºìŠ¤íŒ…ì´ í•„ìš”í•œ ê²½ìš° ìœ ìš©
+4. **´Ù¾çÇÑ ¼Òºñ ÆÐÅÏ Áö¿ø**
+   - °°Àº ÅäÇÈÀ» ´Ù¸¥ Group ID·Î ±¸µ¶ÇÏ¸é °¢ ±×·ìÀÌ µ¶¸³ÀûÀ¸·Î ¸ðµç ¸Þ½ÃÁö ¼ö½Å
+   - ºê·ÎµåÄ³½ºÆÃÀÌ ÇÊ¿äÇÑ °æ¿ì À¯¿ë
 
-#### ì£¼ì˜ì‚¬í•­
+#### ÁÖÀÇ»çÇ×
 
-- `groupId`ëŠ” í•„ìˆ˜ ì†ì„±ìž…ë‹ˆë‹¤. ìƒëžµ ì‹œ "No group.id found in consumer config" ì˜¤ë¥˜ ë°œìƒ
-- íŒŒí‹°ì…˜ ìˆ˜ â‰¥ ì»¨ìŠˆë¨¸ ìˆ˜ì—¬ì•¼ ëª¨ë“  ì»¨ìŠˆë¨¸ê°€ ë©”ì‹œì§€ ìˆ˜ì‹ 
-- ê°™ì€ íŒŒí‹°ì…˜ ë‚´ì—ì„œë§Œ ë©”ì‹œì§€ ìˆœì„œ ë³´ìž¥
+- `groupId`´Â ÇÊ¼ö ¼Ó¼ºÀÔ´Ï´Ù. »ý·« ½Ã "No group.id found in consumer config" ¿À·ù ¹ß»ý
+- ÆÄÆ¼¼Ç ¼ö ¡Ã ÄÁ½´¸Ó ¼ö¿©¾ß ¸ðµç ÄÁ½´¸Ó°¡ ¸Þ½ÃÁö ¼ö½Å
+- °°Àº ÆÄÆ¼¼Ç ³»¿¡¼­¸¸ ¸Þ½ÃÁö ¼ø¼­ º¸Àå
 
-#### ì˜ˆì‹œ ì½”ë“œ
+#### ? ¸Þ½ÃÁö Å°¸¦ È°¿ëÇÑ ¼ø¼­ º¸Àå ¹× º´·Ä Ã³¸®
+
+º» ÇÁ·ÎÁ§Æ®ÀÇ ½Ç½Ã°£ °æ¸Å ½Ã½ºÅÛ¿¡¼­´Â **¸Þ½ÃÁö Å°(Message Key)** ¸¦ Àü·«ÀûÀ¸·Î »ç¿ëÇÏ¿© µ¥ÀÌÅÍ Á¤ÇÕ¼º°ú Ã³¸® ¼º´ÉÀ» µ¿½Ã¿¡ È®º¸Çß½À´Ï´Ù.
+
+1.  **µ¿ÀÏ °æ¸Å °ÇÀÇ ¼ø¼­ º¸Àå**
+
+    - ÀÔÂû ¿äÃ» ¸Þ½ÃÁö¸¦ Kafka Producer°¡ Àü¼ÛÇÒ ¶§, **°Ô½Ã±Û ID(`exArticleId`)¸¦ ¸Þ½ÃÁö Å°·Î »ç¿ë**ÇÕ´Ï´Ù.
+    - Kafka´Â µ¿ÀÏÇÑ Å°¸¦ °¡Áø ¸Þ½ÃÁöµéÀ» Ç×»ó **µ¿ÀÏÇÑ ÆÄÆ¼¼Ç**À¸·Î Àü¼ÛÇÏ´Â °ÍÀ» º¸ÀåÇÕ´Ï´Ù.
+    - °á°úÀûÀ¸·Î, ÇÏ³ªÀÇ °æ¸Å¿¡ ´ëÇÑ ¸ðµç ÀÔÂû(¿¹: 100¿ø ÀÔÂû ¡æ 200¿ø ÀÔÂû)Àº ÆÄÆ¼¼Ç ³»¿¡¼­ ¼ø¼­´ë·Î Ã³¸®µÇ¾î, ³·Àº °¡°ÝÀÇ ÀÔÂûÀÌ ³ôÀº °¡°ÝÀÇ ÀÔÂûÀ» µ¤¾î¾²´Â ¹®Á¦¸¦ ¿øÃµÀûÀ¸·Î ¹æÁöÇÕ´Ï´Ù.
+
+    ```java
+    // BidProducerService.java
+    public void sendBidRequest(Long exArticleId, int dealCurPrice, MemberProfile bidder) {
+        BidRequestMessage bidRequest = new BidRequestMessage(exArticleId, dealCurPrice, bidder.getNickname());
+        // exArticleId¸¦ Key·Î »ç¿ëÇÏ¿© µ¿ÀÏ °æ¸Å °ÇÀº µ¿ÀÏ ÆÄÆ¼¼ÇÀ¸·Î Àü¼Û
+        bidRequestKafkaTemplate.send(BID_TOPIC, exArticleId.toString(), bidRequest);
+    }
+    ```
+
+2.  **¼­·Î ´Ù¸¥ °æ¸Å °ÇÀÇ º´·Ä Ã³¸®**
+    - ¼­·Î ´Ù¸¥ °æ¸Å(´Ù¸¥ `exArticleId`)´Â ´Ù¸¥ ÆÄÆ¼¼Ç¿¡ ÇÒ´çµÉ ¼ö ÀÖ½À´Ï´Ù.
+    - ÄÁ½´¸Ó ±×·ìÀÇ ¿©·¯ ÄÁ½´¸Ó(¶Ç´Â `concurrency` ¼³Á¤¿¡ µû¸¥ ½º·¹µå)°¡ °¢±â ´Ù¸¥ ÆÄÆ¼¼ÇÀ» µ¿½Ã¿¡ Ã³¸®ÇÏ¹Ç·Î, ÀüÃ¼ ½Ã½ºÅÛÀÇ Ã³¸®·®(Throughput)ÀÌ ±Ø´ëÈ­µË´Ï´Ù.
+
+#### ¿¹½Ã ÄÚµå
 
 ```java
 @KafkaListener(
     topics = "bid_requests",
-    groupId = "bid-group",  // í•„ìˆ˜
+    groupId = "bid-group",  // ÇÊ¼ö
     containerFactory = "bidKafkaListenerContainerFactory"
 )
 public void consumeBidRequest(String message) {
-    // ë©”ì‹œì§€ ì²˜ë¦¬ ë¡œì§
+    // ¸Þ½ÃÁö Ã³¸® ·ÎÁ÷
 }
 ```
 
-## ðŸ” JWT í† í° ê°±ì‹  ì •ì±…
+## ? JWT ÅäÅ« °»½Å Á¤Ã¥
 
-| êµ¬ë¶„          | ë‚´ìš©                                                                                 |
+| ±¸ºÐ          | ³»¿ë                                                                                 |
 | ------------- | ------------------------------------------------------------------------------------ |
-| Access Token  | ìœ íš¨ê¸°ê°„ ì§§ìŒ(15 min). ëª¨ë“  API ìš”ì²­ ì‹œ `Authorization: Bearer <access>` í—¤ë”ë¡œ ì „ì†¡ |
-| Refresh Token | ìœ íš¨ê¸°ê°„ ê¹€(14 days). ìµœì´ˆ ë¡œê·¸ì¸ ì‹œ Redis ì— ì €ìž¥, Cookie/SessionStorage ì— ë³´ê´€    |
+| Access Token  | À¯È¿±â°£ ÂªÀ½(15 min). ¸ðµç API ¿äÃ» ½Ã `Authorization: Bearer <access>` Çì´õ·Î Àü¼Û |
+| Refresh Token | À¯È¿±â°£ ±è(14 days). ÃÖÃÊ ·Î±×ÀÎ ½Ã Redis ¿¡ ÀúÀå, Cookie/SessionStorage ¿¡ º¸°ü    |
 
-1. **ìš”ì²­ íë¦„**
+1. **¿äÃ» Èå¸§**
 
-   1. í´ë¼ì´ì–¸íŠ¸ê°€ API í˜¸ì¶œ â†’ `JwtValidationFilter` ì—ì„œ accessToken ê²€ì¦.
-   2. ë§Œë£Œ(401) â†’ í”„ë¡ íŠ¸ì—”ë“œê°€ `/v1/auth/refresh` POST `{ refreshToken }` í˜¸ì¶œ.
+   1. Å¬¶óÀÌ¾ðÆ®°¡ API È£Ãâ ¡æ `JwtValidationFilter` ¿¡¼­ accessToken °ËÁõ.
+   2. ¸¸·á(401) ¡æ ÇÁ·ÐÆ®¿£µå°¡ `/v1/auth/refresh` POST `{ refreshToken }` È£Ãâ.
 
 2. **`TokenService.reIssueAccessTokenByRefreshToken()`**
 
-   - refreshToken ì„œëª…Â·ë§Œë£Œ ê²€ì¦ â†’ `jwtUtils.validateRefreshToken()`
-   - Claim ì—ì„œ `userId` ì¶”ì¶œ â†’ Redis ì˜ ì €ìž¥ê°’ê³¼ ì¼ì¹˜ ì—¬ë¶€ í™•ì¸.
-   - ì¼ì¹˜í•  ê²½ìš° **Refresh-Token Rotation** ìˆ˜í–‰:
+   - refreshToken ¼­¸í¡¤¸¸·á °ËÁõ ¡æ `jwtUtils.validateRefreshToken()`
+   - Claim ¿¡¼­ `userId` ÃßÃâ ¡æ Redis ÀÇ ÀúÀå°ª°ú ÀÏÄ¡ ¿©ºÎ È®ÀÎ.
+   - ÀÏÄ¡ÇÒ °æ¿ì **Refresh-Token Rotation** ¼öÇà:
      ```java
      String newAccess = jwtUtils.issueAccessToken(email, userId, authorities);
      String newRefresh = jwtUtils.issueRefreshToken(email, userId, authorities);
-     tokenRepository.save(new Token(userId, newRefresh));          // Redis ê°±ì‹ 
-     invalidTokenRepository.save(new InvalidToken(null, oldRefresh)); // êµ¬ RT íê¸°
+     tokenRepository.save(new Token(userId, newRefresh));          // Redis °»½Å
+     invalidTokenRepository.save(new InvalidToken(null, oldRefresh)); // ±¸ RT Æó±â
      return new IssuedToken(newAccess, newRefresh);
      ```
-   - ë¶ˆì¼ì¹˜ â†’ `JwtException(JwtErrorCode.INVALID_TOKEN)` ë°˜í™˜.
+   - ºÒÀÏÄ¡ ¡æ `JwtException(JwtErrorCode.INVALID_TOKEN)` ¹ÝÈ¯.
 
-3. **ë³´ì•ˆ íš¨ê³¼**
-   - íƒˆì·¨ëœ refreshToken ìž¬ì‚¬ìš© ì‹œë„ â†’ Redis ë¶ˆì¼ì¹˜ë¡œ ì¦‰ì‹œ ì°¨ë‹¨.
-   - ì´ì „ í† í°ì€ ë¸”ëž™ë¦¬ìŠ¤íŠ¸ ì²˜ë¦¬í•˜ì—¬ ì¼íšŒì„± ë³´ìž¥.
+3. **º¸¾È È¿°ú**
+   - Å»ÃëµÈ refreshToken Àç»ç¿ë ½Ãµµ ¡æ Redis ºÒÀÏÄ¡·Î Áï½Ã Â÷´Ü.
+   - ÀÌÀü ÅäÅ«Àº ºí·¢¸®½ºÆ® Ã³¸®ÇÏ¿© ÀÏÈ¸¼º º¸Àå.
