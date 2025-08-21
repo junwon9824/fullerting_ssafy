@@ -24,11 +24,8 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @RequiredArgsConstructor
 public class BidProducerService {
-//    private final KafkaTemplate<String, BidNotification> kafkaTemplatetest;
-    private final ObjectMapper objectMapper; // Jackson ObjectMapper
     private final KafkaTemplate<String, BidNotification> kafkaTemplate;
     private static final String ALARM_TOPIC = "kafka-alarm";
-    private final KafkaTemplate<String, BidNotification> bidNotificationKafkaTemplate;
     private final KafkaTemplate<String, BidRequestMessage> bidRequestKafkaTemplate;
     private static final String BID_TOPIC = "bid_requests";
     // 입찰 신청 메시지를 카프카로 보내는 메서드
@@ -45,14 +42,16 @@ public class BidProducerService {
                     .userid(memberProfile.getId())
                     .articleid(exArticle.getId())
                     .redirectUrl(redirecturl)
-                    .price(exArticle.getDeal() == null ? exArticle.getTrans().getTrans_sell_price() : exArticle.getDeal().getDealCurPrice())
+                    .price(exArticle.getDeal() == null ? exArticle.getTrans().getTrans_sell_price()
+                            : exArticle.getDeal().getDealCurPrice())
                     .build();
 
             String key = exArticle.getId().toString();
             kafkaTemplate.send(ALARM_TOPIC, key, messagePayload)
                     .whenComplete((result, ex) -> {
                         if (ex == null) {
-                            log.info("Message sent to topic {} with offset {}", ALARM_TOPIC, result.getRecordMetadata().offset());
+                            log.info("Message sent to topic {} with offset {}", ALARM_TOPIC,
+                                    result.getRecordMetadata().offset());
                         } else {
                             log.error("Failed to send message to topic {} due to {}", ALARM_TOPIC, ex.getMessage());
                         }
@@ -61,7 +60,5 @@ public class BidProducerService {
             log.error("Failed to send kafka alarm: {}", e.getMessage());
         }
     }
-
-
 
 }
