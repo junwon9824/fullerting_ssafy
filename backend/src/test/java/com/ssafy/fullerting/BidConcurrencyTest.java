@@ -2,16 +2,21 @@ package com.ssafy.fullerting;
 
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
+import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
+import com.ssafy.fullerting.exArticle.exception.ExArticleException;
 import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
 import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
 import com.ssafy.fullerting.global.kafka.BidConsumerService;
 import com.ssafy.fullerting.global.kafka.BidRequestMessage;
+import com.ssafy.fullerting.user.exception.UserErrorCode;
+import com.ssafy.fullerting.user.exception.UserException;
 import com.ssafy.fullerting.user.model.entity.MemberProfile;
 import com.ssafy.fullerting.user.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.MethodInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -43,25 +48,34 @@ public class BidConcurrencyTest {
     @BeforeEach
     void setUp() {
         // 테스트 데이터 설정
-        MemberProfile sellerProfile = MemberProfile.builder().nickname("testSeller").build();
-        memberRepository.save(sellerProfile);
+//        MemberProfile sellerProfile = MemberProfile.builder().nickname("testSeller").build();
+        MemberProfile sellerProfile = memberRepository.findByEmail("user001@example.com").orElseThrow(()->new UserException(UserErrorCode.NOT_EXISTS_USER));
+//        memberRepository.save(sellerProfile);
 
-        testBidder = MemberProfile.builder().nickname("testBidder").build();
-        memberRepository.save(testBidder);
+//        testBidder = MemberProfile.builder().nickname("testBidder").build();
+        testBidder = memberRepository.findByEmail("user002@example.com").orElseThrow(()->new UserException(UserErrorCode.NOT_EXISTS_USER));
+
+//        memberRepository.save(testBidder);
 
         Deal deal = Deal.builder().dealCurPrice(100).bidderCount(0).build();
-        testArticle = ExArticle.builder().user(sellerProfile).title("Test Article").content("Concurrency Test")
-                .isDone(false).created_at(LocalDateTime.now()).deal(deal).build();
+
+//        testArticle = ExArticle.builder().
+//                user(sellerProfile).title("Test Article").content("Concurrency Test")
+//                .isDone(false).created_at(LocalDateTime.now()).deal(deal).
+//
+//                build();
+        testArticle = exArticleRepository.findById(4L).orElseThrow(()->new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+
         deal.setexarticle(testArticle);
-        exArticleRepository.save(testArticle);
+//        exArticleRepository.save(testArticle);
     }
 
-    @AfterEach
-    void tearDown() {
-        // 테스트 데이터 정리
-        exArticleRepository.deleteAll();
-        memberRepository.deleteAll();
-    }
+//    @AfterEach
+//    void tearDown() {
+//        // 테스트 데이터 정리
+//        exArticleRepository.deleteAll();
+//        memberRepository.deleteAll();
+//    }
 
     @Test
     @DisplayName("여러 스레드가 동시에 입찰을 요청할 때 비관적 락이 데이터 정합성을 보장하는지 테스트")
@@ -88,6 +102,7 @@ public class BidConcurrencyTest {
 
         latch.await(); // 모든 스레드가 작업을 마칠 때까지 대기
         executorService.shutdown();
+
 
         // then
         Deal finalDeal = dealRepository.findByExArticleId(testArticle.getId()).orElseThrow();
