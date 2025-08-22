@@ -93,7 +93,8 @@ public class BidConcurrencyTest {
                 try {
                     BidRequestMessage message = new BidRequestMessage(testArticle.getId(), bidPrice,
                             testBidder.getNickname());
-                    bidConsumerService.consumeBidRequest(message);
+//                    bidConsumerService.consumeBidRequest(message);
+                    bidConsumerService.consumeBidRequestwithouLock(message);
                 } finally {
                     latch.countDown();
                 }
