@@ -7,7 +7,7 @@ import org.springframework.web.socket.TextMessage;
 
 import static org.mockito.Mockito.*;
 
-public class WebSocketWithoutKafkaTest {
+public class WebSocketAlarmWithoutKafkaTest {
 
     private WebSocketSession webSocketSession;
 

@@ -17,7 +17,7 @@ import java.io.IOException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class WebSocketWithKafkaTest {
+public class WebSocketAlarmWithKafkaTest {
 
     @Mock
     private KafkaTemplate<String, String> kafkaTemplate;
