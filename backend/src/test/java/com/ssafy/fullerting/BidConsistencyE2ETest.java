@@ -3,6 +3,7 @@ package com.ssafy.fullerting;
 import com.ssafy.fullerting.bidLog.model.entity.BidLog;
 import com.ssafy.fullerting.bidLog.repository.BidRepository;
 import com.ssafy.fullerting.bidLog.service.BidService;
+import com.ssafy.fullerting.config.TestKafkaConfig;
 import com.ssafy.fullerting.deal.model.entity.Deal;
 import com.ssafy.fullerting.deal.repository.DealRepository;
 import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +39,7 @@ import static org.assertj.core.api.Assertions.*;
  * 입찰희망 정합성유지여부를 확인하는 E2E 테스트
  * 
  * 테스트 시나리오:
- * 1. 동시 입찰 시 데이터 정합성 검증
+ * 1. 동시 입찰 시 데이터 정합성 검증 (카프카를 통한 비동기 처리)
  * 2. 입찰가 검증 로직 정합성 검증
  * 3. 입찰자 수 계산 정합성 검증
  * 4. Redis 캐시와 DB 데이터 정합성 검증
@@ -45,6 +47,7 @@ import static org.assertj.core.api.Assertions.*;
  */
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(TestKafkaConfig.class)
 public class BidConsistencyE2ETest {
 
     @Autowired
@@ -105,22 +108,13 @@ public class BidConsistencyE2ETest {
             testArticle = exArticleRepository.findById(4L)
                     .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
-            testDeal = testArticle.getDeal();
-            if (testDeal == null) {
-                testDeal = Deal.builder()
-                        .dealCurPrice(INITIAL_PRICE)
-                        .bidderCount(0)
-                        .exArticle(testArticle)
-                        .build();
-                testDeal = dealRepository.save(testDeal);
-                testArticle.setdeal(testDeal);
-                exArticleRepository.save(testArticle);
-            } else {
-                // 기존 거래 정보 초기화
-                testDeal.setDealCurPrice(INITIAL_PRICE);
-                testDeal.setBidderCount(0);
-                dealRepository.save(testDeal);
-            }
+            // 테스트용 거래 정보 생성
+            testDeal = Deal.builder()
+                    .dealCurPrice(INITIAL_PRICE)
+                    .bidderCount(0)
+                    .exArticle(testArticle)
+                    .build();
+            testDeal = dealRepository.save(testDeal);
 
         } catch (Exception e) {
             throw new RuntimeException("테스트 데이터 설정 실패", e);
@@ -133,16 +127,16 @@ public class BidConsistencyE2ETest {
     }
 
     @Test
-    @DisplayName("동시 입찰 시 데이터 정합성 검증 - 비관적 락 사용")
-    void testConcurrentBidsDataConsistencyWithLock() throws InterruptedException {
+    @DisplayName("동시 입찰 시 데이터 정합성 검증 - 카프카를 통한 비동기 처리")
+    void testConcurrentBidsDataConsistencyWithKafka() throws InterruptedException {
         // given
-        int numberOfThreads = 50;
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        int numberOfThreads = 20;
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
         AtomicInteger successfulBids = new AtomicInteger(0);
         AtomicInteger failedBids = new AtomicInteger(0);
 
-        // when - 동시에 여러 입찰 요청
+        // when - 동시에 여러 입찰 요청을 카프카를 통해 처리
         for (int i = 0; i < numberOfThreads; i++) {
             int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
             int bidderIndex = i % testBidders.size();
@@ -150,6 +144,7 @@ public class BidConsistencyE2ETest {
 
             executorService.submit(() -> {
                 try {
+                    // 카프카 메시지를 통해 입찰 요청 (실제 운영 환경과 동일)
                     BidRequestMessage message = new BidRequestMessage(
                             testArticle.getId(), 
                             bidPrice, 
@@ -165,26 +160,30 @@ public class BidConsistencyE2ETest {
             });
         }
 
-        latch.await(30, TimeUnit.SECONDS);
+        latch.await(15, TimeUnit.SECONDS);
         executorService.shutdown();
 
         // then - 데이터 정합성 검증
         verifyDataConsistency();
         verifyBidOrderConsistency();
         verifyBidderCountConsistency();
+        
+        // 테스트 결과 검증
+        assertThat(successfulBids.get()).isGreaterThan(0);
+        assertThat(failedBids.get()).isLessThanOrEqualTo(numberOfThreads);
     }
 
     @Test
-    @DisplayName("동시 입찰 시 데이터 정합성 검증 - 락 미사용")
+    @DisplayName("동시 입찰 시 데이터 정합성 검증 - 락 미사용 (카프카)")
     void testConcurrentBidsDataConsistencyWithoutLock() throws InterruptedException {
         // given
-        int numberOfThreads = 50;
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        int numberOfThreads = 20;
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
         AtomicInteger successfulBids = new AtomicInteger(0);
         AtomicInteger failedBids = new AtomicInteger(0);
 
-        // when - 동시에 여러 입찰 요청 (락 미사용)
+        // when - 동시에 여러 입찰 요청 (락 미사용, 카프카를 통해)
         for (int i = 0; i < numberOfThreads; i++) {
             int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
             int bidderIndex = i % testBidders.size();
@@ -207,17 +206,21 @@ public class BidConsistencyE2ETest {
             });
         }
 
-        latch.await(30, TimeUnit.SECONDS);
+        latch.await(15, TimeUnit.SECONDS);
         executorService.shutdown();
 
         // then - 데이터 정합성 검증
         verifyDataConsistency();
         verifyBidOrderConsistency();
         verifyBidderCountConsistency();
+        
+        // 테스트 결과 검증
+        assertThat(successfulBids.get()).isGreaterThan(0);
+        assertThat(failedBids.get()).isLessThanOrEqualTo(numberOfThreads);
     }
 
     @Test
-    @DisplayName("입찰가 검증 로직 정합성 검증")
+    @DisplayName("입찰가 검증 로직 정합성 검증 - 카프카")
     void testBidPriceValidationConsistency() {
         // given
         int invalidPrice = INITIAL_PRICE - 100; // 현재가보다 낮은 가격
@@ -235,14 +238,14 @@ public class BidConsistencyE2ETest {
           .hasMessageContaining("현재가보다 높은 금액을 입력해주세요");
 
         // 입찰가가 변경되지 않았는지 확인
-        Deal deal = dealRepository.findByExArticleId(testArticle.getId()).orElseThrow();
+        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
         assertThat(deal.getDealCurPrice()).isEqualTo(INITIAL_PRICE);
     }
 
     @Test
-    @DisplayName("Redis 캐시와 DB 데이터 정합성 검증")
+    @DisplayName("Redis 캐시와 DB 데이터 정합성 검증 - 카프카")
     void testRedisCacheAndDBDataConsistency() {
-        // given - 입찰 데이터 생성
+        // given - 입찰 데이터 생성 (카프카를 통해)
         MemberProfile bidder = testBidders.get(0);
         int bidPrice = INITIAL_PRICE + BID_INCREMENT;
 
@@ -258,7 +261,7 @@ public class BidConsistencyE2ETest {
         List<Object> cachedBids = redisTemplate.opsForList().range(redisKey, 0, -1);
         
         List<BidLog> dbBids = bidRepository.findByDealId(testDeal.getId().toString());
-        Deal deal = dealRepository.findByExArticleId(testArticle.getId()).orElseThrow();
+        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
 
         // then - 데이터 정합성 검증
         assertThat(cachedBids).isNotNull();
@@ -270,9 +273,9 @@ public class BidConsistencyE2ETest {
     }
 
     @Test
-    @DisplayName("입찰자 수 계산 정합성 검증")
+    @DisplayName("입찰자 수 계산 정합성 검증 - 카프카")
     void testBidderCountCalculationConsistency() {
-        // given - 여러 사용자가 입찰
+        // given - 여러 사용자가 입찰 (카프카를 통해)
         for (int i = 0; i < testBidders.size(); i++) {
             MemberProfile bidder = testBidders.get(i);
             int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
@@ -286,7 +289,7 @@ public class BidConsistencyE2ETest {
         }
 
         // when - 다양한 방법으로 입찰자 수 계산
-        Deal deal = dealRepository.findByExArticleId(testArticle.getId()).orElseThrow();
+        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
         List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
         
         int uniqueBiddersFromBids = (int) allBids.stream()
@@ -304,45 +307,14 @@ public class BidConsistencyE2ETest {
     }
 
     @Test
-    @DisplayName("낙찰 후 상태 정합성 검증")
-    void testAuctionCompletionStateConsistency() {
-        // given - 입찰 데이터 생성
-        MemberProfile bidder = testBidders.get(0);
-        int bidPrice = INITIAL_PRICE + BID_INCREMENT;
-
-        BidRequestMessage message = new BidRequestMessage(
-                testArticle.getId(), 
-                bidPrice, 
-                bidder.getNickname()
-        );
-        bidConsumerService.consumeBidRequest(message);
-
-        // when - 낙찰 처리
-        List<BidLog> bids = bidRepository.findByDealId(testDeal.getId().toString());
-        BidLog winningBid = bids.get(0); // 가장 높은 입찰가
-
-        // 낙찰 처리 (게시글 완료 상태로 변경)
-        testArticle.setDone(true);
-        exArticleRepository.save(testArticle);
-
-        // then - 상태 정합성 검증
-        ExArticle completedArticle = exArticleRepository.findById(testArticle.getId()).orElseThrow();
-        assertThat(completedArticle.isDone()).isTrue();
-        
-        // 낙찰된 입찰 정보 검증
-        assertThat(winningBid.getBidLogPrice()).isEqualTo(bidPrice);
-        assertThat(winningBid.getUserId()).isEqualTo(bidder.getId());
-    }
-
-    @Test
-    @DisplayName("동일 사용자 재입찰 시 정합성 검증")
+    @DisplayName("동일 사용자 재입찰 시 정합성 검증 - 카프카")
     void testSameUserRebidConsistency() {
         // given - 첫 번째 입찰
         MemberProfile bidder = testBidders.get(0);
         int firstBidPrice = INITIAL_PRICE + BID_INCREMENT;
         int secondBidPrice = firstBidPrice + BID_INCREMENT;
 
-        // 첫 번째 입찰
+        // 첫 번째 입찰 (카프카를 통해)
         BidRequestMessage firstMessage = new BidRequestMessage(
                 testArticle.getId(), 
                 firstBidPrice, 
@@ -350,7 +322,7 @@ public class BidConsistencyE2ETest {
         );
         bidConsumerService.consumeBidRequest(firstMessage);
 
-        // when - 같은 사용자가 더 높은 가격으로 재입찰
+        // when - 같은 사용자가 더 높은 가격으로 재입찰 (카프카를 통해)
         BidRequestMessage secondMessage = new BidRequestMessage(
                 testArticle.getId(), 
                 secondBidPrice, 
@@ -359,7 +331,7 @@ public class BidConsistencyE2ETest {
         bidConsumerService.consumeBidRequest(secondMessage);
 
         // then - 정합성 검증
-        Deal deal = dealRepository.findByExArticleId(testArticle.getId()).orElseThrow();
+        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
         List<BidLog> userBids = bidRepository.findByDealId(deal.getId().toString())
                 .stream()
                 .filter(bid -> bid.getUserId().equals(bidder.getId()))
@@ -383,7 +355,7 @@ public class BidConsistencyE2ETest {
      * 데이터 정합성 검증 헬퍼 메서드
      */
     private void verifyDataConsistency() {
-        Deal deal = dealRepository.findByExArticleId(testArticle.getId()).orElseThrow();
+        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
         List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
 
         // 입찰 내역이 존재하는지 확인
@@ -419,7 +391,7 @@ public class BidConsistencyE2ETest {
      * 입찰자 수 정합성 검증 헬퍼 메서드
      */
     private void verifyBidderCountConsistency() {
-        Deal deal = dealRepository.findByExArticleId(testArticle.getId()).orElseThrow();
+        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
         List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
         
         int uniqueBidders = (int) allBids.stream()

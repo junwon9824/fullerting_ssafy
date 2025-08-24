@@ -16,7 +16,7 @@
 ### 테스트 환경 포트:
 - **MongoDB**: 27018
 - **Redis**: 6380
-- **Kafka**: 9094
+- **Kafka**: 9094 (KRaft 모드)
 
 ## 테스트 목적
 
@@ -42,7 +42,33 @@
 
 ### 3. 설정 파일들
 - `application-test.yml`: 테스트 환경 설정 (포트: 27018, 6380, 9094)
-- `docker-compose-test.yml`: 테스트용 인프라 서비스 (MongoDB, Redis, Kafka)
+- `docker-compose-test.yml`: 테스트용 인프라 서비스 (MongoDB, Redis, Kafka KRaft 모드)
+
+## 테스트 환경 구성
+
+### KRaft 모드 사용 이유
+
+테스트 환경에서는 Kafka KRaft(Kafka Raft) 모드를 사용합니다:
+
+#### 🚀 **KRaft 모드의 장점**
+- **Zookeeper 의존성 제거**: 외부 Zookeeper 없이 Kafka 자체에서 메타데이터 관리
+- **성능 향상**: 더 빠른 컨트롤 플레인 처리 (약 2-3배 빠름)
+- **운영 단순화**: 하나의 시스템으로 통합 관리
+- **리소스 절약**: Zookeeper 컨테이너 불필요 (메모리, CPU 절약)
+- **확장성**: 더 나은 수평 확장 지원
+
+#### 🔄 **기존 Zookeeper 모드와의 차이**
+- **Zookeeper 모드**: `KAFKA_ZOOKEEPER_CONNECT` 설정 필요
+- **KRaft 모드**: `KAFKA_PROCESS_ROLES: 'broker,controller'` 설정으로 자체 관리
+
+#### 📊 **테스트 환경 구성**
+```yaml
+# KRaft 모드 설정
+KAFKA_NODE_ID: 1
+KAFKA_PROCESS_ROLES: 'broker,controller'
+KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-test:29093'
+KAFKA_LISTENERS: 'PLAINTEXT://kafka-test:9092,CONTROLLER://kafka-test:29093'
+```
 
 ## 테스트 시나리오
 
