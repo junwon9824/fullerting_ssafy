@@ -1,0 +1,13 @@
+package com.ssafy.fullerting.config;
+
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+@Configuration
+@Profile("test")
+public class KafkaTopicConfig {
+    @Bean public NewTopic bidRequestsTopic() { return new NewTopic("bid_requests", 3, (short)1); }
+    @Bean public NewTopic userNotificationsTopic() { return new NewTopic("user-notifications", 3, (short)1); }
+}
