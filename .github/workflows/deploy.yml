@@ -1,0 +1,53 @@
+# Workflow 이름
+name: Fullerting Backend CI/CD
+
+# 1. 트리거 조건: 'main' 브랜치에 'backend/' 경로에 변경사항이 있을 때 실행
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "backend/**"
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy Backend
+    runs-on: ubuntu-latest # 실행 환경
+
+    steps:
+      # 2. 코드 체크아웃
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 3. GitHub Container Registry(GHCR)에 로그인
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 4. Docker 이미지 빌드 및 푸시 (Dockerfile의 Multi-stage build 활용)
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend # Dockerfile이 위치한 경로
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest # ghcr.io/OWNER/REPO:latest 형식의 태그
+
+      # 5. EC2에 접속하여 배포
+      - name: Deploy to EC2 instance
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          port: 2222 # 공유기에서 포워딩한 포트 번호 (기본값은 22)
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/fullerting-project # docker-compose.yml 파일이 있는 디렉토리로 이동
+
+            # 참고: GHCR의 패키지가 private일 경우, 서버에서 먼저 docker login이 필요합니다.
+            # 패키지를 public으로 설정하면 로그인 없이 pull 가능합니다.
+            docker pull ghcr.io/${{ github.repository }}:latest
+            docker-compose up -d --force-recreate backend # backend 서비스 재시작
+            docker image prune -f # 사용하지 않는 Docker 이미지 정리
+

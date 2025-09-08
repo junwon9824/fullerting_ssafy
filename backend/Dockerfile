@@ -1,34 +1,32 @@
-# 1ë‹¨ê³„: Gradleì„ ì´ìš©í•´ ë¹Œë“œ
+# 1´Ü°è: GradleÀ» ÀÌ¿ëÇØ ºôµå (Docker Layer Caching ÃÖÀûÈ­)
 FROM gradle:8.5.0-jdk17-alpine AS build
-
 WORKDIR /app
 
-# Gradle ì„¤ì • íŒŒì¼ë“¤ì„ Docker ì´ë¯¸ì§€ ì•ˆìœ¼ë¡œ ë³µì‚¬
+# Gradle ºôµå ÆÄÀÏµéÀ» ¸ÕÀú º¹»çÇÏ¿© ÀÇÁ¸¼º ·¹ÀÌ¾î¸¦ ºĞ¸®ÇÕ´Ï´Ù.
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
-#COPY fullertingsecretfolder .
 
+# ÀÇÁ¸¼ºÀ» ¸ÕÀú ´Ù¿î·ÎµåÇÕ´Ï´Ù. ¼Ò½º ÄÚµå°¡ º¯°æµÇ¾îµµ ÀÌ ·¹ÀÌ¾î´Â Ä³½ÃµË´Ï´Ù.
+# --no-daemon ¿É¼ÇÀº CI È¯°æ¿¡¼­ ±ÇÀåµË´Ï´Ù.
+RUN ./gradlew dependencies --no-daemon
 
-# ì†ŒìŠ¤ ì½”ë“œë¥¼ Docker ì´ë¯¸ì§€ ì•ˆìœ¼ë¡œ ë³µì‚¬
-COPY src src
+# ¼Ò½º ÄÚµå¸¦ º¹»çÇÕ´Ï´Ù.
+COPY src ./src
 
-RUN chmod +x ./gradlew
+# ¾ÖÇÃ¸®ÄÉÀÌ¼ÇÀ» ºôµåÇÕ´Ï´Ù. (ÀÇÁ¸¼ºÀº ÀÌ¹Ì ´Ù¿î·ÎµåµÇ¾î ºôµå°¡ ºü¸¨´Ï´Ù)
+RUN ./gradlew bootJar --no-daemon -x test
 
-#ENV	USE_PROFILE prod
-
-# ë¹Œë“œ ìˆ˜í–‰
-RUN ./gradlew bootJar
-
-# 2ë‹¨ê³„: Java Runtime ì´ë¯¸ì§€ ì•ˆì— ë¹Œë“œ ê²°ê³¼ë¬¼ì„ ë„£ì–´ ì‹¤í–‰
-FROM azul/zulu-openjdk:17
-
+# 2´Ü°è: °æ·® JRE ÀÌ¹ÌÁö¿¡ ºôµå °á°ú¹°À» ³Ö¾î ½ÇÇà
+FROM azul/zulu-openjdk:17-jre-alpine
 WORKDIR /app
 
-# ë¹Œë“œ ê²°ê³¼ë¬¼ì„ ì´ì „ ë‹¨ê³„ì—ì„œ ë³µì‚¬
-COPY --from=build /app/build/libs/*.jar /app/back.jar
+# ºôµå ´Ü°è¿¡¼­ »ı¼ºµÈ JAR ÆÄÀÏ¸¸ º¹»çÇÕ´Ï´Ù.
+COPY --from=build /app/build/libs/*.jar app.jar
 
+# ¾ÖÇÃ¸®ÄÉÀÌ¼Ç Æ÷Æ® ³ëÃâ
+EXPOSE 8080
 
-# ì„œë²„ ì‹¤í–‰
-ENTRYPOINT ["java","-jar", "-Djava.security.egd=file:/dev/./urandom","/app/back.jar"]
+# ¾ÖÇÃ¸®ÄÉÀÌ¼Ç ½ÇÇà
+ENTRYPOINT ["java","-jar","/app/app.jar"]
