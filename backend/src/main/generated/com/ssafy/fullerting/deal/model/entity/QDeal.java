@@ -22,6 +22,8 @@ public class QDeal extends EntityPathBase<Deal> {
 
     public static final QDeal deal = new QDeal("deal");
 
+    public final NumberPath<Integer> bidderCount = createNumber("bidderCount", Integer.class);
+
     public final NumberPath<Integer> dealCurPrice = createNumber("dealCurPrice", Integer.class);
 
     public final com.ssafy.fullerting.exArticle.model.entity.QExArticle exArticle;

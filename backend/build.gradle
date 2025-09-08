@@ -10,6 +10,15 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	sourceCompatibility = '17'
+	toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        // 벤더/디스트리뷰션을 명시하고 싶다면:
+        // vendor = JvmVendorSpec.ADOPTIUM
+        // implementation = JvmImplementation.VENDOR_SPECIFIC
+	}
+
+
+
 }
 
 configurations {

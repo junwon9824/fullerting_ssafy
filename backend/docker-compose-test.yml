@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  kafka-test:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka-test
+    ports:
+      - "9092:9092"   # (선택) 내부 리스너 점검용
+      - "9094:9094"   # 외부(호스트)에서 접속할 포트
+    environment:
+      # KRaft 단일 브로커
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+
+      # 리스너 바인딩(반드시 0.0.0.0) + 광고 주소(내부/외부 분리)
+      KAFKA_LISTENERS: 'PLAINTEXT_INTERNAL://0.0.0.0:9092,PLAINTEXT_EXTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:29093'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT_INTERNAL://kafka-test:9092,PLAINTEXT_EXTERNAL://localhost:9094'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT_INTERNAL:PLAINTEXT,PLAINTEXT_EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT_INTERNAL'
+
+      # KRaft 컨트롤러
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka-test:29093'
+
+      # 단일 브로커 기본값
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_DELETE_TOPIC_ENABLE: 'true'
+      # 필수: 22자 base64 UUID (아래 주석 참조하여 생성한 값으로 교체)
+      # 생성 명령: docker run --rm confluentinc/cp-kafka:7.4.0 kafka-storage random-uuid
+      CLUSTER_ID: 'nFm8XWOTRaWqZrOXmHgAbA'
+    volumes:
+      - kafka_test_data:/var/lib/kafka/data
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD", "bash", "-lc", "kafka-broker-api-versions --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka-init
+    depends_on:
+      kafka-test:
+        condition: service_healthy
+    command: >
+      bash -lc "
+        echo 'Waiting for Kafka...';
+        cub kafka-ready -b kafka-test:9092 1 30;
+        echo 'Creating test topics...';
+        kafka-topics --create --if-not-exists --bootstrap-server kafka-test:9092 --topic bid_requests --partitions 3 --replication-factor 1;
+        kafka-topics --create --if-not-exists --bootstrap-server kafka-test:9092 --topic user-notifications --partitions 3 --replication-factor 1;
+        kafka-topics --list --bootstrap-server kafka-test:9092;
+        echo 'Done.'
+      "
+    networks:
+      - test-network
+
+  mongodb-test:
+    image: mongo:6.0
+    container_name: mongodb-test
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_DATABASE: test_fullerting
+    volumes:
+      - mongodb_test_data:/data/db
+    networks:
+      - test-network
+
+  redis-test:
+    image: redis:7-alpine
+    container_name: redis-test
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_test_data:/data
+    networks:
+      - test-network
+
+volumes:
+  kafka_test_data:
+  mongodb_test_data:
+  redis_test_data:
+
+networks:
+  test-network:
+    driver: bridge

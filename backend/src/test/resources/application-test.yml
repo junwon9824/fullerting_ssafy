@@ -1,0 +1,63 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+  data:
+    mongodb:
+      host: localhost
+      port: 27018
+      database: test_fullerting
+  redis:
+    host: localhost
+    port: 6380
+    database: 0
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      auto-offset-reset: earliest
+      group-id: test-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    # 테스트용 토픽 자동 생성 설정
+    admin:
+      auto-create: true
+      properties:
+        auto.create.topics.enable: true
+        delete.topic.enable: true
+    # 테스트용 토픽 설정
+    topics:
+      bid-requests: bid_requests
+      kafka-alarm: kafka-alarm
+    # 테스트용 토픽 자동 생성
+    listener:
+      missing-topics-fatal: false
+      auto-startup: true
+
+# 테스트용 Kafka 토픽 자동 생성
+kafka:
+  test:
+    topics:
+      - name: bid_requests
+        partitions: 3
+        replication-factor: 1
+      - name: kafka-alarm
+        partitions: 3
+        replication-factor: 1
+
+logging:
+  level:
+    com.ssafy.fullerting: DEBUG
+    org.springframework.kafka: DEBUG
+    org.springframework.data.redis: DEBUG
+    org.springframework.data.mongodb: DEBUG
