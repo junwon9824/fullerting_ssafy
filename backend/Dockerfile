@@ -19,7 +19,8 @@ COPY src ./src
 RUN ./gradlew bootJar --no-daemon -x test
 
 # 2단계: 경량 JRE 이미지에 빌드 결과물을 넣어 실행
-FROM azul/zulu-openjdk:17-jre-alpine
+#FROM azul/zulu-openjdk:17-jre-alpine
+FROM openjdk:17-jre-alpine
 WORKDIR /app
 
 # 빌드 단계에서 생성된 JAR 파일만 복사합니다.

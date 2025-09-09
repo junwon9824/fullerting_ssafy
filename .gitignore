@@ -2,6 +2,19 @@
 /backend/src/main/resources/application*.yml
 !/backend/src/main/resources/application-example.yml
 
+
+
+.Xauthority
+.bash_logout
+.bashrc
+.cache/motd.legal-displayed
+.lesshst
+.profile
+.ssh/authorized_keys
+.sudo_as_admin_successful
+.viminfo
+
+
 # IDE specific files
 .idea/
 *.iml
