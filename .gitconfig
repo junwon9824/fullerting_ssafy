@@ -1,3 +1,5 @@
 [user]
 	email = junwon1131@naver.com
 	name = junwon
+[credential]
+	helper = cache

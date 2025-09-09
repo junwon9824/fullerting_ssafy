@@ -5,13 +5,14 @@ name: Fullerting Backend CI/CD
 on:
   push:
     branches: ["main"]
-    paths:
-      - "backend/**"
 
 jobs:
   build-and-deploy:
     name: Build and Deploy Backend
     runs-on: ubuntu-latest # 실행 환경
+    permissions: 
+      contents: read # Allow reading repository content
+      packages: write # Grant write access for packages
 
     steps:
       # 2. 코드 체크아웃
