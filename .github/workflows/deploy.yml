@@ -49,6 +49,10 @@ jobs:
           echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
 
+      - name: List files for debugging
+        run: |
+          ls -R
+
       - name: Deploy to Kubernetes cluster
         run: |
           # k8s/deployment.yml 파일의 이미지 태그를 실제 빌드된 이미지로 변경합니다.
