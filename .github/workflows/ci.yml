@@ -2,31 +2,31 @@ name: Fullerting CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   backend:
-    runs-on: self-hosted # VirtualBoxì˜ ëŸ¬ë„ˆë¥¼ ì‚¬ìš©í•˜ë„ë¡ ë³€ê²½
+    runs-on: self-hosted # VirtualBox?˜ ?Ÿ¬?„ˆë¥? ?‚¬?š©?•˜?„ë¡? ë³?ê²?
     defaults:
       run:
         working-directory: ./backend
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: 'maven' # Gradleì„ ì‚¬ìš©í•˜ì‹ ë‹¤ë©´ 'gradle'ë¡œ ë³€ê²½í•´ì£¼ì„¸ìš”.
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: "maven" # Gradle?„ ?‚¬?š©?•˜?‹ ?‹¤ë©? 'gradle'ë¡? ë³?ê²½í•´ì£¼ì„¸?š”.
 
-    - name: Build and test with Maven
-      # Gradleì„ ì‚¬ìš©í•˜ì‹ ë‹¤ë©´ './gradlew build'ë¡œ ë³€ê²½í•´ì£¼ì„¸ìš”.
-      run: mvn -B package --file pom.xml
+      - name: Build and test with Maven
+        # Gradle?„ ?‚¬?š©?•˜?‹ ?‹¤ë©? './gradlew build'ë¡? ë³?ê²½í•´ì£¼ì„¸?š”.
+        run: mvn -B package --file pom.xml
 
-    # ì£¼ì„ í•´ì œí•˜ì—¬ Docker ë¹Œë“œ ë° í‘¸ì‹œ ê¸°ëŠ¥ í™œì„±í™” ê°€ëŠ¥
+    # ì£¼ì„ ?•´? œ?•˜?—¬ Docker ë¹Œë“œ ë°? ?‘¸?‹œ ê¸°ëŠ¥ ?™œ?„±?™” ê°??Š¥
     # - name: Log in to Docker Hub
     #   uses: docker/login-action@v3
     #   with:
@@ -41,24 +41,23 @@ jobs:
     #     tags: your-docker-repo/fullerting-backend:latest
 
   frontend:
-    runs-on: self-hosted # VirtualBoxì˜ ëŸ¬ë„ˆë¥¼ ì‚¬ìš©í•˜ë„ë¡ ë³€ê²½
+    runs-on: self-hosted # VirtualBox?˜ ?Ÿ¬?„ˆë¥? ?‚¬?š©?•˜?„ë¡? ë³?ê²?
     defaults:
       run:
         working-directory: ./frontend
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20' # í”„ë¡œì íŠ¸ì˜ Node.js ë²„ì „ì— ë§ê²Œ ìˆ˜ì •í•´ì£¼ì„¸ìš”.
-        cache: 'npm' # yarnì„ ì‚¬ìš©í•˜ì‹ ë‹¤ë©´ 'yarn'ìœ¼ë¡œ ë³€ê²½í•´ì£¼ì„¸ìš”.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20" # ?”„ë¡œì ?Š¸?˜ Node.js ë²„ì „?— ë§ê²Œ ?ˆ˜? •?•´ì£¼ì„¸?š”.
+          cache: "npm" # yarn?„ ?‚¬?š©?•˜?‹ ?‹¤ë©? 'yarn'?œ¼ë¡? ë³?ê²½í•´ì£¼ì„¸?š”.
 
-    - name: Install dependencies
-      # yarnì„ ì‚¬ìš©í•˜ì‹ ë‹¤ë©´ 'yarn install'ë¡œ ë³€ê²½í•´ì£¼ì„¸ìš”.
-      run: npm install
+      - name: Install dependencies
+        # yarn?„ ?‚¬?š©?•˜?‹ ?‹¤ë©? 'yarn install'ë¡? ë³?ê²½í•´ì£¼ì„¸?š”.
+        run: npm install
 
-    - name: Build
-      # yarnì„ ì‚¬ìš©í•˜ì‹ ë‹¤ë©´ 'yarn build'ë¡œ ë³€ê²½í•´ì£¼ì„¸ìš”.
-      run: npm run build
-
+      - name: Build
+        # yarn?„ ?‚¬?š©?•˜?‹ ?‹¤ë©? 'yarn build'ë¡? ë³?ê²½í•´ì£¼ì„¸?š”.
+        run: npm run build

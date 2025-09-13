@@ -1,33 +1,34 @@
-# 1단계: Gradle을 이용해 빌드 (Docker Layer Caching 최적화)
+# Stage 1: Build the application using Gradle
 FROM gradle:8.5.0-jdk17-alpine AS build
+
+# Set the working directory
 WORKDIR /app
 
-# Gradle 빌드 파일들을 먼저 복사하여 의존성 레이어를 분리합니다.
+# Copy Gradle wrapper and build files to leverage Docker layer caching
 COPY gradlew .
-COPY gradle gradle
+COPY gradle ./gradle
 COPY build.gradle .
 COPY settings.gradle .
 
-# 의존성을 먼저 다운로드합니다. 소스 코드가 변경되어도 이 레이어는 캐시됩니다.
-# --no-daemon 옵션은 CI 환경에서 권장됩니다.
+# Download dependencies. This layer is cached if build files don't change.
+# --no-daemon is recommended for CI environments.
 RUN ./gradlew dependencies --no-daemon
 
-# 소스 코드를 복사합니다.
+# Copy the rest of the source code
 COPY src ./src
 
-# 애플리케이션을 빌드합니다. (의존성은 이미 다운로드되어 빌드가 빠릅니다)
+# Build the application, skipping tests as they are run in the CI stage
 RUN ./gradlew bootJar --no-daemon -x test
 
-# 2단계: 경량 JRE 이미지에 빌드 결과물을 넣어 실행
-#FROM azul/zulu-openjdk:17-jre-alpine
-FROM openjdk:17-slim
+# Stage 2: Create the final, smaller image
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-# 빌드 단계에서 생성된 JAR 파일만 복사합니다.
+# Copy the built JAR file from the build stage
 COPY --from=build /app/build/libs/*.jar app.jar
 
-# 애플리케이션 포트 노출
+# Expose the port the application runs on
 EXPOSE 8080
 
-# 애플리케이션 실행
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
