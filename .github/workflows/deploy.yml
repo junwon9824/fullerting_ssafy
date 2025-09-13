@@ -52,6 +52,12 @@ jobs:
       - name: List files for debugging
         run: |
           ls -R
+      
+      - name: Debugging
+        run: |
+          echo "HOME directory: $HOME"
+          echo "kubectl version"
+          kubectl version --client
 
       - name: Deploy to Kubernetes cluster
         run: |
