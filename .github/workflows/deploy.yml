@@ -31,10 +31,11 @@ jobs:
           REPO_LC=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           echo "REPO_LC=$REPO_LC" >> $GITHUB_OUTPUT
 
-      - name: (Optional) Debug repo tree
-        run: |
-          pwd
-          ls -R | sed -n '1,200p'
+      # 디버그가 필요할 때만 임시로 사용
+      # - name: Debug repo tree
+      #   run: |
+      #     pwd
+      #     ls -R | sed -n '1,200p'
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -63,29 +64,4 @@ jobs:
 
       - name: Setup Kubeconfig
         run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
-          chmod 600 $HOME/.kube/config
-        env:
-          KUBECONFIG: $HOME/.kube/config
-
-      - name: Set lowercase image repo
-        id: img
-        run: |
-          REPO_LC=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          echo "REPO_LC=$REPO_LC" >> $GITHUB_OUTPUT
-
-      - name: Replace image in manifests
-        run: |
-          set -e
-          export KUBECONFIG=$HOME/.kube/config
-          sed -i "s|ghcr\.io/OWNER/REPO/backend:latest|ghcr.io/${{ steps.img.outputs.REPO_LC }}/backend:latest|g" k8s/*.yml
-          echo "Applied image: ghcr.io/${{ steps.img.outputs.REPO_LC }}/backend:latest"
-
-      - name: Apply manifests and rollout
-        run: |
-          set -e
-          export KUBECONFIG=$HOME/.kube/config
-          kubectl apply -f k8s/
-          kubectl rollout restart deployment/fullerting-backend-deployment
-          kubectl rollout status deployment/fullerting-backend-deployment --timeout=180s
+          mkdir -p $HOME/.
