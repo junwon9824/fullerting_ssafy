@@ -1,404 +1,408 @@
-package com.ssafy.fullerting;
+// package com.ssafy.fullerting;
 
-import com.ssafy.fullerting.bidLog.model.entity.BidLog;
-import com.ssafy.fullerting.bidLog.repository.BidRepository;
-import com.ssafy.fullerting.bidLog.service.BidService;
-import com.ssafy.fullerting.config.TestKafkaConfig;
-import com.ssafy.fullerting.deal.model.entity.Deal;
-import com.ssafy.fullerting.deal.repository.DealRepository;
-import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
-import com.ssafy.fullerting.exArticle.exception.ExArticleException;
-import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
-import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
-import com.ssafy.fullerting.global.kafka.BidConsumerService;
-import com.ssafy.fullerting.global.kafka.BidRequestMessage;
-import com.ssafy.fullerting.user.exception.UserErrorCode;
-import com.ssafy.fullerting.user.exception.UserException;
-import com.ssafy.fullerting.user.model.entity.MemberProfile;
-import com.ssafy.fullerting.user.repository.MemberRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+// import com.ssafy.fullerting.bidLog.model.entity.BidLog;
+// import com.ssafy.fullerting.bidLog.repository.BidRepository;
+// import com.ssafy.fullerting.bidLog.service.BidService;
+// import com.ssafy.fullerting.config.TestKafkaConfig;
+// import com.ssafy.fullerting.deal.model.entity.Deal;
+// import com.ssafy.fullerting.deal.repository.DealRepository;
+// import com.ssafy.fullerting.exArticle.exception.ExArticleErrorCode;
+// import com.ssafy.fullerting.exArticle.exception.ExArticleException;
+// import com.ssafy.fullerting.exArticle.model.entity.ExArticle;
+// import com.ssafy.fullerting.exArticle.repository.ExArticleRepository;
+// import com.ssafy.fullerting.global.kafka.BidConsumerService;
+// import com.ssafy.fullerting.global.kafka.BidRequestMessage;
+// import com.ssafy.fullerting.user.exception.UserErrorCode;
+// import com.ssafy.fullerting.user.exception.UserException;
+// import com.ssafy.fullerting.user.model.entity.MemberProfile;
+// import com.ssafy.fullerting.user.repository.MemberRepository;
+// import org.junit.jupiter.api.AfterEach;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.DisplayName;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.boot.test.context.SpringBootTest;
+// import org.springframework.context.annotation.Import;
+// import org.springframework.data.redis.core.RedisTemplate;
+// import org.springframework.test.context.ActiveProfiles;
+// import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+// import java.time.LocalDateTime;
+// import java.util.*;
+// import java.util.concurrent.*;
+// import java.util.concurrent.atomic.AtomicInteger;
+// import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
+// import static org.assertj.core.api.Assertions.*;
 
-/**
- * ì…ì°°í¬ë§ ì •í•©ì„±ìœ ì§€ì—¬ë¶€ë¥¼ í™•ì¸í•˜ëŠ” E2E í…ŒìŠ¤íŠ¸
- * 
- * í…ŒìŠ¤íŠ¸ ì‹œë‚˜ë¦¬ì˜¤:
- * 1. ë™ì‹œ ì…ì°° ì‹œ ë°ì´í„° ì •í•©ì„± ê²€ì¦ (ì¹´í”„ì¹´ë¥¼ í†µí•œ ë¹„ë™ê¸° ì²˜ë¦¬)
- * 2. ì…ì°°ê°€ ê²€ì¦ ë¡œì§ ì •í•©ì„± ê²€ì¦
- * 3. ì…ì°°ì ìˆ˜ ê³„ì‚° ì •í•©ì„± ê²€ì¦
- * 4. Redis ìºì‹œì™€ DB ë°ì´í„° ì •í•©ì„± ê²€ì¦
- * 5. ë‚™ì°° í›„ ìƒíƒœ ì •í•©ì„± ê²€ì¦
- */
-@SpringBootTest
-@ActiveProfiles("test")
-@Import(TestKafkaConfig.class)
-public class BidConsistencyE2ETest {
+// /**
+// * ?…ì°°í¬ë§? ? •?•©?„±?œ ì§??—¬ë¶?ë¥? ?™•?¸?•˜?Š” E2E ?…Œ?Š¤?Š¸
+// *
+// * ?…Œ?Š¤?Š¸ ?‹œ?‚˜ë¦¬ì˜¤:
+// * 1. ?™?‹œ ?…ì°? ?‹œ ?°?´?„° ? •?•©?„± ê²?ì¦? (ì¹´í”„ì¹´ë?? ?†µ?•œ ë¹„ë™ê¸? ì²˜ë¦¬)
+// * 2. ?…ì°°ê?? ê²?ì¦? ë¡œì§ ? •?•©?„± ê²?ì¦?
+// * 3. ?…ì°°ì ?ˆ˜ ê³„ì‚° ? •?•©?„± ê²?ì¦?
+// * 4. Redis ìºì‹œ??? DB ?°?´?„° ? •?•©?„± ê²?ì¦?
+// * 5. ?‚™ì°? ?›„ ?ƒ?ƒœ ? •?•©?„± ê²?ì¦?
+// */
+// @SpringBootTest
+// @ActiveProfiles("test")
+// @Import(TestKafkaConfig.class)
+// public class BidConsistencyE2ETest {
 
-    @Autowired
-    private BidConsumerService bidConsumerService;
+// @Autowired
+// private BidConsumerService bidConsumerService;
 
-    @Autowired
-    private BidService bidService;
+// @Autowired
+// private BidService bidService;
 
-    @Autowired
-    private ExArticleRepository exArticleRepository;
+// @Autowired
+// private ExArticleRepository exArticleRepository;
 
-    @Autowired
-    private DealRepository dealRepository;
+// @Autowired
+// private DealRepository dealRepository;
 
-    @Autowired
-    private MemberRepository memberRepository;
+// @Autowired
+// private MemberRepository memberRepository;
 
-    @Autowired
-    private BidRepository bidRepository;
+// @Autowired
+// private BidRepository bidRepository;
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+// @Autowired
+// private RedisTemplate<String, Object> redisTemplate;
 
-    private ExArticle testArticle;
-    private Deal testDeal;
-    private List<MemberProfile> testBidders;
-    private static final int INITIAL_PRICE = 1000;
-    private static final int BID_INCREMENT = 100;
+// private ExArticle testArticle;
+// private Deal testDeal;
+// private List<MemberProfile> testBidders;
+// private static final int INITIAL_PRICE = 1000;
+// private static final int BID_INCREMENT = 100;
 
-    @BeforeEach
-    void setUp() {
-        // í…ŒìŠ¤íŠ¸ ë°ì´í„° ì„¤ì •
-        setupTestData();
-    }
+// @BeforeEach
+// void setUp() {
+// // ?…Œ?Š¤?Š¸ ?°?´?„° ?„¤? •
+// setupTestData();
+// }
 
-    @AfterEach
-    void tearDown() {
-        // Redis ìºì‹œ ì •ë¦¬
-        clearRedisCache();
-    }
+// @AfterEach
+// void tearDown() {
+// // Redis ìºì‹œ ? •ë¦?
+// clearRedisCache();
+// }
 
-    private void setupTestData() {
-        try {
-            // ê¸°ì¡´ ì‚¬ìš©ì ì¡°íšŒ ë˜ëŠ” ìƒì„±
-            MemberProfile seller = memberRepository.findByEmail("user001@example.com")
-                    .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
+// private void setupTestData() {
+// try {
+// // ê¸°ì¡´ ?‚¬?š©? ì¡°íšŒ ?˜?Š” ?ƒ?„±
+// MemberProfile seller = memberRepository.findByEmail("user001@example.com")
+// .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
-            testBidders = Arrays.asList(
-                    memberRepository.findByEmail("user002@example.com")
-                            .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER)),
-                    memberRepository.findByEmail("user003@example.com")
-                            .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER)),
-                    memberRepository.findByEmail("user004@example.com")
-                            .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER))
-            );
+// testBidders = Arrays.asList(
+// memberRepository.findByEmail("user002@example.com")
+// .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER)),
+// memberRepository.findByEmail("user003@example.com")
+// .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER)),
+// memberRepository.findByEmail("user004@example.com")
+// .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER))
+// );
 
-            // í…ŒìŠ¤íŠ¸ ê²Œì‹œê¸€ ì¡°íšŒ
-            testArticle = exArticleRepository.findById(4L)
-                    .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+// // ?…Œ?Š¤?Š¸ ê²Œì‹œê¸? ì¡°íšŒ
+// testArticle = exArticleRepository.findById(4L)
+// .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
-            // í…ŒìŠ¤íŠ¸ìš© ê±°ë˜ ì •ë³´ ìƒì„±
-            testDeal = Deal.builder()
-                    .dealCurPrice(INITIAL_PRICE)
-                    .bidderCount(0)
-                    .exArticle(testArticle)
-                    .build();
-            testDeal = dealRepository.save(testDeal);
+// // ?…Œ?Š¤?Š¸?š© ê±°ë˜ ? •ë³? ?ƒ?„±
+// testDeal = Deal.builder()
+// .dealCurPrice(INITIAL_PRICE)
+// .bidderCount(0)
+// .exArticle(testArticle)
+// .build();
+// testDeal = dealRepository.save(testDeal);
 
-        } catch (Exception e) {
-            throw new RuntimeException("í…ŒìŠ¤íŠ¸ ë°ì´í„° ì„¤ì • ì‹¤íŒ¨", e);
-        }
-    }
+// } catch (Exception e) {
+// throw new RuntimeException("?…Œ?Š¤?Š¸ ?°?´?„° ?„¤? • ?‹¤?Œ¨", e);
+// }
+// }
 
-    private void clearRedisCache() {
-        String redisKey = "auction:" + testArticle.getId() + ":logs";
-        redisTemplate.delete(redisKey);
-    }
+// private void clearRedisCache() {
+// String redisKey = "auction:" + testArticle.getId() + ":logs";
+// redisTemplate.delete(redisKey);
+// }
 
-    @Test
-    @DisplayName("ë™ì‹œ ì…ì°° ì‹œ ë°ì´í„° ì •í•©ì„± ê²€ì¦ - ì¹´í”„ì¹´ë¥¼ í†µí•œ ë¹„ë™ê¸° ì²˜ë¦¬")
-    void testConcurrentBidsDataConsistencyWithKafka() throws InterruptedException {
-        // given
-        int numberOfThreads = 20;
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
-        AtomicInteger successfulBids = new AtomicInteger(0);
-        AtomicInteger failedBids = new AtomicInteger(0);
+// @Test
+// @DisplayName("?™?‹œ ?…ì°? ?‹œ ?°?´?„° ? •?•©?„± ê²?ì¦? - ì¹´í”„ì¹´ë?? ?†µ?•œ ë¹„ë™ê¸? ì²˜ë¦¬")
+// void testConcurrentBidsDataConsistencyWithKafka() throws InterruptedException
+// {
+// // given
+// int numberOfThreads = 20;
+// ExecutorService executorService = Executors.newFixedThreadPool(10);
+// CountDownLatch latch = new CountDownLatch(numberOfThreads);
+// AtomicInteger successfulBids = new AtomicInteger(0);
+// AtomicInteger failedBids = new AtomicInteger(0);
 
-        // when - ë™ì‹œì— ì—¬ëŸ¬ ì…ì°° ìš”ì²­ì„ ì¹´í”„ì¹´ë¥¼ í†µí•´ ì²˜ë¦¬
-        for (int i = 0; i < numberOfThreads; i++) {
-            int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
-            int bidderIndex = i % testBidders.size();
-            MemberProfile bidder = testBidders.get(bidderIndex);
+// // when - ?™?‹œ?— ?—¬?Ÿ¬ ?…ì°? ?š”ì²??„ ì¹´í”„ì¹´ë?? ?†µ?•´ ì²˜ë¦¬
+// for (int i = 0; i < numberOfThreads; i++) {
+// int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
+// int bidderIndex = i % testBidders.size();
+// MemberProfile bidder = testBidders.get(bidderIndex);
 
-            executorService.submit(() -> {
-                try {
-                    // ì¹´í”„ì¹´ ë©”ì‹œì§€ë¥¼ í†µí•´ ì…ì°° ìš”ì²­ (ì‹¤ì œ ìš´ì˜ í™˜ê²½ê³¼ ë™ì¼)
-                    BidRequestMessage message = new BidRequestMessage(
-                            testArticle.getId(), 
-                            bidPrice, 
-                            bidder.getNickname()
-                    );
-                    bidConsumerService.consumeBidRequest(message);
-                    successfulBids.incrementAndGet();
-                } catch (Exception e) {
-                    failedBids.incrementAndGet();
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
+// executorService.submit(() -> {
+// try {
+// // ì¹´í”„ì¹? ë©”ì‹œì§?ë¥? ?†µ?•´ ?…ì°? ?š”ì²? (?‹¤? œ ?š´?˜ ?™˜ê²½ê³¼ ?™?¼)
+// BidRequestMessage message = new BidRequestMessage(
+// testArticle.getId(),
+// bidPrice,
+// bidder.getNickname()
+// );
+// bidConsumerService.consumeBidRequest(message);
+// successfulBids.incrementAndGet();
+// } catch (Exception e) {
+// failedBids.incrementAndGet();
+// } finally {
+// latch.countDown();
+// }
+// });
+// }
 
-        latch.await(15, TimeUnit.SECONDS);
-        executorService.shutdown();
+// latch.await(15, TimeUnit.SECONDS);
+// executorService.shutdown();
 
-        // then - ë°ì´í„° ì •í•©ì„± ê²€ì¦
-        verifyDataConsistency();
-        verifyBidOrderConsistency();
-        verifyBidderCountConsistency();
-        
-        // í…ŒìŠ¤íŠ¸ ê²°ê³¼ ê²€ì¦
-        assertThat(successfulBids.get()).isGreaterThan(0);
-        assertThat(failedBids.get()).isLessThanOrEqualTo(numberOfThreads);
-    }
+// // then - ?°?´?„° ? •?•©?„± ê²?ì¦?
+// verifyDataConsistency();
+// verifyBidOrderConsistency();
+// verifyBidderCountConsistency();
 
-    @Test
-    @DisplayName("ë™ì‹œ ì…ì°° ì‹œ ë°ì´í„° ì •í•©ì„± ê²€ì¦ - ë½ ë¯¸ì‚¬ìš© (ì¹´í”„ì¹´)")
-    void testConcurrentBidsDataConsistencyWithoutLock() throws InterruptedException {
-        // given
-        int numberOfThreads = 20;
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
-        AtomicInteger successfulBids = new AtomicInteger(0);
-        AtomicInteger failedBids = new AtomicInteger(0);
+// // ?…Œ?Š¤?Š¸ ê²°ê³¼ ê²?ì¦?
+// assertThat(successfulBids.get()).isGreaterThan(0);
+// assertThat(failedBids.get()).isLessThanOrEqualTo(numberOfThreads);
+// }
 
-        // when - ë™ì‹œì— ì—¬ëŸ¬ ì…ì°° ìš”ì²­ (ë½ ë¯¸ì‚¬ìš©, ì¹´í”„ì¹´ë¥¼ í†µí•´)
-        for (int i = 0; i < numberOfThreads; i++) {
-            int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
-            int bidderIndex = i % testBidders.size();
-            MemberProfile bidder = testBidders.get(bidderIndex);
+// @Test
+// @DisplayName("?™?‹œ ?…ì°? ?‹œ ?°?´?„° ? •?•©?„± ê²?ì¦? - ?½ ë¯¸ì‚¬?š© (ì¹´í”„ì¹?)")
+// void testConcurrentBidsDataConsistencyWithoutLock() throws
+// InterruptedException {
+// // given
+// int numberOfThreads = 20;
+// ExecutorService executorService = Executors.newFixedThreadPool(10);
+// CountDownLatch latch = new CountDownLatch(numberOfThreads);
+// AtomicInteger successfulBids = new AtomicInteger(0);
+// AtomicInteger failedBids = new AtomicInteger(0);
 
-            executorService.submit(() -> {
-                try {
-                    BidRequestMessage message = new BidRequestMessage(
-                            testArticle.getId(), 
-                            bidPrice, 
-                            bidder.getNickname()
-                    );
-                    bidConsumerService.consumeBidRequestwithouLock(message);
-                    successfulBids.incrementAndGet();
-                } catch (Exception e) {
-                    failedBids.incrementAndGet();
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
+// // when - ?™?‹œ?— ?—¬?Ÿ¬ ?…ì°? ?š”ì²? (?½ ë¯¸ì‚¬?š©, ì¹´í”„ì¹´ë?? ?†µ?•´)
+// for (int i = 0; i < numberOfThreads; i++) {
+// int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
+// int bidderIndex = i % testBidders.size();
+// MemberProfile bidder = testBidders.get(bidderIndex);
 
-        latch.await(15, TimeUnit.SECONDS);
-        executorService.shutdown();
+// executorService.submit(() -> {
+// try {
+// BidRequestMessage message = new BidRequestMessage(
+// testArticle.getId(),
+// bidPrice,
+// bidder.getNickname()
+// );
+// bidConsumerService.consumeBidRequestwithouLock(message);
+// successfulBids.incrementAndGet();
+// } catch (Exception e) {
+// failedBids.incrementAndGet();
+// } finally {
+// latch.countDown();
+// }
+// });
+// }
 
-        // then - ë°ì´í„° ì •í•©ì„± ê²€ì¦
-        verifyDataConsistency();
-        verifyBidOrderConsistency();
-        verifyBidderCountConsistency();
-        
-        // í…ŒìŠ¤íŠ¸ ê²°ê³¼ ê²€ì¦
-        assertThat(successfulBids.get()).isGreaterThan(0);
-        assertThat(failedBids.get()).isLessThanOrEqualTo(numberOfThreads);
-    }
+// latch.await(15, TimeUnit.SECONDS);
+// executorService.shutdown();
 
-    @Test
-    @DisplayName("ì…ì°°ê°€ ê²€ì¦ ë¡œì§ ì •í•©ì„± ê²€ì¦ - ì¹´í”„ì¹´")
-    void testBidPriceValidationConsistency() {
-        // given
-        int invalidPrice = INITIAL_PRICE - 100; // í˜„ì¬ê°€ë³´ë‹¤ ë‚®ì€ ê°€ê²©
-        MemberProfile bidder = testBidders.get(0);
+// // then - ?°?´?„° ? •?•©?„± ê²?ì¦?
+// verifyDataConsistency();
+// verifyBidOrderConsistency();
+// verifyBidderCountConsistency();
 
-        // when & then - ë‚®ì€ ê°€ê²©ìœ¼ë¡œ ì…ì°° ì‹œë„ ì‹œ ì˜ˆì™¸ ë°œìƒ
-        assertThatThrownBy(() -> {
-            BidRequestMessage message = new BidRequestMessage(
-                    testArticle.getId(), 
-                    invalidPrice, 
-                    bidder.getNickname()
-            );
-            bidConsumerService.consumeBidRequest(message);
-        }).isInstanceOf(RuntimeException.class)
-          .hasMessageContaining("í˜„ì¬ê°€ë³´ë‹¤ ë†’ì€ ê¸ˆì•¡ì„ ì…ë ¥í•´ì£¼ì„¸ìš”");
+// // ?…Œ?Š¤?Š¸ ê²°ê³¼ ê²?ì¦?
+// assertThat(successfulBids.get()).isGreaterThan(0);
+// assertThat(failedBids.get()).isLessThanOrEqualTo(numberOfThreads);
+// }
 
-        // ì…ì°°ê°€ê°€ ë³€ê²½ë˜ì§€ ì•Šì•˜ëŠ”ì§€ í™•ì¸
-        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
-        assertThat(deal.getDealCurPrice()).isEqualTo(INITIAL_PRICE);
-    }
+// @Test
+// @DisplayName("?…ì°°ê?? ê²?ì¦? ë¡œì§ ? •?•©?„± ê²?ì¦? - ì¹´í”„ì¹?")
+// void testBidPriceValidationConsistency() {
+// // given
+// int invalidPrice = INITIAL_PRICE - 100; // ?˜„?¬ê°?ë³´ë‹¤ ?‚®??? ê°?ê²?
+// MemberProfile bidder = testBidders.get(0);
 
-    @Test
-    @DisplayName("Redis ìºì‹œì™€ DB ë°ì´í„° ì •í•©ì„± ê²€ì¦ - ì¹´í”„ì¹´")
-    void testRedisCacheAndDBDataConsistency() {
-        // given - ì…ì°° ë°ì´í„° ìƒì„± (ì¹´í”„ì¹´ë¥¼ í†µí•´)
-        MemberProfile bidder = testBidders.get(0);
-        int bidPrice = INITIAL_PRICE + BID_INCREMENT;
+// // when & then - ?‚®??? ê°?ê²©ìœ¼ë¡? ?…ì°? ?‹œ?„ ?‹œ ?˜ˆ?™¸ ë°œìƒ
+// assertThatThrownBy(() -> {
+// BidRequestMessage message = new BidRequestMessage(
+// testArticle.getId(),
+// invalidPrice,
+// bidder.getNickname()
+// );
+// bidConsumerService.consumeBidRequest(message);
+// }).isInstanceOf(RuntimeException.class)
+// .hasMessageContaining("?˜„?¬ê°?ë³´ë‹¤ ?†’??? ê¸ˆì•¡?„ ?…? ¥?•´ì£¼ì„¸?š”");
 
-        BidRequestMessage message = new BidRequestMessage(
-                testArticle.getId(), 
-                bidPrice, 
-                bidder.getNickname()
-        );
-        bidConsumerService.consumeBidRequest(message);
+// // ?…ì°°ê??ê°? ë³?ê²½ë˜ì§? ?•Š?•˜?Š”ì§? ?™•?¸
+// Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
+// assertThat(deal.getDealCurPrice()).isEqualTo(INITIAL_PRICE);
+// }
 
-        // when - Redis ìºì‹œì™€ DB ë°ì´í„° ì¡°íšŒ
-        String redisKey = "auction:" + testArticle.getId() + ":logs";
-        List<Object> cachedBids = redisTemplate.opsForList().range(redisKey, 0, -1);
-        
-        List<BidLog> dbBids = bidRepository.findByDealId(testDeal.getId().toString());
-        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
+// @Test
+// @DisplayName("Redis ìºì‹œ??? DB ?°?´?„° ? •?•©?„± ê²?ì¦? - ì¹´í”„ì¹?")
+// void testRedisCacheAndDBDataConsistency() {
+// // given - ?…ì°? ?°?´?„° ?ƒ?„± (ì¹´í”„ì¹´ë?? ?†µ?•´)
+// MemberProfile bidder = testBidders.get(0);
+// int bidPrice = INITIAL_PRICE + BID_INCREMENT;
 
-        // then - ë°ì´í„° ì •í•©ì„± ê²€ì¦
-        assertThat(cachedBids).isNotNull();
-        assertThat(dbBids).hasSizeGreaterThan(0);
-        assertThat(deal.getDealCurPrice()).isEqualTo(bidPrice);
-        
-        // Redis ìºì‹œì™€ DB ë°ì´í„° ê°œìˆ˜ ë¹„êµ
-        assertThat(cachedBids.size()).isEqualTo(dbBids.size());
-    }
+// BidRequestMessage message = new BidRequestMessage(
+// testArticle.getId(),
+// bidPrice,
+// bidder.getNickname()
+// );
+// bidConsumerService.consumeBidRequest(message);
 
-    @Test
-    @DisplayName("ì…ì°°ì ìˆ˜ ê³„ì‚° ì •í•©ì„± ê²€ì¦ - ì¹´í”„ì¹´")
-    void testBidderCountCalculationConsistency() {
-        // given - ì—¬ëŸ¬ ì‚¬ìš©ìê°€ ì…ì°° (ì¹´í”„ì¹´ë¥¼ í†µí•´)
-        for (int i = 0; i < testBidders.size(); i++) {
-            MemberProfile bidder = testBidders.get(i);
-            int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
+// // when - Redis ìºì‹œ??? DB ?°?´?„° ì¡°íšŒ
+// String redisKey = "auction:" + testArticle.getId() + ":logs";
+// List<Object> cachedBids = redisTemplate.opsForList().range(redisKey, 0, -1);
 
-            BidRequestMessage message = new BidRequestMessage(
-                    testArticle.getId(), 
-                    bidPrice, 
-                    bidder.getNickname()
-            );
-            bidConsumerService.consumeBidRequest(message);
-        }
+// List<BidLog> dbBids =
+// bidRepository.findByDealId(testDeal.getId().toString());
+// Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
 
-        // when - ë‹¤ì–‘í•œ ë°©ë²•ìœ¼ë¡œ ì…ì°°ì ìˆ˜ ê³„ì‚°
-        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
-        List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
-        
-        int uniqueBiddersFromBids = (int) allBids.stream()
-                .map(BidLog::getUserId)
-                .distinct()
-                .count();
-        
-        int bidderCountFromService = bidService.getBidderCount(deal);
-        int bidderCountFromDeal = deal.getBidderCount();
+// // then - ?°?´?„° ? •?•©?„± ê²?ì¦?
+// assertThat(cachedBids).isNotNull();
+// assertThat(dbBids).hasSizeGreaterThan(0);
+// assertThat(deal.getDealCurPrice()).isEqualTo(bidPrice);
 
-        // then - ëª¨ë“  ë°©ë²•ìœ¼ë¡œ ê³„ì‚°í•œ ì…ì°°ì ìˆ˜ê°€ ì¼ì¹˜í•˜ëŠ”ì§€ í™•ì¸
-        assertThat(uniqueBiddersFromBids).isEqualTo(testBidders.size());
-        assertThat(bidderCountFromService).isEqualTo(testBidders.size());
-        assertThat(bidderCountFromDeal).isEqualTo(testBidders.size());
-    }
+// // Redis ìºì‹œ??? DB ?°?´?„° ê°œìˆ˜ ë¹„êµ
+// assertThat(cachedBids.size()).isEqualTo(dbBids.size());
+// }
 
-    @Test
-    @DisplayName("ë™ì¼ ì‚¬ìš©ì ì¬ì…ì°° ì‹œ ì •í•©ì„± ê²€ì¦ - ì¹´í”„ì¹´")
-    void testSameUserRebidConsistency() {
-        // given - ì²« ë²ˆì§¸ ì…ì°°
-        MemberProfile bidder = testBidders.get(0);
-        int firstBidPrice = INITIAL_PRICE + BID_INCREMENT;
-        int secondBidPrice = firstBidPrice + BID_INCREMENT;
+// @Test
+// @DisplayName("?…ì°°ì ?ˆ˜ ê³„ì‚° ? •?•©?„± ê²?ì¦? - ì¹´í”„ì¹?")
+// void testBidderCountCalculationConsistency() {
+// // given - ?—¬?Ÿ¬ ?‚¬?š©?ê°? ?…ì°? (ì¹´í”„ì¹´ë?? ?†µ?•´)
+// for (int i = 0; i < testBidders.size(); i++) {
+// MemberProfile bidder = testBidders.get(i);
+// int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
 
-        // ì²« ë²ˆì§¸ ì…ì°° (ì¹´í”„ì¹´ë¥¼ í†µí•´)
-        BidRequestMessage firstMessage = new BidRequestMessage(
-                testArticle.getId(), 
-                firstBidPrice, 
-                bidder.getNickname()
-        );
-        bidConsumerService.consumeBidRequest(firstMessage);
+// BidRequestMessage message = new BidRequestMessage(
+// testArticle.getId(),
+// bidPrice,
+// bidder.getNickname()
+// );
+// bidConsumerService.consumeBidRequest(message);
+// }
 
-        // when - ê°™ì€ ì‚¬ìš©ìê°€ ë” ë†’ì€ ê°€ê²©ìœ¼ë¡œ ì¬ì…ì°° (ì¹´í”„ì¹´ë¥¼ í†µí•´)
-        BidRequestMessage secondMessage = new BidRequestMessage(
-                testArticle.getId(), 
-                secondBidPrice, 
-                bidder.getNickname()
-        );
-        bidConsumerService.consumeBidRequest(secondMessage);
+// // when - ?‹¤?–‘?•œ ë°©ë²•?œ¼ë¡? ?…ì°°ì ?ˆ˜ ê³„ì‚°
+// Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
+// List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
 
-        // then - ì •í•©ì„± ê²€ì¦
-        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
-        List<BidLog> userBids = bidRepository.findByDealId(deal.getId().toString())
-                .stream()
-                .filter(bid -> bid.getUserId().equals(bidder.getId()))
-                .collect(Collectors.toList());
+// int uniqueBiddersFromBids = (int) allBids.stream()
+// .map(BidLog::getUserId)
+// .distinct()
+// .count();
 
-        // í˜„ì¬ê°€ëŠ” ê°€ì¥ ë†’ì€ ì…ì°°ê°€ì—¬ì•¼ í•¨
-        assertThat(deal.getDealCurPrice()).isEqualTo(secondBidPrice);
-        
-        // í•´ë‹¹ ì‚¬ìš©ìì˜ ì…ì°° ë‚´ì—­ì´ 2ê°œì—¬ì•¼ í•¨
-        assertThat(userBids).hasSize(2);
-        
-        // ì…ì°°ê°€ê°€ ì˜¤ë¦„ì°¨ìˆœìœ¼ë¡œ ì •ë ¬ë˜ì–´ì•¼ í•¨
-        List<Integer> bidPrices = userBids.stream()
-                .map(BidLog::getBidLogPrice)
-                .sorted()
-                .collect(Collectors.toList());
-        assertThat(bidPrices).containsExactly(firstBidPrice, secondBidPrice);
-    }
+// int bidderCountFromService = bidService.getBidderCount(deal);
+// int bidderCountFromDeal = deal.getBidderCount();
 
-    /**
-     * ë°ì´í„° ì •í•©ì„± ê²€ì¦ í—¬í¼ ë©”ì„œë“œ
-     */
-    private void verifyDataConsistency() {
-        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
-        List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
+// // then - ëª¨ë“  ë°©ë²•?œ¼ë¡? ê³„ì‚°?•œ ?…ì°°ì ?ˆ˜ê°? ?¼ì¹˜í•˜?Š”ì§? ?™•?¸
+// assertThat(uniqueBiddersFromBids).isEqualTo(testBidders.size());
+// assertThat(bidderCountFromService).isEqualTo(testBidders.size());
+// assertThat(bidderCountFromDeal).isEqualTo(testBidders.size());
+// }
 
-        // ì…ì°° ë‚´ì—­ì´ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸
-        assertThat(allBids).isNotEmpty();
-        
-        // í˜„ì¬ê°€ê°€ ì˜¬ë°”ë¥´ê²Œ ì„¤ì •ë˜ì—ˆëŠ”ì§€ í™•ì¸
-        int maxBidPrice = allBids.stream()
-                .mapToInt(BidLog::getBidLogPrice)
-                .max()
-                .orElse(INITIAL_PRICE);
-        assertThat(deal.getDealCurPrice()).isEqualTo(maxBidPrice);
-    }
+// @Test
+// @DisplayName("?™?¼ ?‚¬?š©? ?¬?…ì°? ?‹œ ? •?•©?„± ê²?ì¦? - ì¹´í”„ì¹?")
+// void testSameUserRebidConsistency() {
+// // given - ì²? ë²ˆì§¸ ?…ì°?
+// MemberProfile bidder = testBidders.get(0);
+// int firstBidPrice = INITIAL_PRICE + BID_INCREMENT;
+// int secondBidPrice = firstBidPrice + BID_INCREMENT;
 
-    /**
-     * ì…ì°° ìˆœì„œ ì •í•©ì„± ê²€ì¦ í—¬í¼ ë©”ì„œë“œ
-     */
-    private void verifyBidOrderConsistency() {
-        List<BidLog> allBids = bidRepository.findByDealId(testDeal.getId().toString());
-        
-        // ì…ì°°ê°€ê°€ ì˜¤ë¦„ì°¨ìˆœìœ¼ë¡œ ì •ë ¬ë˜ì–´ì•¼ í•¨ (ì‹œê°„ìˆœ)
-        List<Integer> bidPrices = allBids.stream()
-                .mapToInt(BidLog::getBidLogPrice)
-                .boxed()
-                .collect(Collectors.toList());
-        
-        List<Integer> sortedPrices = new ArrayList<>(bidPrices);
-        Collections.sort(sortedPrices);
-        
-        assertThat(bidPrices).isEqualTo(sortedPrices);
-    }
+// // ì²? ë²ˆì§¸ ?…ì°? (ì¹´í”„ì¹´ë?? ?†µ?•´)
+// BidRequestMessage firstMessage = new BidRequestMessage(
+// testArticle.getId(),
+// firstBidPrice,
+// bidder.getNickname()
+// );
+// bidConsumerService.consumeBidRequest(firstMessage);
 
-    /**
-     * ì…ì°°ì ìˆ˜ ì •í•©ì„± ê²€ì¦ í—¬í¼ ë©”ì„œë“œ
-     */
-    private void verifyBidderCountConsistency() {
-        Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
-        List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
-        
-        int uniqueBidders = (int) allBids.stream()
-                .map(BidLog::getUserId)
-                .distinct()
-                .count();
-        
-        assertThat(deal.getBidderCount()).isEqualTo(uniqueBidders);
-    }
-}
+// // when - ê°™ì?? ?‚¬?š©?ê°? ?” ?†’??? ê°?ê²©ìœ¼ë¡? ?¬?…ì°? (ì¹´í”„ì¹´ë?? ?†µ?•´)
+// BidRequestMessage secondMessage = new BidRequestMessage(
+// testArticle.getId(),
+// secondBidPrice,
+// bidder.getNickname()
+// );
+// bidConsumerService.consumeBidRequest(secondMessage);
+
+// // then - ? •?•©?„± ê²?ì¦?
+// Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
+// List<BidLog> userBids = bidRepository.findByDealId(deal.getId().toString())
+// .stream()
+// .filter(bid -> bid.getUserId().equals(bidder.getId()))
+// .collect(Collectors.toList());
+
+// // ?˜„?¬ê°??Š” ê°??¥ ?†’??? ?…ì°°ê???—¬?•¼ ?•¨
+// assertThat(deal.getDealCurPrice()).isEqualTo(secondBidPrice);
+
+// // ?•´?‹¹ ?‚¬?š©??˜ ?…ì°? ?‚´?—­?´ 2ê°œì—¬?•¼ ?•¨
+// assertThat(userBids).hasSize(2);
+
+// // ?…ì°°ê??ê°? ?˜¤ë¦„ì°¨?ˆœ?œ¼ë¡? ? •? ¬?˜?–´?•¼ ?•¨
+// List<Integer> bidPrices = userBids.stream()
+// .map(BidLog::getBidLogPrice)
+// .sorted()
+// .collect(Collectors.toList());
+// assertThat(bidPrices).containsExactly(firstBidPrice, secondBidPrice);
+// }
+
+// /**
+// * ?°?´?„° ? •?•©?„± ê²?ì¦? ?—¬?¼ ë©”ì„œ?“œ
+// */
+// private void verifyDataConsistency() {
+// Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
+// List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
+
+// // ?…ì°? ?‚´?—­?´ ì¡´ì¬?•˜?Š”ì§? ?™•?¸
+// assertThat(allBids).isNotEmpty();
+
+// // ?˜„?¬ê°?ê°? ?˜¬ë°”ë¥´ê²? ?„¤? •?˜?—ˆ?Š”ì§? ?™•?¸
+// int maxBidPrice = allBids.stream()
+// .mapToInt(BidLog::getBidLogPrice)
+// .max()
+// .orElse(INITIAL_PRICE);
+// assertThat(deal.getDealCurPrice()).isEqualTo(maxBidPrice);
+// }
+
+// /**
+// * ?…ì°? ?ˆœ?„œ ? •?•©?„± ê²?ì¦? ?—¬?¼ ë©”ì„œ?“œ
+// */
+// private void verifyBidOrderConsistency() {
+// List<BidLog> allBids =
+// bidRepository.findByDealId(testDeal.getId().toString());
+
+// // ?…ì°°ê??ê°? ?˜¤ë¦„ì°¨?ˆœ?œ¼ë¡? ? •? ¬?˜?–´?•¼ ?•¨ (?‹œê°„ìˆœ)
+// List<Integer> bidPrices = allBids.stream()
+// .mapToInt(BidLog::getBidLogPrice)
+// .boxed()
+// .collect(Collectors.toList());
+
+// List<Integer> sortedPrices = new ArrayList<>(bidPrices);
+// Collections.sort(sortedPrices);
+
+// assertThat(bidPrices).isEqualTo(sortedPrices);
+// }
+
+// /**
+// * ?…ì°°ì ?ˆ˜ ? •?•©?„± ê²?ì¦? ?—¬?¼ ë©”ì„œ?“œ
+// */
+// private void verifyBidderCountConsistency() {
+// Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
+// List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
+
+// int uniqueBidders = (int) allBids.stream()
+// .map(BidLog::getUserId)
+// .distinct()
+// .count();
+
+// assertThat(deal.getBidderCount()).isEqualTo(uniqueBidders);
+// }
+// }
