@@ -31,11 +31,16 @@ jobs:
           REPO_LC=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           echo "REPO_LC=$REPO_LC" >> $GITHUB_OUTPUT
 
+      - name: (Optional) Debug repo tree
+        run: |
+          pwd
+          ls -R | sed -n '1,200p'
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: .
+          file: ./Dockerfile
           push: true
           tags: ghcr.io/${{ steps.img.outputs.REPO_LC }}/backend:latest
 
