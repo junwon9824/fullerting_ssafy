@@ -1,8 +1,11 @@
 package com.ssafy.fullerting.global.kafka;
 
-import com.ssafy.fullerting.global.config.BidNotification;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -13,16 +16,16 @@ import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.util.backoff.FixedBackOff;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.ssafy.fullerting.global.config.BidNotification;
 
 @Configuration
 @EnableKafka
 public class KafkaConsumerConfig {
 
-    private static final String BOOTSTRAP_SERVERS = "localhost:9092";
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String bootstrapServers;
 
-    // ğŸ”¹ ì¼ë°˜ String ë©”ì‹œì§€ìš© ConsumerFactory
+    // ? ÀÏ¹İ String ¸Ş½ÃÁö¿ë ConsumerFactory
     @Bean
     public ConsumerFactory<String, String> stringConsumerFactory() {
         Map<String, Object> config = commonConfig();
@@ -32,7 +35,7 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
     }
 
-    // ğŸ”¹ BidRequestMessageìš© ConsumerFactory
+    // ? BidRequestMessage¿ë ConsumerFactory
     @Bean
     public ConsumerFactory<String, BidRequestMessage> bidRequestConsumerFactory() {
         Map<String, Object> config = commonConfig();
@@ -42,19 +45,19 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
     }
 
-    // ğŸ”¹ BidNotificationìš© ConsumerFactory
+    // ? BidNotification¿ë ConsumerFactory
     @Bean
     public ConsumerFactory<String, BidNotification> bidNotificationConsumerFactory() {
         Map<String, Object> config = commonConfig();
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "bid-notification-group");
         JsonDeserializer<BidNotification> deserializer = new JsonDeserializer<>(BidNotification.class);
-        deserializer.addTrustedPackages("com.ssafy.fullerting.global.config"); // ì‹¤ì œ íŒ¨í‚¤ì§€ëª…!
+        deserializer.addTrustedPackages("com.ssafy.fullerting.global.config"); // ½ÇÁ¦ ÆĞÅ°Áö¸í!
         deserializer.setRemoveTypeHeaders(false);
         deserializer.setUseTypeMapperForKey(true);
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
     }
 
-    // ğŸ”¹ String ë©”ì‹œì§€ìš© ListenerContainerFactory
+    // ? String ¸Ş½ÃÁö¿ë ListenerContainerFactory
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> stringKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -63,7 +66,7 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
-    // ğŸ”¹ BidRequestMessageìš© ListenerContainerFactory
+    // ? BidRequestMessage¿ë ListenerContainerFactory
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, BidRequestMessage> bidKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, BidRequestMessage> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -72,7 +75,7 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
-    // ğŸ”¹ BidNotificationìš© ListenerContainerFactory
+    // ? BidNotification¿ë ListenerContainerFactory
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, BidNotification> bidNotificationKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, BidNotification> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -81,15 +84,15 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
-    // ğŸ”¹ ê³µí†µ Kafka Consumer ì„¤ì •
+    // ? °øÅë Kafka Consumer ¼³Á¤
     private Map<String, Object> commonConfig() {
         Map<String, Object> config = new HashMap<>();
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return config;
     }
 
-    // ğŸ”¹ ê³µí†µ ì—ëŸ¬ í•¸ë“¤ëŸ¬
+    // ? °øÅë ¿¡·¯ ÇÚµé·¯
     private DefaultErrorHandler defaultErrorHandler() {
         return new DefaultErrorHandler(
                 (record, exception) ->
