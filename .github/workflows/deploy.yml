@@ -61,6 +61,9 @@ jobs:
 
       - name: Deploy to Kubernetes cluster
         run: |
+          # Explicitly set the KUBECONFIG environment variable
+          export KUBECONFIG=$HOME/.kube/config
+
           # k8s/deployment.yml 파일의 이미지 태그를 실제 빌드된 이미지로 변경합니다.
           sed -i 's|ghcr.io/OWNER/REPO/backend:latest|ghcr.io/${{ github.repository }}/backend:latest|g' k8s/*.yml
 
