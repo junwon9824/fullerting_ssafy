@@ -1,21 +1,24 @@
-# 🚑 트러블슈팅
+# �윓� �듃�윭釉붿뒋�똿
 
-## 1. Redis 캐시 역직렬화 이슈
+## 1. Redis 罹먯떆 �뿭吏곷젹�솕 �씠�뒋
 
-### 증상
-- Redis에서 조회한 데이터를 `BidLogResponse`로 변환 시 `ClassCastException` 발생
-- `Integer`를 `BidLogResponse`로 캐스팅하려는 오류 발생
+### 利앹긽
 
-### 원인
-- `RedisTemplate`의 기본 직렬화/역직렬화 설정에 따라 데이터가 다르게 저장/조회됨
-- `StringRedisTemplate`을 사용하는 경우 `String`으로, `RedisTemplate`을 사용하는 경우 객체로 저장
-- 두 가지 경우를 모두 처리하지 않아 발생하는 문제
+- Redis�뿉�꽌 議고쉶�븳 �뜲�씠�꽣瑜 � `BidLogResponse`濡 � 蹂 ��솚 �떆 `ClassCastException` 諛쒖깮
+- `Integer`瑜 � `BidLogResponse`濡 � 罹먯뒪�똿�븯�젮�뒗 �삤瑜 � 諛쒖깮
 
-### 해결 방법
-1. Redis에서 조회한 데이터의 타입 확인
-2. `LinkedHashMap`인 경우: `objectMapper.convertValue()` 사용
-3. `String`(JSON)인 경우: `objectMapper.readValue()`로 역직렬화
-4. 그 외 타입은 예외 처리
+### �썝�씤
+
+- `RedisTemplate`�쓽 湲곕낯 吏곷젹�솕/�뿭吏곷젹�솕 �꽕�젙�뿉 �뵲�씪 �뜲�씠�꽣媛 � �떎瑜닿쾶 ����옣/議고쉶�맖
+- `StringRedisTemplate`�쓣 �궗�슜�븯�뒗 寃쎌슦 `String`�쑝濡 �, `RedisTemplate`�쓣 �궗�슜�븯�뒗 寃쎌슦 媛앹껜濡 � ����옣
+- �몢 媛 � 吏 � 寃쎌슦瑜 � 紐 ⑤몢 泥섎━�븯吏 � �븡�븘 諛쒖깮�븯�뒗 臾몄젣
+
+### �빐寃 � 諛 ⑸쾿
+
+1. Redis�뿉�꽌 議고쉶�븳 �뜲�씠�꽣�쓽 ����엯 �솗�씤
+2. `LinkedHashMap`�씤 寃쎌슦: `objectMapper.convertValue()` �궗�슜
+3. `String`(JSON)�씤 寃쎌슦: `objectMapper.readValue()`濡 � �뿭吏곷젹�솕
+4. 洹 � �쇅 ����엯��� �삁�쇅 泥섎━
 
 ```java
 return redisList.stream()
@@ -26,28 +29,31 @@ return redisList.stream()
             try {
                 return objectMapper.readValue((String) obj, BidLogResponse.class);
             } catch (Exception e) {
-                throw new RuntimeException("Redis 캐시 역직렬화 실패", e);
+                throw new RuntimeException("Redis 罹먯떆 �뿭吏곷젹�솕 �떎�뙣", e);
             }
         } else {
-            throw new RuntimeException("알 수 없는 캐시 타입: " + obj.getClass());
+            throw new RuntimeException("�븣 �닔 �뾾�뒗 罹먯떆 ����엯: " + obj.getClass());
         }
     })
     .collect(Collectors.toList());
 ```
 
-## 2. Kafka Consumer 그룹 이슈
+## 2. Kafka Consumer 洹몃９ �씠�뒋
 
-### 증상
-- 여러 인스턴스에서 동일한 Kafka 토픽을 구독할 때 메시지가 중복 처리되거나 누락되는 현상 발생
+### 利앹긽
 
-### 원인
-- Consumer 그룹 ID가 동일하게 설정되어 있어 발생하는 문제
-- 파티션 할당 문제로 인한 불균형한 메시지 처리
+- �뿬�윭 �씤�뒪�꽩�뒪�뿉�꽌 �룞�씪�븳 Kafka �넗�뵿�쓣 援 щ룆�븷 �븣 硫붿떆吏 � 媛 � 以묐났 泥섎━�릺嫄곕굹 �늻�씫�릺�뒗 �쁽�긽 諛쒖깮
 
-### 해결 방법
-1. 각 인스턴스마다 고유한 Consumer 그룹 ID 부여
-2. 파티션 개수와 컨슈머 개수 조정
-3. `auto.offset.reset` 설정을 `latest` 또는 `earliest`로 명시적 지정
+### �썝�씤
+
+- Consumer 洹몃９ ID 媛 � �룞�씪�븯寃 � �꽕�젙�릺�뼱 �엳�뼱 諛쒖깮�븯�뒗 臾몄젣
+- �뙆�떚�뀡 �븷�떦 臾몄젣濡 � �씤�븳 遺덇퇏�삎�븳 硫붿떆吏 � 泥섎━
+
+### �빐寃 � 諛 ⑸쾿
+
+1. 媛 � �씤�뒪�꽩�뒪留덈떎 怨좎쑀�븳 Consumer 洹몃９ ID 遺 ��뿬
+2. �뙆�떚�뀡 媛쒖닔��� 而 ⑥뒋癒 � 媛쒖닔 議곗젙
+3. `auto.offset.reset` �꽕�젙�쓣 `latest` �삉�뒗 `earliest`濡 � 紐낆떆�쟻 吏 ��젙
 
 ```yaml
 spring:
@@ -57,20 +63,23 @@ spring:
       auto-offset-reset: latest
 ```
 
-## 3. JPA N+1 문제
+## 3. JPA N+1 臾몄젣
 
-### 증상
-- 단일 쿼리 대신 다수의 쿼리가 발생하여 성능 저하
-- 특히 `@OneToMany` 관계에서 자주 발생
+### 利앹긽
 
-### 원인
-- 지연 로딩으로 인한 N+1 문제
-- 컬렉션을 순회할 때마다 추가 쿼리 발생
+- �떒�씪 荑쇰━ ����떊 �떎�닔�쓽 荑쇰━ 媛 � 諛쒖깮�븯�뿬 �꽦�뒫 ����븯
+- �듅�엳 `@OneToMany` 愿 � 怨꾩뿉�꽌 �옄二 � 諛쒖깮
 
-### 해결 방법
-1. `@EntityGraph`를 사용한 패치 조인 적용
-2. `@BatchSize`로 배치 사이즈 조정
-3. `FetchType.LAZY`로 설정하고 필요한 경우에만 조회
+### �썝�씤
+
+- 吏 ��뿰 濡쒕뵫�쑝濡 � �씤�븳 N+1 臾몄젣
+- 而 щ젆�뀡�쓣 �닚�쉶�븷 �븣留덈떎 異붽�� 荑쇰━ 諛쒖깮
+
+### �빐寃 � 諛 ⑸쾿
+
+1. `@EntityGraph`瑜 � �궗�슜�븳 �뙣移 � 議곗씤 �쟻�슜
+2. `@BatchSize`濡 � 諛곗튂 �궗�씠利 � 議곗젙
+3. `FetchType.LAZY`濡 � �꽕�젙�븯怨 � �븘�슂�븳 寃쎌슦�뿉留 � 議고쉶
 
 ```java
 @EntityGraph(attributePaths = {"bids", "seller"})
@@ -78,38 +87,44 @@ spring:
 Optional<Deal> findByIdWithBids(@Param("id") Long id);
 ```
 
-## 4. 동시성 제어 문제
+## 4. �룞�떆�꽦 �젣�뼱 臾몄젣
 
-### 증상
-- 경매 입찰 시 동시에 여러 요청이 들어올 경우 입찰 금액이 덮어써지는 문제 발생
+### 利앹긽
 
-### 원인
-- 낙관적/비관적 락이 적용되지 않아 발생하는 동시성 문제
+- 寃쎈ℓ �엯李 � �떆 �룞�떆�뿉 �뿬�윭 �슂泥 ��씠 �뱾�뼱�삱 寃쎌슦 �엯李 � 湲덉븸�씠 �뜮�뼱�뜥吏 ��뒗 臾몄젣 諛쒖깮
 
-### 해결 방법
-1. `@Version`을 사용한 낙관적 락 적용
-2. `@Lock(LockModeType.PESSIMISTIC_WRITE)`을 사용한 비관적 락 적용
-3. Redis 분산 락 적용
+### �썝�씤
+
+- �굺愿 ��쟻/鍮꾧���쟻 �씫�씠 �쟻�슜�릺吏 � �븡�븘 諛쒖깮�븯�뒗 �룞�떆�꽦 臾몄젣
+
+### �빐寃 � 諛 ⑸쾿
+
+1. `@Version`�쓣 �궗�슜�븳 �굺愿 ��쟻 �씫 �쟻�슜
+2. `@Lock(LockModeType.PESSIMISTIC_WRITE)`�쓣 �궗�슜�븳 鍮꾧���쟻 �씫 �쟻�슜
+3. Redis 遺꾩궛 �씫 �쟻�슜
 
 ```java
 @Transactional
 @Lock(LockModeType.PESSIMISTIC_WRITE)
 public BidLog placeBid(Long dealId, BidRequest request) {
-    // 입찰 처리 로직
+    // �엯李� 泥섎━ 濡쒖쭅
 }
 ```
 
-## 5. CORS 이슈
+## 5. CORS �씠�뒋
 
-### 증상
-- 프론트엔드에서 API 호출 시 CORS 정책 위반 오류 발생
+### 利앹긽
 
-### 원인
-- 서버에서 CORS 헤더가 제대로 설정되지 않아 발생
+- �봽濡좏듃�뿏�뱶�뿉�꽌 API �샇異 � �떆 CORS �젙梨 � �쐞諛 � �삤瑜 � 諛쒖깮
 
-### 해결 방법
-1. Spring Security 설정에 CORS 정책 추가
-2. 특정 도메인만 허용하도록 설정
+### �썝�씤
+
+- �꽌踰꾩뿉�꽌 CORS �뿤�뜑媛 � �젣��� 濡 � �꽕�젙�릺吏 � �븡�븘 諛쒖깮
+
+### �빐寃 � 諛 ⑸쾿
+
+1. Spring Security �꽕�젙�뿉 CORS �젙梨 � 異붽��
+2. �듅�젙 �룄硫붿씤留 � �뿀�슜�븯�룄濡 � �꽕�젙
 
 ```java
 @Bean
@@ -119,27 +134,30 @@ public CorsConfigurationSource corsConfigurationSource() {
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("*"));
     configuration.setAllowCredentials(true);
-    
+
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
 }
 ```
 
-## 6. JWT 토큰 만료 처리
+## 6. JWT �넗�겙 留뚮즺 泥섎━
 
-### 증상
-- 액세스 토큰이 만료되었을 때 사용자 경험이 좋지 않은 문제
+### 利앹긽
 
-### 원인
-- 토큰 만료 시 로그인 페이지로 리다이렉트되거나, 사용자에게 불편을 주는 방식으로 처리됨
+- �븸�꽭�뒪 �넗�겙�씠 留뚮즺�릺�뿀�쓣 �븣 �궗�슜�옄 寃쏀뿕�씠 醫뗭�� �븡��� 臾몄젣
 
-### 해결 방법
-1. Axios 인터셉터를 사용해 토큰 만료 시 자동 갱신
-2. 리프레시 토큰을 사용한 자동 로그인 유지
+### �썝�씤
+
+- �넗�겙 留뚮즺 �떆 濡쒓렇�씤 �럹�씠吏 � 濡 � 由 щ떎�씠�젆�듃�릺嫄곕굹, �궗�슜�옄�뿉寃 � 遺덊렪�쓣 二쇰뒗 諛 ⑹떇�쑝濡 � 泥섎━�맖
+
+### �빐寃 � 諛 ⑸쾿
+
+1. Axios �씤�꽣�뀎�꽣瑜 � �궗�슜�빐 �넗�겙 留뚮즺 �떆 �옄�룞 媛깆떊
+2. 由 ы봽�젅�떆 �넗�겙�쓣 �궗�슜�븳 �옄�룞 濡쒓렇�씤 �쑀吏 �
 
 ```javascript
-// Axios 인터셉터 예시
+// Axios �씤�꽣�뀎�꽣 �삁�떆
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -148,103 +166,104 @@ instance.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const { data } = await refreshToken();
-        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem("accessToken", data.accessToken);
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return instance(originalRequest);
       } catch (error) {
-        // 리프레시 토큰도 만료된 경우 로그아웃 처리
+        // 由ы봽�젅�떆 �넗�겙�룄 留뚮즺�맂 寃쎌슦 濡쒓렇�븘�썐 泥섎━
         await logout();
         return Promise.reject(error);
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 ```
-��� Redis 인스턴스 중복 실행 및 연결 혼동 트러블슈팅
-증상
-Spring Boot에서 RedisTemplate으로 조회한 데이터와
-Docker 컨테이너에서 redis-cli로 조회한 데이터가 서로 다름
 
-예를 들어, Spring Boot에서는 auction:1:logs 등 특정 키가 보이는데
-docker exec -it <redis-container> redis-cli에서 keys *를 치면 (empty array)로 나옴
+者 � Redis �씤�뒪�꽩�뒪 以묐났 �떎�뻾 諛 � �뿰寃 � �샎�룞 �듃�윭釉붿뒋�똿
+利앹긽
+Spring Boot�뿉�꽌 RedisTemplate�쑝濡 � 議고쉶�븳 �뜲�씠�꽣���
+Docker 而 ⑦뀒�씠�꼫�뿉�꽌 redis-cli 濡 � 議고쉶�븳 �뜲�씠�꽣媛 � �꽌濡 � �떎由 �
 
-redis-cli에서 키를 삭제해도, Spring Boot에서는 여전히 데이터가 조회됨
+�삁瑜 � �뱾�뼱, Spring Boot�뿉�꽌�뒗 auction:1:logs �벑 �듅�젙 �궎媛 � 蹂댁씠�뒗�뜲
+docker exec -it <redis-container> redis-cli�뿉�꽌 keys \*瑜 � 移섎㈃ (empty array)濡 � �굹�샂
 
-원인
-Windows(로컬)에서 redis-server.exe가 이미 실행 중이었고,
+redis-cli�뿉�꽌 �궎瑜 � �궘�젣�빐�룄, Spring Boot�뿉�꽌�뒗 �뿬�쟾�엳 �뜲�씠�꽣媛 � 議고쉶�맖
 
-Docker Desktop(WSL2)에서 Redis 컨테이너도 별도로 실행되고 있었음
+�썝�씤
+Windows(濡쒖뺄)�뿉�꽌 redis-server.exe 媛 � �씠誘 � �떎�뻾 以묒씠�뿀怨 �,
 
-Spring Boot의 application.yml에는 host: localhost, port: 6379로 설정되어 있었음
+Docker Desktop(WSL2)�뿉�꽌 Redis 而 ⑦뀒�씠�꼫�룄 蹂꾨룄濡 � �떎�뻾�릺怨 � �엳�뿀�쓬
 
-이 경우, Spring Boot가 접속하는 localhost:6379가
-Windows 로컬 Redis에 먼저 연결될 수 있음
-(이미 포트를 점유하고 있기 때문)
+Spring Boot�쓽 application.yml�뿉�뒗 host: localhost, port: 6379 濡 � �꽕�젙�릺�뼱 �엳�뿀�쓬
 
-Docker Redis도 같은 6379 포트를 사용하지만,
-Windows에서 이미 점유 중이면 Docker의 포트포워딩이 제대로 동작하지 않거나
-Spring Boot가 로컬 Redis에 우선적으로 연결됨
+�씠 寃쎌슦, Spring Boot 媛 � �젒�냽�븯�뒗 localhost:6379 媛 �
+Windows 濡쒖뺄 Redis�뿉 癒쇱�� �뿰寃곕맆 �닔 �엳�쓬
+(�씠誘 � �룷�듃瑜 � �젏�쑀�븯怨 � �엳湲 � �븣臾 �)
 
-진단 과정
-docker exec -it <redis-container> redis-cli에서 keys *를 쳤을 때 원하는 키가 안 보임
+Docker Redis�룄 媛숈�� 6379 �룷�듃瑜 � �궗�슜�븯吏 � 留 �,
+Windows�뿉�꽌 �씠誘 � �젏�쑀 以묒씠硫 � Docker�쓽 �룷�듃�룷�썙�뵫�씠 �젣��� 濡 � �룞�옉�븯吏 � �븡嫄곕굹
+Spring Boot 媛 � 濡쒖뺄 Redis�뿉 �슦�꽑�쟻�쑝濡 � �뿰寃곕맖
 
-Spring Boot에서 RedisTemplate으로 keys를 찍으면 데이터가 보임
+吏꾨떒 怨쇱젙
+docker exec -it <redis-container> redis-cli�뿉�꽌 keys \*瑜 � 爾ㅼ쓣 �븣 �썝�븯�뒗 �궎媛 � �븞 蹂댁엫
 
-tasklist | findstr redis 명령으로 Windows에 redis-server.exe가 떠 있는 걸 확인
+Spring Boot�뿉�꽌 RedisTemplate�쑝濡 � keys 瑜 � 李띿쑝硫 � �뜲�씠�꽣媛 � 蹂댁엫
 
-즉, Spring Boot가 Docker Redis가 아니라 Windows 로컬 Redis에 연결되어 있었음
+tasklist | findstr redis 紐낅졊�쑝濡 � Windows�뿉 redis-server.exe 媛 � �뼚 �엳�뒗 嫄 � �솗�씤
 
-해결 방법
-Windows의 redis-server.exe 프로세스 종료
+利 �, Spring Boot 媛 � Docker Redis 媛 � �븘�땲�씪 Windows 濡쒖뺄 Redis�뿉 �뿰寃곕릺�뼱 �엳�뿀�쓬
 
-Windows 명령 프롬프트(cmd) 또는 PowerShell에서 아래 명령 실행:
+�빐寃 � 諛 ⑸쾿
+Windows�쓽 redis-server.exe �봽濡쒖꽭�뒪 醫낅즺
+
+Windows 紐낅졊 �봽濡 ы봽�듃(cmd) �삉�뒗 PowerShell�뿉�꽌 �븘�옒 紐낅졊 �떎�뻾:
 
 text
 taskkill /F /IM redis-server.exe
-성공 메시지 예시:
+�꽦怨 � 硫붿떆吏 � �삁�떆:
 
 text
-성공: 프로세스 "redis-server.exe"(PID xxxx)이(가) 종료되었습니다.
-Docker Redis 컨테이너만 실행 상태로 유지
+�꽦怨 �: �봽濡쒖꽭�뒪 "redis-server.exe"(PID xxxx)�씠(媛 �) 醫낅즺�릺�뿀�뒿�땲�떎.
+Docker Redis 而 ⑦뀒�씠�꼫留 � �떎�뻾 �긽�깭濡 � �쑀吏 �
 
-docker ps에서 0.0.0.0:6379->6379/tcp가 떠 있는지 확인
+docker ps�뿉�꽌 0.0.0.0:6379->6379/tcp 媛 � �뼚 �엳�뒗吏 � �솗�씤
 
-Spring Boot 재시작
+Spring Boot �옱�떆�옉
 
-이제 localhost:6379로 접속하면 Docker Redis에만 연결됨
+�씠�젣 localhost:6379 濡 � �젒�냽�븯硫 � Docker Redis�뿉留 � �뿰寃곕맖
 
+1. Redis List ����옣/議고쉶 援 ъ“ �씠�빐
+   ����옣 �떆:
+   媛 � �엯李 � 濡쒓렇 媛앹껜(BidLogResponse �벑)瑜 �
+   JSON 臾몄옄�뿴濡 � �븯�굹�뵫 Redis List�뿉 push�빐�빞 �븿.
 
-1. Redis List 저장/조회 구조 이해
-저장 시:
-각 입찰 로그 객체(BidLogResponse 등)를
-JSON 문자열로 하나씩 Redis List에 push해야 함.
+議고쉶 �떆:
+Redis List�쓽 媛 � �븘�씠�뀥�쓣
+�떒�씪 媛앹껜濡 � �뿭吏곷젹�솕�빐�빞 �븿.
 
-조회 시:
-Redis List의 각 아이템을
-단일 객체로 역직렬화해야 함.
+2. �옄二 � 諛쒖깮�븯�뒗 臾몄젣 諛 � �빐寃곕쾿
 
-2. 자주 발생하는 문제 및 해결법
-1) JSON 배열 전체를 한 번에 저장
-문제:
-전체 입찰 로그 리스트를 JSON 배열로 직렬화해
-리스트에 한 번만 push하면,
+1) JSON 諛곗뿴 �쟾泥대�� �븳 踰덉뿉 ����옣
+   臾몄젣:
+   �쟾泥 � �엯李 � 濡쒓렇 由 ъ뒪�듃瑜 � JSON 諛곗뿴濡 � 吏곷젹�솕�빐
+   由 ъ뒪�듃�뿉 �븳 踰덈쭔 push�븯硫 �,
 
-조회 시 역직렬화 에러(MismatchedInputException: Cannot deserialize value of type ... from Array value)
+議고쉶 �떆 �뿭吏곷젹�솕 �뿉�윭(MismatchedInputException: Cannot deserialize value of type ... from Array value)
 
-해결:
-반드시 for문 등으로 각 객체를 하나씩 push
-(예: for (BidLogResponse resp : responses) { ... })
+�빐寃 �:
+諛섎뱶�떆 for 臾 � �벑�쑝濡 � 媛 � 媛앹껜瑜 � �븯�굹�뵫 push
+(�삁: for (BidLogResponse resp : responses) { ... })
 
-2) Redis List가 비어 있는데 캐시 데이터가 있다고 나옴
-원인:
+2. Redis List 媛 � 鍮꾩뼱 �엳�뒗�뜲 罹먯떆 �뜲�씠�꽣媛 � �엳�떎怨 � �굹�샂
+   �썝�씤:
 
-LRANGE auction:1:logs -1 0처럼 start > stop이면 항상 빈 배열 반환
+LRANGE auction:1:logs -1 0 泥섎읆 start > stop�씠硫 � �빆�긽 鍮 � 諛곗뿴 諛섑솚
 
-실제로는 LRANGE auction:1:logs 0 -1로 전체 조회해야 함
+�떎�젣濡쒕뒗 LRANGE auction:1:logs 0 -1 濡 � �쟾泥 � 議고쉶�빐�빞 �븿
 
-해결:
+�빐寃 �:
 
-항상 LRANGE <key> 0 -1로 전체 데이터 확인
+�빆�긽 LRANGE <key> 0 -1 濡 � �쟾泥 � �뜲�씠�꽣 �솗�씤
 
-애플리케이션에서 Redis에 값이 없으면 DB에서 읽고, 그 결과를 다시 캐싱하는 구조인지 확인
+�븷�뵆由 ъ���씠�뀡�뿉�꽌 Redis�뿉 媛믪씠 �뾾�쑝硫 � DB�뿉�꽌 �씫怨 �, 洹 � 寃곌낵瑜 � �떎�떆 罹먯떛�븯�뒗 援 ъ“�씤吏 � �솗�씤
