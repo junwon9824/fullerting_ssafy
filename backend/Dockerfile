@@ -1,35 +1,30 @@
-# Stage 1: Build the application using Gradle
+# Stage 1: Build
 FROM gradle:8.5.0-jdk17-alpine AS build
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+WORKDIR /workspace
 
-# Set the working directory
-WORKDIR /app
+# Gradle Wrapper와 권한
+COPY backend/gradlew backend/gradlew
+COPY backend/gradle backend/gradle
+RUN chmod +x backend/gradlew
 
-# Copy Gradle wrapper and build files to leverage Docker layer caching
-COPY gradlew .
-COPY gradle ./gradle
-COPY build.gradle .
-COPY settings.gradle .
+# 캐시 최적화를 위한 스크립트 복사
+COPY settings.gradle settings.gradle
+COPY build.gradle build.gradle
+COPY backend/build.gradle backend/build.gradle
 
-# Download dependencies. This layer is cached if build files don't change.
-# --no-daemon is recommended for CI environments.
-RUN ./gradlew dependencies --no-daemon
+# 의존성 프리패치(캐시 활용)
+RUN backend/gradlew --no-daemon :backend:dependencies || true
 
-# Copy the rest of the source code
-COPY src ./src
+# 전체 소스 복사
+COPY . .
 
-# Build the application, skipping tests as they are run in the CI stage
-RUN ./gradlew bootJar --no-daemon -x test
+# 모듈 지정 빌드
+RUN backend/gradlew --no-daemon :backend:bootJar -x test --stacktrace --info
 
-# Stage 2: Create the final, smaller image
+# Stage 2: Runtime
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
-
-# Copy the built JAR file from the build stage
-COPY --from=build /app/build/libs/*.jar app.jar
-
-# Expose the port the application runs on
+COPY --from=build /workspace/backend/build/libs/*.jar /app/app.jar
 EXPOSE 8080
-
-
-# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
