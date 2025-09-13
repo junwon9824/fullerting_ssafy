@@ -1,7 +1,5 @@
-# Workflow 이름
 name: Deploy Backend to Kubernetes
 
-# 1. 트리거 조건: 'main' 브랜치의 'backend/' 경로에 변경사항이 있을 때 실행
 on:
   push:
     branches: ["main"]
@@ -27,48 +25,62 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set lowercase image repo
+        id: img
+        run: |
+          REPO_LC=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "REPO_LC=$REPO_LC" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: ./backend
+          file: ./backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/backend:latest
+          tags: ghcr.io/${{ steps.img.outputs.REPO_LC }}/backend:latest
 
   deploy:
     name: Deploy to Kubernetes
-    needs: build # 'build' 잡이 성공해야 실행됩니다.
-    runs-on: self-hosted # 로컬 VirtualBox 네트워크의 러너에서 실행
+    needs: build
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Ensure kubectl (���ʿ� ������ ��ġ)
+        run: |
+          if ! command -v kubectl >/dev/null 2>&1; then
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+          fi
+          kubectl version --client
 
       - name: Setup Kubeconfig
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
+        env:
+          KUBECONFIG: $HOME/.kube/config
 
-      - name: List files for debugging
+      - name: Set lowercase image repo
+        id: img
         run: |
-          ls -R
-      
-      - name: Debugging
-        run: |
-          echo "HOME directory: $HOME"
-          echo "kubectl version"
-          kubectl version --client
+          REPO_LC=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "REPO_LC=$REPO_LC" >> $GITHUB_OUTPUT
 
-      - name: Deploy to Kubernetes cluster
+      - name: Replace image in manifests
         run: |
-          # Explicitly set the KUBECONFIG environment variable
+          set -e
           export KUBECONFIG=$HOME/.kube/config
+          sed -i "s|ghcr\.io/OWNER/REPO/backend:latest|ghcr.io/${{ steps.img.outputs.REPO_LC }}/backend:latest|g" k8s/*.yml
+          echo "Applied image: ghcr.io/${{ steps.img.outputs.REPO_LC }}/backend:latest"
 
-          # k8s/deployment.yml 파일의 이미지 태그를 실제 빌드된 이미지로 변경합니다.
-          sed -i 's|ghcr.io/OWNER/REPO/backend:latest|ghcr.io/${{ github.repository }}/backend:latest|g' k8s/*.yml
-
-          # 변경된 매니페스트를 클러스터에 적용합니다.
+      - name: Apply manifests and rollout
+        run: |
+          set -e
+          export KUBECONFIG=$HOME/.kube/config
           kubectl apply -f k8s/
-
-          # Deployment의 재시작을 트리거하여 새로운 이미지를 pull하도록 합니다.
           kubectl rollout restart deployment/fullerting-backend-deployment
+          kubectl rollout status deployment/fullerting-backend-deployment --timeout=180s
