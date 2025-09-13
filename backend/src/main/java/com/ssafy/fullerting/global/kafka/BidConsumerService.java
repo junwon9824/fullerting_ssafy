@@ -54,8 +54,7 @@ public class BidConsumerService {
                         int dealCurPrice = message.getDealCurPrice();
                         String bidderUserName = message.getBidderUserName();
 
-                        log.info("�엯李� �슂泥� �닔�떊 - 寃뚯떆湲� ID: {}, �엯李곌��: {}, �궗�슜�옄: {}", exArticleId, dealCu
-                                        Price, bidderUserName);
+                        log.info("입찰 요청 수신 - 게시글 ID: {}, 입찰가: {}, 사용자: {}", exArticleId, dealCurPrice, bidderUserName);
 
                         ExArticle exArticle = exArticleRepository.findWithDealByIdwithLock(exArticleId)
                                         .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
@@ -67,11 +66,11 @@ public class BidConsumerService {
                         int currentPrice = deal.getDealCurPrice();
                         if (dealCurPrice <= currentPrice) {
                                 throw new RuntimeException(
-                                                "�쁽�옱媛�蹂대떎 �넂��� 湲덉븸�쓣 �엯�젰�빐二쇱꽭�슂. �쁽�옱媛�: " + currentPrice);
+                                                "현재가보다 높은 금액을 입력해주세요. 현재가: " + currentPrice);
                         }
 
                         MemberProfile bidder = memberRepository.findByNickname(bidderUserName)
-                                        .orElseThrow(() -> new RuntimeException("�쉶�썝 �젙蹂대�� 李얠쓣 �닔 �뾾�뒿�땲�떎."));
+                                        .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
                         List<BidLog> existingBids = bidRepository.findByDealId(deal.getId().toString());
                         long uniqueBidderCount = existingBids.stream()
@@ -83,7 +82,7 @@ public class BidConsumerService {
                         if (isNewBidder)
                                 uniqueBidderCount++;
 
-                        // �엯李� �궡�뿭 ����옣 (�삤吏� �뿬湲곗꽌留�!)
+                        // 입찰 내역 저장 (오직 여기서만!)
                         BidLog bidLog = BidLog.builder()
                                         .deal(deal)
                                         .userId(bidder.getId())
@@ -92,16 +91,15 @@ public class BidConsumerService {
                                         .build();
 
                         bidRepository.save(bidLog);
-                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // �젅�뵒�뒪�뿉 �빐�떦 �옉臾쇱뿉
-                                                                                             // ����븳 理쒓퀬 �엯李� 湲덉븸 �뾽�뜲�
-                                                                                             // �듃.
+                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // 레디스에 해당 작물에 대한 최고 입찰 금액
+                                                                                             // 업데이트.
 
-                        // 嫄곕옒 �젙蹂� �뾽�뜲�씠�듃
+                        // 거래 정보 업데이트
                         deal.setDealCurPrice(dealCurPrice);
                         deal.setBidderCount((int) uniqueBidderCount);
                         dealRepository.save(deal);
 
-                        // WebSocket�쑝濡� �떎�떆媛� �뾽�뜲�씠�듃 �쟾�넚
+                        // WebSocket으로 실시간 업데이트 전송
                         Map<String, Object> wsMessage = new HashMap<>();
                         wsMessage.put("type", "BID_UPDATE");
                         wsMessage.put("bidLogId", bidLog.getId());
@@ -117,11 +115,11 @@ public class BidConsumerService {
                                         "/topic/bidding/" + exArticleId,
                                         wsMessage);
 
-                        // �븣由� �쟾�넚
+                        // 알림 전송
                         bidProducerService.kafkaalarmproduce(bidder, exArticle, "/some/redirect/url");
 
                 } catch (Exception e) {
-                        log.error("Kafka �엯李� 硫붿떆吏� 泥섎━ �떎�뙣: {}", message, e);
+                        log.error("Kafka 입찰 메시지 처리 실패: {}", message, e);
                 }
         }
 
@@ -139,7 +137,7 @@ public class BidConsumerService {
                         int dealCurPrice = message.getDealCurPrice();
                         String bidderUserName = message.getBidderUserName();
 
-                        log.info("�엯李� �슂泥� �닔�떊 - 寃뚯떆湲� ID: {}, �엯李곌��: {}, �궗�슜�옄: {}", exArticleId, dealCurPrice,
+                        log.info("입찰 요청 수신 - 게시글 ID: {}, 입찰가: {}, 사용자: {}", exArticleId, dealCurPrice,
                                         bidderUserName);
 
                         ExArticle exArticle = exArticleRepository.findWithDealById(exArticleId)
@@ -152,11 +150,11 @@ public class BidConsumerService {
                         int currentPrice = deal.getDealCurPrice();
                         if (dealCurPrice <= currentPrice) {
                                 throw new RuntimeException(
-                                                "�쁽�옱媛�蹂대떎 �넂��� 湲덉븸�쓣 �엯�젰�빐二쇱꽭�슂. �쁽�옱媛�: " + currentPrice);
+                                                "현재가보다 높은 금액을 입력해주세요. 현재가: " + currentPrice);
                         }
 
                         MemberProfile bidder = memberRepository.findByNickname(bidderUserName)
-                                        .orElseThrow(() -> new RuntimeException("�쉶�썝 �젙蹂대�� 李얠쓣 �닔 �뾾�뒿�땲�떎."));
+                                        .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
                         List<BidLog> existingBids = bidRepository.findByDealId(deal.getId().toString());
                         long uniqueBidderCount = existingBids.stream()
@@ -168,7 +166,7 @@ public class BidConsumerService {
                         if (isNewBidder)
                                 uniqueBidderCount++;
 
-                        // �엯李� �궡�뿭 ����옣 (�삤吏� �뿬湲곗꽌留�!)
+                        // 입찰 내역 저장 (오직 여기서만!)
                         BidLog bidLog = BidLog.builder()
                                         .deal(deal)
                                         .userId(bidder.getId())
@@ -177,16 +175,15 @@ public class BidConsumerService {
                                         .build();
 
                         bidRepository.save(bidLog);
-                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // �젅�뵒�뒪�뿉 �빐�떦 �옉臾쇱뿉
-                                                                                             // ����븳 理쒓퀬 �엯李� 湲덉븸
-                                                                                             // �뾽�뜲�씠�듃.
+                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // 레디스에 해당 작물에
+                                                                                             // 대한 최고 입찰 금액 업데이트.
 
-                        // 嫄곕옒 �젙蹂� �뾽�뜲�씠�듃
+                        // 거래 정보 업데이트
                         deal.setDealCurPrice(dealCurPrice);
                         deal.setBidderCount((int) uniqueBidderCount);
                         dealRepository.save(deal);
 
-                        // WebSocket�쑝濡� �떎�떆媛� �뾽�뜲�씠�듃 �쟾�넚
+                        // WebSocket으로 실시간 업데이트 전송
                         Map<String, Object> wsMessage = new HashMap<>();
                         wsMessage.put("type", "BID_UPDATE");
                         wsMessage.put("bidLogId", bidLog.getId());
@@ -202,11 +199,11 @@ public class BidConsumerService {
                                         "/topic/bidding/" + exArticleId,
                                         wsMessage);
 
-                        // �븣由� �쟾�넚
+                        // 알림 전송
                         bidProducerService.kafkaalarmproduce(bidder, exArticle, "/some/redirect/url");
 
                 } catch (Exception e) {
-                        log.error("Kafka �엯李� 硫붿떆吏� 泥섎━ �떎�뙣: {}", message, e);
+                        log.error("Kafka 입찰 메시지 처리 실패: {}", message, e);
                 }
         }
 
@@ -223,14 +220,14 @@ public class BidConsumerService {
                                 throw new DealException(DealErrorCode.NOT_EXISTS);
                         }
 
-                        // BidLog ����옣��� �븯吏� �븡�뒗�떎! (以묐났 ����옣 諛⑹��)
+                        // BidLog 저장은 하지 않는다! (중복 저장 방지)
                         // BidProposeRequest bidProposeRequest = BidProposeRequest.builder()
                         // .dealCurPrice(bidNotification.getPrice())
                         // .userId(bidNotification.getUserid())
                         // .build();
-                        // bidService.socketdealbid(article, bidProposeRequest); // �궘�젣 �삉�뒗 二쇱꽍泥섎━
+                        // bidService.socketdealbid(article, bidProposeRequest); // 삭제 또는 주석처리
 
-                        // �븣由�/�쎒�냼耳� �벑 遺�媛� 濡쒖쭅留� �떎�뻾
+                        // 알림/웹소켓 등 부가 로직만 실행
                         MemberProfile bidUser = userService.getUserEntityById(bidNotification.getUserid());
                         int bidderCount = bidService.getBidderCount(deal);
                         int maxBidPrice = bidService.getMaxBidPrice(article);
