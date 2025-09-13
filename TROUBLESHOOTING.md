@@ -1,24 +1,24 @@
-# ï¿½ìœ“ï¿½ ï¿½ë“ƒï¿½ìœ­é‡‰ë¶¿ë’‹ï¿½ë˜¿
+# ? Æ®·¯ºí½´ÆÃ
 
-## 1. Redis ï§¦ë¨¯ë–† ï¿½ë¿­ï§žê³·ì ¹ï¿½ì†• ï¿½ì” ï¿½ë’‹
+## 1. Redis Ä³½Ã ¿ªÁ÷·ÄÈ­ ÀÌ½´
 
-### ï§ì•¹ê¸½
+### Áõ»ó
 
-- Redisï¿½ë¿‰ï¿½ê½Œ è­°ê³ ì‰¶ï¿½ë¸³ ï¿½ëœ²ï¿½ì” ï¿½ê½£ç‘œ ï¿½ `BidLogResponse`æ¿¡ ï¿½ è¹‚ ï¿½ï¿½ì†š ï¿½ë–† `ClassCastException` è«›ì’–ê¹®
-- `Integer`ç‘œ ï¿½ `BidLogResponse`æ¿¡ ï¿½ ï§¦ë¨¯ë’ªï¿½ë˜¿ï¿½ë¸¯ï¿½ì ®ï¿½ë’— ï¿½ì‚¤ç‘œ ï¿½ è«›ì’–ê¹®
+- Redis¿¡¼­ Á¶È¸ÇÑ µ¥ÀÌÅÍ¸¦ `BidLogResponse`·Î º¯È¯ ½Ã `ClassCastException` ¹ß»ý
+- `Integer`¸¦ `BidLogResponse`·Î Ä³½ºÆÃÇÏ·Á´Â ¿À·ù ¹ß»ý
 
-### ï¿½ìï¿½ì”¤
+### ¿øÀÎ
 
-- `RedisTemplate`ï¿½ì“½ æ¹²ê³•ë‚¯ ï§žê³·ì ¹ï¿½ì†•/ï¿½ë¿­ï§žê³·ì ¹ï¿½ì†• ï¿½ê½•ï¿½ì ™ï¿½ë¿‰ ï¿½ëµ²ï¿½ì”ª ï¿½ëœ²ï¿½ì” ï¿½ê½£åª› ï¿½ ï¿½ë–Žç‘œë‹¿ì¾¶ ï¿½ï¿½ï¿½ï¿½ì˜£/è­°ê³ ì‰¶ï¿½ë§–
-- `StringRedisTemplate`ï¿½ì“£ ï¿½ê¶—ï¿½ìŠœï¿½ë¸¯ï¿½ë’— å¯ƒìŽŒìŠ¦ `String`ï¿½ì‘æ¿¡ ï¿½, `RedisTemplate`ï¿½ì“£ ï¿½ê¶—ï¿½ìŠœï¿½ë¸¯ï¿½ë’— å¯ƒìŽŒìŠ¦ åª›ì•¹ê»œæ¿¡ ï¿½ ï¿½ï¿½ï¿½ï¿½ì˜£
-- ï¿½ëª¢ åª› ï¿½ ï§ž ï¿½ å¯ƒìŽŒìŠ¦ç‘œ ï¿½ ï§ â‘¤ëª¢ ï§£ì„Žâ”ï¿½ë¸¯ï§ž ï¿½ ï¿½ë¸¡ï¿½ë¸˜ è«›ì’–ê¹®ï¿½ë¸¯ï¿½ë’— è‡¾ëª„ì £
+- `RedisTemplate`ÀÇ ±âº» Á÷·ÄÈ­/¿ªÁ÷·ÄÈ­ ¼³Á¤¿¡ µû¶ó µ¥ÀÌÅÍ°¡ ´Ù¸£°Ô ÀúÀå/Á¶È¸µÊ
+- `StringRedisTemplate`À» »ç¿ëÇÏ´Â °æ¿ì `String`À¸·Î, `RedisTemplate`À» »ç¿ëÇÏ´Â °æ¿ì °´Ã¼·Î ÀúÀå
+- µÎ °¡Áö °æ¿ì¸¦ ¸ðµÎ Ã³¸®ÇÏÁö ¾Ê¾Æ ¹ß»ýÇÏ´Â ¹®Á¦
 
-### ï¿½ë¹å¯ƒ ï¿½ è«› â‘¸ì¾¿
+### ÇØ°á ¹æ¹ý
 
-1. Redisï¿½ë¿‰ï¿½ê½Œ è­°ê³ ì‰¶ï¿½ë¸³ ï¿½ëœ²ï¿½ì” ï¿½ê½£ï¿½ì“½ ï¿½ï¿½ï¿½ï¿½ì—¯ ï¿½ì†—ï¿½ì”¤
-2. `LinkedHashMap`ï¿½ì”¤ å¯ƒìŽŒìŠ¦: `objectMapper.convertValue()` ï¿½ê¶—ï¿½ìŠœ
-3. `String`(JSON)ï¿½ì”¤ å¯ƒìŽŒìŠ¦: `objectMapper.readValue()`æ¿¡ ï¿½ ï¿½ë¿­ï§žê³·ì ¹ï¿½ì†•
-4. æ´¹ ï¿½ ï¿½ì‡… ï¿½ï¿½ï¿½ï¿½ì—¯ï¿½ï¿½ï¿½ ï¿½ì‚ï¿½ì‡… ï§£ì„Žâ”
+1. Redis¿¡¼­ Á¶È¸ÇÑ µ¥ÀÌÅÍÀÇ Å¸ÀÔ È®ÀÎ
+2. `LinkedHashMap`ÀÎ °æ¿ì: `objectMapper.convertValue()` »ç¿ë
+3. `String`(JSON)ÀÎ °æ¿ì: `objectMapper.readValue()`·Î ¿ªÁ÷·ÄÈ­
+4. ±× ¿Ü Å¸ÀÔÀº ¿¹¿Ü Ã³¸®
 
 ```java
 return redisList.stream()
@@ -29,31 +29,31 @@ return redisList.stream()
             try {
                 return objectMapper.readValue((String) obj, BidLogResponse.class);
             } catch (Exception e) {
-                throw new RuntimeException("Redis ï§¦ë¨¯ë–† ï¿½ë¿­ï§žê³·ì ¹ï¿½ì†• ï¿½ë–Žï¿½ë™£", e);
+                throw new RuntimeException("Redis Ä³½Ã ¿ªÁ÷·ÄÈ­ ½ÇÆÐ", e);
             }
         } else {
-            throw new RuntimeException("ï¿½ë¸£ ï¿½ë‹” ï¿½ë¾¾ï¿½ë’— ï§¦ë¨¯ë–† ï¿½ï¿½ï¿½ï¿½ì—¯: " + obj.getClass());
+            throw new RuntimeException("¾Ë ¼ö ¾ø´Â Ä³½Ã Å¸ÀÔ: " + obj.getClass());
         }
     })
     .collect(Collectors.toList());
 ```
 
-## 2. Kafka Consumer æ´¹ëªƒï¼™ ï¿½ì” ï¿½ë’‹
+## 2. Kafka Consumer ±×·ì ÀÌ½´
 
-### ï§ì•¹ê¸½
+### Áõ»ó
 
-- ï¿½ë¿¬ï¿½ìœ­ ï¿½ì”¤ï¿½ë’ªï¿½ê½©ï¿½ë’ªï¿½ë¿‰ï¿½ê½Œ ï¿½ë£žï¿½ì”ªï¿½ë¸³ Kafka ï¿½ë„—ï¿½ëµ¿ï¿½ì“£ æ´ Ñ‰ë£†ï¿½ë¸· ï¿½ë¸£ ï§Žë¶¿ë–†ï§ž ï¿½ åª› ï¿½ ä»¥ë¬ë‚¬ ï§£ì„Žâ”ï¿½ë¦ºå«„ê³•êµ¹ ï¿½ëŠ»ï¿½ì”«ï¿½ë¦ºï¿½ë’— ï¿½ì½ï¿½ê¸½ è«›ì’–ê¹®
+- ¿©·¯ ÀÎ½ºÅÏ½º¿¡¼­ µ¿ÀÏÇÑ Kafka ÅäÇÈÀ» ±¸µ¶ÇÒ ¶§ ¸Þ½ÃÁö°¡ Áßº¹ Ã³¸®µÇ°Å³ª ´©¶ôµÇ´Â Çö»ó ¹ß»ý
 
-### ï¿½ìï¿½ì”¤
+### ¿øÀÎ
 
-- Consumer æ´¹ëªƒï¼™ ID åª› ï¿½ ï¿½ë£žï¿½ì”ªï¿½ë¸¯å¯ƒ ï¿½ ï¿½ê½•ï¿½ì ™ï¿½ë¦ºï¿½ë¼± ï¿½ì—³ï¿½ë¼± è«›ì’–ê¹®ï¿½ë¸¯ï¿½ë’— è‡¾ëª„ì £
-- ï¿½ë™†ï¿½ë–šï¿½ë€¡ ï¿½ë¸·ï¿½ë–¦ è‡¾ëª„ì £æ¿¡ ï¿½ ï¿½ì”¤ï¿½ë¸³ éºë‡í‡ï¿½ì‚Žï¿½ë¸³ ï§Žë¶¿ë–†ï§ž ï¿½ ï§£ì„Žâ”
+- Consumer ±×·ì ID°¡ µ¿ÀÏÇÏ°Ô ¼³Á¤µÇ¾î ÀÖ¾î ¹ß»ýÇÏ´Â ¹®Á¦
+- ÆÄÆ¼¼Ç ÇÒ´ç ¹®Á¦·Î ÀÎÇÑ ºÒ±ÕÇüÇÑ ¸Þ½ÃÁö Ã³¸®
 
-### ï¿½ë¹å¯ƒ ï¿½ è«› â‘¸ì¾¿
+### ÇØ°á ¹æ¹ý
 
-1. åª› ï¿½ ï¿½ì”¤ï¿½ë’ªï¿½ê½©ï¿½ë’ªï§ëˆë–Ž æ€¨ì¢Žì‘€ï¿½ë¸³ Consumer æ´¹ëªƒï¼™ ID éº ï¿½ï¿½ë¿¬
-2. ï¿½ë™†ï¿½ë–šï¿½ë€¡ åª›ì’–ë‹”ï¿½ï¿½ï¿½ è€Œ â‘¥ë’‹ç™’ ï¿½ åª›ì’–ë‹” è­°ê³—ì ™
-3. `auto.offset.reset` ï¿½ê½•ï¿½ì ™ï¿½ì“£ `latest` ï¿½ì‚‰ï¿½ë’— `earliest`æ¿¡ ï¿½ ï§ë‚†ë–†ï¿½ìŸ» ï§ž ï¿½ï¿½ì ™
+1. °¢ ÀÎ½ºÅÏ½º¸¶´Ù °íÀ¯ÇÑ Consumer ±×·ì ID ºÎ¿©
+2. ÆÄÆ¼¼Ç °³¼ö¿Í ÄÁ½´¸Ó °³¼ö Á¶Á¤
+3. `auto.offset.reset` ¼³Á¤À» `latest` ¶Ç´Â `earliest`·Î ¸í½ÃÀû ÁöÁ¤
 
 ```yaml
 spring:
@@ -63,23 +63,23 @@ spring:
       auto-offset-reset: latest
 ```
 
-## 3. JPA N+1 è‡¾ëª„ì £
+## 3. JPA N+1 ¹®Á¦
 
-### ï§ì•¹ê¸½
+### Áõ»ó
 
-- ï¿½ë–’ï¿½ì”ª è‘ì‡°â” ï¿½ï¿½ï¿½ï¿½ë–Š ï¿½ë–Žï¿½ë‹”ï¿½ì“½ è‘ì‡°â” åª› ï¿½ è«›ì’–ê¹®ï¿½ë¸¯ï¿½ë¿¬ ï¿½ê½¦ï¿½ë’« ï¿½ï¿½ï¿½ï¿½ë¸¯
-- ï¿½ë“…ï¿½ì—³ `@OneToMany` æ„¿ ï¿½ æ€¨ê¾©ë¿‰ï¿½ê½Œ ï¿½ì˜„äºŒ ï¿½ è«›ì’–ê¹®
+- ´ÜÀÏ Äõ¸® ´ë½Å ´Ù¼öÀÇ Äõ¸®°¡ ¹ß»ýÇÏ¿© ¼º´É ÀúÇÏ
+- Æ¯È÷ `@OneToMany` °ü°è¿¡¼­ ÀÚÁÖ ¹ß»ý
 
-### ï¿½ìï¿½ì”¤
+### ¿øÀÎ
 
-- ï§ž ï¿½ï¿½ë¿° æ¿¡ì’•ëµ«ï¿½ì‘æ¿¡ ï¿½ ï¿½ì”¤ï¿½ë¸³ N+1 è‡¾ëª„ì £
-- è€Œ Ñ‰ì †ï¿½ë€¡ï¿½ì“£ ï¿½ë‹šï¿½ì‰¶ï¿½ë¸· ï¿½ë¸£ï§ëˆë–Ž ç•°ë¶½ï¿½ï¿½ è‘ì‡°â” è«›ì’–ê¹®
+- Áö¿¬ ·ÎµùÀ¸·Î ÀÎÇÑ N+1 ¹®Á¦
+- ÄÃ·º¼ÇÀ» ¼øÈ¸ÇÒ ¶§¸¶´Ù Ãß°¡ Äõ¸® ¹ß»ý
 
-### ï¿½ë¹å¯ƒ ï¿½ è«› â‘¸ì¾¿
+### ÇØ°á ¹æ¹ý
 
-1. `@EntityGraph`ç‘œ ï¿½ ï¿½ê¶—ï¿½ìŠœï¿½ë¸³ ï¿½ë™£ç§» ï¿½ è­°ê³—ì”¤ ï¿½ìŸ»ï¿½ìŠœ
-2. `@BatchSize`æ¿¡ ï¿½ è«›ê³—íŠ‚ ï¿½ê¶—ï¿½ì” ï§ ï¿½ è­°ê³—ì ™
-3. `FetchType.LAZY`æ¿¡ ï¿½ ï¿½ê½•ï¿½ì ™ï¿½ë¸¯æ€¨ ï¿½ ï¿½ë¸˜ï¿½ìŠ‚ï¿½ë¸³ å¯ƒìŽŒìŠ¦ï¿½ë¿‰ï§ ï¿½ è­°ê³ ì‰¶
+1. `@EntityGraph`¸¦ »ç¿ëÇÑ ÆÐÄ¡ Á¶ÀÎ Àû¿ë
+2. `@BatchSize`·Î ¹èÄ¡ »çÀÌÁî Á¶Á¤
+3. `FetchType.LAZY`·Î ¼³Á¤ÇÏ°í ÇÊ¿äÇÑ °æ¿ì¿¡¸¸ Á¶È¸
 
 ```java
 @EntityGraph(attributePaths = {"bids", "seller"})
@@ -87,44 +87,44 @@ spring:
 Optional<Deal> findByIdWithBids(@Param("id") Long id);
 ```
 
-## 4. ï¿½ë£žï¿½ë–†ï¿½ê½¦ ï¿½ì £ï¿½ë¼± è‡¾ëª„ì £
+## 4. µ¿½Ã¼º Á¦¾î ¹®Á¦
 
-### ï§ì•¹ê¸½
+### Áõ»ó
 
-- å¯ƒìŽˆâ„“ ï¿½ì—¯ï§¡ ï¿½ ï¿½ë–† ï¿½ë£žï¿½ë–†ï¿½ë¿‰ ï¿½ë¿¬ï¿½ìœ­ ï¿½ìŠ‚ï§£ ï¿½ï¿½ì”  ï¿½ë±¾ï¿½ë¼±ï¿½ì‚± å¯ƒìŽŒìŠ¦ ï¿½ì—¯ï§¡ ï¿½ æ¹²ë‰ë¸¸ï¿½ì”  ï¿½ëœ®ï¿½ë¼±ï¿½ëœ¥ï§ž ï¿½ï¿½ë’— è‡¾ëª„ì £ è«›ì’–ê¹®
+- °æ¸Å ÀÔÂû ½Ã µ¿½Ã¿¡ ¿©·¯ ¿äÃ»ÀÌ µé¾î¿Ã °æ¿ì ÀÔÂû ±Ý¾×ÀÌ µ¤¾î½áÁö´Â ¹®Á¦ ¹ß»ý
 
-### ï¿½ìï¿½ì”¤
+### ¿øÀÎ
 
-- ï¿½êµºæ„¿ ï¿½ï¿½ìŸ»/é®ê¾§ï¿½ï¿½ï¿½ìŸ» ï¿½ì”«ï¿½ì”  ï¿½ìŸ»ï¿½ìŠœï¿½ë¦ºï§ž ï¿½ ï¿½ë¸¡ï¿½ë¸˜ è«›ì’–ê¹®ï¿½ë¸¯ï¿½ë’— ï¿½ë£žï¿½ë–†ï¿½ê½¦ è‡¾ëª„ì £
+- ³«°üÀû/ºñ°üÀû ¶ôÀÌ Àû¿ëµÇÁö ¾Ê¾Æ ¹ß»ýÇÏ´Â µ¿½Ã¼º ¹®Á¦
 
-### ï¿½ë¹å¯ƒ ï¿½ è«› â‘¸ì¾¿
+### ÇØ°á ¹æ¹ý
 
-1. `@Version`ï¿½ì“£ ï¿½ê¶—ï¿½ìŠœï¿½ë¸³ ï¿½êµºæ„¿ ï¿½ï¿½ìŸ» ï¿½ì”« ï¿½ìŸ»ï¿½ìŠœ
-2. `@Lock(LockModeType.PESSIMISTIC_WRITE)`ï¿½ì“£ ï¿½ê¶—ï¿½ìŠœï¿½ë¸³ é®ê¾§ï¿½ï¿½ï¿½ìŸ» ï¿½ì”« ï¿½ìŸ»ï¿½ìŠœ
-3. Redis éºê¾©ê¶› ï¿½ì”« ï¿½ìŸ»ï¿½ìŠœ
+1. `@Version`À» »ç¿ëÇÑ ³«°üÀû ¶ô Àû¿ë
+2. `@Lock(LockModeType.PESSIMISTIC_WRITE)`À» »ç¿ëÇÑ ºñ°üÀû ¶ô Àû¿ë
+3. Redis ºÐ»ê ¶ô Àû¿ë
 
 ```java
 @Transactional
 @Lock(LockModeType.PESSIMISTIC_WRITE)
 public BidLog placeBid(Long dealId, BidRequest request) {
-    // ï¿½ì—¯ï§¡ï¿½ ï§£ì„Žâ” æ¿¡ì’–ì­…
+    // ÀÔÂû Ã³¸® ·ÎÁ÷
 }
 ```
 
-## 5. CORS ï¿½ì” ï¿½ë’‹
+## 5. CORS ÀÌ½´
 
-### ï§ì•¹ê¸½
+### Áõ»ó
 
-- ï¿½ë´½æ¿¡ì¢ë“ƒï¿½ë¿ï¿½ë±¶ï¿½ë¿‰ï¿½ê½Œ API ï¿½ìƒ‡ç•° ï¿½ ï¿½ë–† CORS ï¿½ì ™ï§¢ ï¿½ ï¿½ìžè«› ï¿½ ï¿½ì‚¤ç‘œ ï¿½ è«›ì’–ê¹®
+- ÇÁ·ÐÆ®¿£µå¿¡¼­ API È£Ãâ ½Ã CORS Á¤Ã¥ À§¹Ý ¿À·ù ¹ß»ý
 
-### ï¿½ìï¿½ì”¤
+### ¿øÀÎ
 
-- ï¿½ê½Œè¸°ê¾©ë¿‰ï¿½ê½Œ CORS ï¿½ë¿¤ï¿½ëœ‘åª› ï¿½ ï¿½ì £ï¿½ï¿½ï¿½ æ¿¡ ï¿½ ï¿½ê½•ï¿½ì ™ï¿½ë¦ºï§ž ï¿½ ï¿½ë¸¡ï¿½ë¸˜ è«›ì’–ê¹®
+- ¼­¹ö¿¡¼­ CORS Çì´õ°¡ Á¦´ë·Î ¼³Á¤µÇÁö ¾Ê¾Æ ¹ß»ý
 
-### ï¿½ë¹å¯ƒ ï¿½ è«› â‘¸ì¾¿
+### ÇØ°á ¹æ¹ý
 
-1. Spring Security ï¿½ê½•ï¿½ì ™ï¿½ë¿‰ CORS ï¿½ì ™ï§¢ ï¿½ ç•°ë¶½ï¿½ï¿½
-2. ï¿½ë“…ï¿½ì ™ ï¿½ë£„ï§Žë¶¿ì”¤ï§ ï¿½ ï¿½ë¿€ï¿½ìŠœï¿½ë¸¯ï¿½ë£„æ¿¡ ï¿½ ï¿½ê½•ï¿½ì ™
+1. Spring Security ¼³Á¤¿¡ CORS Á¤Ã¥ Ãß°¡
+2. Æ¯Á¤ µµ¸ÞÀÎ¸¸ Çã¿ëÇÏµµ·Ï ¼³Á¤
 
 ```java
 @Bean
@@ -141,23 +141,23 @@ public CorsConfigurationSource corsConfigurationSource() {
 }
 ```
 
-## 6. JWT ï¿½ë„—ï¿½ê²™ ï§ëš®ì¦º ï§£ì„Žâ”
+## 6. JWT ÅäÅ« ¸¸·á Ã³¸®
 
-### ï§ì•¹ê¸½
+### Áõ»ó
 
-- ï¿½ë¸¸ï¿½ê½­ï¿½ë’ª ï¿½ë„—ï¿½ê²™ï¿½ì”  ï§ëš®ì¦ºï¿½ë¦ºï¿½ë¿€ï¿½ì“£ ï¿½ë¸£ ï¿½ê¶—ï¿½ìŠœï¿½ì˜„ å¯ƒì€ë¿•ï¿½ì”  é†«ë—­ï¿½ï¿½ ï¿½ë¸¡ï¿½ï¿½ï¿½ è‡¾ëª„ì £
+- ¾×¼¼½º ÅäÅ«ÀÌ ¸¸·áµÇ¾úÀ» ¶§ »ç¿ëÀÚ °æÇèÀÌ ÁÁÁö ¾ÊÀº ¹®Á¦
 
-### ï¿½ìï¿½ì”¤
+### ¿øÀÎ
 
-- ï¿½ë„—ï¿½ê²™ ï§ëš®ì¦º ï¿½ë–† æ¿¡ì’“ë ‡ï¿½ì”¤ ï¿½ëŸ¹ï¿½ì” ï§ž ï¿½ æ¿¡ ï¿½ ç”± Ñ‰ë–Žï¿½ì” ï¿½ì †ï¿½ë“ƒï¿½ë¦ºå«„ê³•êµ¹, ï¿½ê¶—ï¿½ìŠœï¿½ì˜„ï¿½ë¿‰å¯ƒ ï¿½ éºëŠë ªï¿½ì“£ äºŒì‡°ë’— è«› â‘¹ë–‡ï¿½ì‘æ¿¡ ï¿½ ï§£ì„Žâ”ï¿½ë§–
+- ÅäÅ« ¸¸·á ½Ã ·Î±×ÀÎ ÆäÀÌÁö·Î ¸®´ÙÀÌ·ºÆ®µÇ°Å³ª, »ç¿ëÀÚ¿¡°Ô ºÒÆíÀ» ÁÖ´Â ¹æ½ÄÀ¸·Î Ã³¸®µÊ
 
-### ï¿½ë¹å¯ƒ ï¿½ è«› â‘¸ì¾¿
+### ÇØ°á ¹æ¹ý
 
-1. Axios ï¿½ì”¤ï¿½ê½£ï¿½ë€Žï¿½ê½£ç‘œ ï¿½ ï¿½ê¶—ï¿½ìŠœï¿½ë¹ ï¿½ë„—ï¿½ê²™ ï§ëš®ì¦º ï¿½ë–† ï¿½ì˜„ï¿½ë£ž åª›ê¹†ë–Š
-2. ç”± Ñ‹ë´½ï¿½ì …ï¿½ë–† ï¿½ë„—ï¿½ê²™ï¿½ì“£ ï¿½ê¶—ï¿½ìŠœï¿½ë¸³ ï¿½ì˜„ï¿½ë£ž æ¿¡ì’“ë ‡ï¿½ì”¤ ï¿½ì‘€ï§ž ï¿½
+1. Axios ÀÎÅÍ¼ÁÅÍ¸¦ »ç¿ëÇØ ÅäÅ« ¸¸·á ½Ã ÀÚµ¿ °»½Å
+2. ¸®ÇÁ·¹½Ã ÅäÅ«À» »ç¿ëÇÑ ÀÚµ¿ ·Î±×ÀÎ À¯Áö
 
 ```javascript
-// Axios ï¿½ì”¤ï¿½ê½£ï¿½ë€Žï¿½ê½£ ï¿½ì‚ï¿½ë–†
+// Axios ÀÎÅÍ¼ÁÅÍ ¿¹½Ã
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -170,7 +170,7 @@ instance.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return instance(originalRequest);
       } catch (error) {
-        // ç”±Ñ‹ë´½ï¿½ì …ï¿½ë–† ï¿½ë„—ï¿½ê²™ï¿½ë£„ ï§ëš®ì¦ºï¿½ë§‚ å¯ƒìŽŒìŠ¦ æ¿¡ì’“ë ‡ï¿½ë¸˜ï¿½ì ï§£ì„Žâ”
+        // ¸®ÇÁ·¹½Ã ÅäÅ«µµ ¸¸·áµÈ °æ¿ì ·Î±×¾Æ¿ô Ã³¸®
         await logout();
         return Promise.reject(error);
       }
@@ -180,90 +180,90 @@ instance.interceptors.response.use(
 );
 ```
 
-è€… ï¿½ Redis ï¿½ì”¤ï¿½ë’ªï¿½ê½©ï¿½ë’ª ä»¥ë¬ë‚¬ ï¿½ë–Žï¿½ë»¾ è«› ï¿½ ï¿½ë¿°å¯ƒ ï¿½ ï¿½ìƒŽï¿½ë£ž ï¿½ë“ƒï¿½ìœ­é‡‰ë¶¿ë’‹ï¿½ë˜¿
-ï§ì•¹ê¸½
-Spring Bootï¿½ë¿‰ï¿½ê½Œ RedisTemplateï¿½ì‘æ¿¡ ï¿½ è­°ê³ ì‰¶ï¿½ë¸³ ï¿½ëœ²ï¿½ì” ï¿½ê½£ï¿½ï¿½ï¿½
-Docker è€Œ â‘¦ë€’ï¿½ì” ï¿½ê¼«ï¿½ë¿‰ï¿½ê½Œ redis-cli æ¿¡ ï¿½ è­°ê³ ì‰¶ï¿½ë¸³ ï¿½ëœ²ï¿½ì” ï¿½ê½£åª› ï¿½ ï¿½ê½Œæ¿¡ ï¿½ ï¿½ë–Žç”± ï¿½
+??? Redis ÀÎ½ºÅÏ½º Áßº¹ ½ÇÇà ¹× ¿¬°á È¥µ¿ Æ®·¯ºí½´ÆÃ
+Áõ»ó
+Spring Boot¿¡¼­ RedisTemplateÀ¸·Î Á¶È¸ÇÑ µ¥ÀÌÅÍ¿Í
+Docker ÄÁÅ×ÀÌ³Ê¿¡¼­ redis-cli·Î Á¶È¸ÇÑ µ¥ÀÌÅÍ°¡ ¼­·Î ´Ù¸§
 
-ï¿½ì‚ç‘œ ï¿½ ï¿½ë±¾ï¿½ë¼±, Spring Bootï¿½ë¿‰ï¿½ê½Œï¿½ë’— auction:1:logs ï¿½ë²‘ ï¿½ë“…ï¿½ì ™ ï¿½ê¶Žåª› ï¿½ è¹‚ëŒì” ï¿½ë’—ï¿½ëœ²
-docker exec -it <redis-container> redis-cliï¿½ë¿‰ï¿½ê½Œ keys \*ç‘œ ï¿½ ç§»ì„Žãˆƒ (empty array)æ¿¡ ï¿½ ï¿½êµ¹ï¿½ìƒ‚
+¿¹¸¦ µé¾î, Spring Boot¿¡¼­´Â auction:1:logs µî Æ¯Á¤ Å°°¡ º¸ÀÌ´Âµ¥
+docker exec -it <redis-container> redis-cli¿¡¼­ keys \*¸¦ Ä¡¸é (empty array)·Î ³ª¿È
 
-redis-cliï¿½ë¿‰ï¿½ê½Œ ï¿½ê¶Žç‘œ ï¿½ ï¿½ê¶˜ï¿½ì £ï¿½ë¹ï¿½ë£„, Spring Bootï¿½ë¿‰ï¿½ê½Œï¿½ë’— ï¿½ë¿¬ï¿½ìŸ¾ï¿½ì—³ ï¿½ëœ²ï¿½ì” ï¿½ê½£åª› ï¿½ è­°ê³ ì‰¶ï¿½ë§–
+redis-cli¿¡¼­ Å°¸¦ »èÁ¦ÇØµµ, Spring Boot¿¡¼­´Â ¿©ÀüÈ÷ µ¥ÀÌÅÍ°¡ Á¶È¸µÊ
 
-ï¿½ìï¿½ì”¤
-Windows(æ¿¡ì’–ëº„)ï¿½ë¿‰ï¿½ê½Œ redis-server.exe åª› ï¿½ ï¿½ì” èª˜ ï¿½ ï¿½ë–Žï¿½ë»¾ ä»¥ë¬’ì” ï¿½ë¿€æ€¨ ï¿½,
+¿øÀÎ
+Windows(·ÎÄÃ)¿¡¼­ redis-server.exe°¡ ÀÌ¹Ì ½ÇÇà ÁßÀÌ¾ú°í,
 
-Docker Desktop(WSL2)ï¿½ë¿‰ï¿½ê½Œ Redis è€Œ â‘¦ë€’ï¿½ì” ï¿½ê¼«ï¿½ë£„ è¹‚ê¾¨ë£„æ¿¡ ï¿½ ï¿½ë–Žï¿½ë»¾ï¿½ë¦ºæ€¨ ï¿½ ï¿½ì—³ï¿½ë¿€ï¿½ì“¬
+Docker Desktop(WSL2)¿¡¼­ Redis ÄÁÅ×ÀÌ³Êµµ º°µµ·Î ½ÇÇàµÇ°í ÀÖ¾úÀ½
 
-Spring Bootï¿½ì“½ application.ymlï¿½ë¿‰ï¿½ë’— host: localhost, port: 6379 æ¿¡ ï¿½ ï¿½ê½•ï¿½ì ™ï¿½ë¦ºï¿½ë¼± ï¿½ì—³ï¿½ë¿€ï¿½ì“¬
+Spring BootÀÇ application.yml¿¡´Â host: localhost, port: 6379·Î ¼³Á¤µÇ¾î ÀÖ¾úÀ½
 
-ï¿½ì”  å¯ƒìŽŒìŠ¦, Spring Boot åª› ï¿½ ï¿½ì ’ï¿½ëƒ½ï¿½ë¸¯ï¿½ë’— localhost:6379 åª› ï¿½
-Windows æ¿¡ì’–ëº„ Redisï¿½ë¿‰ ç™’ì‡±ï¿½ï¿½ ï¿½ë¿°å¯ƒê³•ë§† ï¿½ë‹” ï¿½ì—³ï¿½ì“¬
-(ï¿½ì” èª˜ ï¿½ ï¿½ë£·ï¿½ë“ƒç‘œ ï¿½ ï¿½ì ï¿½ì‘€ï¿½ë¸¯æ€¨ ï¿½ ï¿½ì—³æ¹² ï¿½ ï¿½ë¸£è‡¾ ï¿½)
+ÀÌ °æ¿ì, Spring Boot°¡ Á¢¼ÓÇÏ´Â localhost:6379°¡
+Windows ·ÎÄÃ Redis¿¡ ¸ÕÀú ¿¬°áµÉ ¼ö ÀÖÀ½
+(ÀÌ¹Ì Æ÷Æ®¸¦ Á¡À¯ÇÏ°í ÀÖ±â ¶§¹®)
 
-Docker Redisï¿½ë£„ åª›ìˆˆï¿½ï¿½ 6379 ï¿½ë£·ï¿½ë“ƒç‘œ ï¿½ ï¿½ê¶—ï¿½ìŠœï¿½ë¸¯ï§ž ï¿½ ï§ ï¿½,
-Windowsï¿½ë¿‰ï¿½ê½Œ ï¿½ì” èª˜ ï¿½ ï¿½ì ï¿½ì‘€ ä»¥ë¬’ì” ï§Ž ï¿½ Dockerï¿½ì“½ ï¿½ë£·ï¿½ë“ƒï¿½ë£·ï¿½ì™ï¿½ëµ«ï¿½ì”  ï¿½ì £ï¿½ï¿½ï¿½ æ¿¡ ï¿½ ï¿½ë£žï¿½ì˜‰ï¿½ë¸¯ï§ž ï¿½ ï¿½ë¸¡å«„ê³•êµ¹
-Spring Boot åª› ï¿½ æ¿¡ì’–ëº„ Redisï¿½ë¿‰ ï¿½ìŠ¦ï¿½ê½‘ï¿½ìŸ»ï¿½ì‘æ¿¡ ï¿½ ï¿½ë¿°å¯ƒê³•ë§–
+Docker Redisµµ °°Àº 6379 Æ÷Æ®¸¦ »ç¿ëÇÏÁö¸¸,
+Windows¿¡¼­ ÀÌ¹Ì Á¡À¯ ÁßÀÌ¸é DockerÀÇ Æ÷Æ®Æ÷¿öµùÀÌ Á¦´ë·Î µ¿ÀÛÇÏÁö ¾Ê°Å³ª
+Spring Boot°¡ ·ÎÄÃ Redis¿¡ ¿ì¼±ÀûÀ¸·Î ¿¬°áµÊ
 
-ï§žê¾¨ë–’ æ€¨ì‡±ì ™
-docker exec -it <redis-container> redis-cliï¿½ë¿‰ï¿½ê½Œ keys \*ç‘œ ï¿½ çˆ¾ã…¼ì“£ ï¿½ë¸£ ï¿½ìï¿½ë¸¯ï¿½ë’— ï¿½ê¶Žåª› ï¿½ ï¿½ë¸ž è¹‚ëŒì—«
+Áø´Ü °úÁ¤
+docker exec -it <redis-container> redis-cli¿¡¼­ keys \*¸¦ ÃÆÀ» ¶§ ¿øÇÏ´Â Å°°¡ ¾È º¸ÀÓ
 
-Spring Bootï¿½ë¿‰ï¿½ê½Œ RedisTemplateï¿½ì‘æ¿¡ ï¿½ keys ç‘œ ï¿½ ï§¡ë¿ì‘ï§Ž ï¿½ ï¿½ëœ²ï¿½ì” ï¿½ê½£åª› ï¿½ è¹‚ëŒì—«
+Spring Boot¿¡¼­ RedisTemplateÀ¸·Î keys¸¦ ÂïÀ¸¸é µ¥ÀÌÅÍ°¡ º¸ÀÓ
 
-tasklist | findstr redis ï§ë‚…ì¡Šï¿½ì‘æ¿¡ ï¿½ Windowsï¿½ë¿‰ redis-server.exe åª› ï¿½ ï¿½ë¼š ï¿½ì—³ï¿½ë’— å«„ ï¿½ ï¿½ì†—ï¿½ì”¤
+tasklist | findstr redis ¸í·ÉÀ¸·Î Windows¿¡ redis-server.exe°¡ ¶° ÀÖ´Â °É È®ÀÎ
 
-ï§ ï¿½, Spring Boot åª› ï¿½ Docker Redis åª› ï¿½ ï¿½ë¸˜ï¿½ë•²ï¿½ì”ª Windows æ¿¡ì’–ëº„ Redisï¿½ë¿‰ ï¿½ë¿°å¯ƒê³•ë¦ºï¿½ë¼± ï¿½ì—³ï¿½ë¿€ï¿½ì“¬
+Áï, Spring Boot°¡ Docker Redis°¡ ¾Æ´Ï¶ó Windows ·ÎÄÃ Redis¿¡ ¿¬°áµÇ¾î ÀÖ¾úÀ½
 
-ï¿½ë¹å¯ƒ ï¿½ è«› â‘¸ì¾¿
-Windowsï¿½ì“½ redis-server.exe ï¿½ë´½æ¿¡ì’–ê½­ï¿½ë’ª é†«ë‚…ì¦º
+ÇØ°á ¹æ¹ý
+WindowsÀÇ redis-server.exe ÇÁ·Î¼¼½º Á¾·á
 
-Windows ï§ë‚…ì¡Š ï¿½ë´½æ¿¡ Ñ‹ë´½ï¿½ë“ƒ(cmd) ï¿½ì‚‰ï¿½ë’— PowerShellï¿½ë¿‰ï¿½ê½Œ ï¿½ë¸˜ï¿½ì˜’ ï§ë‚…ì¡Š ï¿½ë–Žï¿½ë»¾:
+Windows ¸í·É ÇÁ·ÒÇÁÆ®(cmd) ¶Ç´Â PowerShell¿¡¼­ ¾Æ·¡ ¸í·É ½ÇÇà:
 
 text
 taskkill /F /IM redis-server.exe
-ï¿½ê½¦æ€¨ ï¿½ ï§Žë¶¿ë–†ï§ž ï¿½ ï¿½ì‚ï¿½ë–†:
+¼º°ø ¸Þ½ÃÁö ¿¹½Ã:
 
 text
-ï¿½ê½¦æ€¨ ï¿½: ï¿½ë´½æ¿¡ì’–ê½­ï¿½ë’ª "redis-server.exe"(PID xxxx)ï¿½ì” (åª› ï¿½) é†«ë‚…ì¦ºï¿½ë¦ºï¿½ë¿€ï¿½ë’¿ï¿½ë•²ï¿½ë–Ž.
-Docker Redis è€Œ â‘¦ë€’ï¿½ì” ï¿½ê¼«ï§ ï¿½ ï¿½ë–Žï¿½ë»¾ ï¿½ê¸½ï¿½ê¹­æ¿¡ ï¿½ ï¿½ì‘€ï§ž ï¿½
+¼º°ø: ÇÁ·Î¼¼½º "redis-server.exe"(PID xxxx)ÀÌ(°¡) Á¾·áµÇ¾ú½À´Ï´Ù.
+Docker Redis ÄÁÅ×ÀÌ³Ê¸¸ ½ÇÇà »óÅÂ·Î À¯Áö
 
-docker psï¿½ë¿‰ï¿½ê½Œ 0.0.0.0:6379->6379/tcp åª› ï¿½ ï¿½ë¼š ï¿½ì—³ï¿½ë’—ï§ž ï¿½ ï¿½ì†—ï¿½ì”¤
+docker ps¿¡¼­ 0.0.0.0:6379->6379/tcp°¡ ¶° ÀÖ´ÂÁö È®ÀÎ
 
-Spring Boot ï¿½ì˜±ï¿½ë–†ï¿½ì˜‰
+Spring Boot Àç½ÃÀÛ
 
-ï¿½ì” ï¿½ì £ localhost:6379 æ¿¡ ï¿½ ï¿½ì ’ï¿½ëƒ½ï¿½ë¸¯ï§Ž ï¿½ Docker Redisï¿½ë¿‰ï§ ï¿½ ï¿½ë¿°å¯ƒê³•ë§–
+ÀÌÁ¦ localhost:6379·Î Á¢¼ÓÇÏ¸é Docker Redis¿¡¸¸ ¿¬°áµÊ
 
-1. Redis List ï¿½ï¿½ï¿½ï¿½ì˜£/è­°ê³ ì‰¶ æ´ ÑŠâ€œ ï¿½ì” ï¿½ë¹
-   ï¿½ï¿½ï¿½ï¿½ì˜£ ï¿½ë–†:
-   åª› ï¿½ ï¿½ì—¯ï§¡ ï¿½ æ¿¡ì’“ë ‡ åª›ì•¹ê»œ(BidLogResponse ï¿½ë²‘)ç‘œ ï¿½
-   JSON è‡¾ëª„ì˜„ï¿½ë¿´æ¿¡ ï¿½ ï¿½ë¸¯ï¿½êµ¹ï¿½ëµ« Redis Listï¿½ë¿‰ pushï¿½ë¹ï¿½ë¹ž ï¿½ë¸¿.
+1. Redis List ÀúÀå/Á¶È¸ ±¸Á¶ ÀÌÇØ
+   ÀúÀå ½Ã:
+   °¢ ÀÔÂû ·Î±× °´Ã¼(BidLogResponse µî)¸¦
+   JSON ¹®ÀÚ¿­·Î ÇÏ³ª¾¿ Redis List¿¡ pushÇØ¾ß ÇÔ.
 
-è­°ê³ ì‰¶ ï¿½ë–†:
-Redis Listï¿½ì“½ åª› ï¿½ ï¿½ë¸˜ï¿½ì” ï¿½ë€¥ï¿½ì“£
-ï¿½ë–’ï¿½ì”ª åª›ì•¹ê»œæ¿¡ ï¿½ ï¿½ë¿­ï§žê³·ì ¹ï¿½ì†•ï¿½ë¹ï¿½ë¹ž ï¿½ë¸¿.
+Á¶È¸ ½Ã:
+Redis ListÀÇ °¢ ¾ÆÀÌÅÛÀ»
+´ÜÀÏ °´Ã¼·Î ¿ªÁ÷·ÄÈ­ÇØ¾ß ÇÔ.
 
-2. ï¿½ì˜„äºŒ ï¿½ è«›ì’–ê¹®ï¿½ë¸¯ï¿½ë’— è‡¾ëª„ì £ è«› ï¿½ ï¿½ë¹å¯ƒê³•ì¾¿
+2. ÀÚÁÖ ¹ß»ýÇÏ´Â ¹®Á¦ ¹× ÇØ°á¹ý
 
-1) JSON è«›ê³—ë¿´ ï¿½ìŸ¾ï§£ëŒ€ï¿½ï¿½ ï¿½ë¸³ è¸°ë‰ë¿‰ ï¿½ï¿½ï¿½ï¿½ì˜£
-   è‡¾ëª„ì £:
-   ï¿½ìŸ¾ï§£ ï¿½ ï¿½ì—¯ï§¡ ï¿½ æ¿¡ì’“ë ‡ ç”± ÑŠë’ªï¿½ë“ƒç‘œ ï¿½ JSON è«›ê³—ë¿´æ¿¡ ï¿½ ï§žê³·ì ¹ï¿½ì†•ï¿½ë¹
-   ç”± ÑŠë’ªï¿½ë“ƒï¿½ë¿‰ ï¿½ë¸³ è¸°ëˆì­” pushï¿½ë¸¯ï§Ž ï¿½,
+1) JSON ¹è¿­ ÀüÃ¼¸¦ ÇÑ ¹ø¿¡ ÀúÀå
+   ¹®Á¦:
+   ÀüÃ¼ ÀÔÂû ·Î±× ¸®½ºÆ®¸¦ JSON ¹è¿­·Î Á÷·ÄÈ­ÇØ
+   ¸®½ºÆ®¿¡ ÇÑ ¹ø¸¸ pushÇÏ¸é,
 
-è­°ê³ ì‰¶ ï¿½ë–† ï¿½ë¿­ï§žê³·ì ¹ï¿½ì†• ï¿½ë¿‰ï¿½ìœ­(MismatchedInputException: Cannot deserialize value of type ... from Array value)
+Á¶È¸ ½Ã ¿ªÁ÷·ÄÈ­ ¿¡·¯(MismatchedInputException: Cannot deserialize value of type ... from Array value)
 
-ï¿½ë¹å¯ƒ ï¿½:
-è«›ì„Žë±¶ï¿½ë–† for è‡¾ ï¿½ ï¿½ë²‘ï¿½ì‘æ¿¡ ï¿½ åª› ï¿½ åª›ì•¹ê»œç‘œ ï¿½ ï¿½ë¸¯ï¿½êµ¹ï¿½ëµ« push
-(ï¿½ì‚: for (BidLogResponse resp : responses) { ... })
+ÇØ°á:
+¹Ýµå½Ã for¹® µîÀ¸·Î °¢ °´Ã¼¸¦ ÇÏ³ª¾¿ push
+(¿¹: for (BidLogResponse resp : responses) { ... })
 
-2. Redis List åª› ï¿½ é®ê¾©ë¼± ï¿½ì—³ï¿½ë’—ï¿½ëœ² ï§¦ë¨¯ë–† ï¿½ëœ²ï¿½ì” ï¿½ê½£åª› ï¿½ ï¿½ì—³ï¿½ë–Žæ€¨ ï¿½ ï¿½êµ¹ï¿½ìƒ‚
-   ï¿½ìï¿½ì”¤:
+2. Redis List°¡ ºñ¾î ÀÖ´Âµ¥ Ä³½Ã µ¥ÀÌÅÍ°¡ ÀÖ´Ù°í ³ª¿È
+   ¿øÀÎ:
 
-LRANGE auction:1:logs -1 0 ï§£ì„Žì† start > stopï¿½ì” ï§Ž ï¿½ ï¿½ë¹†ï¿½ê¸½ é® ï¿½ è«›ê³—ë¿´ è«›ì„‘ì†š
+LRANGE auction:1:logs -1 0Ã³·³ start > stopÀÌ¸é Ç×»ó ºó ¹è¿­ ¹ÝÈ¯
 
-ï¿½ë–Žï¿½ì £æ¿¡ì’•ë’— LRANGE auction:1:logs 0 -1 æ¿¡ ï¿½ ï¿½ìŸ¾ï§£ ï¿½ è­°ê³ ì‰¶ï¿½ë¹ï¿½ë¹ž ï¿½ë¸¿
+½ÇÁ¦·Î´Â LRANGE auction:1:logs 0 -1·Î ÀüÃ¼ Á¶È¸ÇØ¾ß ÇÔ
 
-ï¿½ë¹å¯ƒ ï¿½:
+ÇØ°á:
 
-ï¿½ë¹†ï¿½ê¸½ LRANGE <key> 0 -1 æ¿¡ ï¿½ ï¿½ìŸ¾ï§£ ï¿½ ï¿½ëœ²ï¿½ì” ï¿½ê½£ ï¿½ì†—ï¿½ì”¤
+Ç×»ó LRANGE <key> 0 -1·Î ÀüÃ¼ µ¥ÀÌÅÍ È®ÀÎ
 
-ï¿½ë¸·ï¿½ëµ†ç”± ÑŠï¿½ï¿½ï¿½ì” ï¿½ë€¡ï¿½ë¿‰ï¿½ê½Œ Redisï¿½ë¿‰ åª›ë¯ªì”  ï¿½ë¾¾ï¿½ì‘ï§Ž ï¿½ DBï¿½ë¿‰ï¿½ê½Œ ï¿½ì”«æ€¨ ï¿½, æ´¹ ï¿½ å¯ƒê³Œë‚µç‘œ ï¿½ ï¿½ë–Žï¿½ë–† ï§¦ë¨¯ë–›ï¿½ë¸¯ï¿½ë’— æ´ ÑŠâ€œï¿½ì”¤ï§ž ï¿½ ï¿½ì†—ï¿½ì”¤
+¾ÖÇÃ¸®ÄÉÀÌ¼Ç¿¡¼­ Redis¿¡ °ªÀÌ ¾øÀ¸¸é DB¿¡¼­ ÀÐ°í, ±× °á°ú¸¦ ´Ù½Ã Ä³½ÌÇÏ´Â ±¸Á¶ÀÎÁö È®ÀÎ
