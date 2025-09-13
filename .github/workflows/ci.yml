@@ -8,7 +8,7 @@ on:
 
 jobs:
   backend:
-    runs-on: self-hosted # VirtualBox?˜ ?Ÿ¬?„ˆë¥? ?‚¬?š©?•˜?„ë¡? ë³?ê²?
+    runs-on: self-hosted # VirtualBoxÀÇ ·¯³Ê¸¦ »ç¿ëÇÏµµ·Ï º¯°æ
     defaults:
       run:
         working-directory: ./backend
@@ -20,13 +20,13 @@ jobs:
         with:
           java-version: "17"
           distribution: "temurin"
-          cache: "maven" # Gradle?„ ?‚¬?š©?•˜?‹ ?‹¤ë©? 'gradle'ë¡? ë³?ê²½í•´ì£¼ì„¸?š”.
+          cache: "gradle" # GradleÀ» »ç¿ëÇÏ¹Ç·Î 'gradle'·Î º¯°æÇÕ´Ï´Ù.
 
-      - name: Build and test with Maven
-        # Gradle?„ ?‚¬?š©?•˜?‹ ?‹¤ë©? './gradlew build'ë¡? ë³?ê²½í•´ì£¼ì„¸?š”.
-        run: mvn -B package --file pom.xml
+      - name: Build and test with Gradle
+        # GradleÀ» »ç¿ëÇÏ¹Ç·Î './gradlew build'·Î º¯°æÇÕ´Ï´Ù.
+        run: ./gradlew build
 
-    # ì£¼ì„ ?•´? œ?•˜?—¬ Docker ë¹Œë“œ ë°? ?‘¸?‹œ ê¸°ëŠ¥ ?™œ?„±?™” ê°??Š¥
+    # ÁÖ¼® ÇØÁ¦ÇÏ¿© Docker ºôµå ¹× Çª½Ã ±â´É È°¼ºÈ­ °¡´É (ÇöÀç deploy.yml¿¡¼­ Ã³¸® Áß)
     # - name: Log in to Docker Hub
     #   uses: docker/login-action@v3
     #   with:
@@ -41,7 +41,7 @@ jobs:
     #     tags: your-docker-repo/fullerting-backend:latest
 
   frontend:
-    runs-on: self-hosted # VirtualBox?˜ ?Ÿ¬?„ˆë¥? ?‚¬?š©?•˜?„ë¡? ë³?ê²?
+    runs-on: self-hosted # VirtualBoxÀÇ ·¯³Ê¸¦ »ç¿ëÇÏµµ·Ï º¯°æ
     defaults:
       run:
         working-directory: ./frontend
@@ -51,13 +51,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20" # ?”„ë¡œì ?Š¸?˜ Node.js ë²„ì „?— ë§ê²Œ ?ˆ˜? •?•´ì£¼ì„¸?š”.
-          cache: "npm" # yarn?„ ?‚¬?š©?•˜?‹ ?‹¤ë©? 'yarn'?œ¼ë¡? ë³?ê²½í•´ì£¼ì„¸?š”.
+          node-version: "20" # ÇÁ·ÎÁ§Æ®ÀÇ Node.js ¹öÀü¿¡ ¸Â°Ô ¼öÁ¤ÇØÁÖ¼¼¿ä.
+          cache: "npm" # yarnÀ» »ç¿ëÇÏ½Å´Ù¸é 'yarn'À¸·Î º¯°æÇØÁÖ¼¼¿ä.
 
       - name: Install dependencies
-        # yarn?„ ?‚¬?š©?•˜?‹ ?‹¤ë©? 'yarn install'ë¡? ë³?ê²½í•´ì£¼ì„¸?š”.
+        # yarnÀ» »ç¿ëÇÏ½Å´Ù¸é 'yarn install'·Î º¯°æÇØÁÖ¼¼¿ä.
         run: npm install
 
       - name: Build
-        # yarn?„ ?‚¬?š©?•˜?‹ ?‹¤ë©? 'yarn build'ë¡? ë³?ê²½í•´ì£¼ì„¸?š”.
+        # yarnÀ» »ç¿ëÇÏ½Å´Ù¸é 'yarn build'·Î º¯°æÇØÁÖ¼¼¿ä.
         run: npm run build
