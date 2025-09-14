@@ -1,26 +1,27 @@
 # Stage 1: Build
 FROM openjdk:17-jdk-slim AS builder
 
-# Set the working directory for subsequent instructions
+# 빌드 작업 디렉토리 설정
 WORKDIR /app/backend
 
-# Explicitly set JAVA_HOME inside the Docker container
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+# openjdk:17-jdk-slim의 Java 설치 경로에 맞게 JAVA_HOME 설정
+ENV JAVA_HOME=/usr/local/openjdk-17
 ENV PATH=$PATH:$JAVA_HOME/bin
 
-# Copy the entire backend directory
+# 소스 복사 (context root 기준, backend 디렉토리에 code가 있을 때)
 COPY . /app
 
-# The `backend/` part is no longer needed since we are already inside the `backend` directory
+# gradlew 권한 설정 및 빌드
 RUN chmod +x ./gradlew
-
-# Run the build from the correct directory
 RUN ./gradlew --no-daemon bootJar -x test
 
 # Stage 2: Runtime
 FROM openjdk:17-jdk-slim
 
-# Set the correct working directory for the runtime
 WORKDIR /app
-COPY --from=builder /app/backend/build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
+
+# 빌드된 JAR 복사
+COPY --from=builder /app/backend/build/libs/*.jar app.jar
+
+# 앱 실행
 ENTRYPOINT ["java", "-jar", "app.jar"]
