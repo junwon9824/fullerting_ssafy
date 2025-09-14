@@ -1,0 +1,78 @@
+# 1. Secret: MySQL 데이터베이스 사용자 정보 관리
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+  labels:
+    app: mysql
+stringData:
+  MYSQL_ROOT_PASSWORD: "your-root-password"  # 실제 비밀번호로 변경하세요
+  MYSQL_DATABASE: "fullerting"
+  MYSQL_USER: "fullerting-user"
+  MYSQL_PASSWORD: "your-user-password"       # 실제 비밀번호로 변경하세요
+
+---
+
+# 2. Deployment: MySQL 컨테이너 정의 및 관리
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels:
+    app: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          envFrom:
+            - secretRef:
+                name: mysql-secret
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
+
+---
+
+# 3. Service: MySQL Deployment 클러스터 내 노출용
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  type: ClusterIP
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+
+---
+
+# 4. PersistentVolumeClaim: MySQL 데이터 영구 저장용
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi   # 필요 용량에 맞게 조절
+
