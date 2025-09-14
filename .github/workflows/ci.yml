@@ -8,7 +8,6 @@ on:
 
 jobs:
   backend:
-    # runs-on: self-hosted # VirtualBox의 러너를 사용하도록 변경
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -21,13 +20,18 @@ jobs:
         with:
           java-version: "17"
           distribution: "temurin"
-          cache: "gradle" # Gradle을 사용하므로 'gradle'로 변경합니다.
+          cache: "gradle"
+
+      # 자바 홈 경로를 Gradle에 명시적으로 알려줍니다.
+      - name: Set up Gradle environment
+        run: |
+          echo "JAVA_HOME=${{ steps.setup-java.outputs.path }}" >> $GITHUB_ENV
+          echo "GRADLE_OPTS=-Dorg.gradle.java.home=${{ steps.setup-java.outputs.path }}" >> $GITHUB_ENV
 
       - name: Build and test with Gradle
         run: ./gradlew build
 
   frontend:
-    # runs-on: self-hosted # VirtualBox의 러너를 사용하도록 변경
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -38,8 +42,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20" # 프로젝트의 Node.js 버전에 맞게 수정해주세요.
-          cache: "npm" # yarn을 사용하신다면 'yarn'으로 변경해주세요.
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm install
