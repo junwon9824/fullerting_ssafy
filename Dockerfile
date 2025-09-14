@@ -1,28 +1,21 @@
 # Stage 1: Build
-FROM gradle:8.5.0-jdk17-alpine AS build
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
-WORKDIR /workspace
+FROM openjdk:17-jdk-slim AS builder
 
-# Gradle Wrapper(backend) + 권한
-COPY backend/gradlew backend/gradlew
-COPY backend/gradle  backend/gradle
-RUN chmod +x backend/gradlew
+# Set the working directory for subsequent instructions
+# This is the new, crucial line
+WORKDIR /app/backend
 
-# backend 빌드 스크립트만 COPY (루트에는 build.gradle/settings.gradle 없음)
-COPY backend/build.gradle backend/build.gradle
+# Copy the Gradle wrapper files and the entire backend directory
+COPY . /app
+RUN chmod +x gradlew
 
-# 의존성 프리패치(캐시층 확보; 실패해도 계속 진행)
-RUN backend/gradlew --no-daemon :backend:dependencies || true
-
-# 전체 소스 복사
-COPY . .
-
-# 모듈 지정 빌드
-RUN backend/gradlew --no-daemon :backend:bootJar -x test --stacktrace --info
+# Run the build from the correct directory
+# The `backend/` part is removed because the WORKDIR is already set
+RUN ./gradlew --no-daemon bootJar -x test
 
 # Stage 2: Runtime
-FROM eclipse-temurin:17-jre-jammy
+FROM openjdk:17-jdk-slim
+
 WORKDIR /app
-COPY --from=build /workspace/backend/build/libs/*.jar /app/app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY --from=builder /app/backend/build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
