@@ -63,4 +63,4 @@ jobs:
 
       - name: Update deployment image
         run: |
-          kubectl set image deployment/backend-deployment backend-container=ghcr.io/${{ steps.img.outputs.REPO_LC }}/backend:latest
+          kubectl set image deployment/fullerting-backend-deployment backend=ghcr.io/${{ steps.img.outputs.REPO_LC }}/backend:latest
