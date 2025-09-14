@@ -9,6 +9,7 @@ WORKDIR /app/backend
 COPY . /app
 RUN chmod +x gradlew
 
+
 # Run the build from the correct directory
 # The `backend/` part is removed because the WORKDIR is already set
 RUN ./gradlew --no-daemon bootJar -x test
