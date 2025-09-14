@@ -1,67 +1,64 @@
 name: Deploy Backend to Kubernetes
 
 on:
-  push:
-    branches: ["main"]
-    paths:
-      - "backend/**"
-      - ".github/workflows/deploy.yml"
+push:
+branches: ["main"]
 
 jobs:
-  build:
-    name: Build and Push Docker Image
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+build:
+name: Build and Push Docker Image
+runs-on: ubuntu-latest
+permissions:
+contents: read
+packages: write
+steps:
+- name: Checkout repository
+uses: actions/checkout@v4
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+  - name: Login to GitHub Container Registry
+    uses: docker/login-action@v3
+    with:
+      registry: ghcr.io
+      username: ${{ github.actor }}
+      password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set lowercase image repo
-        id: img
-        run: |
-          REPO_LC=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          echo "REPO_LC=$REPO_LC" >> $GITHUB_OUTPUT
+  - name: Set lowercase image repo
+    id: img
+    run: |
+      REPO_LC=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+      echo "REPO_LC=$REPO_LC" >> $GITHUB_OUTPUT
 
-      # 디버그가 필요할 때만 임시로 사용
-      # - name: Debug repo tree
-      #   run: |
-      #     pwd
-      #     ls -R | sed -n '1,200p'
+  # 디버그가 필요할 때만 임시로 사용
+  # - name: Debug repo tree
+  #   run: |
+  #     pwd
+  #     ls -R | sed -n '1,200p'
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ghcr.io/${{ steps.img.outputs.REPO_LC }}/backend:latest
+  - name: Build and push Docker image
+    uses: docker/build-push-action@v5
+    with:
+      context: .
+      file: ./Dockerfile
+      push: true
+      tags: ghcr.io/${{ steps.img.outputs.REPO_LC }}/backend:latest
 
-  deploy:
-    name: Deploy to Kubernetes
-    needs: build
-    runs-on: self-hosted
+deploy:
+name: Deploy to Kubernetes
+needs: build
+runs-on: self-hosted
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
 
-      - name: Ensure kubectl (러너에 없으면 설치)
-        run: |
-          if ! command -v kubectl >/dev/null 2>&1; then
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            chmod +x kubectl && sudo mv kubectl /usr/local/bin/
-          fi
-          kubectl version --client
+  - name: Ensure kubectl (러너에 없으면 설치)
+    run: |
+      if ! command -v kubectl >/dev/null 2>&1; then
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+      fi
+      kubectl version --client
 
-      - name: Setup Kubeconfig
-        run: |
-          mkdir -p $HOME/.
+  - name: Setup Kubeconfig
+    run: |
+      mkdir -p $HOME/.
