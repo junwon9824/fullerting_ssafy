@@ -1,4 +1,4 @@
-# 1. Deployment: ¾ÖÇÃ¸®ÄÉÀÌ¼ÇÀÇ Pod(ÄÁÅ×ÀÌ³Ê ±×·ì)À» Á¤ÀÇÇÕ´Ï´Ù.
+# 1. Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,7 +6,7 @@ metadata:
   labels:
     app: fullerting-backend
 spec:
-  replicas: 2 # 2°³ÀÇ Pod¸¦ ½ÇÇàÇÏµµ·Ï ¼³Á¤ (°í°¡¿ë¼º)
+  replicas: 2 # 2¿¿ Pod¿ ¿¿¿¿¿ ¿¿ (¿¿¿¿)
   selector:
     matchLabels:
       app: fullerting-backend
@@ -17,40 +17,51 @@ spec:
     spec:
       containers:
         - name: backend
-          # build ½ÃÁ¡¿¡ »ý¼ºµÈ Docker ÀÌ¹ÌÁö ÁÖ¼Ò¸¦ »ç¿ëÇÕ´Ï´Ù.
-          image: ghcr.io/OWNER/REPO/backend:latest # ÀÌ ºÎºÐÀº ¿öÅ©ÇÃ·Î¿ì¿¡¼­ ½ÇÁ¦ ÀÌ¹ÌÁö ÅÂ±×·Î ÀÚµ¿ ±³Ã¼µË´Ï´Ù.
+          image: ghcr.io/junwon9824/fullerting_ssafy/backend:latest
           ports:
-            - containerPort: 8080 # Spring Boot ¾ÖÇÃ¸®ÄÉÀÌ¼Ç Æ÷Æ®
-          envFrom:
-            - secretRef:
-                name: mongodb-secret # MongoDB Secret ÂüÁ¶
-          # Liveness Probe: ÄÁÅ×ÀÌ³Ê°¡ »ì¾ÆÀÖ´ÂÁö È®ÀÎ
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATA_MONGODB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: SPRING_DATA_MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
+            - name: SPRING_DATA_MONGODB_HOST
+              value: "mongodb-0.mongodb-service"
+            - name: SPRING_DATA_MONGODB_PORT
+              value: "27017"
           livenessProbe:
             httpGet:
-              path: /actuator/health/liveness # Spring Boot ActuatorÀÇ liveness endpoint
+              path: /actuator/health/liveness
               port: 8080
-            initialDelaySeconds: 30 # ÄÁÅ×ÀÌ³Ê ½ÃÀÛ ÈÄ 30ÃÊ µÚ¿¡ Ã¹ °Ë»ç ½ÃÀÛ
-            periodSeconds: 15 # 15ÃÊ¸¶´Ù °Ë»ç
-            timeoutSeconds: 5 # 5ÃÊ ÀÌ³»¿¡ ÀÀ´äÀÌ ¾øÀ¸¸é ½ÇÆÐ
-          # Readiness Probe: ÄÁÅ×ÀÌ³Ê°¡ Æ®·¡ÇÈÀ» ¹ÞÀ» ÁØºñ°¡ µÇ¾ú´ÂÁö È®ÀÎ
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /actuator/health/readiness # Spring Boot ActuatorÀÇ readiness endpoint
+              path: /actuator/health/readiness
               port: 8080
-            initialDelaySeconds: 15 # ÄÁÅ×ÀÌ³Ê ½ÃÀÛ ÈÄ 15ÃÊ µÚ¿¡ Ã¹ °Ë»ç ½ÃÀÛ
-            periodSeconds: 10 # 10ÃÊ¸¶´Ù °Ë»ç
+            initialDelaySeconds: 15
+            periodSeconds: 10
 
 ---
-# 2. Service: Deployment¸¦ ¿ÜºÎ ¶Ç´Â Å¬·¯½ºÅÍ ³»ºÎ¿¡ ³ëÃâ½ÃÅµ´Ï´Ù.
+
+# 2. Service
 apiVersion: v1
 kind: Service
 metadata:
   name: fullerting-backend-service
 spec:
-  type: ClusterIP # Å¬·¯½ºÅÍ ³»ºÎ¿¡¼­¸¸ Á¢±Ù °¡´ÉÇÏµµ·Ï ¼³Á¤ (Ingress·Î ¿ÜºÎ ³ëÃâ Ã³¸®)
+  type: ClusterIP # ¿¿¿¿ ¿¿¿¿¿ ¿¿ ¿¿
   selector:
-    app: fullerting-backend # ÀÌ DeploymentÀÇ Pod¸¦ Å¸°ÙÀ¸·Î ÇÕ´Ï´Ù.
+    app: fullerting-backend
   ports:
     - protocol: TCP
-      port: 8080 # ¼­ºñ½º°¡ Å¬·¯½ºÅÍ ³»ºÎ¿¡¼­ ³ëÃâÇÒ Æ÷Æ®
-      targetPort: 8080 # PodÀÇ ÄÁÅ×ÀÌ³Ê°¡ ¸®½º´×ÇÏ´Â Æ÷Æ®
+      port: 8080
+      targetPort: 8080
+
