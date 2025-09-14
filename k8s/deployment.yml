@@ -6,7 +6,7 @@ metadata:
   labels:
     app: fullerting-backend
 spec:
-  replicas: 2 # 2¿¿ Pod¿ ¿¿¿¿¿ ¿¿ (¿¿¿¿)
+  replicas: 2 # 2¿¿ Pod (¿¿¿¿)
   selector:
     matchLabels:
       app: fullerting-backend
@@ -17,36 +17,37 @@ spec:
     spec:
       containers:
         - name: backend
+          # build ¿¿¿ ¿¿¿ Docker ¿¿¿ ¿¿
           image: ghcr.io/junwon9824/fullerting_ssafy/backend:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 8080 # Spring Boot ¿¿ ¿¿
           env:
-            - name: SPRING_DATA_MONGODB_USERNAME
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-service:3306/fullerting?autoReconnect=true&useSSL=false"
+            - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: mongodb-secret
-                  key: MONGO_INITDB_ROOT_USERNAME
-            - name: SPRING_DATA_MONGODB_PASSWORD
+                  name: mysql-secret
+                  key: MYSQL_USER
+            - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mongodb-secret
-                  key: MONGO_INITDB_ROOT_PASSWORD
-            - name: SPRING_DATA_MONGODB_HOST
-              value: "mongodb-0.mongodb-service"
-            - name: SPRING_DATA_MONGODB_PORT
-              value: "27017"
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+          # Liveness Probe
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
               port: 8080
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 15
             timeoutSeconds: 5
+          # Readiness Probe
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
               port: 8080
-            initialDelaySeconds: 15
+            initialDelaySeconds: 30
             periodSeconds: 10
 
 ---
@@ -57,11 +58,11 @@ kind: Service
 metadata:
   name: fullerting-backend-service
 spec:
-  type: ClusterIP # ¿¿¿¿ ¿¿¿¿¿ ¿¿ ¿¿
+  type: ClusterIP # ¿¿¿¿ ¿¿ ¿¿ 
   selector:
     app: fullerting-backend
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 8080      # ¿¿¿¿ ¿¿¿¿ ¿¿¿ ¿¿
+      targetPort: 8080 # Pod ¿¿ ¿¿¿¿ ¿¿
 
