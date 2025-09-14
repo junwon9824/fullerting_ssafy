@@ -8,7 +8,8 @@ on:
 
 jobs:
   backend:
-    runs-on: self-hosted # VirtualBox의 러너를 사용하도록 변경
+    # runs-on: self-hosted # VirtualBox의 러너를 사용하도록 변경
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./backend
@@ -23,25 +24,11 @@ jobs:
           cache: "gradle" # Gradle을 사용하므로 'gradle'로 변경합니다.
 
       - name: Build and test with Gradle
-        # Gradle을 사용하므로 './gradlew build'로 변경합니다.
         run: ./gradlew build
 
-    # 주석 해제하여 Docker 빌드 및 푸시 기능 활성화 가능 (현재 deploy.yml에서 처리 중)
-    # - name: Log in to Docker Hub
-    #   uses: docker/login-action@v3
-    #   with:
-    #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-    #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-    #
-    # - name: Build and push Docker image
-    #   uses: docker/build-push-action@v5
-    #   with:
-    #     context: ./backend
-    #     push: true
-    #     tags: your-docker-repo/fullerting-backend:latest
-
   frontend:
-    runs-on: self-hosted # VirtualBox의 러너를 사용하도록 변경
+    # runs-on: self-hosted # VirtualBox의 러너를 사용하도록 변경
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./frontend
@@ -55,9 +42,7 @@ jobs:
           cache: "npm" # yarn을 사용하신다면 'yarn'으로 변경해주세요.
 
       - name: Install dependencies
-        # yarn을 사용하신다면 'yarn install'로 변경해주세요.
         run: npm install
 
       - name: Build
-        # yarn을 사용하신다면 'yarn build'로 변경해주세요.
         run: npm run build
