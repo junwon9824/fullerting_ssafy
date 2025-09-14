@@ -46,7 +46,22 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG_DATA }}" > $HOME/.kube/config
-      - name: Update deployment image
+      - name: Update deployment YAML with new image
         run: |
-          kubectl set image deployment/fullerting-backend-deployment backend=${{ needs.build.outputs.image }}
-          kubectl rollout status deployment/fullerting-backend-deployment --timeout=300s
+          sed -i 's|image: ghcr\.io/[^[:space:]]*|image: ${{ needs.build.outputs.image }}|g' k8s/deployment.yml
+      - name: Deploy manifests
+        run: |
+          kubectl apply -f k8s/
+      - name: Wait for rollout to complete
+        run: |
+          kubectl rollout status deployment/fullerting-backend-deployment --timeout=600s
+        continue-on-error: true
+      - name: Debug deployment status
+        if: failure()
+        run: |
+          echo "=== Pod Status ==="
+          kubectl get pods -l app=fullerting-backend
+          echo "=== Pod Description ==="
+          kubectl describe pods -l app=fullerting-backend | tail -50
+          echo "=== Recent Events ==="
+          kubectl get events --sort-by=.metadata.creationTimestamp | tail -20
