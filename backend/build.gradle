@@ -10,12 +10,12 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	sourceCompatibility = '17'
-	toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-        // ë²¤ë”/ë””ìŠ¤íŠ¸ë¦¬ë·°ì…˜ì„ ëª…ì‹œí•˜ê³  ì‹¶ë‹¤ë©´:
-        // vendor = JvmVendorSpec.ADOPTIUM
-        // implementation = JvmImplementation.VENDOR_SPECIFIC
-	}
+	// toolchain {
+    //     languageVersion = JavaLanguageVersion.of(17)
+    //     // ë²¤ë”/?””?Š¤?Š¸ë¦¬ë·°?…˜?„ ëª…ì‹œ?•˜ê³? ?‹¶?‹¤ë©?:
+    //     // vendor = JvmVendorSpec.ADOPTIUM
+    //     // implementation = JvmImplementation.VENDOR_SPECIFIC
+	// }
 
 
 
@@ -85,15 +85,15 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	testImplementation 'org.springframework.security:spring-security-test'
 
-	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'  // âœ… jakarta í˜¸í™˜ ë²„ì „
-	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'  // âœ… jakarta í˜¸í™˜ ë²„ì „
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'  // ?œ… jakarta ?˜¸?™˜ ë²„ì „
+	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'  // ?œ… jakarta ?˜¸?™˜ ë²„ì „
 
-	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'  // âœ… ì¶”ê°€ í•„ìˆ˜
-	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'  // âœ… ì¶”ê°€ í•„ìˆ˜
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'  // ?œ… ì¶”ê?? ?•„?ˆ˜
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'  // ?œ… ì¶”ê?? ?•„?ˆ˜
 
 
 	implementation 'org.webjars:stomp-websocket:2.3.3-1' // stomp
-	implementation 'org.springframework.boot:spring-boot-starter-websocket' // ìŠ¤í”„ë§ì—ì„œ ì œê³µí•˜ëŠ” ì›¹ì†Œì¼“
+	implementation 'org.springframework.boot:spring-boot-starter-websocket' // ?Š¤?”„ë§ì—?„œ ? œê³µí•˜?Š” ?›¹?†Œì¼?
 	implementation 'org.webjars:sockjs-client:1.1.2' // sockjs
 
 }
@@ -102,8 +102,8 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 tasks.withType(JavaCompile) {
-	options.compilerArgs += ["-parameters", "-Xlint:all"]  // ëª¨ë“  ê²½ê³  í‘œì‹œ
-	options.encoding = 'UTF-8'  // ì¸ì½”ë”© ëª…ì‹œ
+	options.compilerArgs += ["-parameters", "-Xlint:all"]  // ëª¨ë“  ê²½ê³  ?‘œ?‹œ
+	options.encoding = 'UTF-8'  // ?¸ì½”ë”© ëª…ì‹œ
 }
 
 
