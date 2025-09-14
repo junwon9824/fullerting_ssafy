@@ -28,7 +28,7 @@ uses: actions/checkout@v4
       REPO_LC=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
       echo "REPO_LC=$REPO_LC" >> $GITHUB_OUTPUT
 
-  # 디버그가 필요할 때만 임시로 사용
+  # For temporary debugging
   # - name: Debug repo tree
   #   run: |
   #     pwd
@@ -51,7 +51,7 @@ steps:
   - name: Checkout repository
     uses: actions/checkout@v4
 
-  - name: Ensure kubectl (러너에 없으면 설치)
+  - name: Ensure kubectl (install if not present on runner)
     run: |
       if ! command -v kubectl >/dev/null 2>&1; then
         curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
