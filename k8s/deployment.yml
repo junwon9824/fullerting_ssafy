@@ -6,7 +6,7 @@ metadata:
   labels:
     app: fullerting-backend
 spec:
-  replicas: 2 # 2¿¿ Pod (¿¿¿¿)
+  replicas: 2
   selector:
     matchLabels:
       app: fullerting-backend
@@ -17,10 +17,9 @@ spec:
     spec:
       containers:
         - name: backend
-          # build ¿¿¿ ¿¿ Docker ¿¿¿ URL
           image: ghcr.io/junwon9824/fullerting_ssafy/backend:latest
           ports:
-            - containerPort: 8080 # Spring Boot ¿¿ ¿¿
+            - containerPort: 8082  # 8080 ¿ 8082¿ ¿¿
           env:
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:mysql://mysql-service:3306/fullerting?autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" 
@@ -34,20 +33,20 @@ spec:
                 secretKeyRef:
                   name: mysql-secret
                   key: MYSQL_PASSWORD
-          # Liveness Probe
+          # Liveness Probe - ¿¿¿ ¿¿ ¿¿
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
-              port: 8080
-            initialDelaySeconds: 60
+              port: 8082  # 8080 ¿ 8082¿ ¿¿
+            initialDelaySeconds: 120  # 60 ¿ 120¿¿ ¿¿
             periodSeconds: 15
             timeoutSeconds: 5
-          # Readiness Probe
+          # Readiness Probe - ¿¿¿ ¿¿ ¿¿
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
-              port: 8080
-            initialDelaySeconds: 30
+              port: 8082  # 8080 ¿ 8082¿ ¿¿
+            initialDelaySeconds: 90   # 30 ¿ 90¿¿ ¿¿
             periodSeconds: 10
 ---
 # 2. Service
@@ -56,10 +55,10 @@ kind: Service
 metadata:
   name: fullerting-backend-service
 spec:
-  type: ClusterIP # ¿¿¿¿ ¿¿ ¿¿ 
+  type: ClusterIP
   selector:
     app: fullerting-backend
   ports:
     - protocol: TCP
-      port: 8080      # ¿¿¿¿ ¿¿¿ ¿¿
-      targetPort: 8080 # Pod ¿ ¿¿¿¿ ¿¿
+      port: 8080      # ¿¿ ¿¿¿ 8080 ¿¿ (¿¿¿)
+      targetPort: 8082 # ¿¿ ¿¿¿¿ ¿¿¿ 8082
