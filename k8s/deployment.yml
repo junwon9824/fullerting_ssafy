@@ -17,13 +17,13 @@ spec:
     spec:
       containers:
         - name: backend
-          # build ¿¿¿ ¿¿¿ Docker ¿¿¿ ¿¿
+          # build ¿¿¿ ¿¿ Docker ¿¿¿ URL
           image: ghcr.io/junwon9824/fullerting_ssafy/backend:latest
           ports:
             - containerPort: 8080 # Spring Boot ¿¿ ¿¿
           env:
             - name: SPRING_DATASOURCE_URL
-              value: "jdbc:mysql://mysql-service:3306/fullerting?autoReconnect=true&useSSL=false"
+              value: "jdbc:mysql://mysql-service:3306/fullerting?autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC" 
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -49,9 +49,7 @@ spec:
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 10
-
 ---
-
 # 2. Service
 apiVersion: v1
 kind: Service
@@ -63,6 +61,5 @@ spec:
     app: fullerting-backend
   ports:
     - protocol: TCP
-      port: 8080      # ¿¿¿¿ ¿¿¿¿ ¿¿¿ ¿¿
-      targetPort: 8080 # Pod ¿¿ ¿¿¿¿ ¿¿
-
+      port: 8080      # ¿¿¿¿ ¿¿¿ ¿¿
+      targetPort: 8080 # Pod ¿ ¿¿¿¿ ¿¿
