@@ -1,63 +1,67 @@
-# Workflow 이름
-name: Deploy to VirtualBox Cluster
-
-# 1. 트리거 조건: 'main' 브랜치의 'backend/' 경로에 변경사항이 있을 때 실행
+name: Deploy Backend to Kubernetes
 on:
   push:
     branches: ["main"]
-    paths:
-      - "backend/**"
-      - ".github/workflows/deploy.yml"
-
 jobs:
   build:
     name: Build and Push Docker Image
-    runs-on: ubuntu-latest # GitHub 제공 클린 환경에서 빌드
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    outputs:
+      image: ${{ steps.img.outputs.image }}
+      repo_lc: ${{ steps.img.outputs.REPO_LC }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Login to GitHub Container Registry (GHCR)
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image to GHCR
+      - name: Set lowercase image repo
+        id: img
+        run: |
+          REPO_LC=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE="ghcr.io/$REPO_LC/backend:latest"
+          echo "REPO_LC=$REPO_LC" >> $GITHUB_OUTPUT
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./Dockerfile
+          context: .
+          file: ./Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/backend:latest
-
+          tags: ${{ steps.img.outputs.image }}
   deploy:
-    name: Deploy to Node ${{ matrix.node }}
-    needs: build # 'build' 잡이 성공해야 실행됩니다.
-    strategy:
-      matrix:
-        # 여기에 배포할 VirtualBox 러너들의 레이블을 추가하세요.
-        node: [vbox-node-1, vbox-node-2, vbox-node-3]
-    runs-on: ${{ matrix.node }} # 매트릭스에 지정된 각 러너에서 작업을 실행합니다.
-
+    name: Deploy to Kubernetes
+    needs: build
+    runs-on: self-hosted
     steps:
-      - name: Deploy on ${{ runner.name }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Kubeconfig
         run: |
-          echo "Deploying new version on ${{ runner.name }}..."
-          # 각 VirtualBox VM의 docker-compose.yml 파일이 있는 경로로 이동해야 합니다.
-          cd ~/fullerting-project
-
-          # 만약 GHCR 패키지가 private이라면, 각 러너에서 docker login이 필요할 수 있습니다.
-          # echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-          # 최신 백엔드 이미지를 pull 받습니다.
-          docker pull ghcr.io/${{ github.repository }}/backend:latest
-
-          # docker-compose를 사용하여 백엔드 서비스를 재시작합니다.
-          docker-compose up -d --force-recreate backend
-
-          # 사용하지 않는 Docker 이미지를 정리하여 디스크 공간을 확보합니다.
-          docker image prune -af
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_DATA }}" > $HOME/.kube/config
+      - name: Update deployment YAML with new image
+        run: |
+          sed -i 's|image: ghcr\.io/[^[:space:]]*|image: ${{ needs.build.outputs.image }}|g' k8s/deployment.yml
+      - name: Deploy manifests
+        run: |
+          kubectl apply -f k8s/
+      - name: Wait for rollout to complete
+        run: |
+          kubectl rollout status deployment/fullerting-backend-deployment --timeout=600s
+        continue-on-error: true
+      - name: Debug deployment status
+        if: failure()
+        run: |
+          echo "=== Pod Status ==="
+          kubectl get pods -l app=fullerting-backend
+          echo "=== Pod Description ==="
+          kubectl describe pods -l app=fullerting-backend | tail -50
+          echo "=== Recent Events ==="
+          kubectl get events --sort-by=.metadata.creationTimestamp | tail -20
