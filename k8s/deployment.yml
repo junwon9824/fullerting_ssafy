@@ -35,6 +35,10 @@ spec:
                   key: MYSQL_PASSWORD
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
               value: "kafka-service:9092" # ClusterIP 서비스 사용 (권장)
+            - name: SPRING_REDIS_HOST
+              value: "redis-service"
+            - name: SPRING_REDIS_PORT
+              value: "6379"
 
           # Liveness Probe
           livenessProbe:
