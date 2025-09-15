@@ -1,37 +1,41 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3305/fullerting
-    username: root
-    password: ssafy
+    # Kubernetes »Ø∞Êø°º≠¥¬ »Ø∞Ê ∫Øºˆ∏¶ ªÁøÎ«œ∞Ì, ∑Œƒ√ø°º≠¥¬ ±‚∫ª∞™(localhost)¿ª ªÁøÎ«’¥œ¥Ÿ.
+    url: jdbc:mysql://${SPRING_DATASOURCE_HOST:localhost}:${SPRING_DATASOURCE_PORT:3305}/${SPRING_DATASOURCE_DB:fullerting}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:ssafy}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-
-    #####
-    mongodb:
-      image: mongo:latest
-      container_name: mongodb_boot
-      restart: always
-      ports:
-        - 27017:27017
-      volumes:
-        - /home/ubun2/mongodb/data:/data
-      environment:
-        - MONGO_INITDB_ROOT_USERNAME=root
-        - MONGO_INITDB_ROOT_PASSWORD=ssafy
+  # MongoDB º≥¡§: Docker ComposeøÎ¿∏∑Œ ∫∏¿Ã∏Á, Kubernetesø°º≠¥¬ ∫∞µµ¿« YAML ∆ƒ¿œ∑Œ ∞¸∏Æ«ÿæﬂ «’¥œ¥Ÿ.
+  # ¿Ã ∆ƒ¿œø°º≠¥¬ ªË¡¶«œ∞≈≥™ ¡÷ºÆ √≥∏Æ«œ¥¬ ∞Õ¿Ã ¡¡Ω¿¥œ¥Ÿ.
+  # mongodb:
+  #   image: mongo:latest
+  #   container_name: mongodb_boot
+  #   restart: always
+  #   ports:
+  #     - 27017:27017
+  #   volumes:
+  #     - /home/ubun2/mongodb/data:/data
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=ssafy
 
   data:
     redis:
-      host: localhost
-      port: 6378
+      # Kubernetes »Ø∞Êø°º≠¥¬ 'redis-service' ∞∞¿∫ º≠∫ÒΩ∫ ¿Ã∏ß¿ª ªÁøÎ«’¥œ¥Ÿ.
+      host: ${SPRING_REDIS_HOST:localhost}
+      # Kubernetesø°º≠¥¬ ∆˜∆Æ '6379'∏¶ ªÁøÎ«’¥œ¥Ÿ.
+      port: ${SPRING_REDIS_PORT:6378}
 
+  # ∫∏æ» ∞¸∑√ ¡§∫∏ (JWT)¥¬ »Ø∞Ê ∫Øºˆ≥™ Kubernetes Secret¿∏∑Œ ∞¸∏Æ«œ¥¬ ∞Õ¿Ã ¥ı æ»¿¸«’¥œ¥Ÿ.
   security:
     user:
       name: test
       password: 1234
 
   jwt:
-    access: whatwehavetowantinalifeismentalsatisfactionnotmaterialone
-    refresh: youforgetthisyoualwaysfeelfailevenifyouwillgeteverything
+    access: ${JWT_ACCESS_SECRET:whatwehavetowantinalifeismentalsatisfactionnotmaterialone}
+    refresh: ${JWT_REFRESH_SECRET:youforgetthisyoualwaysfeelfailevenifyouwillgeteverything}
     accesstime: 432000000
     refreshtime: 604800000 # 7Days
 
@@ -48,17 +52,16 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: update
-#      ddl-auto: create
 
 cloud:
   aws:
     credentials:
-      access-key: AKIAW3MEAWFWGVMIB3VX
-      secret-key: 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
+      access-key: ${AWS_ACCESS_KEY:AKIAW3MEAWFWGVMIB3VX}
+      secret-key: ${AWS_SECRET_KEY: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}
     region:
       static: ap-northeast-2
     s3:
-      bucket: fullerting-s3-v2
+      bucket: ${S3_BUCKET:fullerting-s3-v2}
       stack:
         auto: false
 
@@ -72,13 +75,13 @@ logging:
       springframework:
         security:
           web:
-          FilterChainProxy: DEBUG
+            FilterChainProxy: DEBUG
       hibernate:
-        SQL: DEBUG                             # SQL ÏøºÎ¶¨ Î°úÍ∑∏ Ï∂úÎ†•
+        SQL: DEBUG
         type:
           descriptor:
             sql:
-              BasicBinder: TRACE              # Î∞îÏù∏Îî© Îêú ÌååÎùºÎØ∏ÌÑ∞ Í∞í Î°úÍ∑∏
+              BasicBinder: TRACE
     root: INFO
     com.ssafy.fullerting: DEBUG
   file:
