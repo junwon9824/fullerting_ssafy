@@ -1,13 +1,13 @@
 spring:
   datasource:
-    # Kubernetes ȯ�濡���� ȯ�� ������ ����ϰ�, ���ÿ����� �⺻��(localhost)�� ����մϴ�.
+    # Kubernetes È¯°æ¿¡¼­´Â È¯°æ º¯¼ö¸¦ »ç¿ëÇÏ°í, ·ÎÄÃ¿¡¼­´Â ±âº»°ª(localhost)À» »ç¿ëÇÕ´Ï´Ù.
     url: jdbc:mysql://${SPRING_DATASOURCE_HOST:localhost}:${SPRING_DATASOURCE_PORT:3305}/${SPRING_DATASOURCE_DB:fullerting}
     username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:ssafy}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-  # MongoDB ����: Docker Compose������ ���̸�, Kubernetes������ ������ YAML ���Ϸ� �����ؾ� �մϴ�.
-  # �� ���Ͽ����� �����ϰų� �ּ� ó���ϴ� ���� �����ϴ�.
+  # MongoDB ¼³Á¤: Docker Compose¿ëÀ¸·Î º¸ÀÌ¸ç, Kubernetes¿¡¼­´Â º°µµÀÇ YAML ÆÄÀÏ·Î °ü¸®ÇØ¾ß ÇÕ´Ï´Ù.
+  # ÀÌ ÆÄÀÏ¿¡¼­´Â »èÁ¦ÇÏ°Å³ª ÁÖ¼® Ã³¸®ÇÏ´Â °ÍÀÌ ÁÁ½À´Ï´Ù.
   # mongodb:
   #   image: mongo:latest
   #   container_name: mongodb_boot
@@ -22,12 +22,12 @@ spring:
 
   data:
     redis:
-      # Kubernetes ȯ�濡���� 'redis-service' ���� ���� �̸��� ����մϴ�.
+      # Kubernetes È¯°æ¿¡¼­´Â 'redis-service' °°Àº ¼­ºñ½º ÀÌ¸§À» »ç¿ëÇÕ´Ï´Ù.
       host: ${SPRING_REDIS_HOST:localhost}
-      # Kubernetes������ ��Ʈ '6379'�� ����մϴ�.
+      # Kubernetes¿¡¼­´Â Æ÷Æ® '6379'¸¦ »ç¿ëÇÕ´Ï´Ù.
       port: ${SPRING_REDIS_PORT:6378}
 
-  # ���� ���� ���� (JWT)�� ȯ�� ������ Kubernetes Secret���� �����ϴ� ���� �� �����մϴ�.
+  # º¸¾È °ü·Ã Á¤º¸ (JWT)´Â È¯°æ º¯¼ö³ª Kubernetes SecretÀ¸·Î °ü¸®ÇÏ´Â °ÍÀÌ ´õ ¾ÈÀüÇÕ´Ï´Ù.
   security:
     user:
       name: test
