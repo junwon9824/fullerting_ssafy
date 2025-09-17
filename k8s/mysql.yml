@@ -1,4 +1,4 @@
-# 1. Secret: MySQL ë°ì´í„°ë² ì´ìŠ¤ ì‚¬ìš©ì ì •ë³´ ê´€ë¦¬
+# 1. Secret: MySQL ?°?´?„°ë² ì´?Š¤ ?‚¬?š©? ? •ë³? ê´?ë¦?
 apiVersion: v1
 kind: Secret
 metadata:
@@ -6,14 +6,13 @@ metadata:
   labels:
     app: mysql
 stringData:
-  MYSQL_ROOT_PASSWORD: "your-root-password"  # ì‹¤ì œ ë¹„ë°€ë²ˆí˜¸ë¡œ ë³€ê²½í•˜ì„¸ìš”
+  MYSQL_ROOT_PASSWORD: "ssafy" # ?‹¤? œ ë¹„ë??ë²ˆí˜¸ë¡? ë³?ê²½í•˜?„¸?š”
   MYSQL_DATABASE: "fullerting"
   MYSQL_USER: "fullerting-user"
-  MYSQL_PASSWORD: "your-user-password"       # ì‹¤ì œ ë¹„ë°€ë²ˆí˜¸ë¡œ ë³€ê²½í•˜ì„¸ìš”
+  MYSQL_PASSWORD: "ssafy" # ?‹¤? œ ë¹„ë??ë²ˆí˜¸ë¡? ë³?ê²½í•˜?„¸?š”
 
 ---
-
-# 2. Deployment: MySQL ì»¨í…Œì´ë„ˆ ì •ì˜ ë° ê´€ë¦¬
+# 2. Deployment: MySQL ì»¨í…Œ?´?„ˆ ? •?˜ ë°? ê´?ë¦?
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -47,8 +46,7 @@ spec:
             claimName: mysql-pv-claim
 
 ---
-
-# 3. Service: MySQL Deployment í´ëŸ¬ìŠ¤í„° ë‚´ ë…¸ì¶œìš©
+# 3. Service: MySQL Deployment ?´?Ÿ¬?Š¤?„° ?‚´ ?…¸ì¶œìš©
 apiVersion: v1
 kind: Service
 metadata:
@@ -63,8 +61,7 @@ spec:
       targetPort: 3306
 
 ---
-
-# 4. PersistentVolumeClaim: MySQL ë°ì´í„° ì˜êµ¬ ì €ì¥ìš©
+# 4. PersistentVolumeClaim: MySQL ?°?´?„° ?˜êµ? ????¥?š©
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -74,5 +71,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi   # í•„ìš” ìš©ëŸ‰ì— ë§ê²Œ ì¡°ì ˆ
+      storage: 1Gi # ?•„?š” ?š©?Ÿ‰?— ë§ê²Œ ì¡°ì ˆ
 
