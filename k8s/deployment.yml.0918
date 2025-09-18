@@ -1,4 +1,4 @@
-# Deployment
+# 1. Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,21 +34,38 @@ spec:
                   name: mysql-secret
                   key: MYSQL_PASSWORD
             - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: "kafka-service:9092"
+              value: "kafka-service:9092" # ClusterIP 서비스 사용 (권장)
             - name: SPRING_REDIS_HOST
               value: "redis-service"
             - name: SPRING_REDIS_PORT
               value: "6379"
+
+          # Liveness Probe
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
               port: 8082
-            initialDelaySeconds: 180
+            initialDelaySeconds: 120
             periodSeconds: 15
             timeoutSeconds: 5
+          # Readiness Probe
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
               port: 8082
-            initialDelaySeconds: 180
+            initialDelaySeconds: 90
             periodSeconds: 10
+---
+# 2. Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fullerting-backend-service
+spec:
+  type: ClusterIP
+  selector:
+    app: fullerting-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8082
