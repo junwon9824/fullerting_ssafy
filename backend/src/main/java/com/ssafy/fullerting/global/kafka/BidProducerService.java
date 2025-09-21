@@ -28,12 +28,12 @@ public class BidProducerService {
     private static final String ALARM_TOPIC = "kafka-alarm";
     private final KafkaTemplate<String, BidRequestMessage> bidRequestKafkaTemplate;
     private static final String BID_TOPIC = "bid_requests";
-    // �엯李� �떊泥� 硫붿떆吏�瑜� 移댄봽移대줈 蹂대궡�뒗 硫붿꽌�뱶
+    // 입찰 신청 메시지를 카프카로 보내는 메서드
 
     public void sendBidRequest(Long exArticleId, int dealCurPrice, MemberProfile bidder) {
         BidRequestMessage bidRequest = new BidRequestMessage(exArticleId, dealCurPrice, bidder.getNickname());
         bidRequestKafkaTemplate.send(BID_TOPIC, exArticleId.toString(), bidRequest);
-        log.info("移댄봽移대줈 �엯李� �떊泥��쓣 �쟾�넚�뻽�뒿�땲�떎: {}", bidRequest);
+        log.info("카프카로 입찰 신청을 전송했습니다: {}", bidRequest);
     }
 
     public void kafkaalarmproduce(MemberProfile memberProfile, ExArticle exArticle, String redirecturl) {
