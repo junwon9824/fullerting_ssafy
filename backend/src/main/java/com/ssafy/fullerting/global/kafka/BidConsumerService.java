@@ -54,7 +54,7 @@ public class BidConsumerService {
                         int dealCurPrice = message.getDealCurPrice();
                         String bidderUserName = message.getBidderUserName();
 
-                        log.info("?…ì°? ?š”ì²? ?ˆ˜?‹  - ê²Œì‹œê¸? ID: {}, ?…ì°°ê??: {}, ?‚¬?š©?: {}", exArticleId, dealCurPrice, bidderUserName);
+                        log.info("ì…ì°° ìš”ì²­ ìˆ˜ì‹  - ê²Œì‹œê¸€ ID: {}, ì…ì°°ê°€: {}, ì‚¬ìš©ì: {}", exArticleId, dealCurPrice, bidderUserName);
 
                         ExArticle exArticle = exArticleRepository.findWithDealByIdwithLock(exArticleId)
                                         .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
@@ -66,11 +66,11 @@ public class BidConsumerService {
                         int currentPrice = deal.getDealCurPrice();
                         if (dealCurPrice <= currentPrice) {
                                 throw new RuntimeException(
-                                                "?˜„?¬ê°?ë³´ë‹¤ ?†’??? ê¸ˆì•¡?„ ?…? ¥?•´ì£¼ì„¸?š”. ?˜„?¬ê°?: " + currentPrice);
+                                                "í˜„ì¬ê°€ë³´ë‹¤ ë†’ì€ ê¸ˆì•¡ì„ ì…ë ¥í•´ì£¼ì„¸ìš”. í˜„ì¬ê°€: " + currentPrice);
                         }
 
                         MemberProfile bidder = memberRepository.findByNickname(bidderUserName)
-                                        .orElseThrow(() -> new RuntimeException("?šŒ?› ? •ë³´ë?? ì°¾ì„ ?ˆ˜ ?—†?Šµ?‹ˆ?‹¤."));
+                                        .orElseThrow(() -> new RuntimeException("íšŒì› ì •ë³´ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤."));
 
                         List<BidLog> existingBids = bidRepository.findByDealId(deal.getId().toString());
                         long uniqueBidderCount = existingBids.stream()
@@ -82,7 +82,7 @@ public class BidConsumerService {
                         if (isNewBidder)
                                 uniqueBidderCount++;
 
-                        // ?…ì°? ?‚´?—­ ????¥ (?˜¤ì§? ?—¬ê¸°ì„œë§?!)
+                        // ì…ì°° ë‚´ì—­ ì €ì¥ (ì˜¤ì§ ì—¬ê¸°ì„œë§Œ!)
                         BidLog bidLog = BidLog.builder()
                                         .deal(deal)
                                         .userId(bidder.getId())
@@ -91,15 +91,15 @@ public class BidConsumerService {
                                         .build();
 
                         bidRepository.save(bidLog);
-                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // ? ˆ?””?Š¤?— ?•´?‹¹ ?‘ë¬¼ì— ????•œ ìµœê³  ?…ì°? ê¸ˆì•¡
-                                                                                             // ?—…?°?´?Š¸.
+                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // ë ˆë””ìŠ¤ì— í•´ë‹¹ ì‘ë¬¼ì— ëŒ€í•œ ìµœê³  ì…ì°° ê¸ˆì•¡
+                                                                                             // ì—…ë°ì´íŠ¸.
 
-                        // ê±°ë˜ ? •ë³? ?—…?°?´?Š¸
+                        // ê±°ë˜ ì •ë³´ ì—…ë°ì´íŠ¸
                         deal.setDealCurPrice(dealCurPrice);
                         deal.setBidderCount((int) uniqueBidderCount);
                         dealRepository.save(deal);
 
-                        // WebSocket?œ¼ë¡? ?‹¤?‹œê°? ?—…?°?´?Š¸ ? „?†¡
+                        // WebSocketìœ¼ë¡œ ì‹¤ì‹œê°„ ì—…ë°ì´íŠ¸ ì „ì†¡
                         Map<String, Object> wsMessage = new HashMap<>();
                         wsMessage.put("type", "BID_UPDATE");
                         wsMessage.put("bidLogId", bidLog.getId());
@@ -115,21 +115,19 @@ public class BidConsumerService {
                                         "/topic/bidding/" + exArticleId,
                                         wsMessage);
 
-                        // ?•Œë¦? ? „?†¡
+                        // ì•Œë¦¼ ì „ì†¡
                         bidProducerService.kafkaalarmproduce(bidder, exArticle, "/some/redirect/url");
 
                 } catch (Exception e) {
-                        log.error("Kafka ?…ì°? ë©”ì‹œì§? ì²˜ë¦¬ ?‹¤?Œ¨: {}", message, e);
+                        log.error("Kafka ì…ì°° ë©”ì‹œì§€ ì²˜ë¦¬ ì‹¤íŒ¨: {}", message, e);
                 }
         }
 
-        // [?ˆ˜? •]
-        // ?™?¼?•œ ?† ?”½(bid_requests)ê³? ê·¸ë£¹ ID(bid-group)ë¥? ê°?ì§? ë¦¬ìŠ¤?„ˆê°? ì¤‘ë³µ?˜?–´
-        // ?• ?”Œë¦¬ì???´?…˜ ?‹œ?‘ ?˜¤ë¥˜ê?? ë°œìƒ?•©?‹ˆ?‹¤.
-        // ?°?´?„° ? •?•©?„±?„ ë³´ì¥?•˜?Š” ë¹„ê???  ?½(findWithDealByIdwithLock)?„ ?‚¬?š©?•˜?Š” ?œ„?˜
-        // consumeBidRequest ë©”ì„œ?“œê°?
-        // ?š´?˜ ë¡œì§?´ë¯?ë¡?,
-        // ?…Œ?Š¤?Š¸?š©?œ¼ë¡? ì¶”ì •?˜?Š” ?´ ë¦¬ìŠ¤?„ˆ?Š” ì£¼ì„ ì²˜ë¦¬?•˜?—¬ ë¹„í™œ?„±?™”?•©?‹ˆ?‹¤.
+        // [ìˆ˜ì •]
+        // ë™ì¼í•œ í† í”½(bid_requests)ê³¼ ê·¸ë£¹ ID(bid-group)ë¥¼ ê°€ì§„ ë¦¬ìŠ¤ë„ˆê°€ ì¤‘ë³µë˜ì–´ ì• í”Œë¦¬ì¼€ì´ì…˜ ì‹œì‘ ì˜¤ë¥˜ê°€ ë°œìƒí•©ë‹ˆë‹¤.
+        // ë°ì´í„° ì •í•©ì„±ì„ ë³´ì¥í•˜ëŠ” ë¹„ê´€ì  ë½(findWithDealByIdwithLock)ì„ ì‚¬ìš©í•˜ëŠ” ìœ„ì˜ consumeBidRequest ë©”ì„œë“œê°€
+        // ìš´ì˜ ë¡œì§ì´ë¯€ë¡œ,
+        // í…ŒìŠ¤íŠ¸ìš©ìœ¼ë¡œ ì¶”ì •ë˜ëŠ” ì´ ë¦¬ìŠ¤ë„ˆëŠ” ì£¼ì„ ì²˜ë¦¬í•˜ì—¬ ë¹„í™œì„±í™”í•©ë‹ˆë‹¤.
         // @KafkaListener(topics = "bid_requests", groupId = "bid-group",
         // containerFactory = "bidKafkaListenerContainerFactory")
         @Transactional
@@ -139,8 +137,7 @@ public class BidConsumerService {
                         int dealCurPrice = message.getDealCurPrice();
                         String bidderUserName = message.getBidderUserName();
 
-                        log.info("?…ì°? ?š”ì²? ?ˆ˜?‹  - ê²Œì‹œê¸? ID: {}, ?…ì°°ê??: {}, ?‚¬?š©?: {}", exArticleId, dealCu
-                                        Price,
+                        log.info("ì…ì°° ìš”ì²­ ìˆ˜ì‹  - ê²Œì‹œê¸€ ID: {}, ì…ì°°ê°€: {}, ì‚¬ìš©ì: {}", exArticleId, dealCurPrice,
                                         bidderUserName);
 
                         ExArticle exArticle = exArticleRepository.findWithDealById(exArticleId)
@@ -153,12 +150,11 @@ public class BidConsumerService {
                         int currentPrice = deal.getDealCurPrice();
                         if (dealCurPrice <= currentPrice) {
                                 throw new RuntimeException(
-                                                "?˜„?¬ê°?ë³´ë‹¤ ?†’??? ê¸ˆì•¡?„ ?…? ¥?•´ì£¼ì„¸?š”. ?˜„?¬ê°?: " + currentPrice);
+                                                "í˜„ì¬ê°€ë³´ë‹¤ ë†’ì€ ê¸ˆì•¡ì„ ì…ë ¥í•´ì£¼ì„¸ìš”. í˜„ì¬ê°€: " + currentPrice);
                         }
 
                         MemberProfile bidder = memberRepository.findByNickname(bidderUserName)
-                                        .orElseThrow(() -> new RuntimeException(
-                                                        "?šŒ?› ? •ë³´ë?? ì°¾ì„ ?ˆ˜ ?—†?Šµ?‹ˆ?‹¤."));
+                                        .orElseThrow(() -> new RuntimeException("íšŒì› ì •ë³´ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤."));
 
                         List<BidLog> existingBids = bidRepository.findByDealId(deal.getId().toString());
                         long uniqueBidderCount = existingBids.stream()
@@ -170,7 +166,7 @@ public class BidConsumerService {
                         if (isNewBidder)
                                 uniqueBidderCount++;
 
-                        // ?…ì°? ?‚´?—­ ????¥ (?˜¤ì§? ?—¬ê¸°ì„œë§?!)
+                        // ì…ì°° ë‚´ì—­ ì €ì¥ (ì˜¤ì§ ì—¬ê¸°ì„œë§Œ!)
                         BidLog bidLog = BidLog.builder()
                                         .deal(deal)
                                         .userId(bidder.getId())
@@ -179,17 +175,15 @@ public class BidConsumerService {
                                         .build();
 
                         bidRepository.save(bidLog);
-                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // ? ˆ?””?Š¤?— ?•´?‹¹ ?‘ë¬¼ì—
-                                                                                             // 
-                                                                                             // ????•œ ìµœê³  ?…ì°? ê¸ˆì•¡
-                                                                                             // ?—…?°?´?Š¸.
+                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // ë ˆë””ìŠ¤ì— í•´ë‹¹ ì‘ë¬¼ì—
+                                                                                             // ëŒ€í•œ ìµœê³  ì…ì°° ê¸ˆì•¡ ì—…ë°ì´íŠ¸.
 
-                        // ê±°ë˜ ? •ë³? ?—…?°?´?Š¸
+                        // ê±°ë˜ ì •ë³´ ì—…ë°ì´íŠ¸
                         deal.setDealCurPrice(dealCurPrice);
                         deal.setBidderCount((int) uniqueBidderCount);
                         dealRepository.save(deal);
 
-                        // WebSocket?œ¼ë¡? ?‹¤?‹œê°? ?—…?°?´?Š¸ ? „?†¡
+                        // WebSocketìœ¼ë¡œ ì‹¤ì‹œê°„ ì—…ë°ì´íŠ¸ ì „ì†¡
                         Map<String, Object> wsMessage = new HashMap<>();
                         wsMessage.put("type", "BID_UPDATE");
                         wsMessage.put("bidLogId", bidLog.getId());
@@ -205,11 +199,11 @@ public class BidConsumerService {
                                         "/topic/bidding/" + exArticleId,
                                         wsMessage);
 
-                        // ?•Œë¦? ? „?†¡
+                        // ì•Œë¦¼ ì „ì†¡
                         bidProducerService.kafkaalarmproduce(bidder, exArticle, "/some/redirect/url");
 
                 } catch (Exception e) {
-                        log.error("Kafka ?…ì°? ë©”ì‹œì§? ì²˜ë¦¬ ?‹¤?Œ¨: {}", message, e);
+                        log.error("Kafka ì…ì°° ë©”ì‹œì§€ ì²˜ë¦¬ ì‹¤íŒ¨: {}", message, e);
                 }
         }
 
@@ -226,15 +220,14 @@ public class BidConsumerService {
                                 throw new DealException(DealErrorCode.NOT_EXISTS);
                         }
 
-                        // BidLog ????¥??? ?•˜ì§? ?•Š?Š”?‹¤! (ì¤‘ë³µ ????¥ ë°©ì??)
+                        // BidLog ì €ì¥ì€ í•˜ì§€ ì•ŠëŠ”ë‹¤! (ì¤‘ë³µ ì €ì¥ ë°©ì§€)
                         // BidProposeRequest bidProposeRequest = BidProposeRequest.builder()
                         // .dealCurPrice(bidNotification.getPrice())
                         // .userId(bidNotification.getUserid())
                         // .build();
-                        // bidService.socketdealbid(article, bidProposeRequest); // ?‚­? œ ?˜?Š” ì£¼ì„
-                        // ˜ë¦¬
+                        // bidService.socketdealbid(article, bidProposeRequest); // ì‚­ì œ ë˜ëŠ” ì£¼ì„ì²˜ë¦¬
 
-                        // ?•Œë¦?/?›¹?†Œì¼? ?“± ë¶?ê°? ë¡œì§ë§? ?‹¤?–‰
+                        // ì•Œë¦¼/ì›¹ì†Œì¼“ ë“± ë¶€ê°€ ë¡œì§ë§Œ ì‹¤í–‰
                         MemberProfile bidUser = userService.getUserEntityById(bidNotification.getUserid());
                         int bidderCount = bidService.getBidderCount(deal);
                         int maxBidPrice = bidService.getMaxBidPrice(article);
