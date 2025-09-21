@@ -1,18 +1,31 @@
-# 1. Secret: MySQL ?°?´?„°ë² ì´?Š¤ ?‚¬?š©? ? •ë³? ê´?ë¦?
+# 1. Secret: MySQL ì‚¬ìš©ì/DB ì •ë³´
 apiVersion: v1
 kind: Secret
 metadata:
   name: mysql-secret
   labels:
     app: mysql
+type: Opaque
 stringData:
-  MYSQL_ROOT_PASSWORD: "ssafy" # ?‹¤? œ ë¹„ë??ë²ˆí˜¸ë¡? ë³?ê²½í•˜?„¸?š”
+  MYSQL_ROOT_PASSWORD: "ssafy" # ì‹¤ì œ ë¹„ë°€ë²ˆí˜¸ë¡œ ë³€ê²½
   MYSQL_DATABASE: "fullerting"
   MYSQL_USER: "fullerting-user"
-  MYSQL_PASSWORD: "ssafy" # ?‹¤? œ ë¹„ë??ë²ˆí˜¸ë¡? ë³?ê²½í•˜?„¸?š”
-
+  MYSQL_PASSWORD: "ssafy" # ì‹¤ì œ ë¹„ë°€ë²ˆí˜¸ë¡œ ë³€ê²½
 ---
-# 2. Deployment: MySQL ì»¨í…Œ?´?„ˆ ? •?˜ ë°? ê´?ë¦?
+# 2. ConfigMap: ì´ˆê¸°í™” SQL ìŠ¤í¬ë¦½íŠ¸
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init-config
+  labels:
+    app: mysql
+data:
+  init-db.sql: |
+    CREATE USER 'fullerting-user'@'%' IDENTIFIED BY 'ssafy';
+    GRANT ALL PRIVILEGES ON fullerting.* TO 'fullerting-user'@'%' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+---
+# 3. Deployment: MySQL ì»¨í…Œì´ë„ˆ
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -40,13 +53,17 @@ spec:
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
+            - name: mysql-init-volume
+              mountPath: /docker-entrypoint-initdb.d
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
             claimName: mysql-pv-claim
-
+        - name: mysql-init-volume
+          configMap:
+            name: mysql-init-config
 ---
-# 3. Service: MySQL Deployment ?´?Ÿ¬?Š¤?„° ?‚´ ?…¸ì¶œìš©
+# 4. Service: í´ëŸ¬ìŠ¤í„° ë‚´ë¶€ìš© MySQL ì ‘ê·¼
 apiVersion: v1
 kind: Service
 metadata:
@@ -59,9 +76,8 @@ spec:
     - protocol: TCP
       port: 3306
       targetPort: 3306
-
 ---
-# 4. PersistentVolumeClaim: MySQL ?°?´?„° ?˜êµ? ????¥?š©
+# 5. PVC: ì˜êµ¬ ë³¼ë¥¨ ì²­êµ¬
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -71,5 +87,4 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi # ?•„?š” ?š©?Ÿ‰?— ë§ê²Œ ì¡°ì ˆ
-
+      storage: 1Gi # í•„ìš”ì‹œ ì¡°ì •
