@@ -17,9 +17,12 @@ spec:
       containers:
         - name: mysql
           image: mysql:8.0
-          envFrom:
-            - secretRef:
-                name: mysql-secret
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
           ports:
             - containerPort: 3306
           volumeMounts:
@@ -27,6 +30,9 @@ spec:
               mountPath: /var/lib/mysql
             - name: mysql-init-volume
               mountPath: /docker-entrypoint-initdb.d
+            - name: mysql-config-volume
+              mountPath: /etc/mysql/mysql.conf.d/mysqld.cnf
+              subPath: mysqld.cnf
       volumes:
         - name: mysql-persistent-storage
           persistentVolumeClaim:
@@ -34,27 +40,6 @@ spec:
         - name: mysql-init-volume
           configMap:
             name: mysql-init-config
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql-service
-spec:
-  type: ClusterIP
-  selector:
-    app: mysql
-  ports:
-    - protocol: TCP
-      port: 3306
-      targetPort: 3306
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mysql-pv-claim
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+        - name: mysql-config-volume
+          configMap:
+            name: mysql-config

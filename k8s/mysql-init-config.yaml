@@ -2,10 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-init-config
-  labels:
-    app: mysql
 data:
-  init-db.sql: |
+  init-db.sql: |-
     CREATE USER 'fullerting-user'@'%' IDENTIFIED BY 'ssafy';
     GRANT ALL PRIVILEGES ON fullerting.* TO 'fullerting-user'@'%' WITH GRANT OPTION;
     FLUSH PRIVILEGES;
