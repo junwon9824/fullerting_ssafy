@@ -38,6 +38,12 @@ spec:
               value: "redis-service"
             - name: SPRING_REDIS_PORT
               value: "6379"
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: "update"
+            - name: SPRING_JPA_DATABASE_PLATFORM
+              value: "org.hibernate.dialect.MySQL8Dialect"
+            - name: SPRING_JPA_SHOW_SQL
+              value: "true"
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
