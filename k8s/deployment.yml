@@ -5,7 +5,7 @@ metadata:
   labels:
     app: fullerting-backend
 spec:
-  replicas: 2
+  replicas: 1 # VirtualBox 환경에서는 1로 시작
   selector:
     matchLabels:
       app: fullerting-backend
@@ -14,18 +14,6 @@ spec:
       labels:
         app: fullerting-backend
     spec:
-      # MySQL이 준비될 때까지 대기하는 Init Container
-      initContainers:
-        - name: wait-for-mysql
-          image: busybox
-          command:
-            - sh
-            - -c
-            - |
-              until nc -z mysql-service 3306; do
-                echo "Waiting for MySQL..."
-                sleep 5
-              done
       containers:
         - name: backend
           image: ghcr.io/junwon9824/fullerting_ssafy/backend:latest
@@ -56,18 +44,25 @@ spec:
               value: "org.hibernate.dialect.MySQL8Dialect"
             - name: SPRING_JPA_SHOW_SQL
               value: "true"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1024Mi"
+              cpu: "1"
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
               port: 8082
-            initialDelaySeconds: 240
+            initialDelaySeconds: 300 # 초기 지연 늘림
             periodSeconds: 20
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
               port: 8082
-            initialDelaySeconds: 240
+            initialDelaySeconds: 300 # 초기 지연 늘림
             periodSeconds: 15
             timeoutSeconds: 5
       imagePullSecrets:
