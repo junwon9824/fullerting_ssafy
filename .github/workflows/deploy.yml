@@ -1,11 +1,19 @@
 name: Deploy Backend to Kubernetes
+
 on:
   push:
     branches: ["main"]
+
 jobs:
   build:
     name: Build and Push Docker Image
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, runner] # 워커 노드에서 실행
+    strategy:
+      matrix:
+        node: [fuller2, fuller3] # 두 워커 노드로 분산
+    container:
+      image: docker:20.10.24 # 빌드용 컨테이너
+      options: --memory=4g # OOM 방지용 메모리 제한
     permissions:
       contents: read
       packages: write
@@ -15,12 +23,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set lowercase image repo
         id: img
         run: |
@@ -28,6 +38,7 @@ jobs:
           IMAGE="ghcr.io/$REPO_LC/backend:latest"
           echo "REPO_LC=$REPO_LC" >> $GITHUB_OUTPUT
           echo "image=$IMAGE" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -35,27 +46,36 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.img.outputs.image }}
+
   deploy:
     name: Deploy to Kubernetes
     needs: build
-    runs-on: [self-hosted, runner]
+    runs-on: [self-hosted, runner] # 워커 노드에서 실행
+    container:
+      image: bitnami/kubectl:1.33 # kubectl 사용용 컨테이너
+      options: --memory=2g # 배포 단계 메모리 제한
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Setup Kubeconfig
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG_DATA }}" > $HOME/.kube/config
+
       - name: Update deployment YAML with new image
         run: |
           sed -i 's|image: ghcr\.io/[^[:space:]]*|image: ${{ needs.build.outputs.image }}|g' k8s/deployment.yml
+
       - name: Deploy manifests
         run: |
           kubectl apply -f k8s/
+
       - name: Wait for rollout to complete
         run: |
           kubectl rollout status deployment/fullerting-backend-deployment --timeout=600s
         continue-on-error: true
+
       - name: Debug deployment status
         if: failure()
         run: |
