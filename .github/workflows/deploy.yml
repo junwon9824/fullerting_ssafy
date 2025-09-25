@@ -15,9 +15,11 @@ jobs:
     permissions:
       contents: read
       packages: write
+
     outputs:
       image: ${{ steps.img.outputs.image }}
       repo_lc: ${{ steps.img.outputs.REPO_LC }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,6 +30,9 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx # ? buildx 설치 추가
+        uses: docker/setup-buildx-action@v3
 
       - name: Set lowercase image repo
         id: img
@@ -51,7 +56,8 @@ jobs:
     runs-on: [self-hosted, runner] # 워커 노드에서 실행
     container:
       image: bitnami/kubectl:1.33 # kubectl 사용용 컨테이너
-      options: --memory=2g
+      options: --memory=2g # 배포 단계 메모리 제한
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
