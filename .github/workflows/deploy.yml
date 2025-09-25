@@ -13,7 +13,9 @@ jobs:
         node: [fuller2, fuller3] # 두 워커 노드로 분산
     container:
       image: docker:20.10.24 # 빌드용 컨테이너
-      options: --memory=4g # OOM 방지용 메모리 제한
+      # options: --memory=4g # OOM 방지용 메모리 제한
+      options: --memory=4g -v /var/run/docker.sock:/var/run/docker.sock
+
     permissions:
       contents: read
       packages: write
