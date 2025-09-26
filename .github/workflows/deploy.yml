@@ -34,9 +34,22 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/fuller3:latest
 
+      - name: Setup Kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+          export KUBECONFIG=$HOME/.kube/config
+
+      # # - name: Deploy to k3s
+      # #   run: |
+      # #     # VM 내부에서 실행되므로 ~/.kube/config 사용
+      # #     kubectl apply -f k8s/ --validate=false
+      # #     kubectl set image deployment/backend backend=${{ secrets.DOCKER_USERNAME }}/fuller3:latest
+      # #     kubectl rollout status deployment/backend
       - name: Deploy to k3s
         run: |
-          # VM 내부에서 실행되므로 ~/.kube/config 사용
           kubectl apply -f k8s/ --validate=false
-          kubectl set image deployment/backend backend=${{ secrets.DOCKER_USERNAME }}/fuller3:latest
-          kubectl rollout status deployment/backend
+          kubectl set image deployment/fullerting-backend-deployment backend=${{ secrets.DOCKER_USERNAME }}/fuller3:latest
+          kubectl rollout status deployment/fullerting-backend-deployment
+        env:
+          KUBECONFIG: $HOME/.kube/config
