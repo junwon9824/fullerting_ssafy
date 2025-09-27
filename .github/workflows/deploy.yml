@@ -9,13 +9,13 @@ jobs:
   deploy:
     runs-on: self-hosted
     env:
-      KUBECONFIG: $HOME/.kube/config # 모든 step에서 사용
+      KUBECONFIG: $HOME/.kube/config # 모든 step에서 공통 사용
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # K3s cluster에 이미 존재하는 이미지 사용하므로 build/push 제거
+      # build/push 단계 제거 (이미 ghcr에 backend 이미지가 있음)
       # - name: Build and Push Docker Image
       #   uses: docker/build-push-action@v5
       #   with:
@@ -41,11 +41,15 @@ jobs:
         run: |
           kubectl apply -f k8s/redis.yml --validate=false
 
-      - name: Deploy Backend
+      - name: Deploy MongoDB
         run: |
-          kubectl apply -f k8s/backend-manifest.yml --validate=false
-          kubectl rollout status deployment/fullerting-backend-deployment
+          kubectl apply -f k8s/mongodb.yml --validate=false
 
       - name: Deploy Kafka
         run: |
           kubectl apply -f k8s/kafka.yml --validate=false
+
+      - name: Deploy Backend
+        run: |
+          kubectl apply -f k8s/backend-manifest.yml --validate=false
+          kubectl rollout status deployment/fullerting-backend-deployment
