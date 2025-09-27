@@ -1,4 +1,4 @@
-name: Deploy Fullerting Backend to k3s
+name: Deploy Backend
 
 on:
   push:
@@ -7,49 +7,25 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
-    env:
-      KUBECONFIG: $HOME/.kube/config # 모든 step에서 공통 사용
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # 1. 코드 체크아웃
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      # build/push 단계 제거 (이미 ghcr에 backend 이미지가 있음)
-      # - name: Build and Push Docker Image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: ./backend
-      #     push: true
-      #     tags: ghcr.io/junwon9824/fullerting_ssafy/backend:latest
-
-      - name: Setup Kubeconfig
+      # 2. kubeconfig 설정 (Secrets로 전달된 base64 데이터 사용)
+      - name: Setup kubeconfig
         run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
-          export KUBECONFIG=$HOME/.kube/config
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
+          export KUBECONFIG=~/.kube/config
+          chmod 600 ~/.kube/config
+          echo "KUBECONFIG set and file permissions fixed"
+          kubectl get nodes
 
-      - name: Deploy MySQL
+      # 3. 전체 k8s 디렉토리 적용
+      - name: Apply all Kubernetes manifests
         run: |
-          kubectl apply -f k8s/mysql-config.yaml --validate=false
-          kubectl apply -f k8s/mysql-secret.yml --validate=false
-          kubectl apply -f k8s/mysql-pv-claim.yaml --validate=false
-          kubectl apply -f k8s/mysql-deployment.yml --validate=false
-          kubectl apply -f k8s/mysql-service.yaml --validate=false
-
-      - name: Deploy Redis
-        run: |
-          kubectl apply -f k8s/redis.yml --validate=false
-
-      - name: Deploy MongoDB
-        run: |
-          kubectl apply -f k8s/mongodb.yml --validate=false
-
-      - name: Deploy Kafka
-        run: |
-          kubectl apply -f k8s/kafka.yml --validate=false
-
-      - name: Deploy Backend
-        run: |
-          kubectl apply -f k8s/backend-manifest.yml --validate=false
-          kubectl rollout status deployment/fullerting-backend-deployment
+          export KUBECONFIG=~/.kube/config
+          kubectl apply -f k8s/ --recursive
