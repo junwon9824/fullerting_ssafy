@@ -23,7 +23,12 @@ jobs:
           chmod 600 ~/.kube/config
           echo "KUBECONFIG set and file permissions fixed"
           kubectl get nodes
-
+      - name: Force Kubeconfig IP
+              run: |
+                # 127.0.0.1이 남아있다면 192.168.56.104로 강제 교체
+                sed -i 's|https://127.0.0.1:6443|https://192.168.56.104:6443|g' ~/.kube/config
+                echo "Kubeconfig server entry forced to 192.168.56.104"
+                cat ~/.kube/config | grep server
       # 3. 전체 k8s 디렉토리 적용
       - name: Apply all Kubernetes manifests
         run: |
