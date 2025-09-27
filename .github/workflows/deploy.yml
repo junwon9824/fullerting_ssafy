@@ -7,9 +7,10 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted # VM ³»ºÎ runner¿¡¼­ ½ÇÇà
+    runs-on: self-hosted # VM ë‚´ë¶€ runnerì—ì„œ ì‹¤í–‰
     env:
-      KUBECONFIG: $HOME/.kube/config # ¸ğµç step¿¡¼­ Àû¿ë
+      KUBECONFIG: $HOME/.kube/config # ëª¨ë“  stepì—ì„œ ì ìš©
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,18 +40,16 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
-          export KUBECONFIG=$HOME/.kube/config
+          echo "=== KUBECONFIG í™•ì¸ ==="
+          kubectl config view --kubeconfig=$HOME/.kube/config
 
-      # # - name: Deploy to k3s
-      # #   run: |
-      # #     # VM ³»ºÎ¿¡¼­ ½ÇÇàµÇ¹Ç·Î ~/.kube/config »ç¿ë
-      # #     kubectl apply -f k8s/ --validate=false
-      # #     kubectl set image deployment/backend backend=${{ secrets.DOCKER_USERNAME }}/fuller3:latest
-      # #     kubectl rollout status deployment/backend
       - name: Deploy to k3s
         run: |
+          echo "=== ë…¸ë“œ ìƒíƒœ í™•ì¸ ==="
+          kubectl get nodes
+          echo "=== ë§¤ë‹ˆí˜ìŠ¤íŠ¸ ì ìš© ==="
           kubectl apply -f k8s/ --validate=false
+          echo "=== ì´ë¯¸ì§€ ìµœì‹ í™” ==="
           kubectl set image deployment/fullerting-backend-deployment backend=${{ secrets.DOCKER_USERNAME }}/fuller3:latest
+          echo "=== ë¡¤ì•„ì›ƒ ìƒíƒœ í™•ì¸ ==="
           kubectl rollout status deployment/fullerting-backend-deployment
-        env:
-          KUBECONFIG: $HOME/.kube/config
