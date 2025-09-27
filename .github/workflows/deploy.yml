@@ -1,4 +1,4 @@
-name: Deploy Fullerting to k3s
+name: Build and Deploy Backend to k3s
 
 on:
   push:
@@ -6,51 +6,72 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: self-hosted
     env:
-      KUBECONFIG: $HOME/.kube/config # 모든 step에서 kubeconfig 사용
+      # 러너에서 사용할 kubeconfig 경로
+      KUBECONFIG: $HOME/.kube/config
+
     steps:
-      # 1. 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. kubeconfig 세팅
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: image=moby/buildkit:rootless
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/fullerting-backend:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/fullerting-backend:latest
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/fullerting-backend:latest,mode=max
+
       - name: Setup Kubeconfig
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
 
-      # 3. MySQL 관련 리소스 배포
       - name: Deploy MySQL
         run: |
           kubectl apply -f k8s/mysql-config.yaml --validate=false
-          kubectl apply -f k8s/mysql-pv-claim.yaml --validate=false
           kubectl apply -f k8s/mysql-secret.yml --validate=false
+          kubectl apply -f k8s/mysql-pv-claim.yaml --validate=false
           kubectl apply -f k8s/mysql-init-config.yaml --validate=false
           kubectl apply -f k8s/mysql-deployment.yml --validate=false
           kubectl apply -f k8s/mysql-service.yaml --validate=false
-          kubectl rollout status deployment/mysql
 
-      # 4. Redis 배포
       - name: Deploy Redis
         run: |
           kubectl apply -f k8s/redis.yml --validate=false
-          kubectl rollout status deployment/redis
 
-      # 5. Kafka 배포
       - name: Deploy Kafka
         run: |
           kubectl apply -f k8s/kafka.yml --validate=false
-          kubectl rollout status deployment/kafka
 
-      # 6. Backend 배포
       - name: Deploy Backend
         run: |
           kubectl apply -f k8s/backend-manifest.yml --validate=false
+          kubectl set image deployment/fullerting-backend-deployment backend=${{ secrets.DOCKER_USERNAME }}/fullerting-backend:latest
           kubectl rollout status deployment/fullerting-backend-deployment
 
-      # 7. Ingress 배포 (필요 시)
+      - name: Deploy MongoDB
+        run: |
+          kubectl apply -f k8s/mongodb.yml --validate=false
+
       - name: Deploy Ingress
         run: |
           kubectl apply -f k8s/ingress.yml --validate=false
