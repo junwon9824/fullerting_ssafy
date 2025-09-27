@@ -1,35 +1,42 @@
 name: Deploy Backend
 
 on:
-  push:
-    branches:
-      - main
+push:
+branches:
+  - main
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+deploy:
+runs-on: ubuntu-latest
 
-    steps:
-      # 1. 코드 체크아웃
-      - name: Checkout repo
-        uses: actions/checkout@v3
+steps:
+  # 1. 코드 체크아웃
+  - name: Checkout repo
+    uses: actions/checkout@v3
 
-      # 2. kubeconfig 설정 (Secrets로 전달된 base64 데이터 사용)
-      - name: Setup kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
-          export KUBECONFIG=~/.kube/config
-          chmod 600 ~/.kube/config
-          echo "KUBECONFIG set and file permissions fixed"
-          kubectl get nodes
-      - name: Force Kubeconfig IP
-        run: |
-          sed -i 's|https://127.0.0.1:6443|https://192.168.56.104:6443|g' ~/.kube/config
-          echo "Kubeconfig server entry forced to 192.168.56.104"
-          cat ~/.kube/config | grep server
-      # 3. 전체 k8s 디렉토리 적용
-      - name: Apply all Kubernetes manifests
-        run: |
-          export KUBECONFIG=~/.kube/config
-          kubectl apply -f k8s/ --recursive
+  # 2. Kubeconfig 설정 및 IP 강제 수정 (하나의 단계로 통합)
+  - name: Setup kubeconfig and Force IP
+    run: |
+      mkdir -p ~/.kube
+
+      # Secret 데이터를 디코딩하여 ~/.kube/config 파일 생성
+      echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
+
+      # 🚨 중요한 수정: 127.0.0.1 주소를 Host-Only IP로 강제 교체
+      sed -i 's|https://127.0.0.1:6443|https://192.168.56.104:6443|g' ~/.kube/config
+
+      # 환경 변수 설정 및 권한 부여
+      export KUBECONFIG=~/.kube/config
+      chmod 600 ~/.kube/config
+
+      echo "KUBECONFIG created and IP forced to 192.168.56.104"
+      cat ~/.kube/config | grep server
+
+      # 이제 IP가 수정되었으니 노드 목록을 확인합니다 (이 단계가 성공해야 합니다!)
+      kubectl get nodes
+
+  # 3. Apply all Kubernetes manifests (이전과 동일)
+  - name: Apply all Kubernetes manifests
+    run: |
+      export KUBECONFIG=~/.kube/config
+      kubectl apply -f k8s/ --recursive
