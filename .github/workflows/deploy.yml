@@ -20,11 +20,11 @@ jobs:
           # Secret 데이터를 디코딩하여 ~/.kube/config 파일 생성
           echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
           # 🚨 중요한 수정: 127.0.0.1 주소를 Host-Only IP로 강제 교체
-          sed -i 's|https://127.0.0.1:6443|https://192.168.56.104:6443|g' ~/.kube/config
+          sed -i 's|https://127.0.0.1:6443|https://10.0.1.93:6443|g' ~/.kube/config
           # 환경 변수 설정 및 권한 부여
           export KUBECONFIG=~/.kube/config
           chmod 600 ~/.kube/config
-          echo "KUBECONFIG created and IP forced to 192.168.56.104"
+          echo "KUBECONFIG created and IP forced to 10.0.1.93"
           cat ~/.kube/config | grep server
           # 이제 IP가 수정되었으니 노드 목록을 확인합니다 (이 단계가 성공해야 합니다!)
           kubectl get nodes
