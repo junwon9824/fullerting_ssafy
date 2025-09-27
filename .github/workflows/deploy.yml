@@ -29,12 +29,21 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # - name: Build and Push Docker Image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: ${{ secrets.DOCKER_USERNAME }}/fuller3:latest
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/fuller3:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/fuller3:latest
+          cache-to: type=inline
 
       - name: Setup Kubeconfig
         run: |
