@@ -25,7 +25,8 @@ jobs:
           else
             echo "kubectl is already installed."
           fi
-          kubectl version --client --short
+          # --short 플래그를 제거하여 오래된 kubectl 버전과의 호환성 문제 해결
+          kubectl version --client
 
       # 3. Kubeconfig 설정 및 IP 강제 수정 (Secrets로 전달된 base64 데이터 사용)
       - name: Setup kubeconfig and Force IP
