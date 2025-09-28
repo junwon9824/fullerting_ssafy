@@ -1,4 +1,4 @@
-name: Deploy Backend
+name: Deploy Backend to K3s
 
 on:
   push:
@@ -7,30 +7,65 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    # 1. 러너 지정: Self-Hosted Runner (fuller2 VM) 사용
+    runs-on: self-hosted
+
     steps:
       # 1. 코드 체크아웃
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. Kubeconfig 설정 및 IP 강제 수정 (하나의 단계로 통합)
+      # 2. kubectl 설치 확인 및 설치 (Self-hosted 러너에 없을 경우)
+      - name: Ensure kubectl is installed
+        run: |
+          if ! command -v kubectl >/dev/null 2>&1; then
+            echo "kubectl not found. Installing..."
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          else
+            echo "kubectl is already installed."
+          fi
+          kubectl version --client --short
+
+      # 3. Kubeconfig 설정 및 IP 강제 수정 (Secrets로 전달된 base64 데이터 사용)
       - name: Setup kubeconfig and Force IP
         run: |
+          # 🚨 K3s 마스터 노드의 실제 Private IP로 변경
+          MASTER_IP="10.0.1.93" 
+
           mkdir -p ~/.kube
-          # Secret 데이터를 디코딩하여 ~/.kube/config 파일 생성
-          echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > ~/.kube/config
-          # 🚨 중요한 수정: 127.0.0.1 주소를 Host-Only IP로 강제 교체
-          sed -i 's|https://127.0.0.1:6443|https://10.0.1.93:6443|g' ~/.kube/config
-          # 환경 변수 설정 및 권한 부여
+          # KUBECONFIG_DATA 시크릿을 디코딩하며 줄바꿈/캐리지 리턴/공백 문자를 제거하고 파일을 생성합니다.
+          echo "${{ secrets.KUBECONFIG_DATA }}" | tr -d ' \n\r' | base64 -d > ~/.kube/config
+
+          # Kubeconfig 내의 서버 주소를 마스터 노드의 실제 Private IP로 강제 변경
+          # Kubeconfig 내의 모든 IP 주소를 ${MASTER_IP}로 교체합니다.
+          sed -i "s|https://.*:6443|https://${MASTER_IP}:6443|g" ~/.kube/config
+
           export KUBECONFIG=~/.kube/config
           chmod 600 ~/.kube/config
-          echo "KUBECONFIG created and IP forced to 10.0.1.93"
+          echo "KUBECONFIG set and IP forced to ${MASTER_IP}"
+
+          # ===================================================
+          # 🚨 디버깅 단계: 연결 실패 원인 진단 (가장 중요)
+          # ===================================================
+          echo "--- Kubeconfig 내용 (서버 주소 확인) ---"
+          # Kubeconfig 파일 내의 서버 주소가 정확히 수정되었는지 확인합니다.
           cat ~/.kube/config | grep server
-          # 이제 IP가 수정되었으니 노드 목록을 확인합니다 (이 단계가 성공해야 합니다!)
+
+          echo "--- K3s API 서버 접속 테스트 (curl -k 사용) ---"
+          # -k: 인증서 검증 무시. 네트워크 연결 자체(TCP)가 되는지 확인이 목적입니다.
+          # curl 로그를 통해 연결 시간 초과(Timeout), 연결 거부(Connection refused) 등의 네트워크 오류를 확인할 수 있습니다.
+          curl -kvv https://${MASTER_IP}:6443/api/v1/nodes
+
+          # ===================================================
+
+          # 연결 진단 (이 부분이 성공해야 다음 단계로 넘어갈 수 있습니다)
           kubectl get nodes
 
-      # 3. Apply all Kubernetes manifests (이전과 동일)
+      # 4. 전체 k8s 디렉토리 적용
       - name: Apply all Kubernetes manifests
         run: |
-          export KUBECONFIG=~/.kube/config
           kubectl apply -f k8s/ --recursive
+
+          # 배포 롤아웃 상태 확인 (안정성 강화)
+          kubectl rollout status deployment/fullerting-backend-deployment --timeout=480s
