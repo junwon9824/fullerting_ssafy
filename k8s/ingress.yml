@@ -3,17 +3,17 @@ kind: Ingress
 metadata:
   name: fullerting-ingress
   annotations:
-    # Ingress Controller Á¾·ù¿¡ µû¶ó ´Ù¸¥ annotationÀ» »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.
-    # ¾Æ·¡´Â ÀÏ¹ÝÀûÀÎ Nginx Ingress Controller ¿¹½ÃÀÔ´Ï´Ù.
+    # Ingress Controller ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ annotationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.
+    # ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ Nginx Ingress Controller ï¿½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½.
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
     - http:
         paths:
-          - path: /api # '/api'·Î ½ÃÀÛÇÏ´Â ¸ðµç ¿äÃ»À» ¹Þ½À´Ï´Ù.
+          - path: /api # '/api'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½Ï´ï¿½.
             pathType: Prefix
             backend:
               service:
-                name: fullerting-backend-service # ¿äÃ»À» Àü´ÞÇÒ ¼­ºñ½º
+                name: fullerting-backend-service # ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 port:
-                  number: 8080 # ¼­ºñ½ºÀÇ Æ÷Æ®
+                  number: 8082 # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®
