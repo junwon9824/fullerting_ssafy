@@ -3,7 +3,22 @@
 !/backend/src/main/resources/application-example.yml
 
 
+# Kubernetes config
+.kube/
 
+# Temporary and Cache files
+.gradle/
+.m2/
+.npm/
+
+# Local Runner files
+actions-runner/
+
+# Local K8s logs and backups
+k8s/*.txt
+k8s/*.yaml
+
+.bash*
 .Xauthority
 .bash_logout
 .bashrc
