@@ -36,14 +36,14 @@
 // import static org.assertj.core.api.Assertions.*;
 
 // /**
-// * ?…ì°°í¬ë§? ? •?•©?„±?œ ì§??—¬ë¶?ë¥? ?™•?¸?•˜?Š” E2E ?…Œ?Š¤?Š¸
+// * ?ï¿½ï¿½ì°°í¬ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½??ï¿½ï¿½ï¿½?ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ E2E ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½
 // *
-// * ?…Œ?Š¤?Š¸ ?‹œ?‚˜ë¦¬ì˜¤:
-// * 1. ?™?‹œ ?…ì°? ?‹œ ?°?´?„° ? •?•©?„± ê²?ì¦? (ì¹´í”„ì¹´ë?? ?†µ?•œ ë¹„ë™ê¸? ì²˜ë¦¬)
-// * 2. ?…ì°°ê?? ê²?ì¦? ë¡œì§ ? •?•©?„± ê²?ì¦?
-// * 3. ?…ì°°ì ?ˆ˜ ê³„ì‚° ? •?•©?„± ê²?ì¦?
-// * 4. Redis ìºì‹œ??? DB ?°?´?„° ? •?•©?„± ê²?ì¦?
-// * 5. ?‚™ì°? ?›„ ?ƒ?ƒœ ? •?•©?„± ê²?ì¦?
+// * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ë¦¬ì˜¤:
+// * 1. ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½? (ì¹´í”„ì¹´ï¿½?? ?ï¿½ï¿½?ï¿½ï¿½ ë¹„ë™ï¿½? ì²˜ë¦¬)
+// * 2. ?ï¿½ï¿½ì°°ï¿½?? ï¿½?ï¿½? ë¡œì§ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½?
+// * 3. ?ï¿½ï¿½ì°°ì ?ï¿½ï¿½ ê³„ì‚° ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½?
+// * 4. Redis ìºì‹œ??? DB ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½?
+// * 5. ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½?
 // */
 // @SpringBootTest
 // @ActiveProfiles("test")
@@ -79,19 +79,19 @@
 
 // @BeforeEach
 // void setUp() {
-// // ?…Œ?Š¤?Š¸ ?°?´?„° ?„¤? •
+// // ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½
 // setupTestData();
 // }
 
 // @AfterEach
 // void tearDown() {
-// // Redis ìºì‹œ ? •ë¦?
+// // Redis ìºì‹œ ?ï¿½ï¿½ï¿½?
 // clearRedisCache();
 // }
 
 // private void setupTestData() {
 // try {
-// // ê¸°ì¡´ ?‚¬?š©? ì¡°íšŒ ?˜?Š” ?ƒ?„±
+// // ê¸°ì¡´ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ì¡°íšŒ ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½
 // MemberProfile seller = memberRepository.findByEmail("user001@example.com")
 // .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER));
 
@@ -104,11 +104,11 @@
 // .orElseThrow(() -> new UserException(UserErrorCode.NOT_EXISTS_USER))
 // );
 
-// // ?…Œ?Š¤?Š¸ ê²Œì‹œê¸? ì¡°íšŒ
+// // ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ê²Œì‹œï¿½? ì¡°íšŒ
 // testArticle = exArticleRepository.findById(4L)
 // .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
 
-// // ?…Œ?Š¤?Š¸?š© ê±°ë˜ ? •ë³? ?ƒ?„±
+// // ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ê±°ë˜ ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½
 // testDeal = Deal.builder()
 // .dealCurPrice(INITIAL_PRICE)
 // .bidderCount(0)
@@ -117,7 +117,7 @@
 // testDeal = dealRepository.save(testDeal);
 
 // } catch (Exception e) {
-// throw new RuntimeException("?…Œ?Š¤?Š¸ ?°?´?„° ?„¤? • ?‹¤?Œ¨", e);
+// throw new RuntimeException("?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½", e);
 // }
 // }
 
@@ -127,7 +127,7 @@
 // }
 
 // @Test
-// @DisplayName("?™?‹œ ?…ì°? ?‹œ ?°?´?„° ? •?•©?„± ê²?ì¦? - ì¹´í”„ì¹´ë?? ?†µ?•œ ë¹„ë™ê¸? ì²˜ë¦¬")
+// @DisplayName("?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½? - ì¹´í”„ì¹´ï¿½?? ?ï¿½ï¿½?ï¿½ï¿½ ë¹„ë™ï¿½? ì²˜ë¦¬")
 // void testConcurrentBidsDataConsistencyWithKafka() throws InterruptedException
 // {
 // // given
@@ -137,7 +137,7 @@
 // AtomicInteger successfulBids = new AtomicInteger(0);
 // AtomicInteger failedBids = new AtomicInteger(0);
 
-// // when - ?™?‹œ?— ?—¬?Ÿ¬ ?…ì°? ?š”ì²??„ ì¹´í”„ì¹´ë?? ?†µ?•´ ì²˜ë¦¬
+// // when - ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ï¿½??ï¿½ï¿½ ì¹´í”„ì¹´ï¿½?? ?ï¿½ï¿½?ï¿½ï¿½ ì²˜ë¦¬
 // for (int i = 0; i < numberOfThreads; i++) {
 // int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
 // int bidderIndex = i % testBidders.size();
@@ -145,7 +145,7 @@
 
 // executorService.submit(() -> {
 // try {
-// // ì¹´í”„ì¹? ë©”ì‹œì§?ë¥? ?†µ?•´ ?…ì°? ?š”ì²? (?‹¤? œ ?š´?˜ ?™˜ê²½ê³¼ ?™?¼)
+// // ì¹´í”„ï¿½? ë©”ì‹œï¿½?ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ï¿½? (?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ê²½ê³¼ ?ï¿½ï¿½?ï¿½ï¿½)
 // BidRequestMessage message = new BidRequestMessage(
 // testArticle.getId(),
 // bidPrice,
@@ -164,18 +164,18 @@
 // latch.await(15, TimeUnit.SECONDS);
 // executorService.shutdown();
 
-// // then - ?°?´?„° ? •?•©?„± ê²?ì¦?
+// // then - ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½?
 // verifyDataConsistency();
 // verifyBidOrderConsistency();
 // verifyBidderCountConsistency();
 
-// // ?…Œ?Š¤?Š¸ ê²°ê³¼ ê²?ì¦?
+// // ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ê²°ê³¼ ï¿½?ï¿½?
 // assertThat(successfulBids.get()).isGreaterThan(0);
 // assertThat(failedBids.get()).isLessThanOrEqualTo(numberOfThreads);
 // }
 
 // @Test
-// @DisplayName("?™?‹œ ?…ì°? ?‹œ ?°?´?„° ? •?•©?„± ê²?ì¦? - ?½ ë¯¸ì‚¬?š© (ì¹´í”„ì¹?)")
+// @DisplayName("?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½? - ?ï¿½ï¿½ ë¯¸ì‚¬?ï¿½ï¿½ (ì¹´í”„ï¿½?)")
 // void testConcurrentBidsDataConsistencyWithoutLock() throws
 // InterruptedException {
 // // given
@@ -185,7 +185,7 @@
 // AtomicInteger successfulBids = new AtomicInteger(0);
 // AtomicInteger failedBids = new AtomicInteger(0);
 
-// // when - ?™?‹œ?— ?—¬?Ÿ¬ ?…ì°? ?š”ì²? (?½ ë¯¸ì‚¬?š©, ì¹´í”„ì¹´ë?? ?†µ?•´)
+// // when - ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ï¿½? (?ï¿½ï¿½ ë¯¸ì‚¬?ï¿½ï¿½, ì¹´í”„ì¹´ï¿½?? ?ï¿½ï¿½?ï¿½ï¿½)
 // for (int i = 0; i < numberOfThreads; i++) {
 // int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
 // int bidderIndex = i % testBidders.size();
@@ -211,24 +211,24 @@
 // latch.await(15, TimeUnit.SECONDS);
 // executorService.shutdown();
 
-// // then - ?°?´?„° ? •?•©?„± ê²?ì¦?
+// // then - ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½?
 // verifyDataConsistency();
 // verifyBidOrderConsistency();
 // verifyBidderCountConsistency();
 
-// // ?…Œ?Š¤?Š¸ ê²°ê³¼ ê²?ì¦?
+// // ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ê²°ê³¼ ï¿½?ï¿½?
 // assertThat(successfulBids.get()).isGreaterThan(0);
 // assertThat(failedBids.get()).isLessThanOrEqualTo(numberOfThreads);
 // }
 
 // @Test
-// @DisplayName("?…ì°°ê?? ê²?ì¦? ë¡œì§ ? •?•©?„± ê²?ì¦? - ì¹´í”„ì¹?")
+// @DisplayName("?ï¿½ï¿½ì°°ï¿½?? ï¿½?ï¿½? ë¡œì§ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½? - ì¹´í”„ï¿½?")
 // void testBidPriceValidationConsistency() {
 // // given
-// int invalidPrice = INITIAL_PRICE - 100; // ?˜„?¬ê°?ë³´ë‹¤ ?‚®??? ê°?ê²?
+// int invalidPrice = INITIAL_PRICE - 100; // ?ï¿½ï¿½?ï¿½ï¿½ï¿½?ë³´ë‹¤ ?ï¿½ï¿½??? ï¿½?ï¿½?
 // MemberProfile bidder = testBidders.get(0);
 
-// // when & then - ?‚®??? ê°?ê²©ìœ¼ë¡? ?…ì°? ?‹œ?„ ?‹œ ?˜ˆ?™¸ ë°œìƒ
+// // when & then - ?ï¿½ï¿½??? ï¿½?ê²©ìœ¼ï¿½? ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ ë°œìƒ
 // assertThatThrownBy(() -> {
 // BidRequestMessage message = new BidRequestMessage(
 // testArticle.getId(),
@@ -237,17 +237,17 @@
 // );
 // bidConsumerService.consumeBidRequest(message);
 // }).isInstanceOf(RuntimeException.class)
-// .hasMessageContaining("?˜„?¬ê°?ë³´ë‹¤ ?†’??? ê¸ˆì•¡?„ ?…? ¥?•´ì£¼ì„¸?š”");
+// .hasMessageContaining("?ï¿½ï¿½?ï¿½ï¿½ï¿½?ë³´ë‹¤ ?ï¿½ï¿½??? ê¸ˆì•¡?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ì£¼ì„¸?ï¿½ï¿½");
 
-// // ?…ì°°ê??ê°? ë³?ê²½ë˜ì§? ?•Š?•˜?Š”ì§? ?™•?¸
+// // ?ï¿½ï¿½ì°°ï¿½??ï¿½? ï¿½?ê²½ë˜ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½
 // Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
 // assertThat(deal.getDealCurPrice()).isEqualTo(INITIAL_PRICE);
 // }
 
 // @Test
-// @DisplayName("Redis ìºì‹œ??? DB ?°?´?„° ? •?•©?„± ê²?ì¦? - ì¹´í”„ì¹?")
+// @DisplayName("Redis ìºì‹œ??? DB ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½? - ì¹´í”„ï¿½?")
 // void testRedisCacheAndDBDataConsistency() {
-// // given - ?…ì°? ?°?´?„° ?ƒ?„± (ì¹´í”„ì¹´ë?? ?†µ?•´)
+// // given - ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ (ì¹´í”„ì¹´ï¿½?? ?ï¿½ï¿½?ï¿½ï¿½)
 // MemberProfile bidder = testBidders.get(0);
 // int bidPrice = INITIAL_PRICE + BID_INCREMENT;
 
@@ -258,7 +258,7 @@
 // );
 // bidConsumerService.consumeBidRequest(message);
 
-// // when - Redis ìºì‹œ??? DB ?°?´?„° ì¡°íšŒ
+// // when - Redis ìºì‹œ??? DB ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ì¡°íšŒ
 // String redisKey = "auction:" + testArticle.getId() + ":logs";
 // List<Object> cachedBids = redisTemplate.opsForList().range(redisKey, 0, -1);
 
@@ -266,19 +266,19 @@
 // bidRepository.findByDealId(testDeal.getId().toString());
 // Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
 
-// // then - ?°?´?„° ? •?•©?„± ê²?ì¦?
+// // then - ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½?
 // assertThat(cachedBids).isNotNull();
 // assertThat(dbBids).hasSizeGreaterThan(0);
 // assertThat(deal.getDealCurPrice()).isEqualTo(bidPrice);
 
-// // Redis ìºì‹œ??? DB ?°?´?„° ê°œìˆ˜ ë¹„êµ
+// // Redis ìºì‹œ??? DB ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ê°œìˆ˜ ë¹„êµ
 // assertThat(cachedBids.size()).isEqualTo(dbBids.size());
 // }
 
 // @Test
-// @DisplayName("?…ì°°ì ?ˆ˜ ê³„ì‚° ? •?•©?„± ê²?ì¦? - ì¹´í”„ì¹?")
+// @DisplayName("?ï¿½ï¿½ì°°ì ?ï¿½ï¿½ ê³„ì‚° ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½? - ì¹´í”„ï¿½?")
 // void testBidderCountCalculationConsistency() {
-// // given - ?—¬?Ÿ¬ ?‚¬?š©?ê°? ?…ì°? (ì¹´í”„ì¹´ë?? ?†µ?•´)
+// // given - ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ï¿½? (ì¹´í”„ì¹´ï¿½?? ?ï¿½ï¿½?ï¿½ï¿½)
 // for (int i = 0; i < testBidders.size(); i++) {
 // MemberProfile bidder = testBidders.get(i);
 // int bidPrice = INITIAL_PRICE + (i + 1) * BID_INCREMENT;
@@ -291,7 +291,7 @@
 // bidConsumerService.consumeBidRequest(message);
 // }
 
-// // when - ?‹¤?–‘?•œ ë°©ë²•?œ¼ë¡? ?…ì°°ì ?ˆ˜ ê³„ì‚°
+// // when - ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ë°©ë²•?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ì°°ì ?ï¿½ï¿½ ê³„ì‚°
 // Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
 // List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
 
@@ -303,21 +303,21 @@
 // int bidderCountFromService = bidService.getBidderCount(deal);
 // int bidderCountFromDeal = deal.getBidderCount();
 
-// // then - ëª¨ë“  ë°©ë²•?œ¼ë¡? ê³„ì‚°?•œ ?…ì°°ì ?ˆ˜ê°? ?¼ì¹˜í•˜?Š”ì§? ?™•?¸
+// // then - ëª¨ë“  ë°©ë²•?ï¿½ï¿½ï¿½? ê³„ì‚°?ï¿½ï¿½ ?ï¿½ï¿½ì°°ì ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ì¹˜í•˜?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½
 // assertThat(uniqueBiddersFromBids).isEqualTo(testBidders.size());
 // assertThat(bidderCountFromService).isEqualTo(testBidders.size());
 // assertThat(bidderCountFromDeal).isEqualTo(testBidders.size());
 // }
 
 // @Test
-// @DisplayName("?™?¼ ?‚¬?š©? ?¬?…ì°? ?‹œ ? •?•©?„± ê²?ì¦? - ì¹´í”„ì¹?")
+// @DisplayName("?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½? - ì¹´í”„ï¿½?")
 // void testSameUserRebidConsistency() {
-// // given - ì²? ë²ˆì§¸ ?…ì°?
+// // given - ï¿½? ë²ˆì§¸ ?ï¿½ï¿½ï¿½?
 // MemberProfile bidder = testBidders.get(0);
 // int firstBidPrice = INITIAL_PRICE + BID_INCREMENT;
 // int secondBidPrice = firstBidPrice + BID_INCREMENT;
 
-// // ì²? ë²ˆì§¸ ?…ì°? (ì¹´í”„ì¹´ë?? ?†µ?•´)
+// // ï¿½? ë²ˆì§¸ ?ï¿½ï¿½ï¿½? (ì¹´í”„ì¹´ï¿½?? ?ï¿½ï¿½?ï¿½ï¿½)
 // BidRequestMessage firstMessage = new BidRequestMessage(
 // testArticle.getId(),
 // firstBidPrice,
@@ -325,7 +325,7 @@
 // );
 // bidConsumerService.consumeBidRequest(firstMessage);
 
-// // when - ê°™ì?? ?‚¬?š©?ê°? ?” ?†’??? ê°?ê²©ìœ¼ë¡? ?¬?…ì°? (ì¹´í”„ì¹´ë?? ?†µ?•´)
+// // when - ê°™ï¿½?? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ ?ï¿½ï¿½??? ï¿½?ê²©ìœ¼ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ï¿½? (ì¹´í”„ì¹´ï¿½?? ?ï¿½ï¿½?ï¿½ï¿½)
 // BidRequestMessage secondMessage = new BidRequestMessage(
 // testArticle.getId(),
 // secondBidPrice,
@@ -333,20 +333,20 @@
 // );
 // bidConsumerService.consumeBidRequest(secondMessage);
 
-// // then - ? •?•©?„± ê²?ì¦?
+// // then - ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½?
 // Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
 // List<BidLog> userBids = bidRepository.findByDealId(deal.getId().toString())
 // .stream()
 // .filter(bid -> bid.getUserId().equals(bidder.getId()))
 // .collect(Collectors.toList());
 
-// // ?˜„?¬ê°??Š” ê°??¥ ?†’??? ?…ì°°ê???—¬?•¼ ?•¨
+// // ?ï¿½ï¿½?ï¿½ï¿½ï¿½??ï¿½ï¿½ ï¿½??ï¿½ï¿½ ?ï¿½ï¿½??? ?ï¿½ï¿½ì°°ï¿½???ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½
 // assertThat(deal.getDealCurPrice()).isEqualTo(secondBidPrice);
 
-// // ?•´?‹¹ ?‚¬?š©??˜ ?…ì°? ?‚´?—­?´ 2ê°œì—¬?•¼ ?•¨
+// // ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ 2ê°œì—¬?ï¿½ï¿½ ?ï¿½ï¿½
 // assertThat(userBids).hasSize(2);
 
-// // ?…ì°°ê??ê°? ?˜¤ë¦„ì°¨?ˆœ?œ¼ë¡? ? •? ¬?˜?–´?•¼ ?•¨
+// // ?ï¿½ï¿½ì°°ï¿½??ï¿½? ?ï¿½ï¿½ë¦„ì°¨?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½
 // List<Integer> bidPrices = userBids.stream()
 // .map(BidLog::getBidLogPrice)
 // .sorted()
@@ -355,16 +355,16 @@
 // }
 
 // /**
-// * ?°?´?„° ? •?•©?„± ê²?ì¦? ?—¬?¼ ë©”ì„œ?“œ
+// * ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ ë©”ì„œ?ï¿½ï¿½
 // */
 // private void verifyDataConsistency() {
 // Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
 // List<BidLog> allBids = bidRepository.findByDealId(deal.getId().toString());
 
-// // ?…ì°? ?‚´?—­?´ ì¡´ì¬?•˜?Š”ì§? ?™•?¸
+// // ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ì¡´ì¬?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½
 // assertThat(allBids).isNotEmpty();
 
-// // ?˜„?¬ê°?ê°? ?˜¬ë°”ë¥´ê²? ?„¤? •?˜?—ˆ?Š”ì§? ?™•?¸
+// // ?ï¿½ï¿½?ï¿½ï¿½ï¿½?ï¿½? ?ï¿½ï¿½ë°”ë¥´ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½
 // int maxBidPrice = allBids.stream()
 // .mapToInt(BidLog::getBidLogPrice)
 // .max()
@@ -373,13 +373,13 @@
 // }
 
 // /**
-// * ?…ì°? ?ˆœ?„œ ? •?•©?„± ê²?ì¦? ?—¬?¼ ë©”ì„œ?“œ
+// * ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ ë©”ì„œ?ï¿½ï¿½
 // */
 // private void verifyBidOrderConsistency() {
 // List<BidLog> allBids =
 // bidRepository.findByDealId(testDeal.getId().toString());
 
-// // ?…ì°°ê??ê°? ?˜¤ë¦„ì°¨?ˆœ?œ¼ë¡? ? •? ¬?˜?–´?•¼ ?•¨ (?‹œê°„ìˆœ)
+// // ?ï¿½ï¿½ì°°ï¿½??ï¿½? ?ï¿½ï¿½ë¦„ì°¨?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ (?ï¿½ï¿½ê°„ìˆœ)
 // List<Integer> bidPrices = allBids.stream()
 // .mapToInt(BidLog::getBidLogPrice)
 // .boxed()
@@ -392,7 +392,7 @@
 // }
 
 // /**
-// * ?…ì°°ì ?ˆ˜ ? •?•©?„± ê²?ì¦? ?—¬?¼ ë©”ì„œ?“œ
+// * ?ï¿½ï¿½ì°°ì ?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ ë©”ì„œ?ï¿½ï¿½
 // */
 // private void verifyBidderCountConsistency() {
 // Deal deal = dealRepository.findById(testDeal.getId()).orElseThrow();
