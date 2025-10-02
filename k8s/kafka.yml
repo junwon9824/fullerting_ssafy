@@ -1,57 +1,99 @@
-name: Deploy Backend to Kubeadm Cluster
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    # 1. ·¯³Ê ÁöÁ¤: Self-Hosted Runner »ç¿ë (»ç¿ëÀÚ VM È¯°æ)
-    runs-on: self-hosted
-
-    steps:
-      # 1. ÄÚµå Ã¼Å©¾Æ¿ô
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      # 2. kubectl ¼³Ä¡ È®ÀÎ (VM È¯°æÀÌ¹Ç·Î ÇÊ¿ä)
-      - name: Ensure kubectl is installed
-        run: |
-          if ! command -v kubectl >/dev/null 2>&1; then
-            echo "kubectl not found. Installing..."
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-          else
-            echo "kubectl is already installed."
-          fi
-          kubectl version --client
-
-      # 3. Kubeconfig ¼³Á¤
-      - name: Setup kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          # KUBECONFIG_DATA ½ÃÅ©¸´À» µğÄÚµùÇÏ¿© ÆÄÀÏÀ» »ı¼ºÇÕ´Ï´Ù.
-          # KubeadmÀº º¸Åë ¿ÜºÎ IP¸¦ »ç¿ëÇÏ¹Ç·Î, IP °­Á¦ ¼öÁ¤ ·ÎÁ÷Àº Á¦°ÅÇÕ´Ï´Ù.
-          echo "${{ secrets.KUBECONFIG_DATA }}" | tr -d ' \n\r' | base64 -d > ~/.kube/config
-
-          export KUBECONFIG=~/.kube/config
-          chmod 600 ~/.kube/config
-          echo "KUBECONFIG set. Assuming Kubeadm configuration is correct."
-
-          # ¿¬°á Áø´Ü
-          kubectl get nodes
-
-      # ? GitHub SecretsÀÇ MongoDB URI °ªÀ» YAML ÆÄÀÏ¿¡ ÁÖÀÔ
-      - name: Inject MongoDB Secret
-        run: |
-          # Secrets¿¡¼­ Base64·Î ÀÎÄÚµùµÈ MongoDB URI¸¦ °¡Á®¿Í YAML ÆÄÀÏ¿¡ »ğÀÔÇÕ´Ï´Ù.
-          sed -i "s|SPRING_DATA_MONGODB_URI: \"\"|SPRING_DATA_MONGODB_URI: \"${{ secrets.MONGO_URI_BASE64 }}\"|g" k8s/mongodb-secret.yaml
-
-      # 4. ÀüÃ¼ k8s µğ·ºÅä¸® Àû¿ë
-      - name: Apply all Kubernetes manifests
-        run: |
-          kubectl apply -f k8s/ --recursive
-
-          # ¹èÆ÷ ·Ñ¾Æ¿ô »óÅÂ È®ÀÎ (¾ÈÁ¤¼º °­È­)
-          kubectl rollout status deployment/fullerting-backend-deployment --timeout=480s
+# 1. Service: Kafka í´ëŸ¬ìŠ¤í„° ë‚´ë¶€ í†µì‹ ìš© Headless Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-headless
+  labels:
+    app: kafka
+spec:
+  ports:
+    - port: 9092
+      name: plaintext
+    - port: 9093
+      name: controller
+  selector:
+    app: kafka
+  clusterIP: None # Headless Service
+---
+# 2. Service: í´ë¼ì´ì–¸íŠ¸ ì ‘ì†ìš© Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+  labels:
+    app: kafka
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9092
+      targetPort: 9092
+      protocol: TCP
+      name: client
+  selector:
+    app: kafka
+---
+# 3. StatefulSet: Kafka ë¸Œë¡œì»¤ ë°°í¬
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+spec:
+  selector:
+    matchLabels:
+      app: kafka
+  serviceName: kafka-headless # Headless Service ì—°ê²°
+  replicas: 1 # ë‹¨ì¼ ë…¸ë“œ í…ŒìŠ¤íŠ¸ë¥¼ ìœ„í•´ 1ê°œë¡œ ì„¤ì •
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: kafka
+          # ğŸš¨ ì´ë¯¸ì§€ íƒœê·¸ ì˜¤ë¥˜ ìˆ˜ì •: bitnami/kafka:3.7 -> bitnami/kafka:3.7.0
+          image: bitnami/kafka:3.7.0
+          ports:
+            - containerPort: 9092
+              name: plaintext
+            - containerPort: 9093
+              name: controller
+          env:
+            # KRaft ì„¤ì • (Standalone/Controller/Broker mode)
+            - name: KAFKA_CFG_NODE_ID
+              value: "0"
+            - name: KAFKA_CFG_PROCESS_ROLES
+              value: "broker,controller"
+            - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
+              value: "0@kafka-0.kafka-headless.default.svc.cluster.local:9093"
+            # ë¦¬ìŠ¤ë„ˆ ë° ê´‘ê³  ì„¤ì •
+            - name: KAFKA_CFG_LISTENERS
+              value: "PLAINTEXT://:9092,CONTROLLER://:9093"
+            - name: KAFKA_CFG_ADVERTISED_LISTENERS
+              # ì´ ì„œë¹„ìŠ¤ ì´ë¦„ì€ í´ëŸ¬ìŠ¤í„° ë‚´ë¶€ì—ì„œ ë°±ì—”ë“œê°€ ì ‘ì†í•  ë•Œ ì‚¬ìš©ë©ë‹ˆë‹¤.
+              value: "PLAINTEXT://kafka-service.default.svc.cluster.local:9092"
+            - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+            - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
+              value: "PLAINTEXT"
+            - name: KAFKA_CFG_CONTROLLER_LISTENER_NAMES
+              value: "CONTROLLER"
+            # ê¸°íƒ€ ì„¤ì •
+            - name: KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: ALLOW_PLAINTEXT_LISTENER
+              value: "yes" # í…ŒìŠ¤íŠ¸ í™˜ê²½ì—ì„œ í”Œë ˆì¸ í…ìŠ¤íŠ¸ í—ˆìš©
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /bitnami/kafka
+  # 4. Volume Claim Template: ë°ì´í„° ì˜êµ¬ ì €ì¥ìš©
+  volumeClaimTemplates:
+    - metadata:
+        name: kafka-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+        # ğŸš¨ PVì™€ PVCë¥¼ ìˆ˜ë™ìœ¼ë¡œ ë§¤ì¹­í•˜ê¸° ìœ„í•´ StorageClassë¥¼ 'manual'ë¡œ ì§€ì •í•©ë‹ˆë‹¤.
+        storageClassName: manual
