@@ -1,93 +1,57 @@
-# 클라이언트 연결용 ClusterIP 서비스
-apiVersion: v1
-kind: Service
-metadata:
-  name: kafka-service
-spec:
-  type: ClusterIP
-  ports:
-    - name: plaintext
-      port: 9092
-      targetPort: 9092
-  selector:
-    app: kafka
----
-# StatefulSet의 안정적인 네트워크 ID를 위한 Headless 서비스
-apiVersion: v1
-kind: Service
-metadata:
-  name: kafka-headless
-spec:
-  clusterIP: None
-  ports:
-    - name: plaintext
-      port: 9092
-    - name: controller
-      port: 9093
-  selector:
-    app: kafka
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: kafka
-spec:
-  serviceName: "kafka-headless"
-  replicas: 1
-  selector:
-    matchLabels:
-      app: kafka
-  template:
-    metadata:
-      labels:
-        app: kafka
-    spec:
-      containers:
-        - name: kafka
-          image: bitnami/kafka:3.7
-          ports:
-            - name: plaintext
-              containerPort: 9092
-            - name: controller
-              containerPort: 9093
-          env:
-            # KRaft 모드 설정
-            - name: KAFKA_CFG_NODE_ID
-              value: "0"
-            - name: KAFKA_CFG_PROCESS_ROLES
-              value: "broker,controller"
-            - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
-              value: "0@kafka-0.kafka-headless.default.svc.cluster.local:9093"
-            # 리스너 설정
-            - name: KAFKA_CFG_LISTENERS
-              value: "PLAINTEXT://:9092,CONTROLLER://:9093"
-            - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://kafka-service.default.svc.cluster.local:9092"
-            - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
-              value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
-            - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
-              value: "PLAINTEXT"
-            - name: KAFKA_CFG_CONTROLLER_LISTENER_NAMES
-              value: "CONTROLLER"
-            # 단일 브로커를 위한 설정
-            - name: KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR
-              value: "1"
-            - name: KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
-              value: "1"
-            - name: KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR
-              value: "1"
-            - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
-              value: "true"
-          volumeMounts:
-            - name: kafka-data
-              mountPath: /bitnami/kafka
-  volumeClaimTemplates:
-    - metadata:
-        name: kafka-data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: "manual"
-        # storageClassName: "local-path" # K3s 기본 스토리지 클래스
-        resources:
-          requests:
-            storage: 8Gi
+name: Deploy Backend to Kubeadm Cluster
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # 1. 러너 지정: Self-Hosted Runner 사용 (사용자 VM 환경)
+    runs-on: self-hosted
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2. kubectl 설치 확인 (VM 환경이므로 필요)
+      - name: Ensure kubectl is installed
+        run: |
+          if ! command -v kubectl >/dev/null 2>&1; then
+            echo "kubectl not found. Installing..."
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          else
+            echo "kubectl is already installed."
+          fi
+          kubectl version --client
+
+      # 3. Kubeconfig 설정
+      - name: Setup kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          # KUBECONFIG_DATA 시크릿을 디코딩하여 파일을 생성합니다.
+          # Kubeadm은 보통 외부 IP를 사용하므로, IP 강제 수정 로직은 제거합니다.
+          echo "${{ secrets.KUBECONFIG_DATA }}" | tr -d ' \n\r' | base64 -d > ~/.kube/config
+
+          export KUBECONFIG=~/.kube/config
+          chmod 600 ~/.kube/config
+          echo "KUBECONFIG set. Assuming Kubeadm configuration is correct."
+
+          # 연결 진단
+          kubectl get nodes
+
+      # ? GitHub Secrets의 MongoDB URI 값을 YAML 파일에 주입
+      - name: Inject MongoDB Secret
+        run: |
+          # Secrets에서 Base64로 인코딩된 MongoDB URI를 가져와 YAML 파일에 삽입합니다.
+          sed -i "s|SPRING_DATA_MONGODB_URI: \"\"|SPRING_DATA_MONGODB_URI: \"${{ secrets.MONGO_URI_BASE64 }}\"|g" k8s/mongodb-secret.yaml
+
+      # 4. 전체 k8s 디렉토리 적용
+      - name: Apply all Kubernetes manifests
+        run: |
+          kubectl apply -f k8s/ --recursive
+
+          # 배포 롤아웃 상태 확인 (안정성 강화)
+          kubectl rollout status deployment/fullerting-backend-deployment --timeout=480s
