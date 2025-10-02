@@ -52,7 +52,7 @@ spec:
       containers:
         - name: kafka
           # 🚨 이미지 태그 오류 수정: bitnami/kafka:3.7 -> bitnami/kafka:3.7.0
-          image: bitnami/kafka:3.7.0
+          image: bitnami/kafka:latest
           ports:
             - containerPort: 9092
               name: plaintext
