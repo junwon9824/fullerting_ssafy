@@ -4,8 +4,8 @@ metadata:
   name: mongodb-secret
 type: Opaque
 stringData:
-  MONGO_INITDB_ROOT_USERNAME: "fullerting" # 원하는 사용자로 변경
-  MONGO_INITDB_ROOT_PASSWORD: "your-secure-password" # 보안을 위해 GitHub Secrets 사용을 권장합니다.
+  MONGO_INITDB_ROOT_USERNAME: "fullerting"
+  MONGO_INITDB_ROOT_PASSWORD: "your-secure-password"
 ---
 apiVersion: v1
 kind: Service
@@ -49,7 +49,7 @@ spec:
         name: mongodb-data
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: "local-path" # K3s 기본 스토리지 클래스
+        storageClassName: "manual"
         resources:
           requests:
             storage: 5Gi
