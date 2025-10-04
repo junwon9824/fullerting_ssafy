@@ -1,0 +1,76 @@
+# Application Properties
+/backend/src/main/resources/application*.yml
+!/backend/src/main/resources/application-example.yml
+
+
+# Kubernetes config
+.kube/
+
+# Temporary and Cache files
+.gradle/
+.m2/
+.npm/
+
+# Local Runner files
+actions-runner/
+
+# Local K8s logs and backups
+k8s/*.txt
+k8s/*.yaml
+
+.bash*
+.Xauthority
+.bash_logout
+.bashrc
+.cache/motd.legal-displayed
+.lesshst
+.profile
+.ssh/authorized_keys
+.sudo_as_admin_successful
+.viminfo
+
+
+# IDE specific files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Build files
+**/target/
+**/build/
+
+# Log files
+*.log
+
+# Environment variables
+.env
+
+# Node modules (for frontend)
+/frontend/node_modules/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Local development files
+*.local.yml
+*.local.properties
+
+# Docker
+/docker-compose.override.yml
+
+# VSCode
+.vscode/
+
+# Temp files
+*.tmp
+*.bak
+*.swp
+*~
+.git-credentials

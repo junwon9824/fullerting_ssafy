@@ -1,0 +1,22 @@
+@font-face {
+  font-family: "seolleimcool";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2312-1@1.1/seolleimcool-SemiBold.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GamtanRoadDotum";
+  font-weight: 700;
+  src: url("./GamtanRoadDotumBold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "GamtanRoadDotum";
+  font-weight: 400;
+  src: url("./GamtanRoadDotumRegular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "GamtanRoadDotum";
+  font-weight: 100;
+  src: url("./GamtanRoadDotumThin.ttf") format("truetype");
+}

@@ -1,0 +1,59 @@
+package com.ssafy.fullerting.bidLog.controller;
+
+import java.util.List;
+
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ssafy.fullerting.bidLog.model.dto.request.BidSelectRequest;
+import com.ssafy.fullerting.bidLog.model.dto.response.BidLogResponse;
+import com.ssafy.fullerting.bidLog.model.entity.BidLog;
+import com.ssafy.fullerting.bidLog.service.BidService;
+import com.ssafy.fullerting.deal.service.DealService;
+import com.ssafy.fullerting.global.utils.MessageUtils;
+import com.ssafy.fullerting.user.service.UserService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/v1/exchanges")
+@Tag(name = "입찰 기능 API", description = "입찰과 관련된 기능 제공")
+public class bidLogController {
+
+    private final DealService dealService;
+    private final BidService bidService;
+    private final UserService userService;
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    @GetMapping("/{ex_article_id}/suggestion")
+    @PreAuthorize("permitAll()")
+    @Operation(summary = "입찰 제안 조회", description = "특정 게시물의 입찰 제안 조회 – 비로그인 허용")
+    public ResponseEntity<MessageUtils<List<BidLogResponse>>> selectbid(@PathVariable Long ex_article_id) {
+        log.info("입찰 제안 조회 요청 - 게시글 ID: {}", ex_article_id);
+        List<BidLogResponse> bidLogs = bidService.selectbid(ex_article_id.toString());
+        return ResponseEntity.ok().body(MessageUtils.success(bidLogs));
+    }
+
+    @PostMapping("/{ex_article_id}/select")
+    @Operation(summary = "입찰 선택하기 ", description = "특정 게시물의 입찰 선택하기 ")
+    public ResponseEntity<MessageUtils<String>> choosetbid(
+            @RequestBody BidSelectRequest bidSelectRequest,
+            @PathVariable Long ex_article_id) {
+
+        BidLog bidLog = bidService.choosetbid(ex_article_id, bidSelectRequest);
+        return ResponseEntity.ok().body(MessageUtils.success(bidLog.getId().toString()));
+    }
+
+}

@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_COMPOSE_PATH = './backend/docker-compose-kafka.yml'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Docker Compose Up') {
+            steps {
+                script {
+                    // Docker Desktop 환경에서 compose up
+s                    // 1. Docker Hub 등 레지스트리에서 최신 이미지를 받아옵니다.
+                    sh "docker compose -f ${DOCKER_COMPOSE_PATH} up -d --build"
+                    sh "docker compose -f ${DOCKER_COMPOSE_PATH} up -d"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Jenkins Pipeline Finished.'
+        }
+    }
+}

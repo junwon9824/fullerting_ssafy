@@ -1,0 +1,98 @@
+spring:
+  datasource:
+    # Kubernetes È¯°æ¿¡¼­´Â È¯°æ º¯¼ö¸¦ »ç¿ëÇÏ°í, ·ÎÄÃ¿¡¼­´Â ±âº»°ª(localhost)??» »ç¿ëÇÕ´Ï´Ù.
+    url: jdbc:mysql://${SPRING_DATASOURCE_HOST:localhost}:${SPRING_DATASOURCE_PORT:3305}/${SPRING_DATASOURCE_DB:fullerting}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:ssafy}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # MongoDB ¼³Á¤: Docker Compose¿ë??¸·Î º¸??Ì¸ç, Kubernetes¿¡¼­´Â º°µµ??Ç YAML ÆÄ??Ï·Î °ü¸®ÇØ¾ß ÇÕ´Ï´Ù.
+  # ??Ì ÆÄ??Ï¿¡¼­´Â »èÁ¦ÇÏ°Å³ª ÁÖ¼® Ã³¸®ÇÏ´Â °Í??Ì ÁÁ½??´Ï´Ù.
+  # mongodb:
+  #   image: mongo:latest
+  #   container_name: mongodb_boot
+  #   restart: always
+  #   ports:
+  #     - 27017:27017
+  #   volumes:
+  #     - /home/ubun2/mongodb/data:/data
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=ssafy
+
+  data:
+    redis:
+      # Kubernetes È¯°æ¿¡¼­´Â 'redis-service' °°??º ¼­ºñ½º ??Ì¸§??» »ç¿ëÇÕ´Ï´Ù.
+      host: ${SPRING_REDIS_HOST:localhost}
+      # Kubernetes¿¡¼­´Â Æ÷Æ® '6379'¸¦ »ç¿ëÇÕ´Ï´Ù.
+      port: ${SPRING_REDIS_PORT:6379}
+
+  # º¸¾È °ü·Ã Á¤º¸ (JWT)´Â È¯°æ º¯¼ö³ª Kubernetes Secret??¸·Î °ü¸®ÇÏ´Â °Í??Ì ´õ ¾È??üÇÕ´Ï´Ù.
+  security:
+    user:
+      name: test
+      password: 1234
+
+  jwt:
+    access: ${JWT_ACCESS_SECRET:whatwehavetowantinalifeismentalsatisfactionnotmaterialone}
+    refresh: ${JWT_REFRESH_SECRET:youforgetthisyoualwaysfeelfailevenifyouwillgeteverything}
+    accesstime: 432000000
+    refreshtime: 604800000 # 7Days
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 110MB
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY:AKIAW3MEAWFWGVMIB3VX}
+      secret-key: ${AWS_SECRET_KEY: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}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: ${S3_BUCKET:fullerting-s3-v2}
+      stack:
+        auto: false
+
+springdoc:
+  swagger-ui:
+    path: /api/swagger-ui.html
+
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web:
+            FilterChainProxy: DEBUG
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+    root: INFO
+    com.ssafy.fullerting: DEBUG
+  file:
+    name: logs/application.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+
+server:
+  port: 8082
+  servlet:
+    context-path: /
+  websocket:
+    port: 8181

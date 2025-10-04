@@ -1,0 +1,112 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.3'
+	id 'io.spring.dependency-management' version '1.1.4'
+
+}
+
+group = 'com.ssafy'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+	// toolchain {
+    //     languageVersion = JavaLanguageVersion.of(17)
+    //     // Î≤§Îçî/?îî?ä§?ä∏Î¶¨Î∑∞?Öò?ùÑ Î™ÖÏãú?ïòÍ≥? ?ã∂?ã§Î©?:
+    //     // vendor = JvmVendorSpec.ADOPTIUM
+    //     // implementation = JvmImplementation.VENDOR_SPECIFIC
+	// }
+
+
+
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+// ex) ./BE/submodule
+
+//task copyPrivate(type: Copy) {
+//	copy {
+//		from '/var/jenkins_home/workspace/fullerting/submodule'
+//		include "*.yml"
+//		into 'src/main/resources'
+//	}
+//}
+//
+//processResources.dependsOn copyPrivate
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	implementation 'org.springframework.kafka:spring-kafka'
+//	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// Oauth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// Spring Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Spring Data Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+	// Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
+	// AWS S3
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.518'
+	testImplementation 'com.amazonaws:aws-java-sdk-s3:1.12.518'
+
+	// fcm
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
+	
+	//WebClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//	testImplementation 'org.springframework.security:spring-security-test'
+
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'  // ?úÖ jakarta ?ò∏?ôò Î≤ÑÏ†Ñ
+	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'  // ?úÖ jakarta ?ò∏?ôò Î≤ÑÏ†Ñ
+
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'  // ?úÖ Ï∂îÍ?? ?ïÑ?àò
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'  // ?úÖ Ï∂îÍ?? ?ïÑ?àò
+
+
+	implementation 'org.webjars:stomp-websocket:2.3.3-1' // stomp
+	implementation 'org.springframework.boot:spring-boot-starter-websocket' // ?ä§?îÑÎßÅÏóê?Ñú ?†úÍ≥µÌïò?äî ?õπ?ÜåÏº?
+	implementation 'org.webjars:sockjs-client:1.1.2' // sockjs
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+tasks.withType(JavaCompile) {
+	options.compilerArgs += ["-parameters", "-Xlint:all"]  // Î™®Îì† Í≤ΩÍ≥† ?ëú?ãú
+	options.encoding = 'UTF-8'  // ?ù∏ÏΩîÎî© Î™ÖÏãú
+}
+
+
+sourceSets {
+	main.java.srcDirs += 'build/generated/sources/annotationProcessor/java/main'
+}

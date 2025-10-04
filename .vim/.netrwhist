@@ -1,0 +1,9 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =7
+let g:netrw_dirhist_7='/home/vboxuser/.git'
+let g:netrw_dirhist_6='/home/vboxuser/.git/branches'
+let g:netrw_dirhist_5='/home/vboxuser/.git'
+let g:netrw_dirhist_4='/home/vboxuser/fullerting_ssafy/.git'
+let g:netrw_dirhist_3='/home/vboxuser/fullerting_ssafy/.git/branches'
+let g:netrw_dirhist_2='/home/vboxuser/fullerting_ssafy/.git'
+let g:netrw_dirhist_1='/home/vboxuser/.git'
