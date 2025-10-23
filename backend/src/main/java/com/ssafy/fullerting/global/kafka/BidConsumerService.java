@@ -82,6 +82,7 @@ public class BidConsumerService {
                         if (isNewBidder)
                                 uniqueBidderCount++;
 
+                        // �엯李� �궡�뿭 ����옣 (�삤吏� �뿬湲곗꽌留�!)
                         // 입찰 내역 저장 (오직 여기서만!)
                         BidLog bidLog = BidLog.builder()
                                         .deal(deal)
@@ -91,14 +92,19 @@ public class BidConsumerService {
                                         .build();
 
                         bidRepository.save(bidLog);
+                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // �젅�뵒�뒪�뿉 �빐�떦 �옉臾쇱뿉
+                                                                                             // ����븳 理쒓퀬 �엯李� 湲덉븸
+                                                                                             // �뾽�뜲�씠�듃.
                         bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // 레디스에 해당 작물에 대한 최고 입찰 금액
                                                                                              // 업데이트.
 
+                        // 嫄곕옒 �젙蹂� �뾽�뜲�씠�듃
                         // 거래 정보 업데이트
                         deal.setDealCurPrice(dealCurPrice);
                         deal.setBidderCount((int) uniqueBidderCount);
                         dealRepository.save(deal);
 
+                        // WebSocket�쑝濡� �떎�떆媛� �뾽�뜲�씠�듃 �쟾�넚
                         // WebSocket으로 실시간 업데이트 전송
                         Map<String, Object> wsMessage = new HashMap<>();
                         wsMessage.put("type", "BID_UPDATE");
@@ -115,6 +121,7 @@ public class BidConsumerService {
                                         "/topic/bidding/" + exArticleId,
                                         wsMessage);
 
+                        // �븣由� �쟾�넚
                         // 알림 전송
                         bidProducerService.kafkaalarmproduce(bidder, exArticle, "/some/redirect/url");
 
@@ -123,13 +130,22 @@ public class BidConsumerService {
                 }
         }
 
-        // [수정]
-        // 동일한 토픽(bid_requests)과 그룹 ID(bid-group)를 가진 리스너가 중복되어 애플리케이션 시작 오류가 발생합니다.
-        // 데이터 정합성을 보장하는 비관적 락(findWithDealByIdwithLock)을 사용하는 위의 consumeBidRequest 메서드가
-        // 운영 로직이므로,
-        // 테스트용으로 추정되는 이 리스너는 주석 처리하여 비활성화합니다.
+        // [�닔�젙]
+        // �룞�씪�븳 �넗�뵿(bid_requests)怨� 洹몃９ ID(bid-group)瑜� 媛�吏� 由ъ뒪�꼫媛� 以묐났�릺�뼱
+        // �븷�뵆由ъ���씠�뀡 �떆�옉 �삤瑜섍�� 諛쒖깮�빀�땲�떎.
+        // �뜲�씠�꽣 �젙�빀�꽦�쓣 蹂댁옣�븯�뒗 鍮꾧���쟻 �씫(findWithDealByIdwithLock)�쓣 �궗�슜�븯�뒗 �쐞�쓽
+        // consumeBidRequest 硫붿꽌�뱶媛�
+        // �슫�쁺 濡쒖쭅�씠誘�濡�,
+        // �뀒�뒪�듃�슜�쑝濡� 異붿젙�릺�뒗 �씠 由ъ뒪�꼫�뒗 二쇱꽍 泥섎━�븯�뿬 鍮꾪솢�꽦�솕�빀�땲�떎.
         // @KafkaListener(topics = "bid_requests", groupId = "bid-group",
         // containerFactory = "bidKafkaListenerContainerFactory")
+        /**
+         * [수정 제안]
+         * 동일한 토픽(bid_requests)과 그룹 ID(bid-group)를 가진 리스너가 중복되면 애플리케이션 시작 시 오류가 발생할 수 있습니다.
+         * 데이터 정합성을 보장하는 비관적 락(findWithDealByIdwithLock)을 사용하는 위의 consumeBidRequest 메서드가 실제 운영 로직이므로,
+         * 락이 없는 상황을 테스트하기 위한 이 메서드는 주석 처리하여 비활성화하는 것을 권장합니다.
+         */
+        // @KafkaListener(topics = "bid_requests", groupId = "bid-group", containerFactory = "bidKafkaListenerContainerFactory")
         @Transactional
         public void consumeBidRequestwithouLock(BidRequestMessage message) {
                 try {
@@ -154,6 +170,7 @@ public class BidConsumerService {
                         }
 
                         MemberProfile bidder = memberRepository.findByNickname(bidderUserName)
+                                        .orElseThrow(() -> new RuntimeException("�쉶�썝 �젙蹂대�� 李얠쓣 �닔 �뾾�뒿�땲�떎."));
                                         .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
                         List<BidLog> existingBids = bidRepository.findByDealId(deal.getId().toString());
@@ -166,6 +183,7 @@ public class BidConsumerService {
                         if (isNewBidder)
                                 uniqueBidderCount++;
 
+                        // �엯李� �궡�뿭 ����옣 (�삤吏� �뿬湲곗꽌留�!)
                         // 입찰 내역 저장 (오직 여기서만!)
                         BidLog bidLog = BidLog.builder()
                                         .deal(deal)
@@ -175,14 +193,19 @@ public class BidConsumerService {
                                         .build();
 
                         bidRepository.save(bidLog);
+                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // �젅�뵒�뒪�뿉 �빐�떦 �옉臾쇱뿉
+                                                                                             // ����븳 理쒓퀬 �엯李� 湲덉븸
+                                                                                             // �뾽�뜲�씠�듃.
                         bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // 레디스에 해당 작물에
                                                                                              // 대한 최고 입찰 금액 업데이트.
 
+                        // 嫄곕옒 �젙蹂� �뾽�뜲�씠�듃
                         // 거래 정보 업데이트
                         deal.setDealCurPrice(dealCurPrice);
                         deal.setBidderCount((int) uniqueBidderCount);
                         dealRepository.save(deal);
 
+                        // WebSocket�쑝濡� �떎�떆媛� �뾽�뜲�씠�듃 �쟾�넚
                         // WebSocket으로 실시간 업데이트 전송
                         Map<String, Object> wsMessage = new HashMap<>();
                         wsMessage.put("type", "BID_UPDATE");
@@ -199,6 +222,7 @@ public class BidConsumerService {
                                         "/topic/bidding/" + exArticleId,
                                         wsMessage);
 
+                        // �븣由� �쟾�넚
                         // 알림 전송
                         bidProducerService.kafkaalarmproduce(bidder, exArticle, "/some/redirect/url");
 
@@ -220,13 +244,16 @@ public class BidConsumerService {
                                 throw new DealException(DealErrorCode.NOT_EXISTS);
                         }
 
+                        // BidLog ����옣��� �븯吏� �븡�뒗�떎! (以묐났 ����옣 諛⑹��)
                         // BidLog 저장은 하지 않는다! (중복 저장 방지)
                         // BidProposeRequest bidProposeRequest = BidProposeRequest.builder()
                         // .dealCurPrice(bidNotification.getPrice())
                         // .userId(bidNotification.getUserid())
                         // .build();
+                        // bidService.socketdealbid(article, bidProposeRequest); // �궘�젣 �삉�뒗 二쇱꽍泥섎━
                         // bidService.socketdealbid(article, bidProposeRequest); // 삭제 또는 주석처리
 
+                        // �븣由�/�쎒�냼耳� �벑 遺�媛� 濡쒖쭅留� �떎�뻾
                         // 알림/웹소켓 등 부가 로직만 실행
                         MemberProfile bidUser = userService.getUserEntityById(bidNotification.getUserid());
                         int bidderCount = bidService.getBidderCount(deal);
