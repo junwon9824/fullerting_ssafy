@@ -1,177 +1,227 @@
-# ìž…ì°° ì •í•©ì„± E2E í…ŒìŠ¤íŠ¸ ê°€ì´ë“œ
+# ÀÔÂû Á¤ÇÕ¼º E2E Å×½ºÆ® °¡ÀÌµå
 
-## ê°œìš”
+## °³¿ä
 
-ì´ ë¬¸ì„œëŠ” í’€ëŸ¬íŒ… í”„ë¡œì íŠ¸ì˜ ìž…ì°° ì‹œìŠ¤í…œì—ì„œ ë°ì´í„° ì •í•©ì„±ì„ ë³´ìž¥í•˜ëŠ”ì§€ í™•ì¸í•˜ëŠ” E2E í…ŒìŠ¤íŠ¸ì— ëŒ€í•œ ì„¤ëª…ìž…ë‹ˆë‹¤.
+ÀÌ ¹®¼­´Â Ç®·¯ÆÃ ÇÁ·ÎÁ§Æ®ÀÇ ÀÔÂû ½Ã½ºÅÛ¿¡¼­ µ¥ÀÌÅÍ Á¤ÇÕ¼ºÀ» º¸ÀåÇÏ´ÂÁö È®ÀÎÇÏ´Â E2E Å×½ºÆ®¿¡ ´ëÇÑ ¼³¸íÀÔ´Ï´Ù.
 
-## í…ŒìŠ¤íŠ¸ ëª©ì 
+## Å×½ºÆ® ¸ñÀû
 
-ìž…ì°° ì‹œìŠ¤í…œì˜ ë‹¤ìŒ í•­ëª©ë“¤ì´ ì •í•©ì„±ì„ ìœ ì§€í•˜ëŠ”ì§€ ê²€ì¦í•©ë‹ˆë‹¤:
+ÀÔÂû ½Ã½ºÅÛÀÇ ´ÙÀ½ Ç×¸ñµéÀÌ Á¤ÇÕ¼ºÀ» À¯ÁöÇÏ´ÂÁö °ËÁõÇÕ´Ï´Ù:
 
-1. **ë™ì‹œ ìž…ì°° ì‹œ ë°ì´í„° ì •í•©ì„±**: ì—¬ëŸ¬ ì‚¬ìš©ìžê°€ ë™ì‹œì— ìž…ì°°í•  ë•Œ ë°ì´í„° ì¼ê´€ì„± ë³´ìž¥
-2. **ìž…ì°°ê°€ ê²€ì¦ ë¡œì§ ì •í•©ì„±**: í˜„ìž¬ê°€ë³´ë‹¤ ë‚®ì€ ê°€ê²©ìœ¼ë¡œ ìž…ì°° ì‹œë„ ì‹œ ì ì ˆí•œ ì˜ˆì™¸ ì²˜ë¦¬
-3. **ìž…ì°°ìž ìˆ˜ ê³„ì‚° ì •í•©ì„±**: ë‹¤ì–‘í•œ ë°©ë²•ìœ¼ë¡œ ê³„ì‚°í•œ ìž…ì°°ìž ìˆ˜ì˜ ì¼ì¹˜ì„±
-4. **Redis ìºì‹œì™€ DB ë°ì´í„° ì •í•©ì„±**: ìºì‹œëœ ë°ì´í„°ì™€ ì‹¤ì œ DB ë°ì´í„°ì˜ ë™ê¸°í™”
-5. **ë‚™ì°° í›„ ìƒíƒœ ì •í•©ì„±**: ìž…ì°° ì™„ë£Œ í›„ ì‹œìŠ¤í…œ ìƒíƒœì˜ ì •í™•ì„±
+1. **µ¿½Ã ÀÔÂû ½Ã µ¥ÀÌÅÍ Á¤ÇÕ¼º**: ¿©·¯ »ç¿ëÀÚ°¡ µ¿½Ã¿¡ ÀÔÂûÇÒ ¶§ µ¥ÀÌÅÍ ÀÏ°ü¼º º¸Àå
+2. **ÀÔÂû°¡ °ËÁõ ·ÎÁ÷ Á¤ÇÕ¼º**: ÇöÀç°¡º¸´Ù ³·Àº °¡°ÝÀ¸·Î ÀÔÂû ½Ãµµ ½Ã ÀûÀýÇÑ ¿¹¿Ü Ã³¸®
+3. **ÀÔÂûÀÚ ¼ö °è»ê Á¤ÇÕ¼º**: ´Ù¾çÇÑ ¹æ¹ýÀ¸·Î °è»êÇÑ ÀÔÂûÀÚ ¼öÀÇ ÀÏÄ¡¼º
+4. **Redis Ä³½Ã¿Í DB µ¥ÀÌÅÍ Á¤ÇÕ¼º**: Ä³½ÃµÈ µ¥ÀÌÅÍ¿Í ½ÇÁ¦ DB µ¥ÀÌÅÍÀÇ µ¿±âÈ­
+5. **³«Âû ÈÄ »óÅÂ Á¤ÇÕ¼º**: ÀÔÂû ¿Ï·á ÈÄ ½Ã½ºÅÛ »óÅÂÀÇ Á¤È®¼º
 
-## í…ŒìŠ¤íŠ¸ êµ¬ì¡°
+## ¾ÆÅ°ÅØÃ³ °³¼±: Kafka µµÀÔ ÀüÈÄ ºñ±³
+
+ÀÌ ÇÁ·ÎÁ§Æ®ÀÇ ÇÙ½É ¸ñÇ¥ Áß ÇÏ³ª´Â ´ë±Ô¸ð µ¿½Ã ÀÔÂû ¿äÃ»¿¡µµ ¾ÈÁ¤ÀûÀÌ°í ºü¸¥ ÀÀ´ä¼ºÀ» Á¦°øÇÏ´Â °ÍÀÔ´Ï´Ù. ÀÌ¸¦ À§ÇØ ±âÁ¸ÀÇ µ¿±â Ã³¸® ¹æ½Ä¿¡¼­ Apache Kafka¸¦ ÀÌ¿ëÇÑ ºñµ¿±â ¸Þ½ÃÁö ±â¹Ý ¾ÆÅ°ÅØÃ³·Î ½Ã½ºÅÛÀ» °³¼±Çß½À´Ï´Ù.
+
+### Kafka µµÀÔ Àü: µ¿±â Ã³¸® ¾ÆÅ°ÅØÃ³
+
+- **µ¥ÀÌÅÍ Èå¸§**:
+
+  1.  Å¬¶óÀÌ¾ðÆ®°¡ ÀÔÂû ¿äÃ»À» ¼­¹ö(`@MessageMapping`)·Î Àü¼ÛÇÕ´Ï´Ù.
+  2.  ¿äÃ»À» ¹ÞÀº **À¥ ½º·¹µå**°¡ Áï½Ã ¸ðµç ºñÁî´Ï½º ·ÎÁ÷À» ¼øÂ÷ÀûÀ¸·Î Ã³¸®ÇÕ´Ï´Ù.
+      - DB Á¶È¸ ¹× ºñ°üÀû ¶ô(Pessimistic Lock) È¹µæ
+      - ÀÔÂû À¯È¿¼º °ËÁõ ¹× µ¥ÀÌÅÍ ¾÷µ¥ÀÌÆ®
+      - DB ¶ô ÇØÁ¦
+      - Redis Ä³½Ã ¾÷µ¥ÀÌÆ®
+      - ´Ù¸¥ Å¬¶óÀÌ¾ðÆ®¿¡°Ô WebSocketÀ¸·Î °á°ú ºê·ÎµåÄ³½ºÆÃ
+  3.  ¸ðµç °úÁ¤ÀÌ ¿Ï·áµÈ ÈÄ¿¡¾ß Å¬¶óÀÌ¾ðÆ®¿¡°Ô ÀÀ´äÀ» º¸³À´Ï´Ù.
+
+- **¹®Á¦Á¡**:
+  - **º´¸ñ Çö»ó**: ´Ù¼öÀÇ ÀÔÂûÀÌ µ¿½Ã¿¡ ¹ß»ýÇÏ¸é DB ¶ô °æÇÕÀ¸·Î ÀÎÇØ ½º·¹µåµéÀÌ ´ë±â »óÅÂ¿¡ ºüÁý´Ï´Ù.
+  - **´À¸° ÀÀ´ä ¼Óµµ**: »ç¿ëÀÚ´Â ÀÚ½ÅÀÇ ÀÔÂû ¿äÃ»ÀÌ DB Ã³¸®±îÁö ¸ðµÎ ³¡³¯ ¶§±îÁö ±â´Ù·Á¾ß ÇÏ¹Ç·Î ÀÀ´ä Áö¿¬À» Á÷Á¢ Ã¼°¨ÇÏ°Ô µË´Ï´Ù.
+  - **ÀÚ¿ø ³¶ºñ**: À¥ ½º·¹µå°¡ ¹«°Å¿î ÀÛ¾÷À» Ã³¸®ÇÏ´À¶ó Àå½Ã°£ Á¡À¯µÇ¾î, »õ·Î¿î Å¬¶óÀÌ¾ðÆ® ¿äÃ»À» ¹ÞÁö ¸øÇÏ°í ½º·¹µå Ç®ÀÌ °í°¥µÉ À§ÇèÀÌ ÀÖ½À´Ï´Ù.
+
+### Kafka µµÀÔ ÈÄ: ºñµ¿±â ¸Þ½ÃÁö ±â¹Ý ¾ÆÅ°ÅØÃ³
+
+- **µ¥ÀÌÅÍ Èå¸§**:
+
+  1.  Å¬¶óÀÌ¾ðÆ®°¡ ÀÔÂû ¿äÃ»À» ¼­¹ö(`@MessageMapping`)·Î Àü¼ÛÇÕ´Ï´Ù.
+  2.  À¥ ½º·¹µå´Â ¿äÃ» µ¥ÀÌÅÍ¸¦ Kafka ÅäÇÈÀ¸·Î Áï½Ã Àü¼Û(**Produce**)ÇÑ ÈÄ, ¹Ù·Î ´ÙÀ½ ¿äÃ»À» Ã³¸®ÇÏ±â À§ÇØ ½º·¹µå Ç®·Î ¹ÝÈ¯µË´Ï´Ù.
+  3.  º°µµÀÇ **ÄÁ½´¸Ó ½º·¹µå**°¡ Kafka ÅäÇÈÀÇ ¸Þ½ÃÁö¸¦ °¡Á®¿Í(**Consume**) ¹é±×¶ó¿îµå¿¡¼­ DB Ã³¸®, Ä³½Ã ¾÷µ¥ÀÌÆ®, WebSocket ºê·ÎµåÄ³½ºÆÃ µî ½Ã°£ ¼Ò¿ä°¡ Å« ÀÛ¾÷À» ¼öÇàÇÕ´Ï´Ù.
+
+- **°³¼± È¿°ú**:
+  - **ÀÀ´ä¼º Çâ»ó**: »ç¿ëÀÚÀÇ ¿äÃ»À» ¹Þ´Â ºÎºÐ°ú ½ÇÁ¦ Ã³¸®ÇÏ´Â ºÎºÐÀÌ ºÐ¸®µÇ¾î, »ç¿ëÀÚ´Â ÀÔÂû ¿äÃ» ÈÄ Áï½Ã 'Á¢¼ö ¿Ï·á'¿Í °°Àº ºü¸¥ ÇÇµå¹éÀ» ¹ÞÀ» ¼ö ÀÖ½À´Ï´Ù.
+  - **Ã³¸®·®(Throughput) Áõ´ë**: À¥ ½º·¹µå°¡ ºü¸£°Ô ¹Ý³³µÇ¹Ç·Î ÈÎ¾À ´õ ¸¹Àº µ¿½Ã Á¢¼Ó ¹× ÀÔÂû ¿äÃ»À» ¾ÈÁ¤ÀûÀ¸·Î ¼ö¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù.
+  - **½Ã½ºÅÛ ¾ÈÁ¤¼º ¹× È®Àå¼º È®º¸**: Æ¯Á¤ ÀÛ¾÷ÀÇ Áö¿¬ÀÌ ÀüÃ¼ ½Ã½ºÅÛ¿¡ ¹ÌÄ¡´Â ¿µÇâÀ» ÃÖ¼ÒÈ­ÇÏ°í, ÇâÈÄ ÄÁ½´¸Ó ¼ö¸¦ ´Ã¸®´Â °Í¸¸À¸·Îµµ Ã³¸® ¼º´ÉÀ» ½±°Ô È®ÀåÇÒ ¼ö ÀÖ½À´Ï´Ù.
+
+## Å×½ºÆ® ±¸Á¶
 
 ### 1. BidConsistencyE2ETest.java
-- ë©”ì¸ í…ŒìŠ¤íŠ¸ í´ëž˜ìŠ¤
-- ê° ì •í•©ì„± í•­ëª©ë³„ ê°œë³„ í…ŒìŠ¤íŠ¸ ë©”ì„œë“œ í¬í•¨
-- ë™ì‹œì„± í…ŒìŠ¤íŠ¸ë¥¼ ìœ„í•œ ë©€í‹°ìŠ¤ë ˆë“œ í™˜ê²½ êµ¬ì„±
+
+- ¸ÞÀÎ Å×½ºÆ® Å¬·¡½º
+- °¢ Á¤ÇÕ¼º Ç×¸ñº° °³º° Å×½ºÆ® ¸Þ¼­µå Æ÷ÇÔ
+- µ¿½Ã¼º Å×½ºÆ®¸¦ À§ÇÑ ¸ÖÆ¼½º·¹µå È¯°æ ±¸¼º
 
 ### 2. BidConsistencyTestReporter.java
-- í…ŒìŠ¤íŠ¸ ê²°ê³¼ ë¶„ì„ ë° ë¦¬í¬íŠ¸ ìƒì„±
-- ì •í•©ì„± ì ìˆ˜ ê³„ì‚°
-- ìƒì„¸í•œ ë°ì´í„° ë¶„ì„ ì •ë³´ ì œê³µ
 
-### 3. ì„¤ì • íŒŒì¼ë“¤
-- `application-test.yml`: í…ŒìŠ¤íŠ¸ í™˜ê²½ ì„¤ì •
-- `docker-compose-test.yml`: í…ŒìŠ¤íŠ¸ìš© ì¸í”„ë¼ ì„œë¹„ìŠ¤ (MongoDB, Redis, Kafka)
+- Å×½ºÆ® °á°ú ºÐ¼® ¹× ¸®Æ÷Æ® »ý¼º
+- Á¤ÇÕ¼º Á¡¼ö °è»ê
+- »ó¼¼ÇÑ µ¥ÀÌÅÍ ºÐ¼® Á¤º¸ Á¦°ø
 
-## í…ŒìŠ¤íŠ¸ ì‹œë‚˜ë¦¬ì˜¤
+### 3. ¼³Á¤ ÆÄÀÏµé
 
-### ì‹œë‚˜ë¦¬ì˜¤ 1: ë™ì‹œ ìž…ì°° ë°ì´í„° ì •í•©ì„± ê²€ì¦
+- `application-test.yml`: Å×½ºÆ® È¯°æ ¼³Á¤
+- `docker-compose-test.yml`: Å×½ºÆ®¿ë ÀÎÇÁ¶ó ¼­ºñ½º (MongoDB, Redis, Kafka)
+
+## Å×½ºÆ® ½Ã³ª¸®¿À
+
+### ½Ã³ª¸®¿À 1: µ¿½Ã ÀÔÂû µ¥ÀÌÅÍ Á¤ÇÕ¼º °ËÁõ
+
 ```
-Given: 50ê°œì˜ ìŠ¤ë ˆë“œê°€ ë™ì‹œì— ìž…ì°° ìš”ì²­
-When: ê° ìŠ¤ë ˆë“œê°€ ìˆœì°¨ì ìœ¼ë¡œ ì¦ê°€í•˜ëŠ” ìž…ì°°ê°€ë¡œ ìž…ì°°
-Then: 
-  - ëª¨ë“  ìž…ì°°ì´ ì˜¬ë°”ë¥´ê²Œ ì²˜ë¦¬ë˜ì–´ì•¼ í•¨
-  - í˜„ìž¬ê°€ëŠ” ê°€ìž¥ ë†’ì€ ìž…ì°°ê°€ì™€ ì¼ì¹˜í•´ì•¼ í•¨
-  - ìž…ì°°ìž ìˆ˜ê°€ ì •í™•ížˆ ê³„ì‚°ë˜ì–´ì•¼ í•¨
-```
-
-### ì‹œë‚˜ë¦¬ì˜¤ 2: ìž…ì°°ê°€ ê²€ì¦ ë¡œì§ ì •í•©ì„± ê²€ì¦
-```
-Given: í˜„ìž¬ê°€ë³´ë‹¤ ë‚®ì€ ê°€ê²©ìœ¼ë¡œ ìž…ì°° ì‹œë„
-When: ìž…ì°° ì²˜ë¦¬ ìš”ì²­
-Then: 
-  - ì ì ˆí•œ ì˜ˆì™¸ê°€ ë°œìƒí•´ì•¼ í•¨
-  - í˜„ìž¬ê°€ê°€ ë³€ê²½ë˜ì§€ ì•Šì•„ì•¼ í•¨
+Given: 50°³ÀÇ ½º·¹µå°¡ µ¿½Ã¿¡ ÀÔÂû ¿äÃ»
+When: °¢ ½º·¹µå°¡ ¼øÂ÷ÀûÀ¸·Î Áõ°¡ÇÏ´Â ÀÔÂû°¡·Î ÀÔÂû
+Then:
+  - ¸ðµç ÀÔÂûÀÌ ¿Ã¹Ù¸£°Ô Ã³¸®µÇ¾î¾ß ÇÔ
+  - ÇöÀç°¡´Â °¡Àå ³ôÀº ÀÔÂû°¡¿Í ÀÏÄ¡ÇØ¾ß ÇÔ
+  - ÀÔÂûÀÚ ¼ö°¡ Á¤È®È÷ °è»êµÇ¾î¾ß ÇÔ
 ```
 
-### ì‹œë‚˜ë¦¬ì˜¤ 3: Redis ìºì‹œì™€ DB ë°ì´í„° ì •í•©ì„± ê²€ì¦
+### ½Ã³ª¸®¿À 2: ÀÔÂû°¡ °ËÁõ ·ÎÁ÷ Á¤ÇÕ¼º °ËÁõ
+
 ```
-Given: ìž…ì°° ë°ì´í„°ê°€ ìƒì„±ë¨
-When: Redis ìºì‹œì™€ DB ë°ì´í„°ë¥¼ ê°ê° ì¡°íšŒ
-Then: 
-  - ìºì‹œëœ ë°ì´í„° ìˆ˜ì™€ DB ë°ì´í„° ìˆ˜ê°€ ì¼ì¹˜í•´ì•¼ í•¨
-  - ìºì‹œëœ ë°ì´í„°ê°€ ìµœì‹  ìƒíƒœì—¬ì•¼ í•¨
+Given: ÇöÀç°¡º¸´Ù ³·Àº °¡°ÝÀ¸·Î ÀÔÂû ½Ãµµ
+When: ÀÔÂû Ã³¸® ¿äÃ»
+Then:
+  - ÀûÀýÇÑ ¿¹¿Ü°¡ ¹ß»ýÇØ¾ß ÇÔ
+  - ÇöÀç°¡°¡ º¯°æµÇÁö ¾Ê¾Æ¾ß ÇÔ
 ```
 
-## ì‹¤í–‰ ë°©ë²•
+### ½Ã³ª¸®¿À 3: Redis Ä³½Ã¿Í DB µ¥ÀÌÅÍ Á¤ÇÕ¼º °ËÁõ
 
-### 1. í…ŒìŠ¤íŠ¸ í™˜ê²½ ì¤€ë¹„
+```
+Given: ÀÔÂû µ¥ÀÌÅÍ°¡ »ý¼ºµÊ
+When: Redis Ä³½Ã¿Í DB µ¥ÀÌÅÍ¸¦ °¢°¢ Á¶È¸
+Then:
+  - Ä³½ÃµÈ µ¥ÀÌÅÍ ¼ö¿Í DB µ¥ÀÌÅÍ ¼ö°¡ ÀÏÄ¡ÇØ¾ß ÇÔ
+  - Ä³½ÃµÈ µ¥ÀÌÅÍ°¡ ÃÖ½Å »óÅÂ¿©¾ß ÇÔ
+```
+
+## ½ÇÇà ¹æ¹ý
+
+### 1. Å×½ºÆ® È¯°æ ÁØºñ
 
 ```bash
-# í…ŒìŠ¤íŠ¸ìš© ì¸í”„ë¼ ì„œë¹„ìŠ¤ ì‹œìž‘
+# Å×½ºÆ®¿ë ÀÎÇÁ¶ó ¼­ºñ½º ½ÃÀÛ
 docker-compose -f docker-compose-test.yml up -d
 
-# ì„œë¹„ìŠ¤ ì‹œìž‘ ëŒ€ê¸° (30ì´ˆ)
+# ¼­ºñ½º ½ÃÀÛ ´ë±â (30ÃÊ)
 sleep 30
 ```
 
-### 2. í…ŒìŠ¤íŠ¸ ì‹¤í–‰
+### 2. Å×½ºÆ® ½ÇÇà
 
-#### Windows í™˜ê²½
+#### Windows È¯°æ
+
 ```bash
-# ë°°ì¹˜ ìŠ¤í¬ë¦½íŠ¸ ì‹¤í–‰
+# ¹èÄ¡ ½ºÅ©¸³Æ® ½ÇÇà
 run-bid-consistency-test.bat
 ```
 
-#### Linux/Mac í™˜ê²½
+#### Linux/Mac È¯°æ
+
 ```bash
-# Gradleì„ í†µí•œ í…ŒìŠ¤íŠ¸ ì‹¤í–‰
+# GradleÀ» ÅëÇÑ Å×½ºÆ® ½ÇÇà
 ./gradlew test --tests "com.ssafy.fullerting.BidConsistencyE2ETest" --info
 ```
 
-### 3. ê°œë³„ í…ŒìŠ¤íŠ¸ ì‹¤í–‰
+### 3. °³º° Å×½ºÆ® ½ÇÇà
 
 ```bash
-# íŠ¹ì • í…ŒìŠ¤íŠ¸ ë©”ì„œë“œë§Œ ì‹¤í–‰
+# Æ¯Á¤ Å×½ºÆ® ¸Þ¼­µå¸¸ ½ÇÇà
 ./gradlew test --tests "com.ssafy.fullerting.BidConsistencyE2ETest.testConcurrentBidsDataConsistencyWithLock"
 
-# ë™ì‹œì„± í…ŒìŠ¤íŠ¸ë§Œ ì‹¤í–‰
+# µ¿½Ã¼º Å×½ºÆ®¸¸ ½ÇÇà
 ./gradlew test --tests "*Concurrent*"
 
-# ì •í•©ì„± ê²€ì¦ í…ŒìŠ¤íŠ¸ë§Œ ì‹¤í–‰
+# Á¤ÇÕ¼º °ËÁõ Å×½ºÆ®¸¸ ½ÇÇà
 ./gradlew test --tests "*Consistency*"
 ```
 
-## í…ŒìŠ¤íŠ¸ ê²°ê³¼ í•´ì„
+## Å×½ºÆ® °á°ú ÇØ¼®
 
-### ì •í•©ì„± ì ìˆ˜ ê¸°ì¤€
-- **90% ì´ìƒ**: ðŸŸ¢ ìš°ìˆ˜ - ì‹œìŠ¤í…œì´ ì •ìƒì ìœ¼ë¡œ ìž‘ë™
-- **70-89%**: ðŸŸ¡ ì–‘í˜¸ - ì¼ë¶€ ì •í•©ì„± ë¬¸ì œê°€ ìžˆì„ ìˆ˜ ìžˆìŒ
-- **70% ë¯¸ë§Œ**: ðŸ”´ ì£¼ì˜ í•„ìš” - ì‹¬ê°í•œ ì •í•©ì„± ë¬¸ì œ ê°€ëŠ¥ì„±
+### Á¤ÇÕ¼º Á¡¼ö ±âÁØ
 
-### ì£¼ìš” ê²€ì¦ í•­ëª©
-1. **í˜„ìž¬ê°€ ì •í•©ì„±**: DBì˜ í˜„ìž¬ê°€ì™€ ì‹¤ì œ ìµœê³  ìž…ì°°ê°€ì˜ ì¼ì¹˜ì„±
-2. **ìž…ì°°ìž ìˆ˜ ì •í•©ì„±**: ê³„ì‚°ëœ ìž…ì°°ìž ìˆ˜ì™€ ì €ìž¥ëœ ìž…ì°°ìž ìˆ˜ì˜ ì¼ì¹˜ì„±
-3. **ìž…ì°° ìˆœì„œ ì •í•©ì„±**: ìž…ì°°ê°€ê°€ ì‹œê°„ìˆœìœ¼ë¡œ ì˜¤ë¦„ì°¨ìˆœ ì •ë ¬ë˜ì–´ ìžˆëŠ”ì§€ í™•ì¸
-4. **ìºì‹œ ì •í•©ì„±**: Redis ìºì‹œì™€ DB ë°ì´í„°ì˜ ë™ê¸°í™” ìƒíƒœ
+- **90% ÀÌ»ó**: ? ¿ì¼ö - ½Ã½ºÅÛÀÌ Á¤»óÀûÀ¸·Î ÀÛµ¿
+- **70-89%**: ? ¾çÈ£ - ÀÏºÎ Á¤ÇÕ¼º ¹®Á¦°¡ ÀÖÀ» ¼ö ÀÖÀ½
+- **70% ¹Ì¸¸**: ? ÁÖÀÇ ÇÊ¿ä - ½É°¢ÇÑ Á¤ÇÕ¼º ¹®Á¦ °¡´É¼º
 
-## ë¬¸ì œ í•´ê²°
+### ÁÖ¿ä °ËÁõ Ç×¸ñ
 
-### ì¼ë°˜ì ì¸ ë¬¸ì œë“¤
+1. **ÇöÀç°¡ Á¤ÇÕ¼º**: DBÀÇ ÇöÀç°¡¿Í ½ÇÁ¦ ÃÖ°í ÀÔÂû°¡ÀÇ ÀÏÄ¡¼º
+2. **ÀÔÂûÀÚ ¼ö Á¤ÇÕ¼º**: °è»êµÈ ÀÔÂûÀÚ ¼ö¿Í ÀúÀåµÈ ÀÔÂûÀÚ ¼öÀÇ ÀÏÄ¡¼º
+3. **ÀÔÂû ¼ø¼­ Á¤ÇÕ¼º**: ÀÔÂû°¡°¡ ½Ã°£¼øÀ¸·Î ¿À¸§Â÷¼ø Á¤·ÄµÇ¾î ÀÖ´ÂÁö È®ÀÎ
+4. **Ä³½Ã Á¤ÇÕ¼º**: Redis Ä³½Ã¿Í DB µ¥ÀÌÅÍÀÇ µ¿±âÈ­ »óÅÂ
 
-#### 1. MongoDB ì—°ê²° ì‹¤íŒ¨
+## ¹®Á¦ ÇØ°á
+
+### ÀÏ¹ÝÀûÀÎ ¹®Á¦µé
+
+#### 1. MongoDB ¿¬°á ½ÇÆÐ
+
 ```bash
-# MongoDB ì»¨í…Œì´ë„ˆ ìƒíƒœ í™•ì¸
+# MongoDB ÄÁÅ×ÀÌ³Ê »óÅÂ È®ÀÎ
 docker ps | grep mongodb-test
 
-# MongoDB ë¡œê·¸ í™•ì¸
+# MongoDB ·Î±× È®ÀÎ
 docker logs mongodb-test
 ```
 
-#### 2. Redis ì—°ê²° ì‹¤íŒ¨
+#### 2. Redis ¿¬°á ½ÇÆÐ
+
 ```bash
-# Redis ì»¨í…Œì´ë„ˆ ìƒíƒœ í™•ì¸
+# Redis ÄÁÅ×ÀÌ³Ê »óÅÂ È®ÀÎ
 docker ps | grep redis-test
 
-# Redis ì—°ê²° í…ŒìŠ¤íŠ¸
+# Redis ¿¬°á Å×½ºÆ®
 docker exec -it redis-test redis-cli ping
 ```
 
-#### 3. Kafka ì—°ê²° ì‹¤íŒ¨
+#### 3. Kafka ¿¬°á ½ÇÆÐ
+
 ```bash
-# Kafka ì»¨í…Œì´ë„ˆ ìƒíƒœ í™•ì¸
+# Kafka ÄÁÅ×ÀÌ³Ê »óÅÂ È®ÀÎ
 docker ps | grep kafka-test
 
-# Kafka í† í”½ ìƒì„± í™•ì¸
+# Kafka ÅäÇÈ »ý¼º È®ÀÎ
 docker exec -it kafka-test kafka-topics --list --bootstrap-server localhost:9092
 ```
 
-### í…ŒìŠ¤íŠ¸ ì‹¤íŒ¨ ì‹œ ë””ë²„ê¹…
+### Å×½ºÆ® ½ÇÆÐ ½Ã µð¹ö±ë
 
-1. **ë¡œê·¸ ë ˆë²¨ ì¡°ì •**: `application-test.yml`ì—ì„œ ë¡œê¹… ë ˆë²¨ì„ DEBUGë¡œ ì„¤ì •
-2. **ê°œë³„ í…ŒìŠ¤íŠ¸ ì‹¤í–‰**: ì‹¤íŒ¨í•œ í…ŒìŠ¤íŠ¸ë§Œ ë”°ë¡œ ì‹¤í–‰í•˜ì—¬ ìƒì„¸ ë¡œê·¸ í™•ì¸
-3. **ë°ì´í„° ìƒíƒœ í™•ì¸**: `BidConsistencyTestReporter`ë¥¼ ì‚¬ìš©í•˜ì—¬ í˜„ìž¬ ìƒíƒœ ë¶„ì„
+1. **·Î±× ·¹º§ Á¶Á¤**: `application-test.yml`¿¡¼­ ·Î±ë ·¹º§À» DEBUG·Î ¼³Á¤
+2. **°³º° Å×½ºÆ® ½ÇÇà**: ½ÇÆÐÇÑ Å×½ºÆ®¸¸ µû·Î ½ÇÇàÇÏ¿© »ó¼¼ ·Î±× È®ÀÎ
+3. **µ¥ÀÌÅÍ »óÅÂ È®ÀÎ**: `BidConsistencyTestReporter`¸¦ »ç¿ëÇÏ¿© ÇöÀç »óÅÂ ºÐ¼®
 
-## ì„±ëŠ¥ ê³ ë ¤ì‚¬í•­
+## ¼º´É °í·Á»çÇ×
 
-### ë™ì‹œì„± í…ŒìŠ¤íŠ¸ ì„¤ì •
-- **ìŠ¤ë ˆë“œ í’€ í¬ê¸°**: 20ê°œ (CPU ì½”ì–´ ìˆ˜ì— ë”°ë¼ ì¡°ì • ê°€ëŠ¥)
-- **ë™ì‹œ ìž…ì°° ìˆ˜**: 50ê°œ (ì‹œìŠ¤í…œ ì„±ëŠ¥ì— ë”°ë¼ ì¡°ì • ê°€ëŠ¥)
-- **íƒ€ìž„ì•„ì›ƒ**: 30ì´ˆ (ë„¤íŠ¸ì›Œí¬ ì§€ì—° ê³ ë ¤)
+### µ¿½Ã¼º Å×½ºÆ® ¼³Á¤
 
-### ë¦¬ì†ŒìŠ¤ ì‚¬ìš©ëŸ‰
-- **ë©”ëª¨ë¦¬**: í…ŒìŠ¤íŠ¸ë‹¹ ì•½ 100-200MB
-- **CPU**: ë™ì‹œì„± í…ŒìŠ¤íŠ¸ ì‹œ ë†’ì€ CPU ì‚¬ìš©ë¥ 
-- **ë„¤íŠ¸ì›Œí¬**: Kafka ë©”ì‹œì§€ ì „ì†¡ìœ¼ë¡œ ì¸í•œ ë„¤íŠ¸ì›Œí¬ íŠ¸ëž˜í”½
+- **½º·¹µå Ç® Å©±â**: 20°³ (CPU ÄÚ¾î ¼ö¿¡ µû¶ó Á¶Á¤ °¡´É)
+- **µ¿½Ã ÀÔÂû ¼ö**: 50°³ (½Ã½ºÅÛ ¼º´É¿¡ µû¶ó Á¶Á¤ °¡´É)
+- **Å¸ÀÓ¾Æ¿ô**: 30ÃÊ (³×Æ®¿öÅ© Áö¿¬ °í·Á)
 
-## í™•ìž¥ ê°€ëŠ¥í•œ í…ŒìŠ¤íŠ¸ ì‹œë‚˜ë¦¬ì˜¤
+### ¸®¼Ò½º »ç¿ë·®
 
-### ì¶”ê°€ ê³ ë ¤ì‚¬í•­
-1. **ìž¥ì•  ë³µêµ¬ í…ŒìŠ¤íŠ¸**: ì„œë¹„ìŠ¤ ì¤‘ë‹¨ í›„ ë³µêµ¬ ì‹œ ì •í•©ì„± ê²€ì¦
-2. **ë¶€í•˜ í…ŒìŠ¤íŠ¸**: ëŒ€ìš©ëŸ‰ ë°ì´í„° ì²˜ë¦¬ ì‹œ ì •í•©ì„± ìœ ì§€ í™•ì¸
-3. **ë„¤íŠ¸ì›Œí¬ ì§€ì—° í…ŒìŠ¤íŠ¸**: ë„¤íŠ¸ì›Œí¬ ë¶ˆì•ˆì • ìƒí™©ì—ì„œì˜ ì •í•©ì„± ê²€ì¦
-4. **ë°ì´í„° ë§ˆì´ê·¸ë ˆì´ì…˜ í…ŒìŠ¤íŠ¸**: ìŠ¤í‚¤ë§ˆ ë³€ê²½ ì‹œ ì •í•©ì„± ë³´ìž¥ í™•ì¸
+- **¸Þ¸ð¸®**: Å×½ºÆ®´ç ¾à 100-200MB
+- **CPU**: µ¿½Ã¼º Å×½ºÆ® ½Ã ³ôÀº CPU »ç¿ë·ü
+- **³×Æ®¿öÅ©**: Kafka ¸Þ½ÃÁö Àü¼ÛÀ¸·Î ÀÎÇÑ ³×Æ®¿öÅ© Æ®·¡ÇÈ
 
-## ì—°ê´€ ë¬¸ì„œ
+## È®Àå °¡´ÉÇÑ Å×½ºÆ® ½Ã³ª¸®¿À
 
-- [BidConcurrencyTest.java](./src/test/java/com/ssafy/fullerting/BidConcurrencyTest.java): ê¸°ì¡´ ë™ì‹œì„± í…ŒìŠ¤íŠ¸
-- [BidConsumerService.java](./src/main/java/com/ssafy/fullerting/global/kafka/BidConsumerService.java): ìž…ì°° ì²˜ë¦¬ ì„œë¹„ìŠ¤
-- [BidService.java](./src/main/java/com/ssafy/fullerting/bidLog/service/BidService.java): ìž…ì°° ë¹„ì¦ˆë‹ˆìŠ¤ ë¡œì§
- 
+### Ãß°¡ °í·Á»çÇ×
+
+1. **Àå¾Ö º¹±¸ Å×½ºÆ®**: ¼­ºñ½º Áß´Ü ÈÄ º¹±¸ ½Ã Á¤ÇÕ¼º °ËÁõ
+2. **ºÎÇÏ Å×½ºÆ®**: ´ë¿ë·® µ¥ÀÌÅÍ Ã³¸® ½Ã Á¤ÇÕ¼º À¯Áö È®ÀÎ
+3. **³×Æ®¿öÅ© Áö¿¬ Å×½ºÆ®**: ³×Æ®¿öÅ© ºÒ¾ÈÁ¤ »óÈ²¿¡¼­ÀÇ Á¤ÇÕ¼º °ËÁõ
+4. **µ¥ÀÌÅÍ ¸¶ÀÌ±×·¹ÀÌ¼Ç Å×½ºÆ®**: ½ºÅ°¸¶ º¯°æ ½Ã Á¤ÇÕ¼º º¸Àå È®ÀÎ
+
+## ¿¬°ü ¹®¼­
+
+- [BidConcurrencyTest.java](./src/test/java/com/ssafy/fullerting/BidConcurrencyTest.java): ±âÁ¸ µ¿½Ã¼º Å×½ºÆ®
+- [BidConsumerService.java](./src/main/java/com/ssafy/fullerting/global/kafka/BidConsumerService.java): ÀÔÂû Ã³¸® ¼­ºñ½º
+- [BidService.java](./src/main/java/com/ssafy/fullerting/bidLog/service/BidService.java): ÀÔÂû ºñÁî´Ï½º ·ÎÁ÷
