@@ -132,82 +132,86 @@ public class BidConsumerService {
         // �뀒�뒪�듃�슜�쑝濡� 異붿젙�릺�뒗 �씠 由ъ뒪�꼫�뒗 二쇱꽍 泥섎━�븯�뿬 鍮꾪솢�꽦�솕�빀�땲�떎.
         // @KafkaListener(topics = "bid_requests", groupId = "bid-group",
         // containerFactory = "bidKafkaListenerContainerFactory")
-        @Transactional
-        public void consumeBidRequestwithouLock(BidRequestMessage message) {
-                try {
-                        Long exArticleId = message.getExArticleId();
-                        int dealCurPrice = message.getDealCurPrice();
-                        String bidderUserName = message.getBidderUserName();
+        // @Transactional
+        // public void consumeBidRequestwithouLock(BidRequestMessage message) {
+        // try {
+        // Long exArticleId = message.getExArticleId();
+        // int dealCurPrice = message.getDealCurPrice();
+        // String bidderUserName = message.getBidderUserName();
 
-                        log.info("입찰 요청 수신 - 게시글 ID: {}, 입찰가: {}, 사용자: {}", exArticleId, dealCurPrice,
-                                        bidderUserName);
+        // log.info("입찰 요청 수신 - 게시글 ID: {}, 입찰가: {}, 사용자: {}", exArticleId,
+        // dealCurPrice,
+        // bidderUserName);
 
-                        ExArticle exArticle = exArticleRepository.findWithDealById(exArticleId)
-                                        .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
-                        Deal deal = exArticle.getDeal();
-                        if (deal == null) {
-                                throw new ExArticleException(ExArticleErrorCode.NOT_EXISTS);
-                        }
+        // ExArticle exArticle = exArticleRepository.findWithDealById(exArticleId)
+        // .orElseThrow(() -> new ExArticleException(ExArticleErrorCode.NOT_EXISTS));
+        // Deal deal = exArticle.getDeal();
+        // if (deal == null) {
+        // throw new ExArticleException(ExArticleErrorCode.NOT_EXISTS);
+        // }
 
-                        int currentPrice = deal.getDealCurPrice();
-                        if (dealCurPrice <= currentPrice) {
-                                throw new RuntimeException(
-                                                "현재가보다 높은 금액을 입력해주세요. 현재가: " + currentPrice);
-                        }
+        // int currentPrice = deal.getDealCurPrice();
+        // if (dealCurPrice <= currentPrice) {
+        // throw new RuntimeException(
+        // "현재가보다 높은 금액을 입력해주세요. 현재가: " + currentPrice);
+        // }
 
-                        MemberProfile bidder = memberRepository.findByNickname(bidderUserName)
-                                        .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
+        // MemberProfile bidder = memberRepository.findByNickname(bidderUserName)
+        // .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
-                        List<BidLog> existingBids = bidRepository.findByDealId(deal.getId().toString());
-                        long uniqueBidderCount = existingBids.stream()
-                                        .map(BidLog::getUserId)
-                                        .distinct()
-                                        .count();
-                        boolean isNewBidder = existingBids.stream()
-                                        .noneMatch(bid -> bid.getUserId().equals(bidder.getId()));
-                        if (isNewBidder)
-                                uniqueBidderCount++;
+        // List<BidLog> existingBids =
+        // bidRepository.findByDealId(deal.getId().toString());
+        // long uniqueBidderCount = existingBids.stream()
+        // .map(BidLog::getUserId)
+        // .distinct()
+        // .count();
+        // boolean isNewBidder = existingBids.stream()
+        // .noneMatch(bid -> bid.getUserId().equals(bidder.getId()));
+        // if (isNewBidder)
+        // uniqueBidderCount++;
 
-                        // 입찰 내역 저장 (오직 여기서만!)
-                        BidLog bidLog = BidLog.builder()
-                                        .deal(deal)
-                                        .userId(bidder.getId())
-                                        .bidLogPrice(dealCurPrice)
-                                        .localDateTime(LocalDateTime.now())
-                                        .build();
+        // // 입찰 내역 저장 (오직 여기서만!)
+        // BidLog bidLog = BidLog.builder()
+        // .deal(deal)
+        // .userId(bidder.getId())
+        // .bidLogPrice(dealCurPrice)
+        // .localDateTime(LocalDateTime.now())
+        // .build();
 
-                        bidRepository.save(bidLog);
-                        bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // 레디스에 해당 작물에
-                                                                                             // 대한 최고 입찰 금액 업데이트.
+        // bidRepository.save(bidLog);
+        // bidService.updateRedisCache(exArticle, bidLog, bidder.toResponse()); // 레디스에
+        // 해당 작물에
+        // // 대한 최고 입찰 금액 업데이트.
 
-                        // 거래 정보 업데이트
-                        deal.setDealCurPrice(dealCurPrice);
-                        deal.setBidderCount((int) uniqueBidderCount);
-                        dealRepository.save(deal);
+        // // 거래 정보 업데이트
+        // deal.setDealCurPrice(dealCurPrice);
+        // deal.setBidderCount((int) uniqueBidderCount);
+        // dealRepository.save(deal);
 
-                        // WebSocket으로 실시간 업데이트 전송
-                        Map<String, Object> wsMessage = new HashMap<>();
-                        wsMessage.put("type", "BID_UPDATE");
-                        wsMessage.put("bidLogId", bidLog.getId());
-                        wsMessage.put("exArticleId", exArticleId);
-                        wsMessage.put("dealCurPrice", dealCurPrice);
-                        wsMessage.put("bidderCount", uniqueBidderCount);
-                        wsMessage.put("userResponse", Map.of(
-                                        "nickname", bidder.getNickname(),
-                                        "thumbnail", bidder.getThumbnail()));
-                        wsMessage.put("localDateTime", LocalDateTime.now().toString());
+        // // WebSocket으로 실시간 업데이트 전송
+        // Map<String, Object> wsMessage = new HashMap<>();
+        // wsMessage.put("type", "BID_UPDATE");
+        // wsMessage.put("bidLogId", bidLog.getId());
+        // wsMessage.put("exArticleId", exArticleId);
+        // wsMessage.put("dealCurPrice", dealCurPrice);
+        // wsMessage.put("bidderCount", uniqueBidderCount);
+        // wsMessage.put("userResponse", Map.of(
+        // "nickname", bidder.getNickname(),
+        // "thumbnail", bidder.getThumbnail()));
+        // wsMessage.put("localDateTime", LocalDateTime.now().toString());
 
-                        messagingTemplate.convertAndSend(
-                                        "/topic/bidding/" + exArticleId,
-                                        wsMessage);
+        // messagingTemplate.convertAndSend(
+        // "/topic/bidding/" + exArticleId,
+        // wsMessage);
 
-                        // 알림 전송
-                        bidProducerService.kafkaalarmproduce(bidder, exArticle, "/some/redirect/url");
+        // // 알림 전송
+        // bidProducerService.kafkaalarmproduce(bidder, exArticle,
+        // "/some/redirect/url");
 
-                } catch (Exception e) {
-                        log.error("Kafka 입찰 메시지 처리 실패: {}", message, e);
-                }
-        }
+        // } catch (Exception e) {
+        // log.error("Kafka 입찰 메시지 처리 실패: {}", message, e);
+        // }
+        // }
 
         @KafkaListener(topics = "kafka-alarm", groupId = "user-notifications", concurrency = "5", containerFactory = "bidNotificationKafkaListenerContainerFactory")
         @Transactional
